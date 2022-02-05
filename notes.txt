@@ -1,0 +1,60 @@
+Go-style indenting with tabs
+function and variable names in cascalCase
+class names in PascalCase
+constants in UPPER_CASE
+    includes string constants like FAN_NONE, MOVE_NONE
+
+SUBCLASS LAYER
+CARD POSITIONING LAYER
+    Pile and Card have a grp, that has x,y position, so we don't need one
+    use csol as a model?
+    Pile.Refan()
+    Pile.PosAfter(c)
+    setup pos1 & pos2 when setting Pile Baize pos
+SCRIPTING LAYER
+INPUT LAYER
+GAME MANAGEMENT LAYER
+
+_G.BAIZE.piles
+_G.BAIZE.numberOfCards
+_G.BAIZE.cells -- etc
+_G.BAIZE.stock -- only one
+_G.BAIZE.waste -- only one
+_G.BAIZE.script
+
+The Cell,Discard,Foundation,Reserve,Stock,Tableau,Waste interface:
+    Cell.New(o)
+    Cell:CanAcceptCard(c)
+    Cell:CanAcceptTail(tail)
+    Cell:TailTapped()
+    Cell:Collect()  -- only implemented in Foundation piles
+    Cell:Conformant()
+    Cell:Complete()
+    Cell:UnsortedPairs()
+
+The variant script interface:
+    Info()
+    BuildPiles()
+    StartGame()
+    AfterMove()
+    TailMoveError()
+    TailAppendError()
+    UnsortedPairs()
+    TailTapped()
+    PileTapped()
+...unlike gosol, record of pile subtypes will be kept in _G.BAIZE, eg _G.BAIZE.cells
+
+Pile.category
+Pile.slot.x
+Pile.slot.y
+Pile.fanType
+Pile.moveType
+Pile.cards
+Pile.label
+Pile.symbol (recycle rune)
+Pile.grp (x, y etc)
+
+https://docs.coronalabs.com/api/library/display/safeActualContentHeight.html
+
+https://docs.coronalabs.com/api/library/display/safeScreenOriginX.html
+
