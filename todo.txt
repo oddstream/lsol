@@ -1,4 +1,0 @@
-create pile class and seven subtypes using gosol model
-scale cards, create card textures
-layout piles
-draw piles
