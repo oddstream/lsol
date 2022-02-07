@@ -4,6 +4,9 @@ class names in PascalCase
 constants in UPPER_CASE
     includes string constants like FAN_NONE, MOVE_NONE
 
+Use gosol as a model
+
+
 SUBCLASS LAYER
 CARD POSITIONING LAYER
     Pile and Card have a grp, that has x,y position, so we don't need one
