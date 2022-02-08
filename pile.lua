@@ -1,11 +1,7 @@
 -- pile
 -- virtual base class for Stock, Waste, Foundation, Tableau, Reserve, Cell
 
-local Pile = {
-    -- slot
-	-- cards
-    -- label
-}
+local Pile = {}
 Pile.__index = Pile
 
 function Pile.new(o)
@@ -16,7 +12,40 @@ function Pile.new(o)
     o.slot = {x = o.x, y = o.y}
 	o.cards = {}
 	o.label = ''
+	o.faceFanFactor = 3
+	o.backFanFactor = 4
 	return o
+end
+
+function Pile:baizeRect()
+	return {x1=self.x, y1=self.y, x2=self.x + _G.BAIZE.cardWidth, y2=self.y + _G.BAIZE.cardHeight}
+end
+
+function Pile:screenRect()
+	local rect = self:baizeRect()
+	return {
+		x1 = rect.x1 + _G.BAIZE.dragOffset.x,
+		y1 = rect.y1 + _G.BAIZE.dragOffset.y,
+		x2 = rect.x2 + _G.BAIZE.dragOffset.x,
+		y2 = rect.y2 + _G.BAIZE.dragOffset.y,
+	}
+end
+
+function Pile:posAfter(c)
+	if (c == nil ) or (#self.cards == 0) then
+		return self.x, self.y
+	end
+	local x, y = c.x, c.y
+	if self.fanType == 'FAN_NONE' then
+		-- do nothing
+	elseif self.fanType == 'FAN_DOWN' then
+		if c.prone then
+			y = y + (_G.BAIZE.cardHeight / self.backFanFactor)
+		else
+			y = y + (_G.BAIZE.cardHeight / self.faceFanFactor)
+		end
+	end
+	return x, y
 end
 
 function Pile:peek()
@@ -24,8 +53,10 @@ function Pile:peek()
 end
 
 function Pile:push(c)
+	local x, y = self:posAfter(self:peek())
 	table.insert(self.cards, c)
 	c.parent = self
+	c:transitionTo(x, y)
 end
 
 function Pile:pop()
@@ -75,8 +106,9 @@ function Pile:update(dt)
 end
 
 function Pile:draw()
+	local b = _G.BAIZE
 	love.graphics.setColor(1, 1, 1, 0.25)
-	love.graphics.rectangle('line', self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight, 10, 10)
+	love.graphics.rectangle('line', self.x, self.y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	for _, c in ipairs(self.cards) do
 		c:draw()
 	end

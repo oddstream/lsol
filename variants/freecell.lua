@@ -5,6 +5,8 @@ local Foundation = require 'foundation'
 local Stock = require 'stock'
 local Tableau = require 'tableau'
 
+local Util = require 'util'
+
 local Freecell = {}
 Freecell.__index = Freecell
 
@@ -14,7 +16,7 @@ function Freecell.new(params)
 	return o
 end
 
-function Freecell:buildPiles()
+function Freecell.buildPiles()
 	print('TRACE building freecell piles')
 
 	Stock.new({x=1, y=1})
@@ -25,15 +27,32 @@ function Freecell:buildPiles()
 		Foundation.new({x=x, y=2})
 	end
 	for x = 1, 8 do
-		Tableau.new({x=x, y=3})
+		Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
 	end
 end
 
-function Freecell:startGame()
+function Freecell.startGame()
 	print('TRACE starting a game of freecell')
+	local src, dst
+	src = _G.BAIZE.stock
+	for i = 1, 4 do
+		dst = _G.BAIZE.tableaux[i]
+		for j = 1, 7 do
+			Util.MoveCard(src, dst)
+		end
+	end
+	for i = 5, 8 do
+		dst = _G.BAIZE.tableaux[i]
+		for j = 1, 6 do
+			Util.MoveCard(src, dst)
+		end
+	end
+	if #src.cards > 0 then
+		print('ERROR still', #src.cards, 'cards in Stock')
+	end
 end
 
-function Freecell:afterMove()
+function Freecell.afterMove()
 end
 
 return Freecell

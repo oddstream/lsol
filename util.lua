@@ -57,4 +57,11 @@ function Util.baizeChanged(old, new)
 	return false
 end
 
+function Util.MoveCard(src, dst)
+	local c = src:pop()
+	if c then
+		dst:push(c)
+	end
+end
+
 return Util

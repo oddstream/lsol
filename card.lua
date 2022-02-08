@@ -27,16 +27,37 @@ function Card.new(o)
 	return o
 end
 
+function Card:baizeRect()
+	return {x1=self.x, y1=self.y, x2=self.x + _G.BAIZE.cardWidth, y2=self.y + _G.BAIZE.cardHeight}
+end
+
+function Card:screenRect()
+	local rect = self:baizeRect()
+	return {
+		x1 = rect.x1 + _G.BAIZE.dragOffset.x,
+		y1 = rect.y1 + _G.BAIZE.dragOffset.y,
+		x2 = rect.x2 + _G.BAIZE.dragOffset.x,
+		y2 = rect.y2 + _G.BAIZE.dragOffset.y,
+	}
+end
+
+function Card:transitionTo(x,y)
+	self.x = x
+	self.y = y
+end
+
 function Card:update(dt)
 end
 
 function Card:draw()
-	local x = self.parent.x
-	local y = self.parent.y
+	-- very important!: reset color before drawing to canvas to have colors properly displayed
+    -- see discussion here: https://love2d.org/forums/viewtopic.php?f=4&p=211418#p211418
+	love.graphics.setColor(1,1,1,1)
+
 	if self.prone then
-		love.graphics.draw(_G.BAIZE.cardBackTexture, x, y)
+		love.graphics.draw(_G.BAIZE.cardBackTexture, self.x, self.y)
 	else
-		love.graphics.draw(_G.BAIZE.cardTextureLibrary[self.textureId], x, y)
+		love.graphics.draw(_G.BAIZE.cardTextureLibrary[self.textureId], self.x, self.y)
 	end
 end
 

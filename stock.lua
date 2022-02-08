@@ -2,7 +2,6 @@
 
 local Card = require 'card'
 local Pile = require 'pile'
-local Random = require 'random'
 
 local Stock = {}
 Stock.__index = Stock   -- Stock's own __index looks in Stock for methods
@@ -17,10 +16,10 @@ function Stock.new(o)
 
 	o.category = 'Stock'
 	o.ordFilter = o.ordFilter or {1,2,3,4,5,6,7,8,9,10,11,12,13}
-	o.suitFilter = o.suitFilter or {'C','D','H','S'}
+	o.suitFilter = o.suitFilter or {'♣','♦','♥','♠'}
 	o.packs = o.packs or 1
-	o.moveType = 'MOVE_ONE'
 	o.fanType = 'FAN_NONE'
+	o.moveType = 'MOVE_ONE'
 
 	print('TRACE making cards')
 	for pack = 1, o.packs do
@@ -34,12 +33,12 @@ function Stock.new(o)
 	_G.BAIZE.numberOfCards = #o.cards
 	print('TRACE made', #o.cards, 'cards')
 
-	print('TRACE sorting cards')
-	local r = Random.new(os.time())
+	print('TRACE shuffling cards')
+	math.randomseed(os.time())
 	for i = #o.cards, 2, -1 do
-		local n = r:nextInt(1, i)
-		if i ~= n then
-			o.cards[i], o.cards[n] = o.cards[n], o.cards[i]
+		local j = math.random(i)
+		if i ~= j then
+			o.cards[i], o.cards[j] = o.cards[j], o.cards[i]
 		end
 	end
 

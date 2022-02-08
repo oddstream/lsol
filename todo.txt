@@ -1,0 +1,3 @@
+gosol's stroke
+
+?Script class/object, which Freecell derives from, so Freecell: has some meaning

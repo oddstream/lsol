@@ -9,7 +9,7 @@ function love.load()
 		_G.BAIZE:resetPiles()
 		_G.BAIZE.script.buildPiles()
 		print(#_G.BAIZE.piles, 'piles built')
-		_G.BAIZE:layoutPiles()
+		_G.BAIZE:layout()
 		print('card width, height', _G.BAIZE.cardWidth, _G.BAIZE.cardHeight)
 		_G.BAIZE.script.startGame()
 	end
@@ -22,14 +22,9 @@ function love.load()
 end
 
 function love.update(dt)
-	for _, pile in ipairs(_G.BAIZE.piles) do
-		pile:update(dt)
-	end
+	_G.BAIZE:update(dt)
 end
 
 function love.draw()
-	love.graphics.setBackgroundColor(0, 0.3, 0)
-	for _, pile in ipairs(_G.BAIZE.piles) do
-		pile:draw()
-	end
+	_G.BAIZE:draw()
 end

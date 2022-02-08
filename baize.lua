@@ -1,5 +1,7 @@
 -- baize
 
+local Stroke = require 'stroke'
+
 local Baize = {
 	-- variantName
 
@@ -29,12 +31,20 @@ Baize.__index = Baize
 function Baize.new()
 	local o = {variantName = 'Freecell'}
 	setmetatable(o, Baize)
+	o.dragOffset = {x=0, y=0}
 	return o
 end
+
+local ord2String = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
 function Baize:createCardTextures(ordFilter, suitFilter)
 	assert(self.cardWidth and self.cardWidth ~= 0)
 	assert(self.cardHeight and self.cardHeight ~= 0)
+
+	self.ordFontSize = self.cardWidth * 0.35
+	self.ordFont = love.graphics.newFont('assets/Acme-Regular.ttf', self.ordFontSize)
+	self.suitFontSize = self.cardWidth * 0.35
+	self.suitFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.suitFontSize)
 
 	local canvas
 
@@ -44,8 +54,22 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 			canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 			love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 
-			love.graphics.setColor(1, 1, 240*4/1020)	-- Ivory
-			love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, 10, 10)
+			love.graphics.setColor(love.math.colorFromBytes(255, 255, 240))	-- Ivory
+			love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+
+			love.graphics.setColor(love.math.colorFromBytes(192, 192, 192))	-- Silver
+			love.graphics.rectangle('line', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+
+			if suit == '♦' or suit == '♥' then
+				love.graphics.setColor(love.math.colorFromBytes(220, 20, 60)) -- crimson
+			else
+				love.graphics.setColor(0, 0, 0)
+			end
+			love.graphics.setFont(self.ordFont)
+			love.graphics.print(ord2String[ord], 8, 8)
+
+			love.graphics.setFont(self.suitFont)
+			love.graphics.print(suit, self.cardWidth - 8 - self.suitFontSize, 8)
 
 			love.graphics.setCanvas()	-- reset render target to the screen
 			self.cardTextureLibrary[string.format('%02u%s', ord, suit)] = canvas
@@ -54,15 +78,15 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
-	love.graphics.setColor(100*4/1020,149*4/1020,237*4/1020)	-- Cornflowerblue
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, 10, 10)
+	love.graphics.setColor(love.math.colorFromBytes(100, 149, 237))	-- Cornflowerblue
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardBackTexture = canvas
 
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
-	love.graphics.setColor(128*4/1020,128*4/1020,128*4/1020)	-- Gray
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, 10, 10)
+	love.graphics.setColor(love.math.colorFromBytes(128, 128, 128))	-- Gray
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardShadowTexture = canvas
 end
@@ -126,7 +150,7 @@ function Baize:resetPiles()
 	self.waste = nil
 end
 
-function Baize:layoutPiles()
+function Baize:layout()
 	local oldCardWidth, oldCardHeight = self.cardWidth, self.cardheight
 
 	local maxSlotX = 0
@@ -142,6 +166,7 @@ function Baize:layoutPiles()
 	local slotWidth = windowWidth / (maxSlotX + 1) -- +1 gives a half card width gap either side
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = slotWidth - pilePaddingX
+	self.cardRadius = self.cardWidth / 15
 	local slotHeight = slotWidth * 1.357
 	local pilePaddingY = slotHeight / 10
 	self.cardHeight = slotHeight - pilePaddingY
@@ -165,6 +190,100 @@ function Baize:stateSnapshot()
 		table.insert(t, #pile)
 	end
 	return t
+end
+
+function Baize:findCardAt(x, y)
+	for j = #self.piles, 1, -1 do
+		local pile = self.piles[j]
+		for i = #pile.cards, 1, -1 do
+			local card = pile.cards[i]
+			local rect = card:screenRect()
+			if x > rect.x1 and y > rect.y1 and x < rect.x2 and y < rect.y2 then
+				return card
+			end
+		end
+	end
+	return nil
+end
+
+function Baize:findPileAt(x, y)
+	for _, pile in ipairs(self.piles) do
+		local rect = pile:screenRect()
+		if x > rect.x1 and y > rect.y1 and x < rect.x2 and y < rect.y2 then
+			return pile
+		end
+	end
+	return nil
+end
+
+function Baize:strokeStart(s)
+	print(s.event, s.x, s.y)
+	assert(self.stroke==nil)
+	self.stroke = s.stroke
+
+	local c = self:findCardAt(s.x, s.y)
+	if c then
+		print(tostring(c))
+	else
+		local p = self:findPileAt(s.x, s.y)
+		if p then
+			print(p.category)
+		end
+	end
+end
+
+function Baize:strokeMove(s)
+end
+
+function Baize:strokeTap(s)
+	print(s.event, s.x, s.y)
+end
+
+function Baize:strokeCancel(s)
+	print(s.event, s.x, s.y)
+end
+
+function Baize:strokeStop(s)
+	print(s.event, s.x, s.y)
+end
+
+local function notifyStroke(s)
+	local b = _G.BAIZE
+	if s.event == 'start' then
+		Baize.strokeStart(b, s)
+	elseif s.event == 'move' then
+		Baize.strokeMove(b, s)
+	elseif s.event == 'tap' then
+		Baize.strokeTap(b, s)
+	elseif s.event == 'cancel' then
+		Baize.strokeCancel(b, s)
+	elseif s.event == 'stop' then
+		Baize.strokeStop(b, s)
+	end
+end
+
+function Baize:update(dt)
+	if self.stroke == nil then
+		Stroke.start(notifyStroke)
+	else
+		assert(self.stroke)
+		assert(self.stroke.update)
+		self.stroke:update()
+		if self.stroke:isCancelled() or self.stroke:isReleased() then
+			self.stroke = nil
+		end
+	end
+
+	for _, pile in ipairs(self.piles) do
+		pile:update(dt)
+	end
+end
+
+function Baize:draw()
+	love.graphics.setBackgroundColor(0, 0.3, 0)
+	for _, pile in ipairs(self.piles) do
+		pile:draw()
+	end
 end
 
 return Baize
