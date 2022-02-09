@@ -67,6 +67,24 @@ function Pile:posAfter(c)
 	return x, y
 end
 
+function Pile:refan()
+	if self.fanType == 'FAN_NONE' then
+		for _, c in ipairs(self.cards) do
+			c.x = self.x
+			c.y = self.y
+		end
+	elseif self.fanType == 'FAN_DOWN' then
+		local x, y = self.x, self.y
+		local i = 1
+		for _, c in ipairs(self.cards) do
+			c.x = x
+			c.y = y
+			x, y = self:posAfter(self.cards[i])
+			i = i + 1
+		end
+	end
+end
+
 function Pile:peek()
 	return self.cards[#self.cards]
 end

@@ -6,6 +6,7 @@ constants in UPPER_CASE
 
 Use gosol as a model
 
+LÖVE game loop https://github.com/a327ex/blog/issues/15
 
 SUBCLASS LAYER
 CARD POSITIONING LAYER

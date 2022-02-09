@@ -2,7 +2,16 @@
 
 local Baize = require 'baize'
 
-function love.load()
+function love.load(args)
+	-- if args then
+	-- 	print('args')
+	-- 	for k, v in pairs(args) do
+	-- 		print(k, v)
+	-- 	end
+	-- end
+
+	love.graphics.setBackgroundColor(0, 0.3, 0)
+
 	_G.BAIZE = Baize.new()
 	_G.BAIZE.script = _G.BAIZE:loadScript()
 	if _G.BAIZE.script then
@@ -27,4 +36,12 @@ end
 
 function love.draw()
 	_G.BAIZE:draw()
+end
+
+function love.resize()
+	print('resize')
+	_G.BAIZE:layout()
+	for _, pile in ipairs(_G.BAIZE.piles) do
+		pile:refan()
+	end
 end

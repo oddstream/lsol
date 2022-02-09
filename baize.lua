@@ -261,7 +261,7 @@ end
 function Baize:strokeMove(s)
 	if s.type == 'tail' then
 		for _, c in ipairs(s.object) do
-			c:dragBy(self.stroke:positionDiff())
+			c:dragBy(s.dx, s.dy)
 		end
 	end
 end
@@ -277,7 +277,7 @@ function Baize:strokeCancel(s)
 	print(s.event, s.x, s.y)
 	if s.type == 'tail' then
 		for _, c in ipairs(s.object) do
-			c:stopDrag()
+			c:cancelDrag()
 		end
 	end
 end
@@ -320,8 +320,6 @@ function Baize:update(dt)
 	if self.stroke == nil then
 		Stroke.start(notifyStroke)
 	else
-		assert(self.stroke)
-		assert(self.stroke.update)
 		self.stroke:update()
 		if self.stroke:isCancelled() or self.stroke:isReleased() then
 			self.stroke = nil
@@ -334,7 +332,6 @@ function Baize:update(dt)
 end
 
 function Baize:draw()
-	love.graphics.setBackgroundColor(0, 0.3, 0)
 	for _, pile in ipairs(self.piles) do
 		pile:draw()
 	end

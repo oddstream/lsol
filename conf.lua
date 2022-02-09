@@ -7,5 +7,6 @@ function love.conf(t)
 	t.window.width = 1024
 	t.window.height = 1024
 	t.window.title = 'Patience'
+	t.window.resizable = true
 	-- TODO add t.window.icon
 end

@@ -1,7 +1,15 @@
 -- stroke
 
+-- TODO update to allow touch (and joystick?) as well as mouse
+-- TODO update to allow right mouse button
+
 local Stroke = {}
 Stroke.__index = Stroke
+
+function Stroke:makeNotifyObject(event)
+	assert(type(event)=='string')
+	return {event=event, stroke=self, object=self.draggedObject, type=self.draggedObjectType, x=self.curr.x, y=self.curr.y, dx=self.curr.x - self.init.x, dy=self.curr.y - self.init.y}
+end
 
 function Stroke.start(notifyFn)
 	assert(type(notifyFn)=='function')
@@ -17,7 +25,7 @@ function Stroke.start(notifyFn)
 			notifyFn = notifyFn
 		}
 		setmetatable(s, Stroke)
-		s.notifyFn({event='start', stroke=s, x=mx, y=my})
+		s.notifyFn(s:makeNotifyObject('start'))
 	end
 	return s
 end
@@ -31,12 +39,12 @@ function Stroke:update()
 			local elapsed = love.timer.getTime() - self.timeStart
 			print('elapsed', elapsed)
 			if elapsed < 0.2 then
-				self.notifyFn({event='tap', object=self.draggedObject, type=self.draggedObjectType, x=self.curr.x, y=self.curr.y})
+				self.notifyFn(self:makeNotifyObject('tap'))
 			end
-			self.notifyFn({event='cancel', object=self.draggedObject, type=self.draggedObjectType, x=self.curr.x, y=self.curr.y})
+			self.notifyFn(self:makeNotifyObject('cancel'))
 			self.cancelled = true
 		else
-			self.notifyFn({event='stop', object=self.draggedObject, type=self.draggedObjectType, x=self.curr.x, y=self.curr.y})
+			self.notifyFn(self:makeNotifyObject('stop'))
 			self.released = true
 		end
 	else
@@ -44,7 +52,7 @@ function Stroke:update()
 		if self.curr.x ~= mx or self.curr.y ~= my then
 			self.curr.x = mx
 			self.curr.y = my
-			self.notifyFn({event='move', object=self.draggedObject, type=self.draggedObjectType, x=self.curr.x, y=self.curr.y})
+			self.notifyFn(self:makeNotifyObject('move'))
 		end
 	end
 end
