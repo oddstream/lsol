@@ -31,12 +31,12 @@ function Stroke:update()
 			local elapsed = love.timer.getTime() - self.timeStart
 			print('elapsed', elapsed)
 			if elapsed < 0.2 then
-				(self.notifyFn)({event='tap', object=self.draggedObject, x=self.curr.x, y=self.curr.y})
+				self.notifyFn({event='tap', object=self.draggedObject, type=self.draggedObjectType, x=self.curr.x, y=self.curr.y})
 			end
-			self.notifyFn({event='cancel', object=self.draggedObject, x=self.curr.x, y=self.curr.y})
+			self.notifyFn({event='cancel', object=self.draggedObject, type=self.draggedObjectType, x=self.curr.x, y=self.curr.y})
 			self.cancelled = true
 		else
-			self.notifyFn({event='stop', object=self.draggedObject, x=self.curr.x, y=self.curr.y})
+			self.notifyFn({event='stop', object=self.draggedObject, type=self.draggedObjectType, x=self.curr.x, y=self.curr.y})
 			self.released = true
 		end
 	else
@@ -44,7 +44,7 @@ function Stroke:update()
 		if self.curr.x ~= mx or self.curr.y ~= my then
 			self.curr.x = mx
 			self.curr.y = my
-			self.notifyFn({event='move', object=self.draggedObject, x=self.curr.x, y=self.curr.y})
+			self.notifyFn({event='move', object=self.draggedObject, type=self.draggedObjectType, x=self.curr.x, y=self.curr.y})
 		end
 	end
 end

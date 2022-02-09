@@ -1,6 +1,7 @@
 -- baize
 
 local Stroke = require 'stroke'
+local Util = require 'util'
 
 local Baize = {
 	-- variantName
@@ -22,6 +23,8 @@ local Baize = {
 	-- cardTextureLibrary (built when cards change size)
 	-- cardBackTexture (built when cards change size)
 	-- cardShadowTexture (built when cards change size)
+
+	-- dragOffset
 
 	-- undoStack
 	-- bookmark
@@ -216,14 +219,37 @@ function Baize:findPileAt(x, y)
 	return nil
 end
 
+function Baize:largestIntersection(card)
+	local largestArea = 0
+	local pile
+	local cardRect = card:baizeRect()
+	for _, p in ipairs(self.piles) do
+		if p ~= card.parent then
+			local pileRect = p:fannedBaizeRect()
+			local area = Util.overlapArea(cardRect, pileRect)
+			if area > largestArea then
+				largestArea = area
+				pile = p
+			end
+		end
+	end
+	return pile
+end
+
 function Baize:strokeStart(s)
 	print(s.event, s.x, s.y)
 	assert(self.stroke==nil)
 	self.stroke = s.stroke
 
-	local c = self:findCardAt(s.x, s.y)
-	if c then
-		print(tostring(c))
+	local card = self:findCardAt(s.x, s.y)
+	if card then
+		local tail = card.parent:makeTail(card)
+		for _, c in ipairs(tail) do
+			c:startDrag()
+		end
+		-- hide the cursor
+		self.stroke:setDraggedObject(tail, 'tail')
+		-- print(tostring(card), 'tail len', #tail)
 	else
 		local p = self:findPileAt(s.x, s.y)
 		if p then
@@ -233,18 +259,46 @@ function Baize:strokeStart(s)
 end
 
 function Baize:strokeMove(s)
+	if s.type == 'tail' then
+		for _, c in ipairs(s.object) do
+			c:dragBy(self.stroke:positionDiff())
+		end
+	end
 end
 
 function Baize:strokeTap(s)
 	print(s.event, s.x, s.y)
+	if s.type == 'tail' then
+		print('tap on', tostring(s.object[1]))
+	end
 end
 
 function Baize:strokeCancel(s)
 	print(s.event, s.x, s.y)
+	if s.type == 'tail' then
+		for _, c in ipairs(s.object) do
+			c:stopDrag()
+		end
+	end
 end
 
 function Baize:strokeStop(s)
 	print(s.event, s.x, s.y)
+	if s.type == 'tail' then
+		local tail = s.object
+		local dst = self:largestIntersection(tail[1])
+		if dst then
+			print('intersection found', dst.category)
+			-- TODO
+			for _, c in ipairs(s.object) do
+				c:cancelDrag()
+			end
+		else
+			for _, c in ipairs(s.object) do
+				c:cancelDrag()
+			end
+		end
+	end
 end
 
 local function notifyStroke(s)

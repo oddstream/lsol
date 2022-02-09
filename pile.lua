@@ -31,11 +31,30 @@ function Pile:screenRect()
 	}
 end
 
+function Pile:fannedBaizeRect()
+	local r = self:baizeRect()
+	if #self.cards > 1 and self.fanType ~= 'FAN_NONE' then
+		local c = self:peek()
+		local cRect = c:baizeRect()
+		if self.fanType == 'FAN_DOWN' then
+			r.y2 = cRect.y2
+		elseif self.fanType == 'FAN_RIGHT' then
+			r.x2 = cRect.x2
+		end
+	end
+	return r
+end
+
 function Pile:posAfter(c)
 	if (c == nil ) or (#self.cards == 0) then
 		return self.x, self.y
 	end
-	local x, y = c.x, c.y
+	local x, y
+	if c:transitioning() then
+		x, y = c.dst.x, c.dst.y
+	else
+		x, y = c.x, c.y
+	end
 	if self.fanType == 'FAN_NONE' then
 		-- do nothing
 	elseif self.fanType == 'FAN_DOWN' then
@@ -63,6 +82,21 @@ function Pile:pop()
 	local c = table.remove(self.cards)
 	if c then c.parent = nil end
 	return c
+end
+
+function Pile:makeTail(c)
+	for i=1, #self.cards do
+		-- find the first card
+		if self.cards[i] == c then
+			-- copy rest of cards
+			local tail = {}
+			for j=i, #self.cards do
+				table.insert(tail, self.cards[j])
+			end
+			return tail
+		end
+	  end
+	return nil
 end
 
 -- vtable functions

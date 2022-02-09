@@ -1,3 +1,4 @@
-gosol's stroke
+card dragging
+card flipping
 
 ?Script class/object, which Freecell derives from, so Freecell: has some meaning
