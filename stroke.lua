@@ -39,10 +39,11 @@ function Stroke:update()
 			local elapsed = love.timer.getTime() - self.timeStart
 			print('elapsed', elapsed)
 			if elapsed < 0.2 then
+				-- send out a cancel so the object/card can be put back to it's original place
+				self.notifyFn(self:makeNotifyObject('cancel'))
+				self.cancelled = true
 				self.notifyFn(self:makeNotifyObject('tap'))
 			end
-			self.notifyFn(self:makeNotifyObject('cancel'))
-			self.cancelled = true
 		else
 			self.notifyFn(self:makeNotifyObject('stop'))
 			self.released = true

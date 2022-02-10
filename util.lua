@@ -77,6 +77,7 @@ function Util.MoveCard(src, dst)
 	if c then
 		dst:push(c)
 	end
+	return c
 end
 
 return Util

@@ -48,7 +48,11 @@ end
 function Card:setBaizePos(x, y)
 	self.x = x
 	self.y = y
-	self.lerpStep = 1.0
+	self:stopTransition()
+end
+
+function Card:getScreenPos()
+	return self.x + _G.BAIZE.dragOffset.x, self.y + _G.BAIZE.dragOffset.y
 end
 
 function Card:baizeRect()
@@ -69,6 +73,12 @@ function Card:transitioning()
 	return self.lerpStep < 1.0 and self.dst and self.src and (self.x ~= self.dst.x or self.y ~= self.dst.y)
 end
 
+function Card:stopTransition()
+	self.src = nil
+	self.dst = nil
+	self.lerpStep = 1.0
+end
+
 function Card:transitionTo(x, y)
 	if self.x == x and self.y == y then
 		self:setBaizePos(x, y)
@@ -83,16 +93,18 @@ function Card:transitionTo(x, y)
 
 	self.src = {x = self.x, y = self.y}
 	self.dst = {x = x, y = y}
-	self.lerpStep = 0.1
-	self.lerpStepAmount = 0.02
+	self.lerpStep = 0.1	-- starting from 0.0 feels a little laggy
+	self.lerpStepAmount = 0.025
+end
 
-	-- self.x = x
-	-- self.y = y
+function Card:dragging()
+	return self.dragStart ~= nil
 end
 
 function Card:startDrag()
 	if self:transitioning() then
 		self.dragStart = self.dst
+		self:stopTransition()
 	else
 		self.dragStart = {x=self.x, y=self.y}
 	end
@@ -104,36 +116,39 @@ end
 
 function Card:cancelDrag()
 	self:transitionTo(self.dragStart.x, self.dragStart.y)
+	self.dragStart = nil
 end
 
 function Card:stopDrag()
-	self.src = nil
-	self.dst = nil
+	self.dragStart = nil
 end
 
 function Card:update(dt)
-	if self.lerpStep < 1.0 and self.dst and (self.x ~= self.dst.x or self.y ~= self.dst.y) then
-		self.x = Util.smoothstep(self.src.x, self.dst.x, self.lerpStep)
-		self.y = Util.smoothstep(self.src.y, self.dst.y, self.lerpStep)
+	if self:transitioning() then
 		self.lerpStep = self.lerpStep + self.lerpStepAmount
-		if self.lerpStep >= 1.0 then
-			self.x = self.dst.x
-			self.y = self.dst.y
-			self.src = nil
-			self.dst = nil
+		if self.lerpStep < 1.0 then
+			self.x = Util.smootherstep(self.src.x, self.dst.x, self.lerpStep)
+			self.y = Util.smootherstep(self.src.y, self.dst.y, self.lerpStep)
+		else
+			-- we have arrived at our destination
+			-- make sure card is in proper place
+			-- and terminate any transition
+			self:setBaizePos(self.dst.x, self.dst.y)
 		end
 	end
 end
 
 function Card:draw()
+	local x, y = self:getScreenPos()
+
 	-- very important!: reset color before drawing to canvas to have colors properly displayed
     -- see discussion here: https://love2d.org/forums/viewtopic.php?f=4&p=211418#p211418
 	love.graphics.setColor(1,1,1,1)
 
 	if self.prone then
-		love.graphics.draw(_G.BAIZE.cardBackTexture, self.x, self.y)
+		love.graphics.draw(_G.BAIZE.cardBackTexture, x, y)
 	else
-		love.graphics.draw(_G.BAIZE.cardTextureLibrary[self.textureId], self.x, self.y)
+		love.graphics.draw(_G.BAIZE.cardTextureLibrary[self.textureId], x, y)
 	end
 end
 

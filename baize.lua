@@ -1,5 +1,6 @@
 -- baize
 
+local Card = require 'card'
 local Stroke = require 'stroke'
 local Util = require 'util'
 
@@ -32,7 +33,7 @@ local Baize = {
 Baize.__index = Baize
 
 function Baize.new()
-	local o = {variantName = 'Freecell'}
+	local o = {variantName = 'Klondike'}
 	setmetatable(o, Baize)
 	o.dragOffset = {x=0, y=0}
 	return o
@@ -44,9 +45,9 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 	assert(self.cardWidth and self.cardWidth ~= 0)
 	assert(self.cardHeight and self.cardHeight ~= 0)
 
-	self.ordFontSize = self.cardWidth * 0.35
+	self.ordFontSize = self.cardWidth / 3
 	self.ordFont = love.graphics.newFont('assets/Acme-Regular.ttf', self.ordFontSize)
-	self.suitFontSize = self.cardWidth * 0.35
+	self.suitFontSize = self.cardWidth / 3
 	self.suitFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.suitFontSize)
 
 	local canvas
@@ -177,13 +178,18 @@ function Baize:layout()
 	local topMargin = 48 + pilePaddingY
 
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
+		self.labelFont = love.graphics.newFont('assets/Acme-Regular.ttf', self.cardWidth / 2)
+		self.runeFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.cardWidth / 2)
 		self:createCardTextures(self.stock.ordFilter, self.stock.suitFilter)
 	end
 
 	for _, pile in ipairs(self.piles) do
-		-- slots are 1-based, graphics coords are 0-based
-		pile.x = leftMargin + ((pile.slot.x - 1) * (self.cardWidth + pilePaddingX))
-		pile.y = topMargin + ((pile.slot.y - 1) * (self.cardHeight + pilePaddingY))
+		pile:setBaizePos(
+			-- slots are 1-based, graphics coords are 0-based
+			leftMargin + ((pile.slot.x - 1) * (self.cardWidth + pilePaddingX)),
+			topMargin + ((pile.slot.y - 1) * (self.cardHeight + pilePaddingY))
+		)
+		pile:refan(Card.setBaizePos)
 	end
 end
 
@@ -193,6 +199,12 @@ function Baize:stateSnapshot()
 		table.insert(t, #pile)
 	end
 	return t
+end
+
+function Baize:afterUserMove()
+	self.script.afterMove()
+	-- TODO undo push
+	-- TODO check if complete, FAB &c
 end
 
 function Baize:findCardAt(x, y)
@@ -236,6 +248,24 @@ function Baize:largestIntersection(card)
 	return pile
 end
 
+function Baize:startDrag()
+	self.dragStart = self.dragOffset
+end
+
+function Baize:dragBy(dx, dy)
+	self.dragOffset.x = self.dragStart.x + dx
+	if self.dragOffset.x > 0 then
+		self.dragOffset.x = 0	-- DragOffset should only ever be 0 or -ve
+	end
+	self.dragOffset.y = self.dragStart.y + dy
+	if self.dragOffset.y > 0 then
+		self.dragOffset.y = 0	-- DragOffset should only ever be 0 or -ve
+	end
+end
+
+function Baize:stopDrag()
+end
+
 function Baize:strokeStart(s)
 	print(s.event, s.x, s.y)
 	assert(self.stroke==nil)
@@ -251,9 +281,12 @@ function Baize:strokeStart(s)
 		self.stroke:setDraggedObject(tail, 'tail')
 		-- print(tostring(card), 'tail len', #tail)
 	else
-		local p = self:findPileAt(s.x, s.y)
-		if p then
-			print(p.category)
+		local pile = self:findPileAt(s.x, s.y)
+		if pile then
+			self.stroke:setDraggedObject(pile, 'pile')
+		else
+			self:startDrag()
+			self.stroke:setDraggedObject(self, 'baize')
 		end
 	end
 end
@@ -263,13 +296,31 @@ function Baize:strokeMove(s)
 		for _, c in ipairs(s.object) do
 			c:dragBy(s.dx, s.dy)
 		end
+	elseif s.type == 'baize' then
+		self:dragBy(s.dx, s.dy)
 	end
 end
 
 function Baize:strokeTap(s)
 	print(s.event, s.x, s.y)
 	if s.type == 'tail' then
-		print('tap on', tostring(s.object[1]))
+		-- print('TRACE tap on', tostring(s.object[1]), 'parent', s.object[1].parent.category)
+		local oldSnap = self:stateSnapshot()
+		self.script.tailTapped(s.object)
+		local newSnap = self:stateSnapshot()
+		if Util.baizeChanged(oldSnap, newSnap) then
+			self:afterUserMove()
+		end
+	elseif s.type == 'pile' then
+		-- print('TRACE tap on', s.object.category)
+		local oldSnap = self:stateSnapshot()
+		self.script.pileTapped(s.object)
+		local newSnap = self:stateSnapshot()
+		if Util.baizeChanged(oldSnap, newSnap) then
+			self:afterUserMove()
+		end
+	elseif s.type == 'baize' then
+		-- TODO close any open UI drawer
 	end
 end
 
@@ -298,6 +349,10 @@ function Baize:strokeStop(s)
 				c:cancelDrag()
 			end
 		end
+	elseif s.type == 'pile' then
+		-- do nothing, we don't drag piles
+	elseif s.type == 'baize' then
+		self:stopDrag()
 	end
 end
 
@@ -313,6 +368,15 @@ local function notifyStroke(s)
 		Baize.strokeCancel(b, s)
 	elseif s.event == 'stop' then
 		Baize.strokeStop(b, s)
+	end
+end
+
+function Baize:setRecycles(n)
+	self.recycles = n
+	if n == 0 then
+		self.stock.rune = '☓'	-- https://www.compart.com/en/unicode/U+2613
+	else
+		self.stock.rune = '♲'	-- https://www.compart.com/en/unicode/U+2672
 	end
 end
 

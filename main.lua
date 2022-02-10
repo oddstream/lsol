@@ -1,5 +1,6 @@
 -- main.lua
 
+local Card = require 'card'
 local Baize = require 'baize'
 
 function love.load(args)
@@ -42,6 +43,6 @@ function love.resize()
 	print('resize')
 	_G.BAIZE:layout()
 	for _, pile in ipairs(_G.BAIZE.piles) do
-		pile:refan()
+		pile:refan(Card.setBaizePos)
 	end
 end
