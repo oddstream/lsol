@@ -37,7 +37,7 @@ local Baize = {
 Baize.__index = Baize
 
 function Baize.new()
-	local o = {variantName = 'Klondike'}
+	local o = {variantName = 'Freecell'}
 	setmetatable(o, Baize)
 	o.dragOffset = {x=0, y=0}
 	o.recycles = 32767

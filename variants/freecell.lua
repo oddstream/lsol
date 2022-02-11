@@ -2,6 +2,8 @@
 
 local log = require 'log'
 
+local CC = require 'cc'
+
 local Cell = require 'cell'
 local Foundation = require 'foundation'
 local Stock = require 'stock'
@@ -19,15 +21,17 @@ function Freecell.new(params)
 end
 
 function Freecell.buildPiles()
-	Stock.new({x=1, y=1})
+	Stock.new({x=4, y=-4})
 	for x = 1, 4 do
-		Cell.new({x=x, y=2})
+		Cell.new({x=x, y=1})
 	end
 	for x = 5, 8 do
-		Foundation.new({x=x, y=2})
+		local f = Foundation.new({x=x, y=1})
+		f.label = 'A'
 	end
 	for x = 1, 8 do
-		Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+
 	end
 end
 
@@ -52,6 +56,50 @@ function Freecell.startGame()
 end
 
 function Freecell.afterMove()
+end
+
+function Freecell.tailMoveError(tail)
+	local pile = tail[1].parent
+	if pile.category == 'Tableau' then
+		local cpairs = Util.makeCardPairs(tail)
+		for _, cpair in ipairs(cpairs) do
+			local err = CC.DownAltColor(cpair)
+			if err then
+				return err
+			end
+		end
+	end
+	return nil
+end
+
+function Freecell.tailAppendError(dst, tail)
+	if dst.category == 'Foundation' then
+		if #dst.cards == 0 then
+			return CC.Empty(dst, tail[1])
+		else
+			return CC.UpSuit({dst:peek(), tail[1]})
+		end
+	elseif dst.category == 'Tableau' then
+		if #dst.cards == 0 then
+			return CC.Empty(dst, tail[1])
+		else
+			return CC.DownAltColor({dst:peek(), tail[1]})
+		end
+	end
+	return nil
+end
+
+function Freecell.unsortedPairs(pile)
+	return 0 -- TODO
+end
+
+function Freecell.pileTapped(pile)
+end
+
+function Freecell.tailTapped(tail)
+	local card = tail[1]
+	local pile = card.parent
+	pile:tailTapped(tail)
 end
 
 return Freecell

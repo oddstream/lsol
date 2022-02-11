@@ -3,6 +3,7 @@
 local log = require 'log'
 
 local CC = require 'cc'
+
 local Foundation = require 'foundation'
 local Stock = require 'stock'
 local Tableau = require 'tableau'
@@ -99,6 +100,10 @@ function Klondike.tailAppendError(dst, tail)
 		end
 	end
 	return nil
+end
+
+function Klondike.unsortedPairs(pile)
+	return 0 -- TODO
 end
 
 function Klondike.pileTapped(pile)

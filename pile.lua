@@ -13,7 +13,6 @@ function Pile.new(o)
 	setmetatable(o, Pile)
     o.slot = {x = o.x, y = o.y}
 	o.cards = {}
-	o.label = ''
 	o.faceFanFactorH = 4
 	o.faceFanFactorV = 3
 	o.backFanFactorH = 5
@@ -212,11 +211,17 @@ function Pile:canMoveTail(tail)
 		end
 	end
 ]]
+	-- don't test for MOVE_ANY or MOVE_ONE_PLUS
+	-- don't know destination, so we allow MOVE_ONE_PLUS as MOVE_ANY at the moment
 	if self.moveType == 'MOVE_NONE' then
 		return 'Cannot move a card from that pile'
 	elseif self.moveType == 'MOVE_ONE' then
 		if #tail > 1 then
 			return 'Can only move one card from that pile'
+		end
+	elseif self.moveType == 'MOVE_ONE_OR_ALL' then
+		if not (#tail == 1 or #tail == #self.cards) then
+			return 'Only move one card, or the whole pile'
 		end
 	end
 	return nil
