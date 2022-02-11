@@ -1,5 +1,7 @@
 -- freecell
 
+local log = require 'log'
+
 local Cell = require 'cell'
 local Foundation = require 'foundation'
 local Stock = require 'stock'
@@ -17,8 +19,6 @@ function Freecell.new(params)
 end
 
 function Freecell.buildPiles()
-	print('TRACE building freecell piles')
-
 	Stock.new({x=1, y=1})
 	for x = 1, 4 do
 		Cell.new({x=x, y=2})
@@ -32,23 +32,22 @@ function Freecell.buildPiles()
 end
 
 function Freecell.startGame()
-	print('TRACE starting a game of freecell')
 	local src, dst
 	src = _G.BAIZE.stock
 	for i = 1, 4 do
 		dst = _G.BAIZE.tableaux[i]
 		for j = 1, 7 do
-			Util.MoveCard(src, dst)
+			Util.moveCard(src, dst)
 		end
 	end
 	for i = 5, 8 do
 		dst = _G.BAIZE.tableaux[i]
 		for j = 1, 6 do
-			Util.MoveCard(src, dst)
+			Util.moveCard(src, dst)
 		end
 	end
 	if #src.cards > 0 then
-		print('ERROR still', #src.cards, 'cards in Stock')
+		log.error('still', #src.cards, 'cards in Stock')
 	end
 end
 

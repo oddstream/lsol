@@ -20,6 +20,9 @@ local Card = {
 	-- lerpStepAmount	the amount a transitioning card moves each tick
 
 	-- dragStart {x,y}
+
+	-- flipStep
+	-- flipWidth
 }
 Card.__index = Card
 
@@ -34,6 +37,8 @@ function Card.new(o)
 	-- assert(type(o.ord)=='number')
 	setmetatable(o, Card)
 
+	o.black = o.suit == '♣' or o.suit == '♠'	-- helps when comparing colors
+
 	-- fictional start point off top of screen
 	o.x = 512
 	o.y = -128
@@ -41,6 +46,8 @@ function Card.new(o)
 	o.savableId = string.format('%u01%02u%s', o.pack, o.ord, o.suit)	-- used when saving card in undoStack
 	o.textureId = string.format('%02u%s', o.ord, o.suit)	-- used as index/key into Card Texture Library
 	o.lerpStep = 1.0	-- not transitioning
+
+	o.flipStep = 0.0
 
 	return o
 end
@@ -67,6 +74,34 @@ function Card:screenRect()
 		x2 = rect.x2 + _G.BAIZE.dragOffset.x,
 		y2 = rect.y2 + _G.BAIZE.dragOffset.y,
 	}
+end
+
+function Card:flipUp()
+	if self.prone then
+		self.prone = false
+		self.flipStep = -0.05	-- start by making card narrower
+		self.flipWidth = 1.0
+	end
+end
+
+function Card:flipDown()
+	if not self.prone then
+		self.prone = true
+		self.flipStep = -0.05	-- start by making card narrower
+		self.flipWidth = 1.0
+	end
+end
+
+function Card:flip()
+	if self.prone then
+		self:flipUp()
+	else
+		self:flipDown()
+	end
+end
+
+function Card:flipping()
+	return self.flipStep ~= 0.0
 end
 
 function Card:transitioning()
@@ -136,19 +171,65 @@ function Card:update(dt)
 			self:setBaizePos(self.dst.x, self.dst.y)
 		end
 	end
+	if self:flipping() then
+		self.flipWidth = self.flipWidth + self.flipStep
+		if self.flipWidth <= 0.0 then
+			self.flipStep = 0.05 -- now make card wider
+		elseif self.flipWidth >= 1.0 then
+			-- finished flipping
+			self.flipWidth = 1.0
+			self.flipStep = 0.0
+		end
+	end
 end
 
 function Card:draw()
+	local b = _G.BAIZE
 	local x, y = self:getScreenPos()
 
 	-- very important!: reset color before drawing to canvas to have colors properly displayed
     -- see discussion here: https://love2d.org/forums/viewtopic.php?f=4&p=211418#p211418
 	love.graphics.setColor(1,1,1,1)
 
-	if self.prone then
-		love.graphics.draw(_G.BAIZE.cardBackTexture, x, y)
+	local img
+	if self.flipStep < 0.0 then
+		if self.prone then
+			-- card is getting narrower, and it's going to show face down, but show face up
+			img = b.cardTextureLibrary[self.textureId]
+		else
+			-- card is getting narrower, and it's going to show face up, but show face down
+			img = b.cardBackTexture
+		end
 	else
-		love.graphics.draw(_G.BAIZE.cardTextureLibrary[self.textureId], x, y)
+		if self.prone then
+			img = b.cardBackTexture
+		else
+			img = b.cardTextureLibrary[self.textureId]
+		end
+	end
+
+	if self:flipping() then
+		local cw = b.cardWidth
+		local scw = cw / self.flipWidth
+		love.graphics.draw(img, x, y,
+		0,
+		self.flipWidth, 1.0,
+		(cw - scw) / 2, 0)
+	else
+		if self:transitioning() then
+			local xoffset = b.cardWidth / 33
+			local yoffset = b.cardHeight / 33
+			love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
+		elseif self:dragging() then
+			local xoffset = b.cardWidth / 33
+			local yoffset = b.cardHeight / 33
+			love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
+			-- this looks intuitively better than "lifting" the card with offset * 2
+			-- even though "lifting" it (moving it up/left towards the light source) would be more "correct"
+			x = x - xoffset / 2
+			y = y - yoffset / 2
+		end
+		love.graphics.draw(img, x, y)
 	end
 end
 

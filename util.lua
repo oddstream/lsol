@@ -3,15 +3,15 @@
 local Util = {}
 
 function Util.smoothstep(A, B, v)
-    -- see http://sol.gfxile.net/interpolation/
-    v = (v) * (v) * (3.0 - 2.0 * (v));
-    return (B * v) + (A * (1.0 - v));
+	-- see http://sol.gfxile.net/interpolation/
+	v = (v) * (v) * (3.0 - 2.0 * (v));
+	return (B * v) + (A * (1.0 - v));
 end
 
 function Util.smootherstep(A, B, v)
-    -- see http://sol.gfxile.net/interpolation/
-    v = (v) * (v) * (v) * ((v)*((v) * 6.0 - 15.0) + 10.0);
-    return (B * v) + (A * (1.0 - v));
+	-- see http://sol.gfxile.net/interpolation/
+	v = (v) * (v) * (v) * ((v)*((v) * 6.0 - 15.0) + 10.0);
+	return (B * v) + (A * (1.0 - v));
 end
 
 function Util.lerp(start, finish, factor)
@@ -72,12 +72,38 @@ function Util.baizeChanged(old, new)
 	return false
 end
 
-function Util.MoveCard(src, dst)
+function Util.makeCardPairs(tail)
+	if #tail < 2 then
+		return {}
+	end
+	local cpairs = {}
+	local c1 = tail[1]
+	for i = 2, #tail do
+		local c2 = tail[i]
+		table.insert(cpairs, {c1, c2})
+		c1 = c2
+	end
+	return cpairs
+end
+
+function Util.moveCard(src, dst)
 	local c = src:pop()
 	if c then
 		dst:push(c)
+		src:flipUpExposedCard()
 	end
 	return c
+end
+
+function Util.moveCards(src, idx, dst)
+	local tmp = {}
+	while #src.cards >= idx do
+		table.insert(tmp, src:pop())
+	end
+	while #tmp > 0 do
+		dst:push(table.remove(tmp))
+	end
+	src:flipUpExposedCard()
 end
 
 return Util

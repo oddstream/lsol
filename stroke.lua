@@ -3,6 +3,8 @@
 -- TODO update to allow touch (and joystick?) as well as mouse
 -- TODO update to allow right mouse button
 
+local log = require 'log'
+
 local Stroke = {}
 Stroke.__index = Stroke
 
@@ -37,12 +39,15 @@ function Stroke:update()
 	if not love.mouse.isDown(1) then
 		if self.init.x == self.curr.x and self.init.y == self.curr.y then
 			local elapsed = love.timer.getTime() - self.timeStart
-			print('elapsed', elapsed)
+			-- log.info('elapsed', elapsed)
 			if elapsed < 0.2 then
 				-- send out a cancel so the object/card can be put back to it's original place
 				self.notifyFn(self:makeNotifyObject('cancel'))
 				self.cancelled = true
 				self.notifyFn(self:makeNotifyObject('tap'))
+			else
+				self.notifyFn(self:makeNotifyObject('cancel'))
+				self.cancelled = true
 			end
 		else
 			self.notifyFn(self:makeNotifyObject('stop'))

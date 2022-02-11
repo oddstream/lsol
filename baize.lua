@@ -1,8 +1,12 @@
 -- baize
 
+local log = require 'log'
+
 local Card = require 'card'
 local Stroke = require 'stroke'
 local Util = require 'util'
+
+local UI = require 'ui'
 
 local Baize = {
 	-- variantName
@@ -36,6 +40,8 @@ function Baize.new()
 	local o = {variantName = 'Klondike'}
 	setmetatable(o, Baize)
 	o.dragOffset = {x=0, y=0}
+	o.recycles = 32767
+	o.ui = UI.new()
 	return o
 end
 
@@ -62,6 +68,7 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 			love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 			love.graphics.setColor(love.math.colorFromBytes(192, 192, 192))	-- Silver
+			love.graphics.setLineWidth(2)
 			love.graphics.rectangle('line', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 			if suit == '♦' or suit == '♥' then
@@ -70,10 +77,10 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 				love.graphics.setColor(0, 0, 0)
 			end
 			love.graphics.setFont(self.ordFont)
-			love.graphics.print(ord2String[ord], 8, 8)
+			love.graphics.print(ord2String[ord], self.cardWidth / 10, 2)
 
 			love.graphics.setFont(self.suitFont)
-			love.graphics.print(suit, self.cardWidth - 8 - self.suitFontSize, 8)
+			love.graphics.print(suit, self.cardWidth - self.cardWidth / 10 - self.suitFontSize, 4)
 
 			love.graphics.setCanvas()	-- reset render target to the screen
 			self.cardTextureLibrary[string.format('%02u%s', ord, suit)] = canvas
@@ -84,12 +91,17 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 	love.graphics.setColor(love.math.colorFromBytes(100, 149, 237))	-- Cornflowerblue
 	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+
+	love.graphics.setColor(love.math.colorFromBytes(192, 192, 192))	-- Silver
+	love.graphics.setLineWidth(2)
+	love.graphics.rectangle('line', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardBackTexture = canvas
 
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
-	love.graphics.setColor(love.math.colorFromBytes(128, 128, 128))	-- Gray
+	love.graphics.setColor(love.math.colorFromBytes(0, 0, 0, 128))
 	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardShadowTexture = canvas
@@ -107,35 +119,35 @@ function Baize:loadScript()
 	end
 	local vinfo = Variants[self.variantName]
 	if not vinfo then
-		print('ERROR Unknown variant', self.variantName)
+		log.error('Unknown variant', self.variantName)
 		return nil
 	end
 	local fname = 'variants/' .. vinfo.file
-	print('looking for file', fname)
+	log.trace('looking for file', fname)
 
 	local info = love.filesystem.getInfo('variants', 'directory')
 	if not info then
-		print('ERROR no variants directory')
+		log.error('no variants directory')
 		return nil
 	end
 
 	info = love.filesystem.getInfo(fname, 'file')
 	if not info then
-		print('ERROR no file called', fname)
+		log.error('no file called', fname)
 		return nil
 	end
 
 	local ok, chunk, result
 	ok, chunk = pcall(love.filesystem.load, fname) -- load the chunk safely
 	if not ok then
-		print('ERROR ' .. tostring(chunk))
+		log.error(tostring(chunk))
 		return nil
 	else
 		ok, result = pcall(chunk) -- execute the chunk safely
 	end
 
 	if not ok then -- will be false if there is an error
-		print('ERROR ' .. tostring(result))
+		log.error(tostring(result))
 		return nil
 	end
 
@@ -191,17 +203,20 @@ function Baize:layout()
 		)
 		pile:refan(Card.setBaizePos)
 	end
+
+	self.ui:layout()
 end
 
 function Baize:stateSnapshot()
 	local t = {}
 	for _, pile in ipairs(self.piles) do
-		table.insert(t, #pile)
+		table.insert(t, #pile.cards)
 	end
 	return t
 end
 
 function Baize:afterUserMove()
+	-- log.trace('Baize:afterUserMove')
 	self.script.afterMove()
 	-- TODO undo push
 	-- TODO check if complete, FAB &c
@@ -214,11 +229,11 @@ function Baize:findCardAt(x, y)
 			local card = pile.cards[i]
 			local rect = card:screenRect()
 			if x > rect.x1 and y > rect.y1 and x < rect.x2 and y < rect.y2 then
-				return card
+				return card, pile
 			end
 		end
 	end
-	return nil
+	return nil, nil
 end
 
 function Baize:findPileAt(x, y)
@@ -267,13 +282,13 @@ function Baize:stopDrag()
 end
 
 function Baize:strokeStart(s)
-	print(s.event, s.x, s.y)
+	-- log.info(s.event, s.x, s.y)
 	assert(self.stroke==nil)
 	self.stroke = s.stroke
 
-	local card = self:findCardAt(s.x, s.y)
+	local card, pile = self:findCardAt(s.x, s.y)
 	if card then
-		local tail = card.parent:makeTail(card)
+		local tail = pile:makeTail(card)
 		for _, c in ipairs(tail) do
 			c:startDrag()
 		end
@@ -281,7 +296,7 @@ function Baize:strokeStart(s)
 		self.stroke:setDraggedObject(tail, 'tail')
 		-- print(tostring(card), 'tail len', #tail)
 	else
-		local pile = self:findPileAt(s.x, s.y)
+		pile = self:findPileAt(s.x, s.y)
 		if pile then
 			self.stroke:setDraggedObject(pile, 'pile')
 		else
@@ -302,7 +317,7 @@ function Baize:strokeMove(s)
 end
 
 function Baize:strokeTap(s)
-	print(s.event, s.x, s.y)
+	-- log.info(s.event, s.x, s.y)
 	if s.type == 'tail' then
 		-- print('TRACE tap on', tostring(s.object[1]), 'parent', s.object[1].parent.category)
 		local oldSnap = self:stateSnapshot()
@@ -325,7 +340,7 @@ function Baize:strokeTap(s)
 end
 
 function Baize:strokeCancel(s)
-	print(s.event, s.x, s.y)
+	-- log.info(s.event, s.x, s.y)
 	if s.type == 'tail' then
 		for _, c in ipairs(s.object) do
 			c:cancelDrag()
@@ -334,19 +349,48 @@ function Baize:strokeCancel(s)
 end
 
 function Baize:strokeStop(s)
-	print(s.event, s.x, s.y)
+	-- log.info(s.event, s.x, s.y)
 	if s.type == 'tail' then
 		local tail = s.object
+		local src = tail[1].parent
 		local dst = self:largestIntersection(tail[1])
-		if dst then
-			print('intersection found', dst.category)
-			-- TODO
-			for _, c in ipairs(s.object) do
-				c:cancelDrag()
-			end
+		if not dst then
+			for _, c in ipairs(s.object) do c:cancelDrag() end
 		else
-			for _, c in ipairs(s.object) do
-				c:cancelDrag()
+			-- log.trace('intersection found', dst.category)
+			if src == dst then
+				for _, c in ipairs(tail) do c:cancelDrag() end
+			else
+				local err = src:canMoveTail(tail)
+				if err then
+					log.warn(err)	-- TODO toast
+					for _, c in ipairs(tail) do c:cancelDrag() end
+				else
+					err = dst:canAcceptTail(tail)
+					if err then
+						log.warn(err)	-- TODO toast
+						for _, c in ipairs(tail) do c:cancelDrag() end
+					else
+						err = self.script.tailMoveError(tail)
+						if err then
+							log.warn(err)	-- TODO toast
+							for _, c in ipairs(tail) do c:cancelDrag() end
+						else
+							for _, c in ipairs(tail) do c:stopDrag() end
+
+							local oldSnap = self:stateSnapshot()
+							if #tail == 1 then
+								Util.moveCard(src, dst)
+							else
+								Util.moveCards(src, src:indexOf(tail[1]), dst)
+							end
+							local newSnap = self:stateSnapshot()
+							if Util.baizeChanged(oldSnap, newSnap) then
+								self:afterUserMove()
+							end
+						end
+					end
+				end
 			end
 		end
 	elseif s.type == 'pile' then
@@ -380,6 +424,24 @@ function Baize:setRecycles(n)
 	end
 end
 
+function Baize:recycleWasteToStock()
+	if self.recycles > 0 then
+		while #self.waste.cards > 0 do
+			Util.moveCard(self.waste, self.stock)
+		end
+		self:setRecycles(self.recycles - 1)
+		if self.recycles == 0 then
+			log.info('No more recycles')
+		elseif self.recycles == 1 then
+			log.info('One more recycle')
+		elseif self.recycles < 10 then
+			log.info(string.format('%d recycles remaining', b.recycles))
+		end
+	else
+		log.info('No more recycles')
+	end
+end
+
 function Baize:update(dt)
 	if self.stroke == nil then
 		Stroke.start(notifyStroke)
@@ -389,16 +451,29 @@ function Baize:update(dt)
 			self.stroke = nil
 		end
 	end
-
 	for _, pile in ipairs(self.piles) do
 		pile:update(dt)
 	end
+	self.ui:update(dt)
 end
 
 function Baize:draw()
 	for _, pile in ipairs(self.piles) do
 		pile:draw()
 	end
+	for _, pile in ipairs(self.piles) do
+		pile:drawStaticCards()
+	end
+	for _, pile in ipairs(self.piles) do
+		pile:drawTransitioningCards()
+	end
+	for _, pile in ipairs(self.piles) do
+		pile:drawFlippingCards()
+	end
+	for _, pile in ipairs(self.piles) do
+		pile:drawDraggingCards()
+	end
+	self.ui:draw()
 end
 
 return Baize

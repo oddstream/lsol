@@ -20,14 +20,14 @@ end
 
 function Waste:canAcceptCard(c)
 	if c.parent.category ~= 'Stock' then
-		return false, 'Waste can only accept cards from the Stock'
+		return 'Waste can only accept cards from the Stock'
 	end
-	return true, nil
+	return nil
 end
 
 function Waste:canAcceptTail(tail)
 	if #tail > 1 then
-		return false, 'Can only move a single card to Waste'
+		return 'Can only move a single card to Waste'
 	end
 	return self:canAcceptCard(tail[1])
 end

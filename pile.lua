@@ -1,6 +1,8 @@
 -- pile
 -- virtual base class for Stock, Waste, Foundation, Tableau, Reserve, Cell
 
+local log = require 'log'
+
 local Pile = {}
 Pile.__index = Pile
 
@@ -12,22 +14,24 @@ function Pile.new(o)
     o.slot = {x = o.x, y = o.y}
 	o.cards = {}
 	o.label = ''
-	o.faceFanFactor = 3
-	o.backFanFactor = 4
+	o.faceFanFactorH = 4
+	o.faceFanFactorV = 3
+	o.backFanFactorH = 5
+	o.backFanFactorV = 5
 	return o
 end
 
 function Pile:setBaizePos(x, y)
 	self.x, self.y = x, y
 	if self.fanType == 'FAN_DOWN3' then
-		self.pos1 = {x=x, y=y + (_G.BAIZE.cardHeight / self.faceFanFactor)}
-		self.pos2 = {x=x, y=y + (_G.BAIZE.cardHeight / self.faceFanFactor) + (_G.BAIZE.cardHeight / self.faceFanFactor)}
+		self.pos1 = {x=x, y=y + (_G.BAIZE.cardHeight / self.faceFanFactorV)}
+		self.pos2 = {x=x, y=y + (_G.BAIZE.cardHeight / self.faceFanFactorV) + (_G.BAIZE.cardHeight / self.faceFanFactorV)}
 	elseif self.fanType == 'FAN_LEFT3' then
-		self.pos1 = {x=x - (_G.BAIZE.cardHeight / self.faceFanFactor), y=y}
-		self.pos2 = {x=x - (_G.BAIZE.cardHeight / self.faceFanFactor)  + (_G.BAIZE.cardHeight / self.faceFanFactor), y=y}
+		self.pos1 = {x=x - (_G.BAIZE.cardHeight / self.faceFanFactorH), y=y}
+		self.pos2 = {x=x - (_G.BAIZE.cardHeight / self.faceFanFactorH)  + (_G.BAIZE.cardHeight / self.faceFanFactorH), y=y}
 	elseif self.fanType == 'FAN_RIGHT3' then
-		self.pos1 = {x=x + (_G.BAIZE.cardHeight / self.faceFanFactor), y=y}
-		self.pos2 = {x=x + (_G.BAIZE.cardHeight / self.faceFanFactor)  + (_G.BAIZE.cardHeight / self.faceFanFactor), y=y}
+		self.pos1 = {x=x + (_G.BAIZE.cardHeight / self.faceFanFactorH), y=y}
+		self.pos2 = {x=x + (_G.BAIZE.cardHeight / self.faceFanFactorH)  + (_G.BAIZE.cardHeight / self.faceFanFactorH), y=y}
 	end
 end
 
@@ -79,21 +83,21 @@ function Pile:posAfter(c)
 		-- do nothing
 	elseif self.fanType == 'FAN_DOWN' then
 		if c.prone then
-			y = y + (_G.BAIZE.cardHeight / self.backFanFactor)
+			y = y + (_G.BAIZE.cardHeight / self.backFanFactorV)
 		else
-			y = y + (_G.BAIZE.cardHeight / self.faceFanFactor)
+			y = y + (_G.BAIZE.cardHeight / self.faceFanFactorV)
 		end
 	elseif self.fanType == 'FAN_RIGHT' then
 		if c.prone then
-			x = x + (_G.BAIZE.cardWidth / self.backFanFactor)
+			x = x + (_G.BAIZE.cardWidth / self.backFanFactorH)
 		else
-			x = x + (_G.BAIZE.cardWidth / self.faceFanFactor)
+			x = x + (_G.BAIZE.cardWidth / self.faceFanFactorH)
 		end
 	elseif self.fanType == 'FAN_LEFT' then
 		if c.prone then
-			x = x - (_G.BAIZE.cardWidth / self.backFanFactor)
+			x = x - (_G.BAIZE.cardWidth / self.backFanFactorH)
 		else
-			x = x - (_G.BAIZE.cardWidth / self.faceFanFactor)
+			x = x - (_G.BAIZE.cardWidth / self.faceFanFactorH)
 		end
 	elseif self.fanType == 'FAN_RIGHT3' or self.fanType == 'FAN_LEFT3' or self.fanType == 'FAN_DOWN3' then
 		if #self.cards == 0 then
@@ -180,6 +184,44 @@ function Pile:push(c)
 	-- c:setBaizePos(x, y)
 end
 
+function Pile:flipUpExposedCard()
+	if self.category ~= 'Stock' then
+		local c = self:peek()
+		if c and c.prone then
+			c:flipUp()
+		end
+	end
+end
+
+function Pile:indexOf(card)
+	for i, c in ipairs(self.cards) do
+		if c == card then
+			return i
+		end
+	end
+	return 0
+end
+
+function Pile:canMoveTail(tail)
+--[[
+	if tail[1].parent.category ~= 'Stock' then
+		for _, c in ipairs(tail) do
+			if c.prone then
+				return 'Cannot move a face down card'
+			end
+		end
+	end
+]]
+	if self.moveType == 'MOVE_NONE' then
+		return 'Cannot move a card from that pile'
+	elseif self.moveType == 'MOVE_ONE' then
+		if #tail > 1 then
+			return 'Can only move one card from that pile'
+		end
+	end
+	return nil
+end
+
 function Pile:makeTail(c)
 	for i=1, #self.cards do
 		-- find the first card
@@ -198,34 +240,35 @@ end
 -- vtable functions
 
 function Pile.canAcceptCard(c)
-	print('ERROR base canAcceptCard should not be called')
-	return true, nil
+	log.warning('base canAcceptCard should not be called')
+	return nil
 end
 
 function Pile.canAcceptTail(c)
-	print('ERROR base canAcceptTail should not be called')
-	return true, nil
+	log.warning('base canAcceptTail should not be called')
+	return nil
 end
 
 function Pile:tailTapped(tail)
-	print('TRACE Pile.tailTapped')
+	log.trace('Pile.tailTapped')
 	-- TODO
+	tail[1]:flip()
 end
 
 function Pile:collect()
-	print('ERROR base collect should not be called')
+	log.warning('base collect should not be called')
 end
 
 function Pile:conformant()
-	print('ERROR base conformat should not be called')
+	log.warning('base conformat should not be called')
 end
 
 function Pile:complete()
-	print('ERROR base complete should not be called')
+	log.warning('base complete should not be called')
 end
 
 function Pile:unsortedPairs()
-	print('ERROR base unsortedPairs should not be called')
+	log.warning('base unsortedPairs should not be called')
 end
 
 -- game engine functions
@@ -236,6 +279,38 @@ function Pile:update(dt)
 	end
 end
 
+function Pile:drawStaticCards()
+	for _, c in ipairs(self.cards) do
+		if not (c:transitioning() or c:flipping() or c:dragging()) then
+			c:draw()
+		end
+	end
+end
+
+function Pile:drawTransitioningCards()
+	for _, c in ipairs(self.cards) do
+		if c:transitioning() then
+			c:draw()
+		end
+	end
+end
+
+function Pile:drawFlippingCards()
+	for _, c in ipairs(self.cards) do
+		if c:flipping() then
+			c:draw()
+		end
+	end
+end
+
+function Pile:drawDraggingCards()
+	for _, c in ipairs(self.cards) do
+		if c:dragging() then
+			c:draw()
+		end
+	end
+end
+
 function Pile:draw()
 	local b = _G.BAIZE
 	local x, y = self:getScreenPos()
@@ -243,28 +318,15 @@ function Pile:draw()
 	love.graphics.setColor(1, 1, 1, 0.25)
 	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	if self.label then
-		love.graphics.setFont(_G.BAIZE.labelFont)
+		love.graphics.setFont(b.labelFont)
 		love.graphics.print(self.label,
-			x + _G.BAIZE.cardWidth / 2,
-			y + _G.BAIZE.cardHeight / 2,
+			x + b.cardWidth / 2,
+			y + b.cardHeight / 2,
 			0,	-- orientation
 			1,	-- x scale
 			1,	-- y scale
-			_G.BAIZE.labelFont:getWidth(self.label) / 2,
-			_G.BAIZE.labelFont:getHeight(self.label) / 2)
-	elseif self.rune then
-		love.graphics.setFont(_G.BAIZE.runeFont)
-		love.graphics.print(self.rune,
-			x + _G.BAIZE.cardWidth / 2,
-			y + _G.BAIZE.cardHeight / 2,
-			0,	-- orientation
-			1,	-- x scale
-			1,	-- y scale
-			_G.BAIZE.runeFont:getWidth(self.rune) / 2,
-			_G.BAIZE.runeFont:getHeight(self.rune) / 2)
-	end
-	for _, c in ipairs(self.cards) do
-		c:draw()
+			b.labelFont:getWidth(self.label) / 2,
+			b.labelFont:getHeight(self.label) / 2)
 	end
 end
 

@@ -21,17 +21,17 @@ end
 
 function Foundation:canAcceptCard(c)
 	if c.prone then
-		return false, 'Cannot move a face down card'
+		return 'Cannot move a face down card'
 	end -- eg being dragged from Stock
 	if #self.cards == _G.BAIZE.numberOfCards / #_G.BAIZE.foundations then
-		return false, 'The Foundation is full'
+		return 'The Foundation is full'
 	end
 	return _G.BAIZE.script.tailAppendError(self, {c})
 end
 
 function Foundation:canAcceptTail(tail)
 	if #tail > 1 then
-		return false, 'Cannot move more than one card to a Foundation'
+		return 'Cannot move more than one card to a Foundation'
 	end
 	return _G.BAIZE.script.tailAppendError(self, tail)
 end

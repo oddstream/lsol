@@ -22,27 +22,27 @@ end
 
 function Cell:canAcceptCard(c)
 	if #self.cards ~= 0 then
-		return false, 'A Cell can only contain one card'
+		return 'A Cell can only contain one card'
 	end
 	if c.prone then
 		-- eg being dragged from Stock
-		return false, 'Cannot add a face down card to a Cell'
+		return 'Cannot add a face down card to a Cell'
 	end
-	return true, nil
+	return nil
 end
 
 function Cell:canAcceptTail(tail)
 	if #self.cards ~= 0 then
-		return false, 'A Cell can only contain one card'
+		return 'A Cell can only contain one card'
 	end
 	if #tail > 1 then
-		return false, 'Can only move one card to a Cell'
+		return 'Can only move one card to a Cell'
 	end
 	if tail[1].prone then
 	-- eg being dragged from Stock
-		return false, 'Cannot add a face down card to a Cell'
+		return 'Cannot add a face down card to a Cell'
 	end
-	return true, nil
+	return nil
 end
 
 -- use Pile.tailTapped

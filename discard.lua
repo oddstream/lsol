@@ -19,20 +19,20 @@ function Discard.new(o)
 end
 
 function Discard:canAcceptCard(c)
-	return false, 'Cannot move a single card to a Discard'
+	return 'Cannot move a single card to a Discard'
 end
 
 function Discard:canAcceptTail(tail)
 	if #self.cards ~= 0 then
-		return false, 'Can only move cards to an empty Discard'
+		return 'Can only move cards to an empty Discard'
 	end
 	for _, c in ipairs(tail) do
 		if c.prone then
-			return false, 'Cannot move a face down card to a Discard'
+			return 'Cannot move a face down card to a Discard'
 		end
 	end
 	if #tail ~= _G.BAIZE.numberOfCards / #_G.BAIZE.discards then
-		return false, 'Can only move a full set of cards to a Discard'
+		return 'Can only move a full set of cards to a Discard'
 	end
 	return _G.BAIZE.script.tailMoveError(self, tail)	-- check cards are conformant
 end

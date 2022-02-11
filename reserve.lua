@@ -19,11 +19,11 @@ end
 -- vtable functions
 
 function Reserve:canAcceptCard(c)
-	return false, 'Cannot move a card to a Reserve'
+	return 'Cannot move a card to a Reserve'
 end
 
 function Reserve:canAcceptTail(c)
-	return false, 'Cannot move a card to a Reserve'
+	return 'Cannot move a card to a Reserve'
 end
 
 -- use Pile.tailTapped

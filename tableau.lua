@@ -20,7 +20,7 @@ end
 
 function Tableau:canAcceptCard(c)
 	if c.prone then
-		return false, 'Cannot add a face down card to a Tableau'
+		return 'Cannot add a face down card to a Tableau'
 	end
 	return _G.BAIZE.script.tailAppendError(self, {c})
 end
@@ -28,13 +28,13 @@ end
 function Tableau:canAcceptTail(tail)
 	for _, c in ipairs(tail) do
 		if c.prone then
-			return false, 'Cannot add a face down card'
+			return 'Cannot add a face down card'
 		end
 	end
 	if self.moveType == 'MOVE_ONE_PLUS' then
 		-- TODO powermoves
 		if #tail > 1 then
-			return false, 'Cannot add more than one card'
+			return 'Cannot add more than one card'
 		end
 	end
 	return _G.BAIZE.script.tailAppendError(self, tail)

@@ -1,5 +1,7 @@
 -- stock, derived from pile
 
+local log = require 'log'
+
 local Card = require 'card'
 local Pile = require 'pile'
 
@@ -21,7 +23,7 @@ function Stock.new(o)
 	o.fanType = 'FAN_NONE'
 	o.moveType = 'MOVE_ONE'
 
-	print('TRACE making cards')
+	log.info('making cards')
 	for pack = 1, o.packs do
 		for _, ord in ipairs(o.ordFilter) do
 			for _, suit in ipairs(o.suitFilter) do
@@ -31,9 +33,9 @@ function Stock.new(o)
 		end
 	end
 	_G.BAIZE.numberOfCards = #o.cards
-	print('TRACE made', #o.cards, 'cards')
+	log.info('made', #o.cards, 'cards')
 
-	print('TRACE shuffling cards')
+	log.info('shuffling cards')
 	math.randomseed(os.time())
 	for i = #o.cards, 2, -1 do
 		local j = math.random(i)
@@ -57,8 +59,8 @@ end
 
 function Stock:pop()
 	local c = Pile.pop(self)
-	if c and c.prone then
-		c.prone = false
+	if c then
+		c:flipUp()
 	end
 	return c
 end
@@ -66,11 +68,11 @@ end
 -- vtable functions
 
 function Stock:canAcceptCard(c)
-	return false, 'Cannot move cards to the Stock'
+	return 'Cannot move cards to the Stock'
 end
 
 function Stock:canAcceptTail(tail)
-	return false, 'Cannot move cards to the Stock'
+	return 'Cannot move cards to the Stock'
 end
 
 function Stock:tailTapped(tail)
@@ -96,5 +98,23 @@ function Stock:unsortedPairs()
 	return #self.cards - 1
 end
 
+function Stock:draw()
+	local b = _G.BAIZE
+	local x, y = self:getScreenPos()
+
+	love.graphics.setColor(1, 1, 1, 0.25)
+	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
+	if self.rune then
+		love.graphics.setFont(b.runeFont)
+		love.graphics.print(self.rune,
+			x + b.cardWidth / 2,
+			y + b.cardHeight / 2,
+			0,	-- orientation
+			1,	-- x scale
+			1,	-- y scale
+			b.runeFont:getWidth(self.rune) / 2,
+			b.runeFont:getHeight(self.rune) / 2)
+	end
+end
 
 return Stock

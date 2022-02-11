@@ -1,5 +1,7 @@
 -- main.lua
 
+local log = require 'log'
+
 local Card = require 'card'
 local Baize = require 'baize'
 
@@ -18,9 +20,9 @@ function love.load(args)
 	if _G.BAIZE.script then
 		_G.BAIZE:resetPiles()
 		_G.BAIZE.script.buildPiles()
-		print(#_G.BAIZE.piles, 'piles built')
+		log.trace(#_G.BAIZE.piles, 'piles built')
 		_G.BAIZE:layout()
-		print('card width, height', _G.BAIZE.cardWidth, _G.BAIZE.cardHeight)
+		log.trace('card width, height', _G.BAIZE.cardWidth, _G.BAIZE.cardHeight)
 		_G.BAIZE.script.startGame()
 	end
 --[[
@@ -40,7 +42,7 @@ function love.draw()
 end
 
 function love.resize()
-	print('resize')
+	log.trace('resize')
 	_G.BAIZE:layout()
 	for _, pile in ipairs(_G.BAIZE.piles) do
 		pile:refan(Card.setBaizePos)
