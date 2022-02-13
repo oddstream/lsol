@@ -31,10 +31,10 @@ function Discard:canAcceptTail(tail)
 			return 'Cannot move a face down card to a Discard'
 		end
 	end
-	if #tail ~= _G.BAIZE.numberOfCards / #_G.BAIZE.discards then
+	if #tail ~= #_G.BAIZE.deck / #_G.BAIZE.discards then
 		return 'Can only move a full set of cards to a Discard'
 	end
-	return _G.BAIZE.script.tailMoveError(self, tail)	-- check cards are conformant
+	return _G.BAIZE.script.tailMoveError(tail)	-- check cards are conformant
 end
 
 function Discard:tailTapped(tail)
@@ -57,7 +57,7 @@ function Discard:complete()
 	if #self.cards == 0 then
 		return true
 	end
-	if #self.cards == _G.BAIZE.numberOfCards / #_G.BAIZE.discards then
+	if #self.cards == #_G.BAIZE.deck / #_G.BAIZE.discards then
 		return true
 	end
 	return false
@@ -66,6 +66,14 @@ end
 function Discard:unsortedPairs()
 	-- you can only put a sorted sequence into a Discard, so this will always be zero
 	return 0
+end
+
+function Discard:draw()
+	local b = _G.BAIZE
+	local x, y = self:getScreenPos()
+
+	love.graphics.setColor(1, 1, 1, 0.1)
+	love.graphics.rectangle('fill', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 end
 
 return Discard

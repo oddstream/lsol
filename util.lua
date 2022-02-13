@@ -1,5 +1,7 @@
 -- util
 
+local CC = require 'cc'
+
 local Util = {}
 
 function Util.smoothstep(A, B, v)
@@ -50,9 +52,9 @@ function Util.overlapArea(a, b)
 	assert(b.y1)
 	assert(b.x2)
 	assert(b.y2)
-    local x = math.max(0, math.min(a.x2, b.x2) - math.max(a.x1, b.x1));
-    local y = math.max(0, math.min(a.y2, b.y2) - math.max(a.y1, b.y1));
-    return x * y;
+	local x = math.max(0, math.min(a.x2, b.x2) - math.max(a.x1, b.x1));
+	local y = math.max(0, math.min(a.y2, b.y2) - math.max(a.y1, b.y1));
+	return x * y;
 end
 
 --[[
@@ -104,6 +106,25 @@ function Util.moveCards(src, idx, dst)
 		dst:push(table.remove(tmp))
 	end
 	src:flipUpExposedCard()
+end
+
+function Util.unsortedPairs(pile, fn)
+	if #pile.cards < 2 then
+		return 0
+	end
+	local unsorted = 0
+	local cpairs = Util.makeCardPairs(pile.cards)
+	for _, cpair in ipairs(cpairs) do
+		if CC.EitherProne(cpair) then
+			unsorted = unsorted + 1
+		else
+			local err = fn(cpair)
+			if err then
+				unsorted = unsorted + 1
+			end
+		end
+	end
+	return unsorted
 end
 
 return Util

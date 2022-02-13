@@ -6,6 +6,8 @@ constants in UPPER_CASE
 
 Use gosol as a model
 
+json https://github.com/rxi/json.lua
+
 LÖVE game loop https://github.com/a327ex/blog/issues/15
 https://github.com/a327ex/BYTEPATH/tree/master/tutorial/tutorial-code/05%20-%20Game%20Basics
 
@@ -21,7 +23,7 @@ INPUT LAYER
 GAME MANAGEMENT LAYER
 
 _G.BAIZE.piles
-_G.BAIZE.numberOfCards
+_G.BAIZE.deck
 _G.BAIZE.cells -- etc
 _G.BAIZE.stock -- only one
 _G.BAIZE.waste -- only one

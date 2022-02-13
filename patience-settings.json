@@ -1,0 +1,20 @@
+{
+	"lastVersion":"1",
+	"baizeColor":"DarkGreen",
+	"cardFaceColor":"Ivory",
+	"cardDesign":"Regular",
+	"fourColorCards":false,
+	"powerMoves":true,
+	"muteSound":false,
+	"diamondColor":"DarkGreen",
+	"cardFaceHighlightColor":"Gold",
+	"heartColor":"Crimson",
+	"spadeColor":"Black",
+	"cardBackColor":"CornflowerBlue",
+	"cardBorderColor":"Silver",
+	"cardRatio":1.366,
+	"highlightMovable":true,
+	"mirrorBaize":false,
+	"clubColor":"Indigo",
+	"lastVariant":"Klondike"
+}

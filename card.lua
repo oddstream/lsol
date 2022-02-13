@@ -4,13 +4,12 @@ local Util = require 'util'
 
 local Card = {
 	-- pack
-    -- ord 1 .. 13
-    -- suit C, D, H, S
-	-- savableId
-    -- textureId
+	-- ord 1 .. 13
+	-- suit C, D, H, S
+	-- textureId
 
-    -- prone
-    -- parent
+	-- prone
+	-- parent
 
 	-- x
 	-- y
@@ -43,13 +42,16 @@ function Card.new(o)
 	o.x = 512
 	o.y = -128
 
-	o.savableId = string.format('%u01%02u%s', o.pack, o.ord, o.suit)	-- used when saving card in undoStack
 	o.textureId = string.format('%02u%s', o.ord, o.suit)	-- used as index/key into Card Texture Library
 	o.lerpStep = 1.0	-- not transitioning
 
 	o.flipStep = 0.0
 
 	return o
+end
+
+function Card:getSavable()
+	return {pack=self.pack, ord=self.ord, suit=self.suit, prone=self.prone}
 end
 
 function Card:setBaizePos(x, y)
@@ -129,7 +131,7 @@ function Card:transitionTo(x, y)
 	self.src = {x = self.x, y = self.y}
 	self.dst = {x = x, y = y}
 	self.lerpStep = 0.1	-- starting from 0.0 feels a little laggy
-	self.lerpStepAmount = 0.025
+	self.lerpStepAmount = _G.PATIENCE_SETTINGS['cardTransitionStep']
 end
 
 function Card:dragging()
@@ -188,7 +190,7 @@ function Card:draw()
 	local x, y = self:getScreenPos()
 
 	-- very important!: reset color before drawing to canvas to have colors properly displayed
-    -- see discussion here: https://love2d.org/forums/viewtopic.php?f=4&p=211418#p211418
+	-- see discussion here: https://love2d.org/forums/viewtopic.php?f=4&p=211418#p211418
 	love.graphics.setColor(1,1,1,1)
 
 	local img

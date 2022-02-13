@@ -1,3 +1,8 @@
-MOVE_ types and powermoves
+preferences
+	mirror baize
+	mute sounds
+
+UI
+	hit testing
 
 ?Script class/object, which Freecell derives from, so Freecell: has some meaning

@@ -13,8 +13,8 @@ function Stock.new(o)
 	assert(type(o)=='table')
 	assert(type(o.x)=='number')
 	assert(type(o.y)=='number')
-    o = Pile.new(o)
-    setmetatable(o, Stock)
+	o = Pile.new(o)
+	setmetatable(o, Stock)
 
 	o.category = 'Stock'
 	o.ordFilter = o.ordFilter or {1,2,3,4,5,6,7,8,9,10,11,12,13}
@@ -23,7 +23,6 @@ function Stock.new(o)
 	o.fanType = 'FAN_NONE'
 	o.moveType = 'MOVE_ONE'
 
-	log.info('making cards')
 	for pack = 1, o.packs do
 		for _, ord in ipairs(o.ordFilter) do
 			for _, suit in ipairs(o.suitFilter) do
@@ -32,23 +31,34 @@ function Stock.new(o)
 			end
 		end
 	end
-	_G.BAIZE.numberOfCards = #o.cards
 	log.info('made', #o.cards, 'cards')
 
-	log.info('shuffling cards')
-	math.randomseed(os.time())
-	for i = #o.cards, 2, -1 do
-		local j = math.random(i)
-		if i ~= j then
-			o.cards[i], o.cards[j] = o.cards[j], o.cards[i]
-		end
-	end
+	o:shuffle()
 
 	-- register the new pile with the baize
 	table.insert(_G.BAIZE.piles, o)
 	_G.BAIZE.stock = o
 
+	-- create a shadow copy of all the cards
+	-- so that when restoring the piles from a saved baize
+	-- all the cards can be found in one place
+	_G.BAIZE.deck = {}
+	for _, c in ipairs(o.cards) do
+		table.insert(_G.BAIZE.deck, c)
+	end
+	assert(#o.cards == #_G.BAIZE.deck)
+
 	return o
+end
+
+function Stock:shuffle()
+	log.info('shuffling cards')
+	for i = #self.cards, 2, -1 do
+		local j = math.random(i)
+		if i ~= j then
+			self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
+		end
+	end
 end
 
 function Stock:push(c)

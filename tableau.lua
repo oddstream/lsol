@@ -55,20 +55,26 @@ function Tableau:canAcceptTail(tail)
 		end
 	end
 	if self.moveType == 'MOVE_ONE_PLUS' then
-		local moves = powerMoves(self)
-		if #tail > moves then
-			if moves == 1 then
-				return string.format('Space to move 1 card, not %d', #tail)
-			else
-				return string.format('Space to move %d cards, not %d', moves, #tail)
+		if _G.PATIENCE_SETTINGS['powerMoves'] then
+			local moves = powerMoves(self)
+			if #tail > moves then
+				if moves == 1 then
+					return string.format('Space to move 1 card, not %d', #tail)
+				else
+					return string.format('Space to move %d cards, not %d', moves, #tail)
+				end
+			end
+		else
+			if #tail > 1 then
+				return 'Cannot add more than one card'
 			end
 		end
 	elseif self.moveType == 'MOVE_ONE' then
 		if #tail > 1 then
 			return 'Cannot add more than one card'
 		end
-	else
-		log.error('unknown tableau move type', self.moveType)
+	-- else
+	-- 	log.error('unknown tableau move type', self.moveType)
 	end
 	return _G.BAIZE.script.tailAppendError(self, tail)
 end
@@ -86,7 +92,7 @@ function Tableau:complete()
 		return true
 	end
 	if _G.BAIZE.discards and #_G.BAIZE.discards > 0 then
-		if #self.cards == _G.BAIZE.numberOfCards / #_G.BAIZE.discards then
+		if #self.cards == #_G.BAIZE.deck / #_G.BAIZE.discards then
 			if _G.BAIZE.script.unsortedPairs(self) == 0 then
 				return true
 			end

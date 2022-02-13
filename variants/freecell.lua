@@ -21,6 +21,8 @@ function Freecell.new(params)
 end
 
 function Freecell.buildPiles()
+	_G.PATIENCE_SETTINGS.fourColorCards = false
+
 	Stock.new({x=4, y=-4})
 	for x = 1, 4 do
 		Cell.new({x=x, y=1})
@@ -31,7 +33,6 @@ function Freecell.buildPiles()
 	end
 	for x = 1, 8 do
 		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
-
 	end
 end
 
@@ -90,7 +91,7 @@ function Freecell.tailAppendError(dst, tail)
 end
 
 function Freecell.unsortedPairs(pile)
-	return 0 -- TODO
+	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
 function Freecell.pileTapped(pile)

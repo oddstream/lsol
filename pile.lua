@@ -3,6 +3,8 @@
 
 local log = require 'log'
 
+local Util = require 'util'
+
 local Pile = {}
 Pile.__index = Pile
 
@@ -11,13 +13,25 @@ function Pile.new(o)
 	-- assert(type(o.x)=='number')
 	-- assert(type(o.y)=='number')
 	setmetatable(o, Pile)
-    o.slot = {x = o.x, y = o.y}
+	o.slot = {x = o.x, y = o.y}
 	o.cards = {}
 	o.faceFanFactorH = 4
 	o.faceFanFactorV = 3
 	o.backFanFactorH = 5
 	o.backFanFactorV = 5
 	return o
+end
+
+function Pile:getSavable()
+	local cards = {}
+	for _, c in ipairs(self.cards) do
+		table.insert(cards, c:getSavable())
+	end
+	return {category=self.category, label=self.label, rune=self.rune, cards=cards}
+end
+
+function Pile:hidden()
+	return self.slot.x < 0 or self.slot.y < 0
 end
 
 function Pile:setBaizePos(x, y)
@@ -242,6 +256,23 @@ function Pile:makeTail(c)
 	return nil
 end
 
+function Pile:updateFromSaved(saved)
+
+	self.cards = {}
+	for _, sc in ipairs(saved.cards) do
+		-- find sc in _G.BAIZE.deck
+		for _, dc in ipairs(_G.BAIZE.deck) do
+			if dc.pack == sc.pack and dc.ord == sc.ord and dc.suit == sc.suit then
+				dc.prone = sc.prone	-- TODO maybe flip
+				self:push(dc)
+				break -- onto next saved card
+			end
+		end
+	end
+
+	self.label = saved.label
+end
+
 -- vtable functions
 
 function Pile.canAcceptCard(c)
@@ -255,9 +286,56 @@ function Pile.canAcceptTail(c)
 end
 
 function Pile:tailTapped(tail)
-	log.trace('Pile.tailTapped')
-	-- TODO
-	tail[1]:flip()
+	-- default/generic tail tapped behaviour
+	local tappedCard = tail[1]
+	local src = self
+	-- try to send a single card to a foundation
+	if #tail == 1 then
+		for _, dst in ipairs(_G.BAIZE.foundations) do
+			local err = dst:canAcceptCard(tappedCard)
+			if not err then
+				Util.moveCard(src, dst)
+				return
+			end
+		end
+	end
+	-- try to send tail somewhere it's wanted
+	local chosenPile
+	for _, dst in ipairs(_G.BAIZE.tableaux) do
+		if dst ~= src then
+			-- can the tail be moved in general?
+			local err = src:canMoveTail(tail)
+			if not err then
+				-- can the dst accept the tail?
+				err = dst:canAcceptTail(tail)
+				if not err then
+					-- is the tail conformant enough to move?
+					err = _G.BAIZE.script.tailMoveError(tail)
+					if not err then
+						if (#dst.cards == 0) and (not dst.label) then
+							-- annoying to move cards to an empty pile
+						else
+							if #dst.cards == 0 and dst.label then
+								chosenPile = dst
+							elseif #dst.cards > 0 then
+								if tappedCard.suit == dst:peek().suit then
+									-- spider
+									chosenPile = dst
+									break
+								end
+								if (not chosenPile) or (#dst.cards < #chosenPile.cards) then
+									chosenPile = dst
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	if chosenPile then
+		Util.moveCards(src, src:indexOf(tappedCard), chosenPile)
+	end
 end
 
 function Pile:collect()
@@ -320,7 +398,7 @@ function Pile:draw()
 	local b = _G.BAIZE
 	local x, y = self:getScreenPos()
 
-	love.graphics.setColor(1, 1, 1, 0.25)
+	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	if self.label then
 		love.graphics.setFont(b.labelFont)

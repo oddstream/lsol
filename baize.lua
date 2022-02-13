@@ -24,7 +24,6 @@ local Baize = {
 
 	-- cardWidth
 	-- cardHeight
-	-- numberOfCards (taken just after Stock.new creates cards)
 	-- cardTextureLibrary (built when cards change size)
 	-- cardBackTexture (built when cards change size)
 	-- cardShadowTexture (built when cards change size)
@@ -32,17 +31,31 @@ local Baize = {
 	-- dragOffset
 
 	-- undoStack
+	-- recycles
 	-- bookmark
 }
 Baize.__index = Baize
 
 function Baize.new()
-	local o = {variantName = 'Freecell'}
+	-- local o = {variantName = 'Simple Simon'}
+	-- local o = {variantName = 'Klondike'}
+	local o = {variantName = _G.PATIENCE_SETTINGS.lastVariant}
 	setmetatable(o, Baize)
 	o.dragOffset = {x=0, y=0}
+	o.dragStart = {x=0, y=0}
+	o.undoStack = {}
 	o.recycles = 32767
+	o.bookmark = 0
 	o.ui = UI.new()
 	return o
+end
+
+function Baize:getSavable()
+	local piles = {}
+	for _, pile in ipairs(self.piles) do
+		table.insert(piles, pile:getSavable())
+	end
+	return {recycles=self.recycles, bookmark=self.bookmark, piles=piles}
 end
 
 local ord2String = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
@@ -64,18 +77,31 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 			canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 			love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 
-			love.graphics.setColor(love.math.colorFromBytes(255, 255, 240))	-- Ivory
+			love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardFaceColor'))
 			love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
-			love.graphics.setColor(love.math.colorFromBytes(192, 192, 192))	-- Silver
+			love.graphics.setColor(love.math.colorFromBytes(unpack(_G.PATIENCE_COLORS['Silver'])))
 			love.graphics.setLineWidth(2)
 			love.graphics.rectangle('line', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
-			if suit == '♦' or suit == '♥' then
-				love.graphics.setColor(love.math.colorFromBytes(220, 20, 60)) -- crimson
+			if _G.PATIENCE_SETTINGS.fourColorCards then
+				if suit == '♣' then
+					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('clubColor'))
+				elseif suit == '♦' then
+					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('diamondColor'))
+				elseif suit == '♥' then
+					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('heartColor'))
+				elseif suit == '♠' then
+					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('spadeColor'))
+				end
 			else
-				love.graphics.setColor(0, 0, 0)
+				if suit == '♦' or suit == '♥' then
+					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('heartColor'))
+				else
+					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('spadeColor'))
+				end
 			end
+
 			love.graphics.setFont(self.ordFont)
 			love.graphics.print(ord2String[ord], self.cardWidth / 10, 2)
 
@@ -89,10 +115,10 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
-	love.graphics.setColor(love.math.colorFromBytes(100, 149, 237))	-- Cornflowerblue
+	love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardBackColor'))
 	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
-	love.graphics.setColor(love.math.colorFromBytes(192, 192, 192))	-- Silver
+	love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardBorderColor'))
 	love.graphics.setLineWidth(2)
 	love.graphics.rectangle('line', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
@@ -108,6 +134,7 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 end
 
 local Variants = {
+	Debug = {file = 'debug.lua', params={}},
 	Freecell = {file = 'freecell.lua', params={}},
 	Klondike = {file = 'klondike.lua', params={}},
 	['Simple Simon'] = {file = 'simplesimon.lua', params = {}},
@@ -166,6 +193,156 @@ function Baize:resetPiles()
 	self.waste = nil
 end
 
+function Baize:resetState()
+	self.undoStack = {}
+	self.bookmark = 0
+	self.recycles = 32767
+end
+
+--[[
+function Baize:allCards()
+
+	local co = coroutine.create(function()
+		for _,pile in ipairs(self.piles) do
+			for _,c in ipairs(pile.cards) do
+				coroutine.yield(c)
+			end
+		end
+	end)
+
+	return function() -- iterator for generic for loop
+		local result, c = coroutine.resume(co)
+		return result == true and c or nil
+	end
+
+end
+]]
+
+function Baize:percentComplete()
+	local pairs = 0
+	local unsorted = 0
+	for _, p in ipairs(self.piles) do
+		if #p.cards > 1 then
+			pairs = pairs + #p.cards
+		end
+		unsorted = unsorted + p:unsortedPairs()
+	end
+	return 100 - Util.mapValue(unsorted, 0, pairs, 0, 100)
+end
+
+function Baize:updateFromSaved(saved)
+	if #saved.piles ~= #self.piles then
+		log.error('saved piles do not match')
+		return
+	end
+--[[
+	local function different(a, b)
+		if #a.cards ~= #b.cards then
+			return true
+		end
+		if a.label ~= b.label then
+			return true
+		end
+		return false
+	end
+]]
+	for i = 1, #self.piles do
+		local pile = self.piles[i]
+		local savedPile = saved.piles[i]
+		-- if different(pile, savedPile) then
+			pile:updateFromSaved(savedPile)
+		-- end
+	end
+
+	self.bookmark = saved.bookmark
+	self:setRecycles(saved.recycles)	-- updates stock rune
+end
+
+function Baize:undoPush()
+	local saved = self:getSavable()
+	table.insert(self.undoStack, saved)
+
+	if self.stock:hidden() then
+		self.ui:setStock('')
+	else
+		if self.waste then
+			self.ui:setStock(string.format('STOCK:%d  WASTE:%d', #self.stock.cards, #self.waste.cards))
+		else
+			self.ui:setStock(string.format('STOCK:%d', #self.stock.cards))
+		end
+	end
+
+	local percent = self:percentComplete()
+	self.ui:setComplete(string.format('%d%%', percent))
+end
+
+function Baize:undoPeek()
+	if #self.undoStack == 0 then
+		return nil
+	end
+	return self.undoStack[#self.undoStack]
+end
+
+function Baize:undoPop()
+	return table.remove(self.undoStack)
+end
+
+function Baize:undo()
+	if #self.undoStack < 2 then
+		self.ui:toast('Nothing to undo')
+		return
+	end
+	local _ = self:undoPop()	-- remove current state
+	local saved = self:undoPop()
+	assert(saved)
+	self:updateFromSaved(saved)
+	self:undoPush()	-- replace current state
+end
+
+function Baize:newDeal()
+	for _, p in ipairs(self.piles) do
+		p.cards = {}
+	end
+	for _, c in ipairs(self.deck) do
+		self.stock:push(c)
+	end
+	self.stock:shuffle()
+	self:resetState()
+	self.script.startGame()
+	self:undoPush()
+end
+
+function Baize:restartDeal()
+	local saved
+	while #self.undoStack > 0 do
+		saved = self:undoPop()
+	end
+	self:updateFromSaved(saved)
+	self:undoPush()
+end
+
+function Baize:setBookmark()
+	-- TODO if Complete
+	self.bookmark = #self.undoStack
+	local saved = self:undoPeek()
+	saved.bookmark = self.bookmark
+	saved.recycles = self.recycles
+	self.ui:toast('Position bookmarked')
+end
+
+function Baize:gotoBookmark()
+	if self.bookmark == 0 then
+		self.ui:toast('No bookmark')
+		return
+	end
+	local saved
+	while #self.undoStack + 1 > self.bookmark do
+		saved = self:undoPop()
+	end
+	self:updateFromSaved(saved)
+	self:undoPush()
+end
+
 function Baize:layout()
 	local oldCardWidth, oldCardHeight = self.cardWidth, self.cardheight
 
@@ -183,15 +360,15 @@ function Baize:layout()
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = slotWidth - pilePaddingX
 	self.cardRadius = self.cardWidth / 15
-	local slotHeight = slotWidth * 1.357
+	local slotHeight = slotWidth * _G.PATIENCE_SETTINGS['cardRatio']
 	local pilePaddingY = slotHeight / 10
 	self.cardHeight = slotHeight - pilePaddingY
 	local leftMargin = self.cardWidth / 2 + pilePaddingX
 	local topMargin = 48 + pilePaddingY
 
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
-		self.labelFont = love.graphics.newFont('assets/Acme-Regular.ttf', self.cardWidth / 2)
-		self.runeFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.cardWidth / 2)
+		self.labelFont = love.graphics.newFont('assets/Acme-Regular.ttf', self.cardWidth)
+		self.runeFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.cardWidth)
 		self:createCardTextures(self.stock.ordFilter, self.stock.suitFilter)
 	end
 
@@ -218,7 +395,7 @@ end
 function Baize:afterUserMove()
 	-- log.trace('Baize:afterUserMove')
 	self.script.afterMove()
-	-- TODO undo push
+	self:undoPush()
 	-- TODO check if complete, FAB &c
 end
 
@@ -247,24 +424,25 @@ function Baize:findPileAt(x, y)
 end
 
 function Baize:largestIntersection(card)
+	-- largest intersection can be source pile,
+	-- when user is putting a dragged tail back
 	local largestArea = 0
 	local pile
 	local cardRect = card:baizeRect()
 	for _, p in ipairs(self.piles) do
-		if p ~= card.parent then
-			local pileRect = p:fannedBaizeRect()
-			local area = Util.overlapArea(cardRect, pileRect)
-			if area > largestArea then
-				largestArea = area
-				pile = p
-			end
+		local pileRect = p:fannedBaizeRect()
+		local area = Util.overlapArea(cardRect, pileRect)
+		if area > largestArea then
+			largestArea = area
+			pile = p
 		end
 	end
 	return pile
 end
 
 function Baize:startDrag()
-	self.dragStart = self.dragOffset
+	self.dragStart.x = self.dragOffset.x
+	self.dragStart.y = self.dragOffset.y
 end
 
 function Baize:dragBy(dx, dy)
@@ -320,6 +498,8 @@ function Baize:strokeTap(s)
 	-- log.info(s.event, s.x, s.y)
 	if s.type == 'tail' then
 		-- print('TRACE tap on', tostring(s.object[1]), 'parent', s.object[1].parent.category)
+		-- offer tailTapped to the script first
+		-- the script can then call Pile.tailTapped if it likes
 		local oldSnap = self:stateSnapshot()
 		self.script.tailTapped(s.object)
 		local newSnap = self:stateSnapshot()
@@ -352,6 +532,7 @@ function Baize:strokeStop(s)
 	-- log.info(s.event, s.x, s.y)
 	if s.type == 'tail' then
 		local tail = s.object
+		assert(#tail>0)
 		local src = tail[1].parent
 		local dst = self:largestIntersection(tail[1])
 		if not dst then
@@ -363,17 +544,17 @@ function Baize:strokeStop(s)
 			else
 				local err = src:canMoveTail(tail)
 				if err then
-					log.warn(err)	-- TODO toast
+					self.ui:toast(err)
 					for _, c in ipairs(tail) do c:cancelDrag() end
 				else
 					err = dst:canAcceptTail(tail)
 					if err then
-						log.warn(err)	-- TODO toast
+						self.ui:toast(err)
 						for _, c in ipairs(tail) do c:cancelDrag() end
 					else
 						err = self.script.tailMoveError(tail)
 						if err then
-							log.warn(err)	-- TODO toast
+							self.ui:toast(err)
 							for _, c in ipairs(tail) do c:cancelDrag() end
 						else
 							for _, c in ipairs(tail) do c:stopDrag() end
@@ -431,14 +612,14 @@ function Baize:recycleWasteToStock()
 		end
 		self:setRecycles(self.recycles - 1)
 		if self.recycles == 0 then
-			log.info('No more recycles')
+			self.ui:toast('No more recycles')
 		elseif self.recycles == 1 then
-			log.info('One more recycle')
+			self.ui:toast('One more recycle')
 		elseif self.recycles < 10 then
-			log.info(string.format('%d recycles remaining', b.recycles))
+			self.ui:toast(string.format('%d recycles remaining', self.recycles))
 		end
 	else
-		log.info('No more recycles')
+		self.ui:toast('No more recycles')
 	end
 end
 
@@ -474,6 +655,10 @@ function Baize:draw()
 		pile:drawDraggingCards()
 	end
 	self.ui:draw()
+
+	-- love.graphics.setFont(self.ordFont)
+	-- love.graphics.setColor(love.math.colorFromBytes(255, 255, 240))	-- Ivory
+	-- love.graphics.print(string.format('#undoStack %d', #_G.BAIZE.undoStack, 10, 10))
 end
 
 return Baize

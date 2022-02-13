@@ -37,7 +37,7 @@ function Stroke:update()
 		return
 	end
 	if not love.mouse.isDown(1) then
-		if self.init.x == self.curr.x and self.init.y == self.curr.y then
+		if math.abs(self.init.x - self.curr.x) < 3 and math.abs(self.init.y - self.curr.y) < 3 then
 			local elapsed = love.timer.getTime() - self.timeStart
 			-- log.info('elapsed', elapsed)
 			if elapsed < 0.2 then

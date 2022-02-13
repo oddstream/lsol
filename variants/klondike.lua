@@ -21,7 +21,8 @@ function Klondike.new(params)
 end
 
 function Klondike.buildPiles()
-	log.trace('Klondike.buildPiles')
+	-- log.trace('Klondike.buildPiles')
+	_G.PATIENCE_SETTINGS.fourColorCards = false
 
 	Stock.new({x=1, y=1})
 	Waste.new({x=2, y=1, fanType='FAN_RIGHT3'})
@@ -37,7 +38,7 @@ function Klondike.buildPiles()
 end
 
 function Klondike.startGame()
-	log.trace('Klondike.startGame')
+	-- log.trace('Klondike.startGame')
 
 	local src = _G.BAIZE.stock
 	local dealDown = 0
@@ -103,7 +104,7 @@ function Klondike.tailAppendError(dst, tail)
 end
 
 function Klondike.unsortedPairs(pile)
-	return 0 -- TODO
+	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
 function Klondike.pileTapped(pile)

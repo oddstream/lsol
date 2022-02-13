@@ -4,6 +4,10 @@ local CC = {}
 
 local ord2String = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
+function CC.EitherProne(cpair)
+	return cpair[1].prone or cpair[2].prone
+end
+
 function CC.Empty(pile, card)
 	if pile.label then
 		if pile.label == 'X' then
