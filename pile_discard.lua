@@ -34,7 +34,7 @@ function Discard:canAcceptTail(tail)
 	if #tail ~= #_G.BAIZE.deck / #_G.BAIZE.discards then
 		return 'Can only move a full set of cards to a Discard'
 	end
-	return _G.BAIZE.script.tailMoveError(tail)	-- check cards are conformant
+	return _G.BAIZE.script:tailMoveError(tail)	-- check cards are conformant
 end
 
 function Discard:tailTapped(tail)

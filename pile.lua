@@ -276,12 +276,12 @@ end
 -- vtable functions
 
 function Pile.canAcceptCard(c)
-	log.warning('base canAcceptCard should not be called')
+	log.warn('base canAcceptCard should not be called')
 	return nil
 end
 
 function Pile.canAcceptTail(c)
-	log.warning('base canAcceptTail should not be called')
+	log.warn('base canAcceptTail should not be called')
 	return nil
 end
 
@@ -310,7 +310,7 @@ function Pile:tailTapped(tail)
 				err = dst:canAcceptTail(tail)
 				if not err then
 					-- is the tail conformant enough to move?
-					err = _G.BAIZE.script.tailMoveError(tail)
+					err = _G.BAIZE.script:tailMoveError(tail)
 					if not err then
 						if (#dst.cards == 0) and (not dst.label) then
 							-- annoying to move cards to an empty pile
@@ -339,19 +339,32 @@ function Pile:tailTapped(tail)
 end
 
 function Pile:collect()
-	log.warning('base collect should not be called')
+	for _, fp in ipairs(_G.BAIZE.foundations) do
+		while true do
+			-- loop to get as many cards as possible from this pile
+			if #self.cards == 0 then
+				return
+			end
+			local err = fp:canAcceptCard(self:peek())
+			if err then
+				-- this foundation doesn't want this card; onto the next one
+				break
+			end
+			Util.moveCard(self, fp)
+		end
+	end
 end
 
 function Pile:conformant()
-	log.warning('base conformat should not be called')
+	log.warn('base conformant should not be called')
 end
 
 function Pile:complete()
-	log.warning('base complete should not be called')
+	log.warn('base complete should not be called')
 end
 
 function Pile:unsortedPairs()
-	log.warning('base unsortedPairs should not be called')
+	log.warn('base unsortedPairs should not be called')
 end
 
 -- game engine functions

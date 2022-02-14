@@ -4,23 +4,24 @@ local log = require 'log'
 
 local CC = require 'cc'
 
-local Foundation = require 'foundation'
-local Stock = require 'stock'
-local Tableau = require 'tableau'
-local Waste = require 'waste'
+local Foundation = require 'pile_foundation'
+local Stock = require 'pile_stock'
+local Tableau = require 'pile_tableau'
+local Waste = require 'pile_waste'
 
 local Util = require 'util'
 
 local Klondike = {}
 Klondike.__index = Klondike
 
-function Klondike.new(params)
-	local o = {}
+function Klondike.new(o)
+	o = o or {}
 	setmetatable(o, Klondike)
+	o.turn = o.turn or 1
 	return o
 end
 
-function Klondike.buildPiles()
+function Klondike:buildPiles()
 	-- log.trace('Klondike.buildPiles')
 	_G.PATIENCE_SETTINGS.fourColorCards = false
 
@@ -37,7 +38,7 @@ function Klondike.buildPiles()
 	_G.BAIZE:setRecycles(32767)
 end
 
-function Klondike.startGame()
+function Klondike:startGame()
 	-- log.trace('Klondike.startGame')
 
 	local src = _G.BAIZE.stock
@@ -50,17 +51,21 @@ function Klondike.startGame()
 		dealDown = dealDown + 1
 		Util.moveCard(src, dst)
 	end
-	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
-end
-
-function Klondike.afterMove()
-	-- log.trace('Klondike.afterMove')
-	if #_G.BAIZE.waste.cards == 0 and #_G.BAIZE.stock.cards > 0 then
+	for _ = 1, self.turn do
 		Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
 	end
 end
 
-function Klondike.tailMoveError(tail)
+function Klondike:afterMove()
+	-- log.trace('Klondike.afterMove')
+	if #_G.BAIZE.waste.cards == 0 and #_G.BAIZE.stock.cards > 0 then
+		for _ = 1, self.turn do
+			Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
+		end
+	end
+end
+
+function Klondike:tailMoveError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)
@@ -86,7 +91,7 @@ function Klondike.Tableau.tailMoveError(tail)
 end
 ]]
 
-function Klondike.tailAppendError(dst, tail)
+function Klondike:tailAppendError(dst, tail)
 	if dst.category == 'Foundation' then
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
@@ -103,21 +108,23 @@ function Klondike.tailAppendError(dst, tail)
 	return nil
 end
 
-function Klondike.unsortedPairs(pile)
+function Klondike:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
-function Klondike.pileTapped(pile)
+function Klondike:pileTapped(pile)
 	if pile.category == 'Stock' then
 		_G.BAIZE:recycleWasteToStock()
 	end
 end
 
-function Klondike.tailTapped(tail)
+function Klondike:tailTapped(tail)
 	local card = tail[1]
 	local pile = card.parent
 	if pile == _G.BAIZE.stock and #tail == 1 then
-		Util.moveCard(pile, _G.BAIZE.waste)
+		for _ = 1, self.turn do
+			Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
+		end
 	else
 		log.trace('tap on card from pile', pile.category)
 		pile:tailTapped(tail)

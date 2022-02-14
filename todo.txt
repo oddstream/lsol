@@ -1,8 +1,16 @@
+collect
+complete
+stuck
+
+script params
+	spider 1, 2, 4 suits
+
 preferences
 	mirror baize
 	mute sounds
 
 UI
-	hit testing
+	FAB (collect?)
+	widget hit testing
 
-?Script class/object, which Freecell derives from, so Freecell: has some meaning
+100% and conformant when discards

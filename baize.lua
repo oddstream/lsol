@@ -80,9 +80,9 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 			love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardFaceColor'))
 			love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
-			love.graphics.setColor(love.math.colorFromBytes(unpack(_G.PATIENCE_COLORS['Silver'])))
-			love.graphics.setLineWidth(2)
-			love.graphics.rectangle('line', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+			love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
+			love.graphics.setLineWidth(1)
+			love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
 			if _G.PATIENCE_SETTINGS.fourColorCards then
 				if suit == '♣' then
@@ -118,9 +118,9 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 	love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardBackColor'))
 	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
-	love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardBorderColor'))
-	love.graphics.setLineWidth(2)
-	love.graphics.rectangle('line', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+	love.graphics.setColor(1, 1, 1, 0.1)
+	love.graphics.setLineWidth(1)
+	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardBackTexture = canvas
@@ -133,18 +133,11 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 	self.cardShadowTexture = canvas
 end
 
-local Variants = {
-	Debug = {file = 'debug.lua', params={}},
-	Freecell = {file = 'freecell.lua', params={}},
-	Klondike = {file = 'klondike.lua', params={}},
-	['Simple Simon'] = {file = 'simplesimon.lua', params = {}},
-}
-
 function Baize:loadScript()
-	for v, _ in pairs(Variants) do
-		print(v)
-	end
-	local vinfo = Variants[self.variantName]
+	-- for v, _ in pairs(_G.PATIENCE_VARIANTS) do
+	-- 	log.info(v)
+	-- end
+	local vinfo = _G.PATIENCE_VARIANTS[self.variantName]
 	if not vinfo then
 		log.error('Unknown variant', self.variantName)
 		return nil
@@ -308,7 +301,7 @@ function Baize:newDeal()
 	end
 	self.stock:shuffle()
 	self:resetState()
-	self.script.startGame()
+	self.script:startGame()
 	self:undoPush()
 end
 
@@ -394,9 +387,14 @@ end
 
 function Baize:afterUserMove()
 	-- log.trace('Baize:afterUserMove')
-	self.script.afterMove()
+	self.script:afterMove()
 	self:undoPush()
-	-- TODO check if complete, FAB &c
+	if self:complete() then
+		self.ui:toast('Complete')
+	elseif self:conformant() then
+		self.ui:toast('Conformant')
+	end
+	-- TODO FABs
 end
 
 function Baize:findCardAt(x, y)
@@ -501,7 +499,7 @@ function Baize:strokeTap(s)
 		-- offer tailTapped to the script first
 		-- the script can then call Pile.tailTapped if it likes
 		local oldSnap = self:stateSnapshot()
-		self.script.tailTapped(s.object)
+		self.script:tailTapped(s.object)
 		local newSnap = self:stateSnapshot()
 		if Util.baizeChanged(oldSnap, newSnap) then
 			self:afterUserMove()
@@ -509,7 +507,7 @@ function Baize:strokeTap(s)
 	elseif s.type == 'pile' then
 		-- print('TRACE tap on', s.object.category)
 		local oldSnap = self:stateSnapshot()
-		self.script.pileTapped(s.object)
+		self.script:pileTapped(s.object)
 		local newSnap = self:stateSnapshot()
 		if Util.baizeChanged(oldSnap, newSnap) then
 			self:afterUserMove()
@@ -552,7 +550,7 @@ function Baize:strokeStop(s)
 						self.ui:toast(err)
 						for _, c in ipairs(tail) do c:cancelDrag() end
 					else
-						err = self.script.tailMoveError(tail)
+						err = self.script:tailMoveError(tail)
 						if err then
 							self.ui:toast(err)
 							for _, c in ipairs(tail) do c:cancelDrag() end
@@ -620,6 +618,40 @@ function Baize:recycleWasteToStock()
 		end
 	else
 		self.ui:toast('No more recycles')
+	end
+end
+
+function Baize:conformant()
+	for _, pile in ipairs(self.piles) do
+		if not pile:conformant() then
+			return false
+		end
+	end
+	return true
+end
+
+function Baize:complete()
+	for _, pile in ipairs(self.piles) do
+		if not pile:complete() then
+			return false
+		end
+	end
+	return true
+end
+
+function Baize:collect()
+	local outerState = self:stateSnapshot()
+	while true do
+		local innerState = self:stateSnapshot()
+		for _, pile in ipairs(self.piles) do
+			pile:collect()
+		end
+		if not Util.baizeChanged(innerState, self:stateSnapshot()) then
+			break
+		end
+	end
+	if Util.baizeChanged(outerState, self:stateSnapshot()) then
+		self:afterUserMove()
 	end
 end
 

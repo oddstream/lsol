@@ -93,7 +93,7 @@ function Stock:collect()
 	-- override Pile.collect to do nothing
 end
 
-function Stock:conformat()
+function Stock:conformant()
 	return #self.cards == 0
 end
 
@@ -112,7 +112,7 @@ function Stock:draw()
 	local b = _G.BAIZE
 	local x, y = self:getScreenPos()
 
-	love.graphics.setColor(1, 1, 1, 0.25)
+	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	if self.rune then
 		love.graphics.setFont(b.runeFont)

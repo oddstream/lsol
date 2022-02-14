@@ -24,7 +24,7 @@ function Tableau:canAcceptCard(c)
 	if c.prone then
 		return 'Cannot add a face down card to a Tableau'
 	end
-	return _G.BAIZE.script.tailAppendError(self, {c})
+	return _G.BAIZE.script:tailAppendError(self, {c})
 end
 
 local function powerMoves(pileTarget)
@@ -76,7 +76,7 @@ function Tableau:canAcceptTail(tail)
 	-- else
 	-- 	log.error('unknown tableau move type', self.moveType)
 	end
-	return _G.BAIZE.script.tailAppendError(self, tail)
+	return _G.BAIZE.script:tailAppendError(self, tail)
 end
 
 -- use Pile.tailTapped
@@ -84,7 +84,7 @@ end
 -- use Pile.collect
 
 function Tableau:conformant()
-	return _G.BAIZE.script.unsortedPairs(self)
+	return _G.BAIZE.script:unsortedPairs(self) == 0
 end
 
 function Tableau:complete()
@@ -93,7 +93,7 @@ function Tableau:complete()
 	end
 	if _G.BAIZE.discards and #_G.BAIZE.discards > 0 then
 		if #self.cards == #_G.BAIZE.deck / #_G.BAIZE.discards then
-			if _G.BAIZE.script.unsortedPairs(self) == 0 then
+			if _G.BAIZE.script:unsortedPairs(self) == 0 then
 				return true
 			end
 		end
@@ -102,7 +102,7 @@ function Tableau:complete()
 end
 
 function Tableau:unsortedPairs()
-	return _G.BAIZE.script.unsortedPairs(self)
+	return _G.BAIZE.script:unsortedPairs(self)
 end
 
 return Tableau

@@ -4,22 +4,22 @@ local log = require 'log'
 
 local CC = require 'cc'
 
-local Discard = require 'discard'
-local Stock = require 'stock'
-local Tableau = require 'tableau'
+local Discard = require 'pile_discard'
+local Stock = require 'pile_stock'
+local Tableau = require 'pile_tableau'
 
 local Util = require 'util'
 
 local SimpleSimon = {}
 SimpleSimon.__index = SimpleSimon
 
-function SimpleSimon.new(params)
-	local o = {}
+function SimpleSimon.new(o)
+	o = o or {}
 	setmetatable(o, SimpleSimon)
 	return o
 end
 
-function SimpleSimon.buildPiles()
+function SimpleSimon:buildPiles()
 	_G.PATIENCE_SETTINGS.fourColorCards = true
 
 	Stock.new({x=4, y=-4})
@@ -32,7 +32,7 @@ function SimpleSimon.buildPiles()
 	end
 end
 
-function SimpleSimon.startGame()
+function SimpleSimon:startGame()
 	local src, dst
 	src = _G.BAIZE.stock
 
@@ -63,10 +63,10 @@ function SimpleSimon.startGame()
 	end
 end
 
-function SimpleSimon.afterMove()
+function SimpleSimon:afterMove()
 end
 
-function SimpleSimon.tailMoveError(tail)
+function SimpleSimon:tailMoveError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)
@@ -80,7 +80,7 @@ function SimpleSimon.tailMoveError(tail)
 	return nil
 end
 
-function SimpleSimon.tailAppendError(dst, tail)
+function SimpleSimon:tailAppendError(dst, tail)
 	if dst.category == 'Discard' then
 		if #dst.cards == 0 then
 			-- already checked before coming here
@@ -108,14 +108,14 @@ function SimpleSimon.tailAppendError(dst, tail)
 	return nil
 end
 
-function SimpleSimon.unsortedPairs(pile)
+function SimpleSimon:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
-function SimpleSimon.pileTapped(pile)
+function SimpleSimon:pileTapped(pile)
 end
 
-function SimpleSimon.tailTapped(tail)
+function SimpleSimon:tailTapped(tail)
 	local card = tail[1]
 	local pile = card.parent
 	pile:tailTapped(tail)

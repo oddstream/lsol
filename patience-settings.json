@@ -11,10 +11,9 @@
 	"heartColor":"Crimson",
 	"spadeColor":"Black",
 	"cardBackColor":"CornflowerBlue",
-	"cardBorderColor":"Silver",
-	"cardRatio":1.366,
+	"cardRatio":1.333,
 	"highlightMovable":true,
 	"mirrorBaize":false,
 	"clubColor":"Indigo",
-	"lastVariant":"Klondike"
+	"lastVariant":"Freecell"
 }

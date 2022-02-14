@@ -22,7 +22,6 @@ function Settings.new()
 		baizeColor = 'DarkGreen',
 		cardBackColor = 'CornflowerBlue',
 		cardFaceColor = 'Ivory',
-		cardBorderColor = 'Silver',
 		cardFaceHighlightColor = 'Gold',
 		clubColor = 'DarkBlue',
 		diamondColor = 'DarkGreen',

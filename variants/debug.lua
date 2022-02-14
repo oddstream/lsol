@@ -4,26 +4,26 @@ local log = require 'log'
 
 local CC = require 'cc'
 
-local Discard = require 'discard'
-local Stock = require 'stock'
-local Tableau = require 'tableau'
+local Discard = require 'pile_discard'
+local Stock = require 'pile_stock'
+local Tableau = require 'pile_tableau'
 
 local Util = require 'util'
 
 local Debug = {}
 Debug.__index = Debug
 
-function Debug.new(params)
-	local o = {}
+function Debug.new(o)
+	o = o or {}
 	setmetatable(o, Debug)
 	return o
 end
 
-function Debug.buildPiles()
+function Debug:buildPiles()
 	_G.PATIENCE_SETTINGS.fourColorCards = true
 
 	Stock.new({x=4, y=-4})
-	for x = 4, 7 do
+	for x = 5.5, 8.5 do
 		Discard.new({x=x, y=1})
 	end
 	for x = 1, 13 do
@@ -31,7 +31,7 @@ function Debug.buildPiles()
 	end
 end
 
-function Debug.startGame()
+function Debug:startGame()
 	local src
 	src = _G.BAIZE.stock
 
@@ -46,10 +46,10 @@ function Debug.startGame()
 	end
 end
 
-function Debug.afterMove()
+function Debug:afterMove()
 end
 
-function Debug.tailMoveError(tail)
+function Debug:tailMoveError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)
@@ -63,7 +63,7 @@ function Debug.tailMoveError(tail)
 	return nil
 end
 
-function Debug.tailAppendError(dst, tail)
+function Debug:tailAppendError(dst, tail)
 	if dst.category == 'Discard' then
 		if #dst.cards == 0 then
 			-- already checked before coming here
@@ -91,14 +91,14 @@ function Debug.tailAppendError(dst, tail)
 	return nil
 end
 
-function Debug.unsortedPairs(pile)
+function Debug:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
-function Debug.pileTapped(pile)
+function Debug:pileTapped(pile)
 end
 
-function Debug.tailTapped(tail)
+function Debug:tailTapped(tail)
 	local card = tail[1]
 	local pile = card.parent
 	pile:tailTapped(tail)

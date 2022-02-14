@@ -4,23 +4,23 @@ local log = require 'log'
 
 local CC = require 'cc'
 
-local Cell = require 'cell'
-local Foundation = require 'foundation'
-local Stock = require 'stock'
-local Tableau = require 'tableau'
+local Cell = require 'pile_cell'
+local Foundation = require 'pile_foundation'
+local Stock = require 'pile_stock'
+local Tableau = require 'pile_tableau'
 
 local Util = require 'util'
 
 local Freecell = {}
 Freecell.__index = Freecell
 
-function Freecell.new(params)
-	local o = {}
+function Freecell.new(o)
+	o = o or {}
 	setmetatable(o, Freecell)
 	return o
 end
 
-function Freecell.buildPiles()
+function Freecell:buildPiles()
 	_G.PATIENCE_SETTINGS.fourColorCards = false
 
 	Stock.new({x=4, y=-4})
@@ -36,7 +36,7 @@ function Freecell.buildPiles()
 	end
 end
 
-function Freecell.startGame()
+function Freecell:startGame()
 	local src, dst
 	src = _G.BAIZE.stock
 	for i = 1, 4 do
@@ -56,10 +56,10 @@ function Freecell.startGame()
 	end
 end
 
-function Freecell.afterMove()
+function Freecell:afterMove()
 end
 
-function Freecell.tailMoveError(tail)
+function Freecell:tailMoveError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)
@@ -73,7 +73,7 @@ function Freecell.tailMoveError(tail)
 	return nil
 end
 
-function Freecell.tailAppendError(dst, tail)
+function Freecell:tailAppendError(dst, tail)
 	if dst.category == 'Foundation' then
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
@@ -90,14 +90,14 @@ function Freecell.tailAppendError(dst, tail)
 	return nil
 end
 
-function Freecell.unsortedPairs(pile)
+function Freecell:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
-function Freecell.pileTapped(pile)
+function Freecell:pileTapped(pile)
 end
 
-function Freecell.tailTapped(tail)
+function Freecell:tailTapped(tail)
 	local card = tail[1]
 	local pile = card.parent
 	pile:tailTapped(tail)
