@@ -43,18 +43,16 @@ function Util.clamp(value, min, max)
 end
 
 -- overlapArea returns the intersection area of two rectangles
-function Util.overlapArea(a, b)
-	assert(a.x1)
-	assert(a.y1)
-	assert(a.x2)
-	assert(a.y2)
-	assert(b.x1)
-	assert(b.y1)
-	assert(b.x2)
-	assert(b.y2)
-	local x = math.max(0, math.min(a.x2, b.x2) - math.max(a.x1, b.x1));
-	local y = math.max(0, math.min(a.y2, b.y2) - math.max(a.y1, b.y1));
-	return x * y;
+function Util.overlapArea(x, y, w, h, X, Y, W, H)
+	local ox = math.max(0, math.min(x + w, X + W) - math.max(x, X));
+	local oy = math.max(0, math.min(y + h, Y + H) - math.max(y, Y));
+	-- local x = math.max(0, math.min(a.x2, b.x2) - math.max(a.x1, b.x1));
+	-- local y = math.max(0, math.min(a.y2, b.y2) - math.max(a.y1, b.y1));
+	return ox * oy;
+end
+
+function Util.inRect(x, y, rx, ry, rw, rh)
+	return x >= rx and y >= ry and x < (rx + rw) and y < (ry + rh)
 end
 
 --[[

@@ -12,23 +12,16 @@ function Titlebar.new()
 	local o = {}
 	setmetatable(o, Titlebar)
 
+	o.height = 48
+	o.align = 'top'
+	o.font = love.graphics.newFont('assets/Roboto-Medium.ttf', 24)
+	o.spacex = o.font:getWidth('_')
 	o.widgets = {}
 
 	return o
 end
 
-function Titlebar:layout()
-	local w, _, _ = love.window.getMode()
-
-	self.x = 0
-	self.y = 0
-	self.width = w
-	self.height = 48
-
-	for _, wgt in ipairs(self.widgets) do
-		wgt:layout()
-	end
-end
+-- use Bar.layout
 
 -- use Bar.update
 

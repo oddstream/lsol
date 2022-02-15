@@ -60,22 +60,16 @@ function Card:setBaizePos(x, y)
 	self:stopTransition()
 end
 
-function Card:getScreenPos()
+function Card:screenPos()
 	return self.x + _G.BAIZE.dragOffset.x, self.y + _G.BAIZE.dragOffset.y
 end
 
 function Card:baizeRect()
-	return {x1=self.x, y1=self.y, x2=self.x + _G.BAIZE.cardWidth, y2=self.y + _G.BAIZE.cardHeight}
+	return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
 function Card:screenRect()
-	local rect = self:baizeRect()
-	return {
-		x1 = rect.x1 + _G.BAIZE.dragOffset.x,
-		y1 = rect.y1 + _G.BAIZE.dragOffset.y,
-		x2 = rect.x2 + _G.BAIZE.dragOffset.x,
-		y2 = rect.y2 + _G.BAIZE.dragOffset.y,
-	}
+	return self.x  + _G.BAIZE.dragOffset.x, self.y  + _G.BAIZE.dragOffset.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
 function Card:flipUp()
@@ -187,7 +181,7 @@ end
 
 function Card:draw()
 	local b = _G.BAIZE
-	local x, y = self:getScreenPos()
+	local x, y = self:screenPos()
 
 	-- very important!: reset color before drawing to canvas to have colors properly displayed
 	-- see discussion here: https://love2d.org/forums/viewtopic.php?f=4&p=211418#p211418

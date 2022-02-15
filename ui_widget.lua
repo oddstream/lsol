@@ -14,22 +14,17 @@ function Widget.new(o)
 end
 
 function Widget:screenPos()
-	return {x=self.parent.x + self.x, y=self.parent.y + self.y}
+	return self.parent.x + self.x, self.parent.y + self.y
 end
 
 function Widget:screenRect()
-	return {
-		x1=self.parent.x + self.x,
-		y1=self.parent.y + self.y,
-		x2=self.parent.x + self.x + self.width,
-		y2=self.parent.y + self.y + self.height,
-	}
+	return self.parent.x + self.x, self.parent.y + self.y, self.width, self.height
 end
 
--- Widget:layout() done by subclasses
+-- Widget:layout() done by parent
 
 -- no need for Widget:update()
 
--- Widget.draw done by subclasses
+-- Widget.draw() done by subclasses
 
 return Widget

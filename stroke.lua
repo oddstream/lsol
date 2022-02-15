@@ -3,7 +3,7 @@
 -- TODO update to allow touch (and joystick?) as well as mouse
 -- TODO update to allow right mouse button
 
-local log = require 'log'
+-- local log = require 'log'
 
 local Stroke = {}
 Stroke.__index = Stroke

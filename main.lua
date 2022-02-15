@@ -9,7 +9,7 @@ local Settings = require 'settings'
 _G.PATIENCE_VERSION = '1'
 
 _G.PATIENCE_VARIANTS = {
-	Debug = {file='debug.lua', params={}},
+	Debug = {file='debug.lua', params={spiderLike=false}},
 	Freecell = {file='freecell.lua', params={}},
 	Klondike = {file='klondike.lua', params={}},
 	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3}},
@@ -24,6 +24,22 @@ _G.VARIANT_TYPES = {
 	Puzzlers = {'Freecell', 'Penguin', 'Simple Simon'},
 	Spiders = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
 }
+
+do
+	local lst = {}
+	for k,_ in pairs(_G._G.PATIENCE_VARIANTS) do
+		table.insert(lst, k)
+	end
+	table.sort(lst)
+	_G.VARIANT_TYPES['All'] = lst
+	table.sort(_G.VARIANT_TYPES)
+	-- for k,_ in pairs(_G.VARIANT_TYPES) do
+	-- 	print(k)
+	-- 	for k2,v2 in pairs(v) do
+	-- 		print(k2, v2)
+	-- 	end
+	-- end
+end
 
 _G.PATIENCE_COLORS = {
 	Black = {0,0,0},
@@ -54,6 +70,16 @@ function love.load(args)
 	love.graphics.setBackgroundColor(_G.PATIENCE_SETTINGS:colorBytes('baizeColor'))
 	love.graphics.setDefaultFilter = 'nearest'
 
+	local imageData = love.image.newImageData('assets/appicon.png')
+	if not imageData then
+		log.error('could load assets/appicon.png')
+	else
+		local success = love.window.setIcon(imageData)
+		if not success then
+			log.error('could set icon assets/appicon.png')
+		end
+	end
+
 	_G.BAIZE = Baize.new()
 	_G.BAIZE.script = _G.BAIZE:loadScript()
 	if _G.BAIZE.script then
@@ -61,7 +87,6 @@ function love.load(args)
 		_G.BAIZE.script:buildPiles()
 		log.info(#_G.BAIZE.piles, 'piles built')
 		_G.BAIZE:layout()
-		log.info('card width, height', _G.BAIZE.cardWidth, _G.BAIZE.cardHeight)
 		_G.BAIZE:resetState()
 		_G.BAIZE.script:startGame()
 		_G.BAIZE:undoPush()
@@ -72,6 +97,7 @@ function love.load(args)
 	print(love.filesystem.getSourceBaseDirectory())	-- /home/gilbert
 	print(love.filesystem.getUserDirectory())	-- /home/gilbert/
 	print(love.filesystem.getWorkingDirectory())	-- /home/gilbert/patience
+	print(love.filesystem.getSaveDirectory())	-- /home/gilbert/.local/share/love/patience
 ]]
 end
 

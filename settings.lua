@@ -6,12 +6,12 @@ local log = require 'log'
 local Settings = {}
 Settings.__index = Settings
 
-local filePath = love.filesystem.getWorkingDirectory() .. '/patience-settings.json'
+local fname = 'settings.json'
 
 function Settings.new()
 	local o = {
 		lastVersion = 0,
-		lastVariant = 'Simple Simon',
+		lastVariant = 'Klondike',
 		highlightMovable = true,
 		cardTransitionStep = 0.025,
 		cardRatio = 1.357,
@@ -38,38 +38,42 @@ function Settings.new()
 end
 
 function Settings:load()
-	local file, msg = io.open(filePath, 'r')
-	if file then
-		local contents = file:read('*a')
-		io.close(file)
-		-- log.info('settings loaded from file', contents)
+	-- seems to automagically read from love.filesystem.getSaveDirectory()
+	-- which is currently /home/gilbert/.local/share/love/patience
+	local contents, size = love.filesystem.read(fname)
+	if contents then
 		local decoded = json.decode(contents)
 		if not decoded then
 			log.error('Settings.load() json not decoded')
 		else
-		for k,v in pairs(decoded) do
-			-- trace('setting', k, v)
-			self[k] = v
+			for k,v in pairs(decoded) do
+				-- trace('setting', k, v)
+				self[k] = v
+			end
 		end
-	end
+		log.info('settings loaded from', fname)
 	-- any newly added settings not present in settings.json will be picked up from prototype object
 	-- for k,v in pairs(self) do
 	--   trace('self setting',k,v)
 	-- end
 	else
-		log.error('cannot open', filePath, msg)
+		if type(size) == 'string' then
+			log.error(size)
+		end
 	end
 end
 
 function Settings:save()
-	local file, msg = io.open(filePath, 'w')
-	if file then
-		self.lastVersion = _G.PATIENCE_VERSION
-		file:write(json.encode(self, {indent=true}))
-		log.info('settings written to', filePath)
-		io.close(file)
+	-- seems to automagically write to love.filesystem.getSaveDirectory()
+	-- (creating the directory if needed)
+	-- which is currently /home/gilbert/.local/share/love/patience
+	self.lastVersion = _G.PATIENCE_VERSION
+	local data = json.encode(self)
+	local success, message = love.filesystem.write(fname, data)
+	if success then
+		log.info('settings written to', fname)
 	else
-		log.error('cannot open', filePath, msg)
+		log.error(message)
 	end
 end
 

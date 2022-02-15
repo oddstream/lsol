@@ -1,8 +1,11 @@
 -- ui
 
 local Titlebar = require 'ui_titlebar'
+local MenuDrawer = require 'ui_menudrawer'
 local Statusbar = require 'ui_statusbar'
 local TextWidget = require 'ui_textwidget'
+
+local Util = require 'util'
 
 local UI = {
 	-- titlebar
@@ -11,49 +14,101 @@ local UI = {
 }
 UI.__index = UI
 
+local menuWidgets = {
+	{text='New deal', baizeCmd='newDeal'},
+	{text='Restart deal', baizeCmd='restartDeal'},
+	{text='Find game...', baizeCmd='showVariantTypesDrawer'},
+	{text='Bookmark', baizeCmd='setBookmark'},
+	{text='Go to bookmark', baizeCmd='gotoBookmark'},
+}
+
 function UI.new()
 	local o = {}
 	setmetatable(o, UI)
 
 	o.toasts = {} -- a queue of toasts; oldest to the left
 	o.toastFont = love.graphics.newFont('assets/Roboto-Regular.ttf', 14)
-	o.titleFont = love.graphics.newFont('assets/Roboto-Medium.ttf', 24)
 
 	local tw
 	o.titlebar = Titlebar.new()
-		tw = TextWidget.new({parent=o.titlebar, text='Menu', align=-1, font=o.titleFont})
+		tw = TextWidget.new({parent=o.titlebar, text='Menu', align='left', baizeCmd='toggleMenuDrawer'})
 		table.insert(o.titlebar.widgets, tw)
-		tw = TextWidget.new({parent=o.titlebar, text='Title', align=0, font=o.titleFont})
+		tw = TextWidget.new({parent=o.titlebar, text='', align='center'})
 		table.insert(o.titlebar.widgets, tw)
-		tw = TextWidget.new({parent=o.titlebar, text='Undo', align=1, font=o.titleFont})
+		tw = TextWidget.new({parent=o.titlebar, text='Undo', align='right', baizeCmd='undo'})
 		table.insert(o.titlebar.widgets, tw)
+		tw = TextWidget.new({parent=o.titlebar, text='Coll', align='right', baizeCmd='collect'})
+		table.insert(o.titlebar.widgets, tw)
+
+	o.menudrawer = MenuDrawer.new()
+	for _, winfo in ipairs(menuWidgets) do
+		winfo.parent = o.menudrawer
+		table.insert(o.menudrawer.widgets, TextWidget.new(winfo))
+	end
 
 	o.statusbar = Statusbar.new()
-		tw = TextWidget.new({parent=o.statusbar, text='Stock', align=-1, font=o.toastFont})
+		tw = TextWidget.new({parent=o.statusbar, text='Stock', align='left'})
 		table.insert(o.statusbar.widgets, tw)
-		tw = TextWidget.new({parent=o.statusbar, text='', align=0, font=o.toastFont})
+		tw = TextWidget.new({parent=o.statusbar, text='', align='center'})
 		table.insert(o.statusbar.widgets, tw)
-		tw = TextWidget.new({parent=o.statusbar, text='Complete', align=1, font=o.toastFont})
+		tw = TextWidget.new({parent=o.statusbar, text='Complete', align='right'})
 		table.insert(o.statusbar.widgets, tw)
 
-	o.containers = {o.titlebar, o.statusbar}
+	o.containers = {o.titlebar, o.menudrawer, o.statusbar}
+
+	o.drawers = {o.menudrawer}
 
 	return o
 end
 
+function UI:findContainerAt(x, y)
+	for _, con in ipairs(self.containers) do
+		if Util.inRect(x, y, con:screenRect()) then
+			return con
+		end
+	end
+	return nil
+end
+
+function UI:findWidgetAt(x, y)
+	local con = self:findContainerAt(x, y)
+	if con then
+		for _, w in ipairs(con.widgets) do
+			if Util.inRect(x, y, w:screenRect()) then
+				return w
+			end
+		end
+	end
+	return nil
+end
+
 function UI:setTitle(text)
 	self.titlebar.widgets[2].text = text
-	self.titlebar.widgets[2]:layout()
+	self.titlebar:layout()
 end
 
 function UI:setStock(text)
 	self.statusbar.widgets[1].text = text
-	self.statusbar.widgets[1]:layout()
+	self.statusbar:layout()
 end
 
 function UI:setComplete(text)
 	self.statusbar.widgets[3].text = text
-	self.statusbar.widgets[3]:layout()
+	self.statusbar:layout()
+end
+
+function UI:toggleMenuDrawer()
+	if self.menudrawer:visible() then
+		self.menudrawer:hide()
+	else
+		self.menudrawer:show()
+	end
+end
+
+function UI:hideDrawers()
+	for _, drw in ipairs(self.drawers) do
+		drw:hide()
+	end
 end
 
 function UI:toast(message)
@@ -76,11 +131,16 @@ function UI:toast(message)
 end
 
 function UI:layout()
-	self.titlebar:layout()
-	self.statusbar:layout()
+	for _, con in ipairs(self.containers) do
+		con:layout()
+	end
 end
 
 function UI:update(dt)
+
+	for _, con in ipairs(self.containers) do
+		con:update(dt)
+	end
 
 	if #self.toasts > 0 then
 		for _, t in ipairs(self.toasts) do
@@ -96,8 +156,9 @@ end
 
 function UI:draw()
 
-	self.titlebar:draw()
-	self.statusbar:draw()
+	for _, con in ipairs(self.containers) do
+		con:draw()
+	end
 
 	local function drawToast(message, y)
 		-- https://material.io/archive/guidelines/components/snackbars-toasts.html#snackbars-toasts-specs

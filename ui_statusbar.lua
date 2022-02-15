@@ -10,23 +10,16 @@ function Statusbar.new()
 	local o = {}
 	setmetatable(o, Statusbar)
 
+	o.height = 24
+	o.align = 'bottom'
+	o.font = love.graphics.newFont('assets/Roboto-Medium.ttf', 14)
+	o.spacex = o.font:getWidth('_')
 	o.widgets = {}
 
 	return o
 end
 
-function Statusbar:layout()
-	local w, h, _ = love.window.getMode()
-
-	self.x = 0
-	self.y = h - 24
-	self.width = w
-	self.height = 24
-
-	for _, wgt in ipairs(self.widgets) do
-		wgt:layout()
-	end
-end
+-- use Bar.layout
 
 -- use Bar.update
 

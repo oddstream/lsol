@@ -110,7 +110,7 @@ end
 
 function Stock:draw()
 	local b = _G.BAIZE
-	local x, y = self:getScreenPos()
+	local x, y = self:screenPos()
 
 	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)

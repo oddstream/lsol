@@ -1,5 +1,7 @@
-collect
-complete
+could use point {x,y} and rectangle {x, y, width, height}
+but that would be inefficient
+just stick to the same as LÖVE (and raylib) and use x,y,width,height
+
 stuck
 
 script params
@@ -10,7 +12,8 @@ preferences
 	mute sounds
 
 UI
+	copy from csol
+	variant type drawer
+		displays variant picker drawer
 	FAB (collect?)
-	widget hit testing
 
-100% and conformant when discards

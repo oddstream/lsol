@@ -48,38 +48,33 @@ function Pile:setBaizePos(x, y)
 	end
 end
 
-function Pile:getScreenPos()
+function Pile:screenPos()
 	return self.x + _G.BAIZE.dragOffset.x, self.y + _G.BAIZE.dragOffset.y
 end
 
 function Pile:baizeRect()
-	return {x1=self.x, y1=self.y, x2=self.x + _G.BAIZE.cardWidth, y2=self.y + _G.BAIZE.cardHeight}
+	return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
 function Pile:screenRect()
-	local rect = self:baizeRect()
-	return {
-		x1 = rect.x1 + _G.BAIZE.dragOffset.x,
-		y1 = rect.y1 + _G.BAIZE.dragOffset.y,
-		x2 = rect.x2 + _G.BAIZE.dragOffset.x,
-		y2 = rect.y2 + _G.BAIZE.dragOffset.y,
-	}
+	return self.x + _G.BAIZE.dragOffset.x, self.y + _G.BAIZE.dragOffset.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
 function Pile:fannedBaizeRect()
-	local r = self:baizeRect()
+	local px, py, pw, ph = self:baizeRect()
 	if #self.cards > 1 and self.fanType ~= 'FAN_NONE' then
 		local c = self:peek()
-		local cRect = c:baizeRect()
+		local cx, cy, cw, ch = c:baizeRect()
 		if self.fanType == 'FAN_DOWN' or self.fanType == 'FAN_DOWN3' then
-			r.y2 = cRect.y2
+			ph = cy - py + ch
 		elseif self.fanType == 'FAN_RIGHT' or self.fanType == 'FAN_RIGHT3' then
-			r.x2 = cRect.x2
+			pw = cx - px + cw
 		elseif self.fanType == 'FAN_LEFT' or self.fanType == 'FAN_LEFT3' then
-			r.x1 = cRect.x1	-- TODO verify this is correct
+			px = cx 	-- TODO verify this is correct
+			pw = px - cx + cw
 		end
 	end
-	return r
+	return px, py, pw, ph
 end
 
 function Pile:posAfter(c)
@@ -409,7 +404,7 @@ end
 
 function Pile:draw()
 	local b = _G.BAIZE
-	local x, y = self:getScreenPos()
+	local x, y = self:screenPos()
 
 	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)

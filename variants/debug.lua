@@ -5,6 +5,7 @@ local log = require 'log'
 local CC = require 'cc'
 
 local Discard = require 'pile_discard'
+local Foundation = require 'pile_foundation'
 local Stock = require 'pile_stock'
 local Tableau = require 'pile_tableau'
 
@@ -24,7 +25,12 @@ function Debug:buildPiles()
 
 	Stock.new({x=4, y=-4})
 	for x = 5.5, 8.5 do
-		Discard.new({x=x, y=1})
+		if self.spiderLike then
+			Discard.new({x=x, y=1})
+		else
+			local f = Foundation.new({x=x, y=1})
+			f.label = 'A'
+		end
 	end
 	for x = 1, 13 do
 		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
@@ -80,6 +86,12 @@ function Debug:tailAppendError(dst, tail)
 					return err
 				end
 			end
+		end
+	elseif dst.category == 'Foundation' then
+		if #dst.cards == 0 then
+			return CC.Empty(dst, tail[1])
+		else
+			return CC.UpSuit({dst:peek(), tail[1]})
 		end
 	elseif dst.category == 'Tableau' then
 		if #dst.cards == 0 then

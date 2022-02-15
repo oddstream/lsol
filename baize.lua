@@ -265,8 +265,14 @@ function Baize:undoPush()
 		end
 	end
 
-	local percent = self:percentComplete()
-	self.ui:setComplete(string.format('%d%%', percent))
+	if self:complete() then
+		self.ui:setComplete('COMPLETE')
+	elseif self:conformant() then
+		self.ui:setComplete('CONFORMANT')
+	else
+		local percent = self:percentComplete()
+		self.ui:setComplete(string.format('%d%% COMPLETE', percent))
+	end
 end
 
 function Baize:undoPeek()
@@ -290,6 +296,13 @@ function Baize:undo()
 	assert(saved)
 	self:updateFromSaved(saved)
 	self:undoPush()	-- replace current state
+end
+
+function Baize:toggleMenuDrawer()
+	self.ui:toggleMenuDrawer()
+end
+
+function Baize:showVariantTypesDrawer()
 end
 
 function Baize:newDeal()
@@ -365,6 +378,8 @@ function Baize:layout()
 		self:createCardTextures(self.stock.ordFilter, self.stock.suitFilter)
 	end
 
+	log.info('card width, height', self.cardWidth, self.cardHeight)
+
 	for _, pile in ipairs(self.piles) do
 		pile:setBaizePos(
 			-- slots are 1-based, graphics coords are 0-based
@@ -389,12 +404,13 @@ function Baize:afterUserMove()
 	-- log.trace('Baize:afterUserMove')
 	self.script:afterMove()
 	self:undoPush()
+	-- TODO we are calculating complete and conformant twice
 	if self:complete() then
 		self.ui:toast('Complete')
 	elseif self:conformant() then
 		self.ui:toast('Conformant')
 	end
-	-- TODO FABs
+	-- TODO FABs for complete (new deal), conformant (collect), stuck (new deal), can_collect (collect)
 end
 
 function Baize:findCardAt(x, y)
@@ -402,8 +418,7 @@ function Baize:findCardAt(x, y)
 		local pile = self.piles[j]
 		for i = #pile.cards, 1, -1 do
 			local card = pile.cards[i]
-			local rect = card:screenRect()
-			if x > rect.x1 and y > rect.y1 and x < rect.x2 and y < rect.y2 then
+			if Util.inRect(x, y, card:screenRect()) then
 				return card, pile
 			end
 		end
@@ -413,8 +428,7 @@ end
 
 function Baize:findPileAt(x, y)
 	for _, pile in ipairs(self.piles) do
-		local rect = pile:screenRect()
-		if x > rect.x1 and y > rect.y1 and x < rect.x2 and y < rect.y2 then
+		if Util.inRect(x, y, pile:screenRect()) then
 			return pile
 		end
 	end
@@ -426,10 +440,10 @@ function Baize:largestIntersection(card)
 	-- when user is putting a dragged tail back
 	local largestArea = 0
 	local pile
-	local cardRect = card:baizeRect()
+	local cx, cy, cw, ch = card:baizeRect()
 	for _, p in ipairs(self.piles) do
-		local pileRect = p:fannedBaizeRect()
-		local area = Util.overlapArea(cardRect, pileRect)
+		local px, py, pw, ph = p:fannedBaizeRect()
+		local area = Util.overlapArea(cx, cy, cw, ch, px, py, pw, ph)
 		if area > largestArea then
 			largestArea = area
 			pile = p
@@ -462,22 +476,30 @@ function Baize:strokeStart(s)
 	assert(self.stroke==nil)
 	self.stroke = s.stroke
 
-	local card, pile = self:findCardAt(s.x, s.y)
-	if card then
-		local tail = pile:makeTail(card)
-		for _, c in ipairs(tail) do
-			c:startDrag()
-		end
-		-- hide the cursor
-		self.stroke:setDraggedObject(tail, 'tail')
-		-- print(tostring(card), 'tail len', #tail)
+	local w = self.ui:findWidgetAt(s.x, s.y)
+	if w then
+		self.stroke:setDraggedObject(w, 'widget')
+		log.info('widget', w.text)
 	else
-		pile = self:findPileAt(s.x, s.y)
-		if pile then
-			self.stroke:setDraggedObject(pile, 'pile')
+		self.ui:hideDrawers()
+
+		local card, pile = self:findCardAt(s.x, s.y)
+		if card then
+			local tail = pile:makeTail(card)
+			for _, c in ipairs(tail) do
+				c:startDrag()
+			end
+			-- hide the cursor
+			self.stroke:setDraggedObject(tail, 'tail')
+			-- print(tostring(card), 'tail len', #tail)
 		else
-			self:startDrag()
-			self.stroke:setDraggedObject(self, 'baize')
+			pile = self:findPileAt(s.x, s.y)
+			if pile then
+				self.stroke:setDraggedObject(pile, 'pile')
+			else
+				self:startDrag()
+				self.stroke:setDraggedObject(self, 'baize')
+			end
 		end
 	end
 end
@@ -494,7 +516,13 @@ end
 
 function Baize:strokeTap(s)
 	-- log.info(s.event, s.x, s.y)
-	if s.type == 'tail' then
+	if s.type == 'widget' then
+		local w = s.object
+		if type(w.baizeCmd) == 'string' and type(_G.BAIZE[w.baizeCmd]) == 'function' then
+			self.ui:hideDrawers()
+			self[w.baizeCmd](self)
+		end
+	elseif s.type == 'tail' then
 		-- print('TRACE tap on', tostring(s.object[1]), 'parent', s.object[1].parent.category)
 		-- offer tailTapped to the script first
 		-- the script can then call Pile.tailTapped if it likes
