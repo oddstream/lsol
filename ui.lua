@@ -1,5 +1,7 @@
 -- ui
 
+local log = require 'log'
+
 local Titlebar = require 'ui_titlebar'
 local MenuDrawer = require 'ui_menudrawer'
 local Statusbar = require 'ui_statusbar'
@@ -46,6 +48,14 @@ function UI.new()
 		table.insert(o.menudrawer.widgets, TextWidget.new(winfo))
 	end
 
+	o.typesdrawer = MenuDrawer.new()
+	for k, _ in pairs(_G.VARIANT_TYPES) do
+		local wgt = TextWidget.new({parent=o.typesdrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
+		table.insert(o.typesdrawer.widgets, wgt)
+	end
+
+	o.variantsdrawer = MenuDrawer.new()
+
 	o.statusbar = Statusbar.new()
 		tw = TextWidget.new({parent=o.statusbar, text='Stock', align='left'})
 		table.insert(o.statusbar.widgets, tw)
@@ -54,9 +64,9 @@ function UI.new()
 		tw = TextWidget.new({parent=o.statusbar, text='Complete', align='right'})
 		table.insert(o.statusbar.widgets, tw)
 
-	o.containers = {o.titlebar, o.menudrawer, o.statusbar}
+	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statusbar}
 
-	o.drawers = {o.menudrawer}
+	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer}
 
 	return o
 end
@@ -102,6 +112,24 @@ function UI:toggleMenuDrawer()
 		self.menudrawer:hide()
 	else
 		self.menudrawer:show()
+	end
+end
+
+function UI:showVariantTypesDrawer()
+	self.typesdrawer:show()
+end
+
+function UI:showVariantsDrawer(vtype)
+	self.variantsdrawer.widgets = {}
+	if _G.VARIANT_TYPES[vtype] then
+		for _, v in ipairs(_G.VARIANT_TYPES[vtype]) do
+			local wgt = TextWidget.new({parent=self.variantsdrawer, text=v, baizeCmd='changeVariant', param=v})
+			table.insert(self.variantsdrawer.widgets, wgt)
+		end
+		self.variantsdrawer:layout()
+		self.variantsdrawer:show()
+	else
+		log.error('unknown variant type', vtype)
 	end
 end
 

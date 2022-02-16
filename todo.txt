@@ -2,6 +2,8 @@ could use point {x,y} and rectangle {x, y, width, height}
 but that would be inefficient
 just stick to the same as LÖVE (and raylib) and use x,y,width,height
 
+args on command line to load variant
+
 stuck
 
 script params

@@ -37,6 +37,15 @@ function Settings.new()
 	return o
 end
 
+--[[
+	Each game is granted a single directory on the system where files can be saved through love.filesystem.
+	This is the only directory where love.filesystem can write files.
+	Files that are opened for write or append will always be created in the save directory.
+	The same goes for other operations that involve writing to the filesystem, like createDirectory.
+	Files that are opened for read will be looked for in the save directory, and then in the .love archive (in that order).
+	So if a file with a certain filename (and path) exist in both the .love archive and the save folder, the one in the save directory takes precedence.
+]]
+
 function Settings:load()
 	-- seems to automagically read from love.filesystem.getSaveDirectory()
 	-- which is currently /home/gilbert/.local/share/love/patience
@@ -51,7 +60,7 @@ function Settings:load()
 				self[k] = v
 			end
 		end
-		log.info('settings loaded from', fname)
+		log.info(size, 'bytes of settings loaded from', fname)
 	-- any newly added settings not present in settings.json will be picked up from prototype object
 	-- for k,v in pairs(self) do
 	--   trace('self setting',k,v)
@@ -68,6 +77,7 @@ function Settings:save()
 	-- (creating the directory if needed)
 	-- which is currently /home/gilbert/.local/share/love/patience
 	self.lastVersion = _G.PATIENCE_VERSION
+	self.lastVariant = _G.BAIZE.variantName
 	local data = json.encode(self)
 	local success, message = love.filesystem.write(fname, data)
 	if success then

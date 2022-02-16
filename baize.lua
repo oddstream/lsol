@@ -37,9 +37,7 @@ local Baize = {
 Baize.__index = Baize
 
 function Baize.new()
-	-- local o = {variantName = 'Simple Simon'}
-	-- local o = {variantName = 'Klondike'}
-	local o = {variantName = _G.PATIENCE_SETTINGS.lastVariant}
+	local o = {}
 	setmetatable(o, Baize)
 	o.dragOffset = {x=0, y=0}
 	o.dragStart = {x=0, y=0}
@@ -133,13 +131,13 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 	self.cardShadowTexture = canvas
 end
 
-function Baize:loadScript()
+function Baize:loadScript(vname)
 	-- for v, _ in pairs(_G.PATIENCE_VARIANTS) do
 	-- 	log.info(v)
 	-- end
-	local vinfo = _G.PATIENCE_VARIANTS[self.variantName]
+	local vinfo = _G.PATIENCE_VARIANTS[vname]
 	if not vinfo then
-		log.error('Unknown variant', self.variantName)
+		log.error('Unknown variant', vname)
 		return nil
 	end
 	local fname = 'variants/' .. vinfo.file
@@ -303,6 +301,29 @@ function Baize:toggleMenuDrawer()
 end
 
 function Baize:showVariantTypesDrawer()
+	self.ui:showVariantTypesDrawer()
+end
+
+function Baize:showVariantsDrawer(vtype)
+	log.trace('showshowVariantsDrawer', vtype)
+	self.ui:showVariantsDrawer(vtype)
+end
+
+function Baize:changeVariant(vname)
+	log.info('changing variant from', self.variantName, 'to', vname)
+	local script = _G.BAIZE:loadScript(vname)
+	if script then
+		-- TODO record lost game if not complete
+		self.variantName = vname
+		self.script = script
+		self:resetPiles()
+		self.script:buildPiles()
+		self:layout()
+		self:resetState()
+		self.script:startGame()
+		self:undoPush()
+		self.ui:setTitle(vname)
+	end
 end
 
 function Baize:newDeal()
@@ -520,7 +541,7 @@ function Baize:strokeTap(s)
 		local w = s.object
 		if type(w.baizeCmd) == 'string' and type(_G.BAIZE[w.baizeCmd]) == 'function' then
 			self.ui:hideDrawers()
-			self[w.baizeCmd](self)
+			self[w.baizeCmd](self, w.param)	-- w.param may be nil
 		end
 	elseif s.type == 'tail' then
 		-- print('TRACE tap on', tostring(s.object[1]), 'parent', s.object[1].parent.category)

@@ -81,16 +81,21 @@ function love.load(args)
 	end
 
 	_G.BAIZE = Baize.new()
-	_G.BAIZE.script = _G.BAIZE:loadScript()
+	_G.BAIZE.script = _G.BAIZE:loadScript(_G.PATIENCE_SETTINGS.lastVariant)
+	if not _G.BAIZE.script then
+		_G.BAIZE.script = _G.BAIZE:loadScript('Klondike')
+	end
 	if _G.BAIZE.script then
+		_G.BAIZE.variantName = _G.PATIENCE_SETTINGS.lastVariant
 		_G.BAIZE:resetPiles()
 		_G.BAIZE.script:buildPiles()
-		log.info(#_G.BAIZE.piles, 'piles built')
 		_G.BAIZE:layout()
 		_G.BAIZE:resetState()
 		_G.BAIZE.script:startGame()
 		_G.BAIZE:undoPush()
 		_G.BAIZE.ui:setTitle(_G.BAIZE.variantName)
+	else
+		os.exit()
 	end
 --[[
 	print(love.filesystem.getAppdataDirectory())	-- /home/gilbert/.local/share/
