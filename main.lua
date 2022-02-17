@@ -9,7 +9,9 @@ local Settings = require 'settings'
 _G.PATIENCE_VERSION = '1'
 
 _G.PATIENCE_VARIANTS = {
-	Debug = {file='debug.lua', params={spiderLike=false}},
+	Australian = {file='australian.lua'},
+	['Debug K'] = {file='debug.lua', params={spiderLike=false}},
+	['Debug S'] = {file='debug.lua', params={spiderLike=true}},
 	Freecell = {file='freecell.lua', params={}},
 	Klondike = {file='klondike.lua', params={}},
 	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3}},
@@ -18,8 +20,9 @@ _G.PATIENCE_VARIANTS = {
 
 _G.VARIANT_TYPES = {
 	-- All will automatically be added
-	Freecell = {'Eight Off','Freecell'},
-	Klondike = {'Klondike'},
+	['Forty Thieves'] = {'Forty Thieves', 'Limited'},
+	Freecell = {'Eight Off', 'Freecell'},
+	Klondike = {'Klondike', 'Klondike (Turn Three)'},
 	Places = {'Australian', 'Yukon'},
 	Puzzlers = {'Freecell', 'Penguin', 'Simple Simon'},
 	Spiders = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
@@ -30,9 +33,9 @@ do
 	for k,_ in pairs(_G._G.PATIENCE_VARIANTS) do
 		table.insert(lst, k)
 	end
-	table.sort(lst)
+	-- table.sort(lst)
 	_G.VARIANT_TYPES['All'] = lst
-	table.sort(_G.VARIANT_TYPES)
+	-- table.sort(_G.VARIANT_TYPES)
 	-- for k,_ in pairs(_G.VARIANT_TYPES) do
 	-- 	print(k)
 	-- 	for k2,v2 in pairs(v) do
@@ -54,6 +57,8 @@ _G.PATIENCE_COLORS = {
 	CornflowerBlue = {100,149,237},
 	LightSkyBlue = {135, 206, 250},
 }
+
+_G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
 function love.load(args)
 	-- if args then

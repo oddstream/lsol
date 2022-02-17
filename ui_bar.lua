@@ -1,5 +1,7 @@
 -- bar
 
+local log = require 'log'
+
 local Bar = {}
 Bar.__index = Bar
 
@@ -32,21 +34,28 @@ function Bar:layout()
 	local nextLeft = self.x + self.spacex
 	local nextRight = self.width - self.spacex
 
-	for _, wgt in ipairs(self.widgets) do
-		wgt.width = self.font:getWidth(wgt.text)
-		wgt.height = self.font:getHeight(wgt.text)
+	for i, wgt in ipairs(self.widgets) do
+		-- icon
+		-- text
+		-- icon text
+		if wgt.img then
+			wgt.width = wgt.imgWidth
+			wgt.height = wgt.imgHeight
+		elseif wgt.text then
+			wgt.width = self.font:getWidth(wgt.text)
+			wgt.height = self.font:getHeight(wgt.text)
+		end
 		if wgt.align == 'left' then
 			wgt.x = nextLeft
 			nextLeft = nextLeft + wgt.width + self.spacex
-			wgt.y = (self.height - wgt.height) / 2
 		elseif wgt.align == 'center' then
 			wgt.x = (self.width - wgt.width) / 2
-			wgt.y = (self.height - wgt.height) / 2
 		elseif wgt.align == 'right' then
 			wgt.x = nextRight - wgt.width
 			nextRight = wgt.x - self.spacex
-			wgt.y = (self.height - wgt.height) / 2
 		end
+		wgt.y = (self.height - wgt.height) / 2
+		-- log.trace(i, wgt.text or wgt.icon, wgt.align, wgt.x, wgt.y, wgt.width, wgt.height)
 	end
 end
 

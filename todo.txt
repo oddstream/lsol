@@ -1,21 +1,31 @@
+is this the one you like playing The Most?
+
 could use point {x,y} and rectangle {x, y, width, height}
 but that would be inefficient
 just stick to the same as LÖVE (and raylib) and use x,y,width,height
 
+try as a .zip file in case variants and assets don't load
+
+try on Windows
+
 args on command line to load variant
 
+en/disable collect, undo, goto bookmark widgets
+drawer scrolling
+regular card faces
+decorated card backs
+saved.json
 stuck
-
-script params
-	spider 1, 2, 4 suits
-
-preferences
+sounds
+statistics.json
+settings
+	cards simple/regular
+	powerMoves on/off
 	mirror baize
 	mute sounds
+wikipedia in params
 
 UI
 	copy from csol
-	variant type drawer
-		displays variant picker drawer
 	FAB (collect?)
 

@@ -3,6 +3,7 @@
 
 local log = require 'log'
 
+local Card = require 'card'
 local Util = require 'util'
 
 local Pile = {}
@@ -181,6 +182,9 @@ end
 function Pile:pop()
 	local c = table.remove(self.cards)
 	if c then c.parent = nil end
+	if self.fanType == 'FAN_RIGHT3' or self.fanType == 'FAN_DOWN3' then
+		self:refan(Card.transitionTo)
+	end
 	return c
 end
 

@@ -5,6 +5,7 @@ local log = require 'log'
 local Titlebar = require 'ui_titlebar'
 local MenuDrawer = require 'ui_menudrawer'
 local Statusbar = require 'ui_statusbar'
+local IconWidget = require 'ui_iconwidget'
 local TextWidget = require 'ui_textwidget'
 
 local Util = require 'util'
@@ -31,16 +32,18 @@ function UI.new()
 	o.toasts = {} -- a queue of toasts; oldest to the left
 	o.toastFont = love.graphics.newFont('assets/Roboto-Regular.ttf', 14)
 
-	local tw
+	local wgt
 	o.titlebar = Titlebar.new()
-		tw = TextWidget.new({parent=o.titlebar, text='Menu', align='left', baizeCmd='toggleMenuDrawer'})
-		table.insert(o.titlebar.widgets, tw)
-		tw = TextWidget.new({parent=o.titlebar, text='', align='center'})
-		table.insert(o.titlebar.widgets, tw)
-		tw = TextWidget.new({parent=o.titlebar, text='Undo', align='right', baizeCmd='undo'})
-		table.insert(o.titlebar.widgets, tw)
-		tw = TextWidget.new({parent=o.titlebar, text='Coll', align='right', baizeCmd='collect'})
-		table.insert(o.titlebar.widgets, tw)
+		wgt = IconWidget.new({parent=o.titlebar, icon='menu', align='left', baizeCmd='toggleMenuDrawer'})
+		table.insert(o.titlebar.widgets, wgt)
+
+		wgt = TextWidget.new({parent=o.titlebar, text='', align='center'})
+		table.insert(o.titlebar.widgets, wgt)
+
+		wgt = IconWidget.new({parent=o.titlebar, icon='undo', align='right', baizeCmd='undo'})
+		table.insert(o.titlebar.widgets, wgt)
+		wgt = IconWidget.new({parent=o.titlebar, icon='done', align='right', baizeCmd='collect'})
+		table.insert(o.titlebar.widgets, wgt)
 
 	o.menudrawer = MenuDrawer.new()
 	for _, winfo in ipairs(menuWidgets) do
@@ -50,19 +53,20 @@ function UI.new()
 
 	o.typesdrawer = MenuDrawer.new()
 	for k, _ in pairs(_G.VARIANT_TYPES) do
-		local wgt = TextWidget.new({parent=o.typesdrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
+		wgt = TextWidget.new({parent=o.typesdrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
 		table.insert(o.typesdrawer.widgets, wgt)
 	end
+	table.sort(o.typesdrawer.widgets, function(a, b) return a.text < b.text end)
 
-	o.variantsdrawer = MenuDrawer.new()
+	o.variantsdrawer = MenuDrawer.new({width=320})
 
 	o.statusbar = Statusbar.new()
-		tw = TextWidget.new({parent=o.statusbar, text='Stock', align='left'})
-		table.insert(o.statusbar.widgets, tw)
-		tw = TextWidget.new({parent=o.statusbar, text='', align='center'})
-		table.insert(o.statusbar.widgets, tw)
-		tw = TextWidget.new({parent=o.statusbar, text='Complete', align='right'})
-		table.insert(o.statusbar.widgets, tw)
+		wgt = TextWidget.new({parent=o.statusbar, text='Stock', align='left'})
+		table.insert(o.statusbar.widgets, wgt)
+		wgt = TextWidget.new({parent=o.statusbar, text='', align='center'})
+		table.insert(o.statusbar.widgets, wgt)
+		wgt = TextWidget.new({parent=o.statusbar, text='Complete', align='right'})
+		table.insert(o.statusbar.widgets, wgt)
 
 	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statusbar}
 
@@ -126,6 +130,7 @@ function UI:showVariantsDrawer(vtype)
 			local wgt = TextWidget.new({parent=self.variantsdrawer, text=v, baizeCmd='changeVariant', param=v})
 			table.insert(self.variantsdrawer.widgets, wgt)
 		end
+		table.sort(self.variantsdrawer.widgets, function(a, b) return a.text < b.text end)
 		self.variantsdrawer:layout()
 		self.variantsdrawer:show()
 	else
@@ -141,21 +146,16 @@ end
 
 function UI:toast(message)
 
-	local function comp(a, b)
-		return a.ticksLeft > b.ticksLeft
-	end
-
 	-- if we are already displaying this message, reset ticksLeft and quit
 	for _, t in ipairs(self.toasts) do
 		if t.message == message then
 			t.ticksLeft = 4
-			table.sort(self.toasts, comp)
+			table.sort(self.toasts, function(a, b) return a.ticksLeft > b.ticksLeft end)
 			return
 		end
 	end
 	local t = {message=message, ticksLeft=4 + #self.toasts}
 	table.insert(self.toasts, 1, t)
-	-- table.sort(self.toasts, comp)
 end
 
 function UI:layout()
@@ -198,7 +198,7 @@ function UI:draw()
 		love.graphics.setFont(self.toastFont)
 		local mw = self.toastFont:getWidth(message)
 		local mh = self.toastFont:getHeight(message)
-		local rw = mw + 48
+		local rw = mw + self.toastFont:getWidth('M') * 2
 		love.graphics.rectangle('fill', (sw - rw) / 2, ((sh - 48) / 2) + y, rw, 48)
 		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.print(message, (sw - mw) / 2, ((sh - mh) / 2) + y)

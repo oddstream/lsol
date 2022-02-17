@@ -56,8 +56,6 @@ function Baize:getSavable()
 	return {recycles=self.recycles, bookmark=self.bookmark, piles=piles}
 end
 
-local ord2String = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
-
 function Baize:createCardTextures(ordFilter, suitFilter)
 	assert(self.cardWidth and self.cardWidth ~= 0)
 	assert(self.cardHeight and self.cardHeight ~= 0)
@@ -101,7 +99,7 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 			end
 
 			love.graphics.setFont(self.ordFont)
-			love.graphics.print(ord2String[ord], self.cardWidth / 10, 2)
+			love.graphics.print(_G.ORD2STRING[ord], self.cardWidth / 10, 2)
 
 			love.graphics.setFont(self.suitFont)
 			love.graphics.print(suit, self.cardWidth - self.cardWidth / 10 - self.suitFontSize, 4)
@@ -305,12 +303,14 @@ function Baize:showVariantTypesDrawer()
 end
 
 function Baize:showVariantsDrawer(vtype)
-	log.trace('showshowVariantsDrawer', vtype)
 	self.ui:showVariantsDrawer(vtype)
 end
 
 function Baize:changeVariant(vname)
-	log.info('changing variant from', self.variantName, 'to', vname)
+	log.trace('changing variant from', self.variantName, 'to', vname)
+	if vname == self.variantName then
+		return
+	end
 	local script = _G.BAIZE:loadScript(vname)
 	if script then
 		-- TODO record lost game if not complete
@@ -323,6 +323,8 @@ function Baize:changeVariant(vname)
 		self.script:startGame()
 		self:undoPush()
 		self.ui:setTitle(vname)
+	else
+		self.ui:toast('Do not know how to play ' .. vname)
 	end
 end
 
@@ -500,7 +502,7 @@ function Baize:strokeStart(s)
 	local w = self.ui:findWidgetAt(s.x, s.y)
 	if w then
 		self.stroke:setDraggedObject(w, 'widget')
-		log.info('widget', w.text)
+		-- log.info('widget', w.text or w.icon)
 	else
 		self.ui:hideDrawers()
 

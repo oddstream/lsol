@@ -2,8 +2,6 @@
 
 local CC = {}
 
-local ord2String = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
-
 function CC.EitherProne(cpair)
 	return cpair[1].prone or cpair[2].prone
 end
@@ -13,7 +11,7 @@ function CC.Empty(pile, card)
 		if pile.label == 'X' then
 			return 'Cannot move cards there'
 		end
-		local ordStr = ord2String[card.ord]
+		local ordStr = _G.ORD2STRING[card.ord]
 		if pile.label ~= ordStr then
 			return string.format('Can only accept %s, not %s', pile.label, ordStr)
 		end

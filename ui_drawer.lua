@@ -17,6 +17,10 @@ function Drawer:visible()
 	return self.x == 0
 end
 
+function Drawer:hidden()
+	return self.x == -self.width
+end
+
 function Drawer:show()
 	self.aniState = 'right'
 end
@@ -64,10 +68,12 @@ function Drawer:layout()
 end
 
 function Drawer:draw()
-	love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 255))
-	love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
-	for _, w in ipairs(self.widgets) do
-		w:draw()
+	if not self:hidden() then
+		love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 255))
+		love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
+		for _, w in ipairs(self.widgets) do
+			w:draw()
+		end
 	end
 end
 
