@@ -355,6 +355,7 @@ function Baize:changeVariant(vname)
 		self.script:startGame()
 		self:undoPush()
 		self.ui:updateWidget('title', vname)
+		self.ui:hideFAB()
 	else
 		self.ui:toast('Do not know how to play ' .. vname)
 	end
@@ -465,12 +466,12 @@ function Baize:afterUserMove()
 	self:undoPush()
 	-- TODO we are calculating complete and conformant twice
 	if self:complete() then
-		self.ui:toast('Complete')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 		self:startSpinning()
 	elseif self:conformant() then
-		self.ui:toast('Conformant')
 		self.ui:showFAB{icon='done_all', baizeCmd='collect'}
+	else
+		self.ui:hideFAB()
 	end
 	-- TODO FABs stuck (new deal), can_collect (collect)
 end

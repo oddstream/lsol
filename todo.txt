@@ -10,11 +10,14 @@ try on Windows
 
 args on command line to load variant
 
+BUG Spider Two Suits suitFilter?
 BUG goto bookmark widget en/disable
+tactile widgets
+touch
 drawer scrolling
 regular card faces
 saved.json {variant= undoStack=}
-stuck
+stuck/movable (see gosol)
 sounds
 statistics.json
 settings

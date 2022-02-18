@@ -16,6 +16,9 @@ _G.PATIENCE_VARIANTS = {
 	Klondike = {file='klondike.lua', params={}},
 	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3}},
 	['Simple Simon'] = {file='simplesimon.lua', params={}},
+	Spider = {file='spider.lua', params={packs=2, suitFilter={'♣','♦','♥','♠'}}},
+	['Spider One Suit'] = {file='spider.lua', params={packs=8, suitFilter={'♠'}}},
+	['Spider Two Suits'] = {file='spider.lua', params={packs=4, suitFilter={'♥', '♠'}}},
 }
 
 _G.VARIANT_TYPES = {
