@@ -57,6 +57,10 @@ function Baize:getSavable()
 end
 
 function Baize:createCardTextures(ordFilter, suitFilter)
+	-- LÖVE drawing on the canvas with 0,0 origin at top left
+	-- Ebiten n/a
+	-- gg/fogleman drawing on the canvas with 0,0 origin at top left
+	-- Solar2D
 	assert(self.cardWidth and self.cardWidth ~= 0)
 	assert(self.cardHeight and self.cardHeight ~= 0)
 
@@ -64,9 +68,12 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 	self.ordFont = love.graphics.newFont('assets/Acme-Regular.ttf', self.ordFontSize)
 	self.suitFontSize = self.cardWidth / 3
 	self.suitFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.suitFontSize)
+	self.pipFontSize = self.cardWidth / 4
+	self.pipFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.pipFontSize)
 
 	local canvas
 
+	-- card faces
 	self.cardTextureLibrary = {}
 	for _, ord in ipairs(ordFilter) do
 		for _, suit in ipairs(suitFilter) do
@@ -109,6 +116,7 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 		end
 	end
 
+	-- card back
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 	love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardBackColor'))
@@ -118,9 +126,25 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 	love.graphics.setLineWidth(1)
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
+	local pipWidth = self.pipFont:getWidth('♠')
+	local pipHeight = self.pipFont:getHeight('♠')
+	love.graphics.setFont(self.pipFont)
+	love.graphics.setColor(0,0,0, 0.2)
+	love.graphics.print('♦', self.cardWidth / 2, self.cardHeight / 2 - pipHeight)	-- top right
+	love.graphics.print('♥', self.cardWidth / 2 - pipWidth, self.cardHeight / 2)	-- bottom left
+	love.graphics.setColor(0,0,0, 0.1)
+	love.graphics.print('♣', self.cardWidth / 2 - pipWidth, self.cardHeight / 2 - pipHeight)	-- top left
+	love.graphics.print('♠', self.cardWidth / 2, self.cardHeight / 2)	-- bottom right
+
+	local ox = self.cardWidth / 8
+	local oy = self.cardHeight / 8
+	love.graphics.setLineWidth(4)
+	love.graphics.rectangle('line', ox, oy, self.cardWidth-(ox*2), self.cardHeight-(oy*2))
+
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardBackTexture = canvas
 
+	-- card shadow
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 	love.graphics.setColor(love.math.colorFromBytes(0, 0, 0, 128))
@@ -244,6 +268,7 @@ function Baize:updateFromSaved(saved)
 	end
 
 	self.bookmark = saved.bookmark
+	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
 	self:setRecycles(saved.recycles)	-- updates stock rune
 end
 
@@ -251,23 +276,26 @@ function Baize:undoPush()
 	local saved = self:getSavable()
 	table.insert(self.undoStack, saved)
 
+	self.ui:updateWidget('undo', nil, #self.undoStack > 1)
+	self.ui:updateWidget('restartdeal', nil, #self.undoStack > 1)
+
 	if self.stock:hidden() then
-		self.ui:setStock('')
+		self.ui:updateWidget('stock', '')
 	else
 		if self.waste then
-			self.ui:setStock(string.format('STOCK:%d  WASTE:%d', #self.stock.cards, #self.waste.cards))
+			self.ui:updateWidget('stock', string.format('STOCK:%d  WASTE:%d', #self.stock.cards, #self.waste.cards))
 		else
-			self.ui:setStock(string.format('STOCK:%d', #self.stock.cards))
+			self.ui:updateWidget('stock', string.format('STOCK:%d', #self.stock.cards))
 		end
 	end
 
 	if self:complete() then
-		self.ui:setComplete('COMPLETE')
+		self.ui:updateWidget('complete', 'COMPLETE')
 	elseif self:conformant() then
-		self.ui:setComplete('CONFORMANT')
+		self.ui:updateWidget('complete', 'CONFORMANT')
 	else
 		local percent = self:percentComplete()
-		self.ui:setComplete(string.format('%d%% COMPLETE', percent))
+		self.ui:updateWidget('complete', string.format('%d%% COMPLETE', percent))
 	end
 end
 
@@ -285,6 +313,10 @@ end
 function Baize:undo()
 	if #self.undoStack < 2 then
 		self.ui:toast('Nothing to undo')
+		return
+	end
+	if self:complete() then
+		self.ui:toast('Cannot undo a completed game')
 		return
 	end
 	local _ = self:undoPop()	-- remove current state
@@ -322,13 +354,15 @@ function Baize:changeVariant(vname)
 		self:resetState()
 		self.script:startGame()
 		self:undoPush()
-		self.ui:setTitle(vname)
+		self.ui:updateWidget('title', vname)
 	else
 		self.ui:toast('Do not know how to play ' .. vname)
 	end
 end
 
 function Baize:newDeal()
+	self:stopSpinning()
+	self.ui:hideFAB()
 	for _, p in ipairs(self.piles) do
 		p.cards = {}
 	end
@@ -356,6 +390,7 @@ function Baize:setBookmark()
 	local saved = self:undoPeek()
 	saved.bookmark = self.bookmark
 	saved.recycles = self.recycles
+	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
 	self.ui:toast('Position bookmarked')
 end
 
@@ -369,6 +404,7 @@ function Baize:gotoBookmark()
 		saved = self:undoPop()
 	end
 	self:updateFromSaved(saved)
+	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
 	self:undoPush()
 end
 
@@ -430,10 +466,13 @@ function Baize:afterUserMove()
 	-- TODO we are calculating complete and conformant twice
 	if self:complete() then
 		self.ui:toast('Complete')
+		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
+		self:startSpinning()
 	elseif self:conformant() then
 		self.ui:toast('Conformant')
+		self.ui:showFAB{icon='done_all', baizeCmd='collect'}
 	end
-	-- TODO FABs for complete (new deal), conformant (collect), stuck (new deal), can_collect (collect)
+	-- TODO FABs stuck (new deal), can_collect (collect)
 end
 
 function Baize:findCardAt(x, y)
@@ -543,7 +582,9 @@ function Baize:strokeTap(s)
 		local w = s.object
 		if type(w.baizeCmd) == 'string' and type(_G.BAIZE[w.baizeCmd]) == 'function' then
 			self.ui:hideDrawers()
-			self[w.baizeCmd](self, w.param)	-- w.param may be nil
+			if w.enabled then
+				self[w.baizeCmd](self, w.param)	-- w.param may be nil
+			end
 		end
 	elseif s.type == 'tail' then
 		-- print('TRACE tap on', tostring(s.object[1]), 'parent', s.object[1].parent.category)
@@ -703,6 +744,23 @@ function Baize:collect()
 	end
 	if Util.baizeChanged(outerState, self:stateSnapshot()) then
 		self:afterUserMove()
+	end
+end
+
+function Baize:startSpinning()
+	for _, pile in ipairs(self.piles) do
+		for _, card in ipairs(pile.cards) do
+			card:startSpinning()
+		end
+	end
+end
+
+function Baize:stopSpinning()
+	for _, pile in ipairs(self.piles) do
+		for _, card in ipairs(pile.cards) do
+			card:stopSpinning()
+		end
+		pile:refan(Card.transitionTo)
 	end
 end
 

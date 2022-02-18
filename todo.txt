@@ -10,11 +10,10 @@ try on Windows
 
 args on command line to load variant
 
-en/disable collect, undo, goto bookmark widgets
+BUG goto bookmark widget en/disable
 drawer scrolling
 regular card faces
-decorated card backs
-saved.json
+saved.json {variant= undoStack=}
 stuck
 sounds
 statistics.json
@@ -27,5 +26,4 @@ wikipedia in params
 
 UI
 	copy from csol
-	FAB (collect?)
 

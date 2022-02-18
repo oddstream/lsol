@@ -98,7 +98,7 @@ function love.load(args)
 		_G.BAIZE:resetState()
 		_G.BAIZE.script:startGame()
 		_G.BAIZE:undoPush()
-		_G.BAIZE.ui:setTitle(_G.BAIZE.variantName)
+		_G.BAIZE.ui:updateWidget('title', _G.BAIZE.variantName)
 	else
 		os.exit()
 	end
@@ -148,5 +148,11 @@ function love.keyreleased(key)
 		_G.BAIZE.ui:toast(string.format('Toast %f', math.random()))
 	elseif key == 's' then
 		_G.PATIENCE_SETTINGS:save()
+	elseif key == 'up' then
+		_G.BAIZE:startSpinning()
+	elseif key == 'down' then
+		_G.BAIZE:stopSpinning()
+	elseif key == 'f' then
+		_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
 	end
 end

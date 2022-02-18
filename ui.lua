@@ -7,6 +7,7 @@ local MenuDrawer = require 'ui_menudrawer'
 local Statusbar = require 'ui_statusbar'
 local IconWidget = require 'ui_iconwidget'
 local TextWidget = require 'ui_textwidget'
+local FAB = require 'ui_fab'
 
 local Util = require 'util'
 
@@ -19,10 +20,10 @@ UI.__index = UI
 
 local menuWidgets = {
 	{text='New deal', baizeCmd='newDeal'},
-	{text='Restart deal', baizeCmd='restartDeal'},
+	{text='Restart deal', name='restartdeal', enabled=false, baizeCmd='restartDeal'},
 	{text='Find game...', baizeCmd='showVariantTypesDrawer'},
 	{text='Bookmark', baizeCmd='setBookmark'},
-	{text='Go to bookmark', baizeCmd='gotoBookmark'},
+	{text='Go to bookmark', name='gotobookmark', enabled=false, baizeCmd='gotoBookmark'},
 }
 
 function UI.new()
@@ -34,15 +35,15 @@ function UI.new()
 
 	local wgt
 	o.titlebar = Titlebar.new()
-		wgt = IconWidget.new({parent=o.titlebar, icon='menu', align='left', baizeCmd='toggleMenuDrawer'})
+		wgt = IconWidget.new({parent=o.titlebar, name='menu', icon='menu', align='left', baizeCmd='toggleMenuDrawer'})
 		table.insert(o.titlebar.widgets, wgt)
 
-		wgt = TextWidget.new({parent=o.titlebar, text='', align='center'})
+		wgt = TextWidget.new({parent=o.titlebar, name='title', text='', align='center'})
 		table.insert(o.titlebar.widgets, wgt)
 
-		wgt = IconWidget.new({parent=o.titlebar, icon='undo', align='right', baizeCmd='undo'})
+		wgt = IconWidget.new({parent=o.titlebar, name='undo', icon='undo', align='right', baizeCmd='undo'})
 		table.insert(o.titlebar.widgets, wgt)
-		wgt = IconWidget.new({parent=o.titlebar, icon='done', align='right', baizeCmd='collect'})
+		wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
 		table.insert(o.titlebar.widgets, wgt)
 
 	o.menudrawer = MenuDrawer.new()
@@ -61,11 +62,11 @@ function UI.new()
 	o.variantsdrawer = MenuDrawer.new({width=320})
 
 	o.statusbar = Statusbar.new()
-		wgt = TextWidget.new({parent=o.statusbar, text='Stock', align='left'})
+		wgt = TextWidget.new({parent=o.statusbar, name='stock', text='', align='left'})
 		table.insert(o.statusbar.widgets, wgt)
 		wgt = TextWidget.new({parent=o.statusbar, text='', align='center'})
 		table.insert(o.statusbar.widgets, wgt)
-		wgt = TextWidget.new({parent=o.statusbar, text='Complete', align='right'})
+		wgt = TextWidget.new({parent=o.statusbar, name='complete', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
 	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statusbar}
@@ -93,22 +94,33 @@ function UI:findWidgetAt(x, y)
 			end
 		end
 	end
+	if self.fab then
+		if Util.inRect(x, y, self.fab:screenRect()) then
+			log.trace('FAB found')
+			return self.fab
+		end
+	end
 	return nil
 end
 
-function UI:setTitle(text)
-	self.titlebar.widgets[2].text = text
-	self.titlebar:layout()
-end
-
-function UI:setStock(text)
-	self.statusbar.widgets[1].text = text
-	self.statusbar:layout()
-end
-
-function UI:setComplete(text)
-	self.statusbar.widgets[3].text = text
-	self.statusbar:layout()
+function UI:updateWidget(name, text, enabled)
+	for _, con in ipairs(self.containers) do
+		local layoutRequired = false
+		for _, wgt in ipairs(con.widgets) do
+			-- widgets might not have a .name
+			if wgt.name == name then
+				-- log.trace('updating widget', name, enabled)
+				if text ~= nil and wgt.text ~= text then
+					wgt.text = text
+					layoutRequired = true
+				end
+				if enabled ~= nil then wgt.enabled = enabled end
+			end
+		end
+		if layoutRequired then
+			con:layout()
+		end
+	end
 end
 
 function UI:toggleMenuDrawer()
@@ -144,6 +156,18 @@ function UI:hideDrawers()
 	end
 end
 
+function UI:showFAB(o)
+	if self.fab then
+		self:hideFAB()
+	end
+	self.fab = FAB.new(o)
+	self.fab:layout()
+end
+
+function UI:hideFAB()
+	self.fab = nil
+end
+
 function UI:toast(message)
 
 	-- if we are already displaying this message, reset ticksLeft and quit
@@ -161,6 +185,9 @@ end
 function UI:layout()
 	for _, con in ipairs(self.containers) do
 		con:layout()
+	end
+	if self.fab then
+		self.fab:layout()
 	end
 end
 
@@ -186,6 +213,10 @@ function UI:draw()
 
 	for _, con in ipairs(self.containers) do
 		con:draw()
+	end
+
+	if self.fab then
+		self.fab:draw()
 	end
 
 	local function drawToast(message, y)

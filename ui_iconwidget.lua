@@ -13,6 +13,8 @@ setmetatable(IconWidget, {__index = Widget})
 
 function IconWidget.new(o)
 	setmetatable(o, IconWidget)
+	o.enabled = true
+
 	local fname = 'assets/' .. o.icon .. '.png'
 	local imageData = love.image.newImageData(fname)
 	if not imageData then
@@ -29,7 +31,11 @@ end
 
 function IconWidget:draw()
 	-- very important!: reset color before drawing to canvas to have colors properly displayed
-	love.graphics.setColor(1,1,1,1)
+	if self.enabled then
+		love.graphics.setColor(1,1,1,1)
+	else
+		love.graphics.setColor(0.5,0.5,0.5,1)
+	end
 	if self.img then
 		love.graphics.draw(self.img, self.parent.x + self.x, self.parent.y + self.y)
 	end
