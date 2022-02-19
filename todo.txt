@@ -10,11 +10,16 @@ try on Windows
 
 args on command line to load variant
 
-BUG Spider Two Suits suitFilter?
 BUG goto bookmark widget en/disable
+use love.data to compress saved.json
+https://github.com/healeycodes/boids
+status? virgin, complete, conformant, stuck...
+card rounded corners
 tactile widgets
 touch
 drawer scrolling
+scrunching
+don't grab a spinning card
 regular card faces
 saved.json {variant= undoStack=}
 stuck/movable (see gosol)

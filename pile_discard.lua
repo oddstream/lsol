@@ -18,6 +18,12 @@ function Discard.new(o)
 	return o
 end
 
+function Discard:push(c)
+	Pile.push(self, c)
+	-- Discard cards are always prone
+	c:flipDown()
+end
+
 function Discard:canAcceptCard(c)
 	return 'Cannot move a single card to a Discard'
 end

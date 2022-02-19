@@ -22,7 +22,7 @@ function Spider.new(o)
 end
 
 function Spider:buildPiles()
-	_G.PATIENCE_SETTINGS.fourColorCards = true
+	_G.BAIZE.settings.fourColorCards = true
 
 	log.trace(self.packs, #self.suitFilter)
 	Stock.new({x=1, y=1, packs=self.packs, suitFilter=self.suitFilter})

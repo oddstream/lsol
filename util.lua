@@ -1,6 +1,7 @@
 -- util
 
 local CC = require 'cc'
+local log = require 'log'
 
 local Util = {}
 
@@ -70,6 +71,19 @@ function Util.baizeChanged(old, new)
 		if old[i] ~= new[i] then return true end
 	end
 	return false
+end
+
+function Util.colorBytes(s)
+	local setting = _G.BAIZE.settings[s]
+	if not setting then
+		log.error('No setting for', s)
+		return 0.5, 0.5, 0.5
+	end
+	if not _G.PATIENCE_COLORS[setting] then
+		log.error('No color for', s)
+		return 0.5, 0.5, 0.5
+	end
+	return love.math.colorFromBytes(unpack(_G.PATIENCE_COLORS[setting]))
 end
 
 function Util.makeCardPairs(tail)

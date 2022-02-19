@@ -13,14 +13,13 @@ function Pile.new(o)
 	-- assert(type(o)=='table')
 	-- assert(type(o.x)=='number')
 	-- assert(type(o.y)=='number')
-	setmetatable(o, Pile)
 	o.slot = {x = o.x, y = o.y}
 	o.cards = {}
 	o.faceFanFactorH = 4
 	o.faceFanFactorV = 3
 	o.backFanFactorH = 5
 	o.backFanFactorV = 5
-	return o
+	return setmetatable(o, Pile)
 end
 
 function Pile:getSavable()

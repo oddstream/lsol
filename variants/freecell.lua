@@ -21,7 +21,7 @@ function Freecell.new(o)
 end
 
 function Freecell:buildPiles()
-	_G.PATIENCE_SETTINGS.fourColorCards = false
+	_G.BAIZE.settings.fourColorCards = false
 
 	Stock.new({x=4, y=-4})
 	for x = 1, 4 do

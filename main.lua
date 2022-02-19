@@ -1,12 +1,34 @@
 -- main.lua
 
+local json = require 'json'
 local log = require 'log'
 
 local Card = require 'card'
 local Baize = require 'baize'
-local Settings = require 'settings'
+local Util = require 'util'
 
 _G.PATIENCE_VERSION = '1'
+
+_G.PATIENCE_DEFAULT_SETTINGS = {
+	lastVersion = 0,
+	variantName = 'Klondike',
+	highlightMovable = true,
+	cardTransitionStep = 0.02,
+	cardRatio = 1.357,
+	cardDesign = 'Simple',
+	powerMoves = true,
+	muteSound = false,
+	mirrorBaize = false,
+	baizeColor = 'DarkGreen',
+	cardBackColor = 'CornflowerBlue',
+	cardFaceColor = 'Ivory',
+	cardFaceHighlightColor = 'Gold',
+	clubColor = 'DarkBlue',
+	diamondColor = 'DarkGreen',
+	heartColor = 'Crimson',
+	spadeColor = 'Black',
+	fourColorCards = true,
+}
 
 _G.PATIENCE_VARIANTS = {
 	Australian = {file='australian.lua'},
@@ -63,6 +85,39 @@ _G.PATIENCE_COLORS = {
 
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
+local savedFname = 'savedstate.json'
+
+local function loadJSON()
+	local contents, size = love.filesystem.read(savedFname)
+	if contents then
+		local decoded = json.decode(contents)
+		if not decoded then
+			log.error(savedFname, 'not decoded')
+		else
+			if decoded.settings and decoded.undoStack then
+				log.info('loaded saved from', savedFname)
+				return decoded
+			end
+		end
+	else
+		if type(size) == 'string' then
+			log.error(size)
+		end
+	end
+	return nil
+end
+
+local function saveJSON()
+	local savable = {settings=_G.BAIZE.settings, undoStack=_G.BAIZE.undoStack}
+	local data = json.encode(savable)
+	local success, message = love.filesystem.write(savedFname, data)
+	if success then
+		log.info('game written to', savedFname)
+	else
+		log.error(message)
+	end
+end
+
 function love.load(args)
 	-- if args then
 	-- 	print('args')
@@ -73,10 +128,7 @@ function love.load(args)
 
 	math.randomseed(os.time())
 
-	_G.PATIENCE_SETTINGS = Settings.new()
-
-	love.graphics.setBackgroundColor(_G.PATIENCE_SETTINGS:colorBytes('baizeColor'))
-	love.graphics.setDefaultFilter = 'nearest'
+	love.graphics.setLineStyle('smooth')
 
 	local imageData = love.image.newImageData('assets/appicon.png')
 	if not imageData then
@@ -88,24 +140,45 @@ function love.load(args)
 		end
 	end
 
+	local saved = loadJSON()
+	if not saved then
+		saved = {settings=_G.PATIENCE_DEFAULT_SETTINGS}
+	end
+
 	_G.BAIZE = Baize.new()
-	_G.BAIZE.script = _G.BAIZE:loadScript(_G.PATIENCE_SETTINGS.lastVariant)
-	if not _G.BAIZE.script then
-		_G.BAIZE.script = _G.BAIZE:loadScript('Klondike')
-	end
-	if _G.BAIZE.script then
-		_G.BAIZE.variantName = _G.PATIENCE_SETTINGS.lastVariant
-		_G.BAIZE:resetPiles()
-		_G.BAIZE.script:buildPiles()
-		_G.BAIZE:layout()
-		_G.BAIZE:resetState()
-		_G.BAIZE.script:startGame()
-		_G.BAIZE:undoPush()
-		_G.BAIZE.ui:updateWidget('title', _G.BAIZE.variantName)
+	_G.BAIZE.settings = saved.settings
+	_G.BAIZE.undoStack = saved.undoStack
+	if _G.BAIZE.undoStack then
+		_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
+		if _G.BAIZE.script then
+			_G.BAIZE:resetPiles()
+			_G.BAIZE.script:buildPiles()
+			_G.BAIZE:layout()
+			-- don't reset
+			-- don't startGame
+			_G.BAIZE:undo()	-- pop extra state written when saved
+		else
+			os.exit()
+		end
 	else
-		os.exit()
+		_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
+		if not _G.BAIZE.script then
+			_G.BAIZE.script = _G.BAIZE:loadScript('Klondike')
+		end
+		if _G.BAIZE.script then
+			_G.BAIZE:resetPiles()
+			_G.BAIZE.script:buildPiles()
+			_G.BAIZE:layout()
+			_G.BAIZE:resetState()
+			_G.BAIZE.script:startGame()
+			_G.BAIZE:undoPush()
+		else
+			os.exit()
+		end
 	end
---[[
+	love.graphics.setBackgroundColor(Util.colorBytes('baizeColor'))
+	_G.BAIZE.ui:updateWidget('title', _G.BAIZE.settings.variantName)
+	--[[
 	print(love.filesystem.getAppdataDirectory())	-- /home/gilbert/.local/share/
 	print(love.filesystem.getSourceBaseDirectory())	-- /home/gilbert
 	print(love.filesystem.getUserDirectory())	-- /home/gilbert/
@@ -147,10 +220,11 @@ function love.keyreleased(key)
 		else
 			_G.BAIZE:setBookmark()
 		end
+	elseif key == 'd' then
+		_G.BAIZE:resetSettings()
+		_G.BAIZE.ui:toast('Settings reset to defaults')
 	elseif key == 't' then
 		_G.BAIZE.ui:toast(string.format('Toast %f', math.random()))
-	elseif key == 's' then
-		_G.PATIENCE_SETTINGS:save()
 	elseif key == 'up' then
 		_G.BAIZE:startSpinning()
 	elseif key == 'down' then
@@ -158,4 +232,10 @@ function love.keyreleased(key)
 	elseif key == 'f' then
 		_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
 	end
+end
+
+function love.quit()
+	-- no args
+	_G.BAIZE:undoPush()	-- push extra state, removed when reloaded
+	saveJSON()
 end

@@ -24,7 +24,7 @@ function FAB.new(o)
 
 	local canvas = love.graphics.newCanvas(o.width, o.height)
 	love.graphics.setCanvas(canvas)
-	love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardBackColor'))
+	love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 255))
 	love.graphics.circle('fill', o.width/2, o.height/2, o.width/2)
 	love.graphics.setColor(1,1,1,1)
 	love.graphics.draw(imgIcon, o.width / 4, o.height / 4)
@@ -46,8 +46,8 @@ end
 function FAB:layout()
 	local w, h, _ = love.window.getMode()
 
-	self.x = w - self.width * 2
-	self.y = h - (self.height * 2) - 24
+	self.x = w - (self.width * 1.5)
+	self.y = h - (self.height * 1.5) - 24
 end
 
 function FAB:draw()

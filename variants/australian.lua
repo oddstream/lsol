@@ -22,7 +22,7 @@ end
 
 function Australian:buildPiles()
 	-- log.trace('Australian.buildPiles')
-	_G.PATIENCE_SETTINGS.fourColorCards = true
+	_G.BAIZE.settings.fourColorCards = true
 
 	Stock.new({x=1, y=1})
 	Waste.new({x=2, y=1, fanType='FAN_RIGHT3'})

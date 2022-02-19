@@ -1,5 +1,6 @@
 -- baize
 
+local json = require 'json'
 local log = require 'log'
 
 local Card = require 'card'
@@ -9,8 +10,6 @@ local Util = require 'util'
 local UI = require 'ui'
 
 local Baize = {
-	-- variantName
-
 	-- script
 	-- piles
 
@@ -80,28 +79,28 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 			canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 			love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 
-			love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardFaceColor'))
+			love.graphics.setColor(Util.colorBytes('cardFaceColor'))
 			love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 			love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
 			love.graphics.setLineWidth(1)
 			love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
-			if _G.PATIENCE_SETTINGS.fourColorCards then
+			if self.settings.fourColorCards then
 				if suit == '♣' then
-					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('clubColor'))
+					love.graphics.setColor(Util.colorBytes('clubColor'))
 				elseif suit == '♦' then
-					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('diamondColor'))
+					love.graphics.setColor(Util.colorBytes('diamondColor'))
 				elseif suit == '♥' then
-					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('heartColor'))
+					love.graphics.setColor(Util.colorBytes('heartColor'))
 				elseif suit == '♠' then
-					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('spadeColor'))
+					love.graphics.setColor(Util.colorBytes('spadeColor'))
 				end
 			else
 				if suit == '♦' or suit == '♥' then
-					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('heartColor'))
+					love.graphics.setColor(Util.colorBytes('heartColor'))
 				else
-					love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('spadeColor'))
+					love.graphics.setColor(Util.colorBytes('spadeColor'))
 				end
 			end
 
@@ -119,27 +118,28 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 	-- card back
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
-	love.graphics.setColor(_G.PATIENCE_SETTINGS:colorBytes('cardBackColor'))
+	love.graphics.setColor(Util.colorBytes('cardBackColor'))
 	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.setLineWidth(1)
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
-	local pipWidth = self.pipFont:getWidth('♠')
-	local pipHeight = self.pipFont:getHeight('♠')
-	love.graphics.setFont(self.pipFont)
-	love.graphics.setColor(0,0,0, 0.2)
-	love.graphics.print('♦', self.cardWidth / 2, self.cardHeight / 2 - pipHeight)	-- top right
-	love.graphics.print('♥', self.cardWidth / 2 - pipWidth, self.cardHeight / 2)	-- bottom left
-	love.graphics.setColor(0,0,0, 0.1)
-	love.graphics.print('♣', self.cardWidth / 2 - pipWidth, self.cardHeight / 2 - pipHeight)	-- top left
-	love.graphics.print('♠', self.cardWidth / 2, self.cardHeight / 2)	-- bottom right
-
-	local ox = self.cardWidth / 8
-	local oy = self.cardHeight / 8
-	love.graphics.setLineWidth(4)
-	love.graphics.rectangle('line', ox, oy, self.cardWidth-(ox*2), self.cardHeight-(oy*2))
+	if self.settings.cardDesign == 'Regular' then
+		local pipWidth = self.pipFont:getWidth('♠')
+		local pipHeight = self.pipFont:getHeight('♠')
+		love.graphics.setFont(self.pipFont)
+		love.graphics.setColor(0,0,0, 0.2)
+		love.graphics.print('♦', self.cardWidth / 2, self.cardHeight / 2 - pipHeight)	-- top right
+		love.graphics.print('♥', self.cardWidth / 2 - pipWidth, self.cardHeight / 2)	-- bottom left
+		love.graphics.setColor(0,0,0, 0.1)
+		love.graphics.print('♣', self.cardWidth / 2 - pipWidth, self.cardHeight / 2 - pipHeight)	-- top left
+		love.graphics.print('♠', self.cardWidth / 2, self.cardHeight / 2)	-- bottom right
+		local ox = self.cardWidth / 8
+		local oy = self.cardHeight / 8
+		love.graphics.setLineWidth(4)
+		love.graphics.rectangle('line', ox, oy, self.cardWidth-(ox*2), self.cardHeight-(oy*2))
+	end
 
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardBackTexture = canvas
@@ -339,14 +339,14 @@ function Baize:showVariantsDrawer(vtype)
 end
 
 function Baize:changeVariant(vname)
-	log.trace('changing variant from', self.variantName, 'to', vname)
-	if vname == self.variantName then
+	log.trace('changing variant from', self.settings.variantName, 'to', vname)
+	if vname == self.settings.variantName then
 		return
 	end
 	local script = _G.BAIZE:loadScript(vname)
 	if script then
 		-- TODO record lost game if not complete
-		self.variantName = vname
+		self.settings.variantName = vname
 		self.script = script
 		self:resetPiles()
 		self.script:buildPiles()
@@ -426,7 +426,7 @@ function Baize:layout()
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = slotWidth - pilePaddingX
 	self.cardRadius = self.cardWidth / 15
-	local slotHeight = slotWidth * _G.PATIENCE_SETTINGS['cardRatio']
+	local slotHeight = slotWidth * self.settings.cardRatio
 	local pilePaddingY = slotHeight / 10
 	self.cardHeight = slotHeight - pilePaddingY
 	local leftMargin = self.cardWidth / 2 + pilePaddingX
@@ -548,13 +548,15 @@ function Baize:strokeStart(s)
 
 		local card, pile = self:findCardAt(s.x, s.y)
 		if card then
-			local tail = pile:makeTail(card)
-			for _, c in ipairs(tail) do
-				c:startDrag()
+			if not card.spinning then
+				local tail = pile:makeTail(card)
+				for _, c in ipairs(tail) do
+					c:startDrag()
+				end
+				-- hide the cursor
+				self.stroke:setDraggedObject(tail, 'tail')
+				-- print(tostring(card), 'tail len', #tail)
 			end
-			-- hide the cursor
-			self.stroke:setDraggedObject(tail, 'tail')
-			-- print(tostring(card), 'tail len', #tail)
 		else
 			pile = self:findPileAt(s.x, s.y)
 			if pile then
@@ -763,6 +765,16 @@ function Baize:stopSpinning()
 		end
 		pile:refan(Card.transitionTo)
 	end
+end
+
+function Baize:resetSettings()
+	self.settings = {}
+	for k,v in pairs(_G.PATIENCE_DEFAULT_SETTINGS) do
+		self.settings[k] = v
+	end
+	-- for k,v in pairs(self.settings) do
+	-- 	log.trace(k, v)
+	-- end
 end
 
 function Baize:update(dt)
