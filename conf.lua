@@ -8,5 +8,5 @@ function love.conf(t)
 	t.window.height = 1024
 	t.window.title = 'Patience'
 	t.window.resizable = true
-	-- TODO add t.window.icon
+	t.window.icon = 'assets/appicon.png'
 end

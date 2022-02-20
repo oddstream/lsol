@@ -2,6 +2,8 @@
 
 local log = require 'log'
 
+local Util = require 'util'
+
 local FAB = {}
 FAB.__index = FAB
 
@@ -52,7 +54,15 @@ end
 
 function FAB:draw()
 	if self.texture then
-		love.graphics.draw(self.texture, self.x, self.y)
+		local x, y = self.x, self.y
+		local mx, my = love.mouse.getPosition()
+		if self.baizeCmd and Util.inRect(mx, my, self:screenRect()) then
+			if love.mouse.isDown(1) then
+				x = x + 2
+				y = y + 2
+			end
+		end
+		love.graphics.draw(self.texture, x, y)
 	end
 end
 

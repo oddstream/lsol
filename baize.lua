@@ -1,6 +1,6 @@
 -- baize
 
-local json = require 'json'
+local bitser = require 'bitser'
 local log = require 'log'
 
 local Card = require 'card'
@@ -45,6 +45,26 @@ function Baize.new()
 	o.bookmark = 0
 	o.ui = UI.new()
 	return o
+end
+
+function Baize:loadSettings()
+	local fname = 'settings.bitser'
+	local settings
+	local info = love.filesystem.getInfo(fname)
+	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
+		settings = bitser.loadLoveFile(fname)
+		log.info('loaded', fname)
+	else
+		log.info('not loading', fname)
+	end
+	self.settings = settings or _G.PATIENCE_DEFAULT_SETTINGS
+end
+
+function Baize:saveSettings()
+	local fname = 'settings.bitser'
+	self.settings.lastVersion = _G.PATIENCE_VERSION
+	bitser.dumpLoveFile(fname, self.settings)
+	log.info('saved', fname)
 end
 
 function Baize:getSavable()
@@ -324,6 +344,30 @@ function Baize:undo()
 	assert(saved)
 	self:updateFromSaved(saved)
 	self:undoPush()	-- replace current state
+end
+
+function Baize:loadUndoStack()
+	local fname = 'undoStack.bitser'
+	local undoStack
+	local info = love.filesystem.getInfo(fname)
+	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
+		undoStack = bitser.loadLoveFile(fname)
+		log.info('loaded', fname)
+	else
+		log.info('not loading', fname)
+	end
+	self.undoStack = undoStack	-- it's ok for this to be nil
+end
+
+function Baize:saveUndoStack()
+	local fname = 'undoStack.bitser'
+	if self:complete() then
+		love.filesystem.remove(fname)
+	else
+		self:undoPush()
+		bitser.dumpLoveFile(fname, self.undoStack)
+		log.info('saved', fname)
+	end
 end
 
 function Baize:toggleMenuDrawer()

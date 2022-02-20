@@ -16,6 +16,9 @@ Klondike.__index = Klondike
 
 function Klondike.new(o)
 	o = o or {}
+	if o.suitFilter then
+		log.warn('Klondike has a suitFilter!')
+	end
 	setmetatable(o, Klondike)
 	o.turn = o.turn or 1
 	return o

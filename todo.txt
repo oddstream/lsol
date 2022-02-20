@@ -6,24 +6,25 @@ just stick to the same as LÖVE (and raylib) and use x,y,width,height
 
 try as a .zip file in case variants and assets don't load
 
-try on Windows
-
 args on command line to load variant
 
 BUG goto bookmark widget en/disable
-use love.data to compress saved.json
+BUG card image not found after switching suitFilter variants (not properly understood)
+parameterize UI colors
+
 https://github.com/healeycodes/boids
 status? virgin, complete, conformant, stuck...
 card rounded corners
-tactile widgets
 touch
-drawer scrolling
+drawer scrolling (when we have enough variants in All)
 scrunching
-don't grab a spinning card
 regular card faces
-saved.json {variant= undoStack=}
 stuck/movable (see gosol)
-sounds
+sounds (copy from opsole)
+	https://github.com/EmmanuelOga/columns
+	LS.newSoundData()
+	source = LA.newSource()
+	source:play()
 statistics.json
 settings
 	cards simple/regular

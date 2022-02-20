@@ -3,6 +3,7 @@
 local log = require 'log'
 
 local Widget = require 'ui_widget'
+local Util = require 'util'
 
 local IconWidget = {
 	-- icon name
@@ -31,13 +32,23 @@ end
 
 function IconWidget:draw()
 	-- very important!: reset color before drawing to canvas to have colors properly displayed
+	local x, y = self.parent.x + self.x, self.parent.y + self.y
 	if self.enabled then
-		love.graphics.setColor(1,1,1,1)
+		local mx, my = love.mouse.getPosition()
+		if self.baizeCmd and Util.inRect(mx, my, self:screenRect()) then
+			love.graphics.setColor(1,1,1,1)
+			if love.mouse.isDown(1) then
+				x = x + 2
+				y = y + 2
+			end
+		else
+			love.graphics.setColor(0.9,0.9,0.9,1)
+		end
 	else
 		love.graphics.setColor(0.5,0.5,0.5,1)
 	end
 	if self.img then
-		love.graphics.draw(self.img, self.parent.x + self.x, self.parent.y + self.y)
+		love.graphics.draw(self.img, x, y)
 	end
 end
 

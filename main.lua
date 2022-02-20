@@ -1,6 +1,5 @@
 -- main.lua
 
-local json = require 'json'
 local log = require 'log'
 
 local Card = require 'card'
@@ -32,8 +31,8 @@ _G.PATIENCE_DEFAULT_SETTINGS = {
 
 _G.PATIENCE_VARIANTS = {
 	Australian = {file='australian.lua'},
-	['Debug K'] = {file='debug.lua', params={spiderLike=false}},
-	['Debug S'] = {file='debug.lua', params={spiderLike=true}},
+	['Debug Klon'] = {file='debug.lua', params={spiderLike=false}},
+	['Debug Spid'] = {file='debug.lua', params={spiderLike=true}},
 	Freecell = {file='freecell.lua', params={}},
 	Klondike = {file='klondike.lua', params={}},
 	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3}},
@@ -85,39 +84,6 @@ _G.PATIENCE_COLORS = {
 
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
-local savedFname = 'savedstate.json'
-
-local function loadJSON()
-	local contents, size = love.filesystem.read(savedFname)
-	if contents then
-		local decoded = json.decode(contents)
-		if not decoded then
-			log.error(savedFname, 'not decoded')
-		else
-			if decoded.settings and decoded.undoStack then
-				log.info('loaded saved from', savedFname)
-				return decoded
-			end
-		end
-	else
-		if type(size) == 'string' then
-			log.error(size)
-		end
-	end
-	return nil
-end
-
-local function saveJSON()
-	local savable = {settings=_G.BAIZE.settings, undoStack=_G.BAIZE.undoStack}
-	local data = json.encode(savable)
-	local success, message = love.filesystem.write(savedFname, data)
-	if success then
-		log.info('game written to', savedFname)
-	else
-		log.error(message)
-	end
-end
-
 function love.load(args)
 	-- if args then
 	-- 	print('args')
@@ -130,24 +96,9 @@ function love.load(args)
 
 	love.graphics.setLineStyle('smooth')
 
-	local imageData = love.image.newImageData('assets/appicon.png')
-	if not imageData then
-		log.error('could load assets/appicon.png')
-	else
-		local success = love.window.setIcon(imageData)
-		if not success then
-			log.error('could set icon assets/appicon.png')
-		end
-	end
-
-	local saved = loadJSON()
-	if not saved then
-		saved = {settings=_G.PATIENCE_DEFAULT_SETTINGS}
-	end
-
 	_G.BAIZE = Baize.new()
-	_G.BAIZE.settings = saved.settings
-	_G.BAIZE.undoStack = saved.undoStack
+	_G.BAIZE:loadSettings()
+	_G.BAIZE:loadUndoStack()
 	if _G.BAIZE.undoStack then
 		_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
 		if _G.BAIZE.script then
@@ -163,7 +114,8 @@ function love.load(args)
 	else
 		_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
 		if not _G.BAIZE.script then
-			_G.BAIZE.script = _G.BAIZE:loadScript('Klondike')
+			_G.BAIZE.settings.variantName = 'Klondike'
+			_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
 		end
 		if _G.BAIZE.script then
 			_G.BAIZE:resetPiles()
@@ -236,6 +188,6 @@ end
 
 function love.quit()
 	-- no args
-	_G.BAIZE:undoPush()	-- push extra state, removed when reloaded
-	saveJSON()
+	_G.BAIZE:saveSettings()
+	_G.BAIZE:saveUndoStack()
 end
