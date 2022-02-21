@@ -11,7 +11,7 @@ args on command line to load variant
 BUG goto bookmark widget en/disable
 BUG card image not found after switching suitFilter variants (not properly understood)
 parameterize UI colors
-
+variant with reserve(s) Duchess
 https://github.com/healeycodes/boids
 status? virgin, complete, conformant, stuck...
 card rounded corners
@@ -20,11 +20,6 @@ drawer scrolling (when we have enough variants in All)
 scrunching
 regular card faces
 stuck/movable (see gosol)
-sounds (copy from opsole)
-	https://github.com/EmmanuelOga/columns
-	LS.newSoundData()
-	source = LA.newSource()
-	source:play()
 statistics.json
 settings
 	cards simple/regular

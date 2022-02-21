@@ -11,13 +11,9 @@ function Cell.new(o)
 	o.fanType = 'FAN_NONE'
 	o.moveType = 'MOVE_ONE'
 	o = Pile.new(o)
-	setmetatable(o, Cell)
-
-	-- register the new pile with the baize
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.cells, o)
-
-	return o
+	return setmetatable(o, Cell)
 end
 
 function Cell:canAcceptCard(c)

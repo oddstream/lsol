@@ -10,10 +10,9 @@ function Reserve.new(o)
 	o = Pile.new(o)
 	o.category = 'Reserve'
 	o.moveType = 'MOVE_ONE'
-	setmetatable(o, Reserve)
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.reserves, o)
-	return o
+	return setmetatable(o, Reserve)
 end
 
 -- vtable functions

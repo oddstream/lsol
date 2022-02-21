@@ -816,13 +816,24 @@ function Baize:stopSpinning()
 end
 
 function Baize:resetSettings()
+	local vname = self.settings.variantName
 	self.settings = {}
 	for k,v in pairs(_G.PATIENCE_DEFAULT_SETTINGS) do
 		self.settings[k] = v
 	end
+	self.settings.variantName = vname
 	-- for k,v in pairs(self.settings) do
 	-- 	log.trace(k, v)
 	-- end
+end
+
+function Baize:wikipedia()
+	local url = self.script.wikipedia
+	if not url then
+		self.ui:toast('No wikipedia entry for ' .. self.settings.variantName, 'blip')
+	else
+		love.system.openURL(url)
+	end
 end
 
 function Baize:update(dt)

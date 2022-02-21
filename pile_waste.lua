@@ -10,10 +10,9 @@ function Waste.new(o)
 	o = Pile.new(o)
 	o.category = 'Waste'
 	o.moveType = 'MOVE_ONE'
-	setmetatable(o, Waste)
 	table.insert(_G.BAIZE.piles, o)
 	_G.BAIZE.waste = o
-	return o
+	return setmetatable(o, Waste)
 end
 
 -- vtable functions

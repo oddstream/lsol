@@ -22,7 +22,7 @@ _G.PATIENCE_DEFAULT_SETTINGS = {
 	cardBackColor = 'CornflowerBlue',
 	cardFaceColor = 'Ivory',
 	cardFaceHighlightColor = 'Gold',
-	clubColor = 'DarkBlue',
+	clubColor = 'Indigo',
 	diamondColor = 'DarkGreen',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
@@ -30,20 +30,22 @@ _G.PATIENCE_DEFAULT_SETTINGS = {
 }
 
 _G.PATIENCE_VARIANTS = {
-	Australian = {file='australian.lua'},
+	Australian = {file='australian.lua', params={wikipedia='https://en.wikipedia.org/wiki/Australian_Patience'}},
+	Duchess = {file='duchess.lua', params={wikipedia='https://en.wikipedia.org/wiki/Duchess_(solitaire)'}},
 	['Debug Klon'] = {file='debug.lua', params={spiderLike=false}},
 	['Debug Spid'] = {file='debug.lua', params={spiderLike=true}},
-	Freecell = {file='freecell.lua', params={}},
-	Klondike = {file='klondike.lua', params={}},
-	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3}},
-	['Simple Simon'] = {file='simplesimon.lua', params={}},
-	Spider = {file='spider.lua', params={packs=2, suitFilter={'♣','♦','♥','♠'}}},
-	['Spider One Suit'] = {file='spider.lua', params={packs=8, suitFilter={'♠'}}},
-	['Spider Two Suits'] = {file='spider.lua', params={packs=4, suitFilter={'♥', '♠'}}},
+	Freecell = {file='freecell.lua', params={wikipedia='https://en.wikipedia.org/wiki/FreeCell'}},
+	Klondike = {file='klondike.lua', params={wikipedia='https://en.wikipedia.org/wiki/Klondike_(solitaire)'}},
+	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3, wikipedia='https://en.wikipedia.org/wiki/Klondike_(solitaire)'}},
+	['Simple Simon'] = {file='simplesimon.lua', params={wikipedia='https://en.wikipedia.org/wiki/Simple_Simon_(solitaire)'}},
+	Spider = {file='spider.lua', params={packs=2, suitFilter={'♣','♦','♥','♠'}, wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'}},
+	['Spider One Suit'] = {file='spider.lua', params={packs=8, suitFilter={'♠'}, wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'}},
+	['Spider Two Suits'] = {file='spider.lua', params={packs=4, suitFilter={'♥', '♠'}, wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'}},
 }
 
 _G.VARIANT_TYPES = {
 	-- All will automatically be added
+	Canfield = {'Duchess'},
 	['Forty Thieves'] = {'Forty Thieves', 'Limited'},
 	Freecell = {'Eight Off', 'Freecell'},
 	Klondike = {'Klondike', 'Klondike (Turn Three)'},

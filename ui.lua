@@ -28,6 +28,7 @@ local menuWidgets = {
 	{text='Go to bookmark', name='gotobookmark', enabled=false, baizeCmd='gotoBookmark'},
 	{},
 	{text='Settings...'},
+	{text='Wikipedia...', baizeCmd='wikipedia'},
 }
 
 function UI.new()

@@ -115,14 +115,16 @@ function Util.moveCard(src, dst)
 end
 
 function Util.moveCards(src, idx, dst)
-	if dst.category == 'Foundation' then
-		Util.play('move2')
-	else
-		Util.play('move4')
-	end
 	local tmp = {}
 	while #src.cards >= idx do
 		table.insert(tmp, src:pop())
+	end
+	if dst.category == 'Foundation' or dst.category == 'Discard' then
+		Util.play('move2')
+	elseif #tmp > 1 then
+		Util.play('move4')
+	else
+		Util.play('move1')
 	end
 	while #tmp > 0 do
 		dst:push(table.remove(tmp))
