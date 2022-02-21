@@ -58,8 +58,15 @@ function Drawer:layout()
 	local nexty = self.spacey
 
 	for _, wgt in ipairs(self.widgets) do
-		wgt.width = self.font:getWidth(wgt.text)
-		wgt.height = self.font:getHeight(wgt.text)
+		if wgt.text then
+			-- TextWidget
+			wgt.width = self.font:getWidth(wgt.text)
+			wgt.height = self.font:getHeight(wgt.text)
+		else
+			-- DivWidget
+			wgt.width = self.width
+			-- wgt.height = 36
+		end
 		wgt.x = self.spacex
 		wgt.y = nexty
 

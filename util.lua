@@ -139,4 +139,25 @@ function Util.unsortedPairs(pile, fn)
 	return unsorted
 end
 
+local soundRandomizer = {
+	fan = {'fan1', 'fan2'},
+	place = {'place1','place2','place3','place4'},
+	shove = {'shove1','shove2','shove3','shove4'},
+}
+
+function Util.play(name)
+	if _G.BAIZE.settings.muteSound then
+		return
+	end
+	local trueName
+	local lst = soundRandomizer[name]
+	if lst then
+		local n = math.random(#lst)
+		trueName = lst[n]
+	else
+		trueName = name
+	end
+	love.audio.play(_G.PATIENCE_SOUNDS[trueName])
+end
+
 return Util

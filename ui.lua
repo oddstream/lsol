@@ -7,6 +7,7 @@ local MenuDrawer = require 'ui_menudrawer'
 local Statusbar = require 'ui_statusbar'
 local IconWidget = require 'ui_iconwidget'
 local TextWidget = require 'ui_textwidget'
+local DivWidget = require 'ui_divwidget'
 local FAB = require 'ui_fab'
 
 local Util = require 'util'
@@ -22,8 +23,11 @@ local menuWidgets = {
 	{text='New deal', baizeCmd='newDeal'},
 	{text='Restart deal', name='restartdeal', enabled=false, baizeCmd='restartDeal'},
 	{text='Find game...', baizeCmd='showVariantTypesDrawer'},
-	{text='Bookmark', baizeCmd='setBookmark'},
+	{},
+	{text='Set bookmark', baizeCmd='setBookmark'},
 	{text='Go to bookmark', name='gotobookmark', enabled=false, baizeCmd='gotoBookmark'},
+	{},
+	{text='Settings...'},
 }
 
 function UI.new()
@@ -31,7 +35,7 @@ function UI.new()
 	setmetatable(o, UI)
 
 	o.toasts = {} -- a queue of toasts; oldest to the left
-	o.toastFont = love.graphics.newFont('assets/Roboto-Regular.ttf', 14)
+	o.toastFont = love.graphics.newFont('assets/fonts/Roboto-Regular.ttf', 14)
 
 	local wgt
 	o.titlebar = Titlebar.new()
@@ -49,7 +53,11 @@ function UI.new()
 	o.menudrawer = MenuDrawer.new()
 	for _, winfo in ipairs(menuWidgets) do
 		winfo.parent = o.menudrawer
-		table.insert(o.menudrawer.widgets, TextWidget.new(winfo))
+		if winfo.text then
+			table.insert(o.menudrawer.widgets, TextWidget.new(winfo))
+		else
+			table.insert(o.menudrawer.widgets, DivWidget.new(winfo))
+		end
 	end
 
 	o.typesdrawer = MenuDrawer.new()
@@ -168,7 +176,7 @@ function UI:hideFAB()
 	self.fab = nil
 end
 
-function UI:toast(message)
+function UI:toast(message, soundName)
 
 	-- if we are already displaying this message, reset ticksLeft and quit
 	for _, t in ipairs(self.toasts) do
@@ -180,6 +188,10 @@ function UI:toast(message)
 	end
 	local t = {message=message, ticksLeft=4 + #self.toasts}
 	table.insert(self.toasts, 1, t)
+
+	if soundName then
+		Util.play(soundName)
+	end
 end
 
 function UI:layout()

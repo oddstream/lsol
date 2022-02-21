@@ -16,7 +16,7 @@ function IconWidget.new(o)
 	setmetatable(o, IconWidget)
 	o.enabled = true
 
-	local fname = 'assets/' .. o.icon .. '.png'
+	local fname = 'assets/icons/' .. o.icon .. '.png'
 	local imageData = love.image.newImageData(fname)
 	if not imageData then
 		log.error('could not load', fname)

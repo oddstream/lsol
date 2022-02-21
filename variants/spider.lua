@@ -105,7 +105,7 @@ function Spider:unsortedPairs(pile)
 end
 
 function Spider:pileTapped(pile)
-	_G.BAIZE.ui:toast('No more cards in Stock')
+	_G.BAIZE.ui:toast('No more cards in Stock', 'blip')
 end
 
 function Spider:tailTapped(tail)
@@ -122,7 +122,7 @@ function Spider:tailTapped(tail)
 			end
 		end
 		if emptyTabs > 0 and tabCards >= #_G.BAIZE.tableaux then
-			_G.BAIZE.ui:toast("All empty tableaux must be filled before dealing a new row")
+			_G.BAIZE.ui:toast("All empty tableaux must be filled before dealing a new row", 'blip')
 		else
 			for _, tab in ipairs(_G.BAIZE.tableaux) do
 				Util.moveCard(_G.BAIZE.stock, tab)

@@ -12,7 +12,7 @@ function Statusbar.new()
 
 	o.height = 24
 	o.align = 'bottom'
-	o.font = love.graphics.newFont('assets/Roboto-Medium.ttf', 14)
+	o.font = love.graphics.newFont('assets/fonts/Roboto-Medium.ttf', 14)
 	o.spacex = o.font:getWidth('_')
 	o.widgets = {}
 

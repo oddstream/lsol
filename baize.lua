@@ -84,11 +84,11 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 	assert(self.cardHeight and self.cardHeight ~= 0)
 
 	self.ordFontSize = self.cardWidth / 3
-	self.ordFont = love.graphics.newFont('assets/Acme-Regular.ttf', self.ordFontSize)
+	self.ordFont = love.graphics.newFont('assets/fonts/Acme-Regular.ttf', self.ordFontSize)
 	self.suitFontSize = self.cardWidth / 3
-	self.suitFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.suitFontSize)
+	self.suitFont = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.suitFontSize)
 	self.pipFontSize = self.cardWidth / 4
-	self.pipFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.pipFontSize)
+	self.pipFont = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.pipFontSize)
 
 	local canvas
 
@@ -332,11 +332,11 @@ end
 
 function Baize:undo()
 	if #self.undoStack < 2 then
-		self.ui:toast('Nothing to undo')
+		self.ui:toast('Nothing to undo', 'blip')
 		return
 	end
 	if self:complete() then
-		self.ui:toast('Cannot undo a completed game')
+		self.ui:toast('Cannot undo a completed game', 'blip')
 		return
 	end
 	local _ = self:undoPop()	-- remove current state
@@ -396,12 +396,13 @@ function Baize:changeVariant(vname)
 		self.script:buildPiles()
 		self:layout()
 		self:resetState()
+		self.ui:toast('Starting a new game of ' .. self.settings.variantName)
 		self.script:startGame()
 		self:undoPush()
 		self.ui:updateWidget('title', vname)
 		self.ui:hideFAB()
 	else
-		self.ui:toast('Do not know how to play ' .. vname)
+		self.ui:toast('Do not know how to play ' .. vname, 'blip')
 	end
 end
 
@@ -416,6 +417,7 @@ function Baize:newDeal()
 	end
 	self.stock:shuffle()
 	self:resetState()
+	self.ui:toast('Starting a new game of ' .. self.settings.variantName)
 	self.script:startGame()
 	self:undoPush()
 end
@@ -441,7 +443,7 @@ end
 
 function Baize:gotoBookmark()
 	if self.bookmark == 0 then
-		self.ui:toast('No bookmark')
+		self.ui:toast('No bookmark', 'blip')
 		return
 	end
 	local saved
@@ -477,8 +479,8 @@ function Baize:layout()
 	local topMargin = 48 + pilePaddingY
 
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
-		self.labelFont = love.graphics.newFont('assets/Acme-Regular.ttf', self.cardWidth)
-		self.runeFont = love.graphics.newFont('assets/DejaVuSans.ttf', self.cardWidth)
+		self.labelFont = love.graphics.newFont('assets/fonts/Acme-Regular.ttf', self.cardWidth)
+		self.runeFont = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.cardWidth)
 		self:createCardTextures(self.stock.ordFilter, self.stock.suitFilter)
 	end
 
@@ -510,6 +512,7 @@ function Baize:afterUserMove()
 	self:undoPush()
 	-- TODO we are calculating complete and conformant twice
 	if self:complete() then
+		self.ui:toast('Completed a game of ' .. self.settings.variantName, 'complete')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 		self:startSpinning()
 	elseif self:conformant() then
@@ -681,17 +684,17 @@ function Baize:strokeStop(s)
 			else
 				local err = src:canMoveTail(tail)
 				if err then
-					self.ui:toast(err)
+					self.ui:toast(err, 'blip')
 					for _, c in ipairs(tail) do c:cancelDrag() end
 				else
 					err = dst:canAcceptTail(tail)
 					if err then
-						self.ui:toast(err)
+						self.ui:toast(err, 'blip')
 						for _, c in ipairs(tail) do c:cancelDrag() end
 					else
 						err = self.script:tailMoveError(tail)
 						if err then
-							self.ui:toast(err)
+							self.ui:toast(err, 'blip')
 							for _, c in ipairs(tail) do c:cancelDrag() end
 						else
 							for _, c in ipairs(tail) do c:stopDrag() end
@@ -749,14 +752,14 @@ function Baize:recycleWasteToStock()
 		end
 		self:setRecycles(self.recycles - 1)
 		if self.recycles == 0 then
-			self.ui:toast('No more recycles')
+			self.ui:toast('No more recycles', 'blip')
 		elseif self.recycles == 1 then
 			self.ui:toast('One more recycle')
 		elseif self.recycles < 10 then
 			self.ui:toast(string.format('%d recycles remaining', self.recycles))
 		end
 	else
-		self.ui:toast('No more recycles')
+		self.ui:toast('No more recycles', 'blip')
 	end
 end
 

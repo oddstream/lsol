@@ -4,6 +4,7 @@ local log = require 'log'
 
 local Card = require 'card'
 local Pile = require 'pile'
+local Util = require 'util'
 
 local Stock = {}
 Stock.__index = Stock   -- Stock's own __index looks in Stock for methods
@@ -53,6 +54,7 @@ end
 
 function Stock:shuffle()
 	log.info('shuffling cards')
+	-- Util.play('shuffle')
 	for i = #self.cards, 2, -1 do
 		local j = math.random(i)
 		if i ~= j then

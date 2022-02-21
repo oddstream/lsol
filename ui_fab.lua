@@ -12,7 +12,7 @@ function FAB.new(o)
 	assert(o.baizeCmd)
 	setmetatable(o, FAB)
 
-	local fname = 'assets/' .. o.icon .. '.png'
+	local fname = 'assets/icons/' .. o.icon .. '.png'
 	local imageData = love.image.newImageData(fname)
 	local imgIcon
 	if not imageData then

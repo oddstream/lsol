@@ -14,7 +14,7 @@ function Titlebar.new()
 
 	o.height = 48
 	o.align = 'top'
-	o.font = love.graphics.newFont('assets/Roboto-Medium.ttf', 24)
+	o.font = love.graphics.newFont('assets/fonts/Roboto-Medium.ttf', 24)
 	o.spacex = o.font:getWidth('_')
 	o.widgets = {}
 
