@@ -133,8 +133,10 @@ end
 
 function UI:toggleMenuDrawer()
 	if self.menudrawer:visible() then
+		Util.play('menuclose')
 		self.menudrawer:hide()
 	else
+		Util.play('menuopen')
 		self.menudrawer:show()
 	end
 end
@@ -153,6 +155,7 @@ function UI:showVariantsDrawer(vtype)
 		table.sort(self.variantsdrawer.widgets, function(a, b) return a.text < b.text end)
 		self.variantsdrawer:layout()
 		self.variantsdrawer:show()
+		Util.play('menuopen')
 	else
 		log.error('unknown variant type', vtype)
 	end

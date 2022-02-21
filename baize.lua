@@ -339,6 +339,7 @@ function Baize:undo()
 		self.ui:toast('Cannot undo a completed game', 'blip')
 		return
 	end
+	Util.play('undo')
 	local _ = self:undoPop()	-- remove current state
 	local saved = self:undoPop()
 	assert(saved)
@@ -396,7 +397,7 @@ function Baize:changeVariant(vname)
 		self.script:buildPiles()
 		self:layout()
 		self:resetState()
-		self.ui:toast('Starting a new game of ' .. self.settings.variantName)
+		self.ui:toast('Starting a new game of ' .. self.settings.variantName, 'deal')
 		self.script:startGame()
 		self:undoPush()
 		self.ui:updateWidget('title', vname)
@@ -417,7 +418,7 @@ function Baize:newDeal()
 	end
 	self.stock:shuffle()
 	self:resetState()
-	self.ui:toast('Starting a new game of ' .. self.settings.variantName)
+	self.ui:toast('Starting a new game of ' .. self.settings.variantName, 'deal')
 	self.script:startGame()
 	self:undoPush()
 end

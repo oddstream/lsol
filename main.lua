@@ -83,16 +83,16 @@ _G.PATIENCE_COLORS = {
 }
 
 _G.PATIENCE_SOUNDS = {
-	fan1 = love.audio.newSource('assets/sounds/cardFan1.wav', 'static'),
-	fan2 = love.audio.newSource('assets/sounds/cardFan2.wav', 'static'),
-	place1 = love.audio.newSource('assets/sounds/cardPlace1.wav', 'static'),
-	place2 = love.audio.newSource('assets/sounds/cardPlace2.wav', 'static'),
-	place3 = love.audio.newSource('assets/sounds/cardPlace3.wav', 'static'),
-	place4 = love.audio.newSource('assets/sounds/cardPlace4.wav', 'static'),
-	shove1 = love.audio.newSource('assets/sounds/cardShove1.wav', 'static'),
-	shove2 = love.audio.newSource('assets/sounds/cardShove2.wav', 'static'),
-	shove3 = love.audio.newSource('assets/sounds/cardShove3.wav', 'static'),
-	shove4 = love.audio.newSource('assets/sounds/cardShove4.wav', 'static'),
+	deal = love.audio.newSource('assets/sounds/cardFan1.wav', 'static'),
+	load = love.audio.newSource('assets/sounds/cardFan2.wav', 'static'),
+	move1 = love.audio.newSource('assets/sounds/cardPlace3.wav', 'static'),
+	move2 = love.audio.newSource('assets/sounds/cardPlace4.wav', 'static'),
+	move3 = love.audio.newSource('assets/sounds/cardPlace1.wav', 'static'),
+	move4 = love.audio.newSource('assets/sounds/cardPlace2.wav', 'static'),
+	undo = love.audio.newSource('assets/sounds/cardOpenPackage2.wav', 'static'),
+	menuopen = love.audio.newSource('assets/sounds/cardSlide1.wav', 'static'),
+	menuclose = love.audio.newSource('assets/sounds/cardSlide2.wav', 'static'),
+	uitap =  love.audio.newSource('assets/sounds/cardSlide8.wav', 'static'),
 	complete = love.audio.newSource('assets/sounds/complete.wav', 'static'),
 	blip = love.audio.newSource('assets/sounds/249895__alienxxx__blip2.wav', 'static'),
 }
@@ -109,7 +109,7 @@ function love.load(args)
 
 	math.randomseed(os.time())
 
-	love.graphics.setLineStyle('smooth')
+	-- love.graphics.setLineStyle('smooth')
 
 	_G.BAIZE = Baize.new()
 	_G.BAIZE:loadSettings()
@@ -122,7 +122,7 @@ function love.load(args)
 			_G.BAIZE:layout()
 			-- don't reset
 			-- don't startGame
-			_G.BAIZE.ui:toast('Resuming a saved game of ' .. _G.BAIZE.settings.variantName)
+			_G.BAIZE.ui:toast('Resuming a saved game of ' .. _G.BAIZE.settings.variantName, 'load')
 			_G.BAIZE:undo()	-- pop extra state written when saved
 		else
 			os.exit()
@@ -138,7 +138,7 @@ function love.load(args)
 			_G.BAIZE.script:buildPiles()
 			_G.BAIZE:layout()
 			_G.BAIZE:resetState()
-			_G.BAIZE.ui:toast('Starting a new game of ' .. _G.BAIZE.settings.variantName)
+			_G.BAIZE.ui:toast('Starting a new game of ' .. _G.BAIZE.settings.variantName, 'deal')
 			_G.BAIZE.script:startGame()
 			_G.BAIZE:undoPush()
 		else

@@ -103,6 +103,11 @@ end
 function Util.moveCard(src, dst)
 	local c = src:pop()
 	if c then
+		if dst.category == 'Foundation' then
+			Util.play('move2')
+		else
+			Util.play('move1')
+		end
 		dst:push(c)
 		src:flipUpExposedCard()
 	end
@@ -110,6 +115,11 @@ function Util.moveCard(src, dst)
 end
 
 function Util.moveCards(src, idx, dst)
+	if dst.category == 'Foundation' then
+		Util.play('move2')
+	else
+		Util.play('move4')
+	end
 	local tmp = {}
 	while #src.cards >= idx do
 		table.insert(tmp, src:pop())
@@ -139,25 +149,12 @@ function Util.unsortedPairs(pile, fn)
 	return unsorted
 end
 
-local soundRandomizer = {
-	fan = {'fan1', 'fan2'},
-	place = {'place1','place2','place3','place4'},
-	shove = {'shove1','shove2','shove3','shove4'},
-}
-
 function Util.play(name)
 	if _G.BAIZE.settings.muteSound then
 		return
 	end
-	local trueName
-	local lst = soundRandomizer[name]
-	if lst then
-		local n = math.random(#lst)
-		trueName = lst[n]
-	else
-		trueName = name
-	end
-	love.audio.play(_G.PATIENCE_SOUNDS[trueName])
+	-- _G.PATIENCE_SOUNDS[name]:seek(0)
+	love.audio.play(_G.PATIENCE_SOUNDS[name])
 end
 
 return Util
