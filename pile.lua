@@ -195,6 +195,26 @@ function Pile:push(c)
 	-- c:setBaizePos(x, y)
 end
 
+function Pile:bury(ord)
+	for i, c in ipairs(self.cards) do
+		if c.ord == ord then
+			self.cards[i], self.cards[1] = self.cards[1], self.cards[i]
+			return c
+		end
+	end
+	return nil
+end
+
+function Pile:disinter(ord)
+	for i, c in ipairs(self.cards) do
+		if c.ord == ord then
+			self.cards[i], self.cards[#self.cards] = self.cards[#self.cards], self.cards[i]
+			return c
+		end
+	end
+	return nil
+end
+
 function Pile:flipUpExposedCard()
 	if self.category ~= 'Stock' then
 		local c = self:peek()
@@ -413,13 +433,19 @@ function Pile:draw()
 	love.graphics.setLineWidth(1)
 	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	if self.label then
+		local scale
+		if #self.label > 1 then
+			scale = 0.8
+		else
+			scale = 1.0
+		end
 		love.graphics.setFont(b.labelFont)
 		love.graphics.print(self.label,
 			x + b.cardWidth / 2,
 			y + b.cardHeight / 2,
 			0,	-- orientation
-			1,	-- x scale
-			1,	-- y scale
+			scale,	-- x scale
+			scale,	-- y scale
 			b.labelFont:getWidth(self.label) / 2,
 			b.labelFont:getHeight(self.label) / 2)
 	end

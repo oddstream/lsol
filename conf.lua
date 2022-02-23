@@ -6,7 +6,10 @@ function love.conf(t)
 	t.modules.joystick = false
 	t.window.width = 1024
 	t.window.height = 1024
-	t.window.title = 'Patience'
+	t.window.title = 'LÕVE Solitaire'
 	t.window.resizable = true
 	t.window.icon = 'assets/appicon.png'
+
+	t.modules.joystick = false
+	t.modules.physics = false
 end

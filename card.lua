@@ -259,12 +259,14 @@ function Card:draw()
 		(cw - scw) / 2, 0)
 	else
 		if self:transitioning() then
-			local xoffset = b.cardWidth / 33
-			local yoffset = b.cardHeight / 33
+			local xoffset, yoffset = 2, 2
+			-- local xoffset = b.cardWidth / 66
+			-- local yoffset = b.cardHeight / 66
 			love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
 		elseif self:dragging() then
-			local xoffset = b.cardWidth / 33
-			local yoffset = b.cardHeight / 33
+			local xoffset, yoffset = 2, 2
+			-- local xoffset = b.cardWidth / 66
+			-- local yoffset = b.cardHeight / 66
 			love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
 			-- this looks intuitively better than "lifting" the card with offset * 2
 			-- even though "lifting" it (moving it up/left towards the light source) would be more "correct"

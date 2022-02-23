@@ -114,6 +114,14 @@ function Util.moveCard(src, dst)
 	return c
 end
 
+function Util.moveCardByOrd(src, dst, ord)
+	local c = src:disinter(ord)
+	if c then
+		return Util.moveCard(src, dst)
+	end
+	return nil
+end
+
 function Util.moveCards(src, idx, dst)
 	local tmp = {}
 	while #src.cards >= idx do
@@ -156,6 +164,7 @@ function Util.play(name)
 		return
 	end
 	-- _G.PATIENCE_SOUNDS[name]:seek(0)
+	love.audio.stop()
 	love.audio.play(_G.PATIENCE_SOUNDS[name])
 end
 

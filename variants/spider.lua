@@ -15,10 +15,10 @@ Spider.__index = Spider
 
 function Spider.new(o)
 	assert(o)
+	o.wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'
 	o.packs = o.packs or 2
 	o.suitFilter = o.suitFilter or {'♣','♦','♥','♠'}
-	setmetatable(o, Spider)
-	return o
+	return setmetatable(o, Spider)
 end
 
 function Spider:buildPiles()

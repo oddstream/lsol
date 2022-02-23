@@ -23,9 +23,7 @@ Duchess.__index = Duchess
 
 function Duchess.new(o)
 	o = o or {}
-	if o.suitFilter then
-		log.warn('Duchess has a suitFilter!')
-	end
+	o.wikipedia='https://en.wikipedia.org/wiki/Duchess_(solitaire)'
 	return setmetatable(o, Duchess)
 end
 

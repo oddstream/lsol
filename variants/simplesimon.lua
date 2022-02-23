@@ -15,8 +15,8 @@ SimpleSimon.__index = SimpleSimon
 
 function SimpleSimon.new(o)
 	o = o or {}
-	setmetatable(o, SimpleSimon)
-	return o
+	o.wikipedia='https://en.wikipedia.org/wiki/Simple_Simon_(solitaire)'
+	return setmetatable(o, SimpleSimon)
 end
 
 function SimpleSimon:buildPiles()

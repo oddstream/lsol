@@ -16,12 +16,9 @@ Klondike.__index = Klondike
 
 function Klondike.new(o)
 	o = o or {}
-	if o.suitFilter then
-		log.warn('Klondike has a suitFilter!')
-	end
-	setmetatable(o, Klondike)
+	o.wikipedia='https://en.wikipedia.org/wiki/Klondike_(solitaire)'
 	o.turn = o.turn or 1
-	return o
+	return setmetatable(o, Klondike)
 end
 
 function Klondike:buildPiles()
@@ -126,7 +123,6 @@ function Klondike:tailTapped(tail)
 			Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
 		end
 	else
-		log.trace('tap on card from pile', pile.category)
 		pile:tailTapped(tail)
 	end
 end

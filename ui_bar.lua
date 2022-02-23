@@ -47,12 +47,12 @@ function Bar:layout()
 		end
 		if wgt.align == 'left' then
 			wgt.x = nextLeft
-			nextLeft = nextLeft + wgt.width + self.spacex
+			nextLeft = nextLeft + wgt.width + (self.spacex * 3)
 		elseif wgt.align == 'center' then
 			wgt.x = (self.width - wgt.width) / 2
 		elseif wgt.align == 'right' then
 			wgt.x = nextRight - wgt.width
-			nextRight = wgt.x - self.spacex
+			nextRight = wgt.x - (self.spacex * 3)
 		end
 		wgt.y = (self.height - wgt.height) / 2
 		-- log.trace(i, wgt.text or wgt.icon, wgt.align, wgt.x, wgt.y, wgt.width, wgt.height)

@@ -16,6 +16,7 @@ Australian.__index = Australian
 
 function Australian.new(o)
 	o = o or {}
+	o.wikipedia='https://en.wikipedia.org/wiki/Australian_Patience'
 	setmetatable(o, Australian)
 	return o
 end

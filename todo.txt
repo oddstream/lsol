@@ -8,24 +8,37 @@ try as a .zip file in case variants and assets don't load
 
 args on command line to load variant
 
+rename to lsol
+forty dealAces (move specified card)
+forty.lua
+	busy aces
+	josephine
+stats and settings shoud be in json
+	statistics.json
+	settings.json
+no sound when restarting deal
 BUG goto bookmark widget en/disable
 parameterize UI colors
 https://github.com/healeycodes/boids
 status? virgin, complete, conformant, stuck...
 card rounded corners
 touch
+	love.touchpressed
+	love.touchmoved
+	love.touchreleased
 drawer scrolling (when we have enough variants in All)
-scrunching
+scrunching (from gosol)
 regular card faces
 stuck/movable (see gosol)
-statistics.json
-settings
+settings UI
 	cards simple/regular
 	cards 2/4 color
 	powerMoves on/off
 	mirror baize on/off
 	mute sounds on/off
+https://love2d.org/wiki/love.displayrotated
 
 UI
 	copy from csol
+	https://github.com/flamendless/Slab/wiki
 

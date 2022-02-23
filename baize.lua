@@ -466,7 +466,6 @@ function Baize:layout()
 			if pile.slot.x > maxSlotX then
 				-- Duchess rule
 				if pile.fanType == 'FAN_RIGHT3' or pile.fanType == 'FAN_RIGHT' then
-					log.trace('Duchess rule')
 					maxSlotX = pile.slot.x + 1
 				else
 					maxSlotX = pile.slot.x
@@ -492,7 +491,7 @@ function Baize:layout()
 		self:createCardTextures()
 	end
 
-	log.info('card width, height', self.cardWidth, self.cardHeight)
+	-- log.info('card width, height', self.cardWidth, self.cardHeight)
 
 	for _, pile in ipairs(self.piles) do
 		pile:setBaizePos(
@@ -520,7 +519,7 @@ function Baize:afterUserMove()
 	self:undoPush()
 	-- TODO we are calculating complete and conformant twice
 	if self:complete() then
-		self.ui:toast(self.settings.variantName .. ' complete')
+		self.ui:toast(self.settings.variantName .. ' complete', 'complete')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 		self:startSpinning()
 	elseif self:conformant() then

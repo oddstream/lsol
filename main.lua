@@ -23,34 +23,40 @@ _G.PATIENCE_DEFAULT_SETTINGS = {
 	cardFaceColor = 'Ivory',
 	cardFaceHighlightColor = 'Gold',
 	clubColor = 'Indigo',
-	diamondColor = 'DarkGreen',
+	diamondColor = 'OrangeRed',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
 	fourColorCards = true,
 }
 
 _G.PATIENCE_VARIANTS = {
-	Australian = {file='australian.lua', params={wikipedia='https://en.wikipedia.org/wiki/Australian_Patience'}},
-	Duchess = {file='duchess.lua', params={wikipedia='https://en.wikipedia.org/wiki/Duchess_(solitaire)'}},
+	Australian = {file='australian.lua', params={}},
+	Duchess = {file='duchess.lua', params={}},
 	['Debug Klon'] = {file='debug.lua', params={spiderLike=false}},
 	['Debug Spid'] = {file='debug.lua', params={spiderLike=true}},
-	Freecell = {file='freecell.lua', params={wikipedia='https://en.wikipedia.org/wiki/FreeCell'}},
-	Klondike = {file='klondike.lua', params={wikipedia='https://en.wikipedia.org/wiki/Klondike_(solitaire)'}},
-	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3, wikipedia='https://en.wikipedia.org/wiki/Klondike_(solitaire)'}},
-	['Simple Simon'] = {file='simplesimon.lua', params={wikipedia='https://en.wikipedia.org/wiki/Simple_Simon_(solitaire)'}},
+	Freecell = {file='freecell.lua', params={}},
+	Klondike = {file='klondike.lua', params={}},
+	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3}},
+	['Forty Thieves'] = {file='forty.lua', params={tabs=10, cardsPerTab=4}},
+	Limited = {file='forty.lua', params={tabs=12, cardsPerTab=3}},
+	Lucas = {file='forty.lua', params={tabs=13, cardsPerTab=3, dealAces=true}},
 	Penguin = {file='penguin.lua'},
-	Spider = {file='spider.lua', params={packs=2, suitFilter={'♣','♦','♥','♠'}, wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'}},
-	['Spider One Suit'] = {file='spider.lua', params={packs=8, suitFilter={'♠'}, wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'}},
-	['Spider Two Suits'] = {file='spider.lua', params={packs=4, suitFilter={'♥', '♠'}, wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'}},
+	['Simple Simon'] = {file='simplesimon.lua', params={}},
+	Spider = {file='spider.lua', params={packs=2, suitFilter={'♣','♦','♥','♠'}}},
+	['Spider One Suit'] = {file='spider.lua', params={packs=8, suitFilter={'♠'}}},
+	['Spider Two Suits'] = {file='spider.lua', params={packs=4, suitFilter={'♥', '♠'}}},
+	Yukon = {file='yukon.lua', params={}},
+	['Yukon Relaxed'] = {file='yukon.lua', params={relaxed=true}},
+	['Yukon Cells'] = {file='yukon.lua', params={cells=true}},
 }
 
 _G.VARIANT_TYPES = {
 	-- All will automatically be added
 	Canfield = {'Duchess'},
-	['Forty Thieves'] = {'Forty Thieves', 'Limited'},
+	['Forty Thieves'] = {'Forty Thieves', 'Limited', 'Lucas'},
 	Freecell = {'Eight Off', 'Freecell'},
 	Klondike = {'Klondike', 'Klondike (Turn Three)'},
-	Places = {'Australian', 'Yukon'},
+	Places = {'Australian', 'Yukon', 'Yukon Relaxed'},
 	Puzzlers = {'Freecell', 'Penguin', 'Simple Simon'},
 	Spiders = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
 }
@@ -74,15 +80,24 @@ end
 _G.PATIENCE_COLORS = {
 	Black = {0,0,0},
 	White = {1,1,1},
+	Red = {255,0,0},
+	Teal = {0,128,128},
+	OrangeRed = {255,69,0},
 	DarkGreen = {0,100,0},
 	Ivory = {255,255,240},
 	Crimson = {220,20,60},
+	Salmon = {250,128,114},
 	DarkBlue = {0,0,139},
 	Silver = {192,192,192},
 	Indigo = {75,0,130},
 	Gold = {255,215,0},
 	CornflowerBlue = {100,149,237},
 	LightSkyBlue = {135, 206, 250},
+	DarkSlateGray = {47,79,79},
+
+	UiBackground = {0x32,0x32,0x32,0xff},
+	UiForeground = {1,1,1,1},
+	UiHover = {255,215,0},	-- Gold
 }
 
 _G.PATIENCE_SOUNDS = {
@@ -208,6 +223,12 @@ function love.keyreleased(key)
 	elseif key == '4' then
 		_G.BAIZE:fourColorCards()
 	end
+end
+
+function love.wheelmoved(x, y)
+	_G.BAIZE:startDrag()
+	_G.BAIZE:dragBy(x*(_G.BAIZE.cardWidth/2),y*(_G.BAIZE.cardHeight/2))
+	_G.BAIZE:stopDrag()
 end
 
 function love.quit()
