@@ -4,7 +4,6 @@ local log = require 'log'
 
 local Card = require 'card'
 local Pile = require 'pile'
-local Util = require 'util'
 
 local Stock = {}
 Stock.__index = Stock   -- Stock's own __index looks in Stock for methods

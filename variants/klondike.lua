@@ -25,9 +25,6 @@ function Klondike.new(o)
 end
 
 function Klondike:buildPiles()
-	-- log.trace('Klondike.buildPiles')
-	_G.BAIZE.settings.fourColorCards = false
-
 	Stock.new({x=1, y=1})
 	Waste.new({x=2, y=1, fanType='FAN_RIGHT3'})
 	for x = 5, 8 do

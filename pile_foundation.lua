@@ -11,10 +11,9 @@ function Foundation.new(o)
 	o.fanType = 'FAN_NONE'
 	o.moveType = 'MOVE_NONE'
 	o = Pile.new(o)
-	setmetatable(o, Foundation)
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.foundations, o)
-  return o
+  return setmetatable(o, Foundation)
 end
 
 -- vtable functions

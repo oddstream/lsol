@@ -20,8 +20,6 @@ function SimpleSimon.new(o)
 end
 
 function SimpleSimon:buildPiles()
-	_G.BAIZE.settings.fourColorCards = true
-
 	Stock.new({x=4, y=-4})
 	for x = 4, 7 do
 		Discard.new({x=x, y=1})

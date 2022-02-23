@@ -11,11 +11,9 @@ function Discard.new(o)
 	o.fanType = 'FAN_NONE'
 	o.moveType = 'MOVE_NONE'
 	o = Pile.new(o)
-	setmetatable(o, Discard)
-	-- register the new pile with the baize
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.discards, o)
-	return o
+	return setmetatable(o, Discard)
 end
 
 function Discard:push(c)

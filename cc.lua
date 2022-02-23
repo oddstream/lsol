@@ -49,7 +49,7 @@ function CC.UpSuitWrap(cpair)
 	elseif cpair[1].ord == cpair[2].ord - 1 then
 		-- up, eg 3 on a 2
 	else
-		return 'Cards must go up in rank (Kings on Aces allowed)'
+		return 'Cards must go up in rank (Aces on Kings allowed)'
 	end
 	return nil
 end
@@ -59,6 +59,20 @@ function CC.DownSuit(cpair)
 		return 'Cards must be the same suit'
 	end
 	return CC.Down(cpair)
+end
+
+function CC.DownSuitWrap(cpair)
+	if cpair[1].suit ~= cpair[2].suit then
+		return 'Cards must be the same suit'
+	end
+	if cpair[1].ord == 1 and cpair[2].ord == 13 then
+		-- King on Ace
+	elseif cpair[1].ord - 1 == cpair[2].ord then
+		-- down, eg 2 on a 3
+	else
+		return 'Cards must go down in rank (Kings on Aces allowed)'
+	end
+	return nil
 end
 
 function CC.DownAltColor(cpair)

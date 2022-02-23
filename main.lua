@@ -38,6 +38,7 @@ _G.PATIENCE_VARIANTS = {
 	Klondike = {file='klondike.lua', params={wikipedia='https://en.wikipedia.org/wiki/Klondike_(solitaire)'}},
 	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3, wikipedia='https://en.wikipedia.org/wiki/Klondike_(solitaire)'}},
 	['Simple Simon'] = {file='simplesimon.lua', params={wikipedia='https://en.wikipedia.org/wiki/Simple_Simon_(solitaire)'}},
+	Penguin = {file='penguin.lua'},
 	Spider = {file='spider.lua', params={packs=2, suitFilter={'♣','♦','♥','♠'}, wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'}},
 	['Spider One Suit'] = {file='spider.lua', params={packs=8, suitFilter={'♠'}, wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'}},
 	['Spider Two Suits'] = {file='spider.lua', params={packs=4, suitFilter={'♥', '♠'}, wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'}},
@@ -202,6 +203,10 @@ function love.keyreleased(key)
 		_G.BAIZE:stopSpinning()
 	elseif key == 'f' then
 		_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
+	elseif key == '2' then
+		_G.BAIZE:twoColorCards()
+	elseif key == '4' then
+		_G.BAIZE:fourColorCards()
 	end
 end
 

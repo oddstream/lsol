@@ -10,14 +10,10 @@ setmetatable(Tableau, {__index = Pile})
 
 function Tableau.new(o)
 	o = Pile.new(o)
-	setmetatable(o, Tableau)
-
 	o.category = 'Tableau'
-	-- register the new pile with the baize
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.tableaux, o)
-
-	return o
+	return setmetatable(o, Tableau)
 end
 
 function Tableau:canAcceptCard(c)

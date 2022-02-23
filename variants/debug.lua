@@ -21,8 +21,6 @@ function Debug.new(o)
 end
 
 function Debug:buildPiles()
-	_G.BAIZE.settings.fourColorCards = true
-
 	Stock.new({x=4, y=-4})
 	for x = 5.5, 8.5 do
 		if self.spiderLike then

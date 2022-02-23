@@ -75,7 +75,8 @@ function Baize:getSavable()
 	return {recycles=self.recycles, bookmark=self.bookmark, piles=piles}
 end
 
-function Baize:createCardTextures(ordFilter, suitFilter)
+function Baize:createCardTextures()
+	-- PFTMB create textures for all possible cards, even if current variant has ordFilter and suitFilter
 	-- LÖVE drawing on the canvas with 0,0 origin at top left
 	-- Ebiten n/a
 	-- gg/fogleman drawing on the canvas with 0,0 origin at top left
@@ -94,8 +95,8 @@ function Baize:createCardTextures(ordFilter, suitFilter)
 
 	-- card faces
 	self.cardTextureLibrary = {}
-	for _, ord in ipairs(ordFilter) do
-		for _, suit in ipairs(suitFilter) do
+	for _, ord in ipairs{1,2,3,4,5,6,7,8,9,10,11,12,13} do
+		for _, suit in ipairs{'♣','♦','♥','♠'} do
 			canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 			love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 
@@ -463,7 +464,13 @@ function Baize:layout()
 	for _, pile in ipairs(self.piles) do
 		if not (pile.slot.x < 0 or pile.slot.y < 0) then
 			if pile.slot.x > maxSlotX then
-				maxSlotX = pile.slot.x
+				-- Duchess rule
+				if pile.fanType == 'FAN_RIGHT3' or pile.fanType == 'FAN_RIGHT' then
+					log.trace('Duchess rule')
+					maxSlotX = pile.slot.x + 1
+				else
+					maxSlotX = pile.slot.x
+				end
 			end
 		end
 	end
@@ -482,7 +489,7 @@ function Baize:layout()
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
 		self.labelFont = love.graphics.newFont('assets/fonts/Acme-Regular.ttf', self.cardWidth)
 		self.runeFont = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.cardWidth)
-		self:createCardTextures(self.stock.ordFilter, self.stock.suitFilter)
+		self:createCardTextures()
 	end
 
 	log.info('card width, height', self.cardWidth, self.cardHeight)
@@ -513,7 +520,7 @@ function Baize:afterUserMove()
 	self:undoPush()
 	-- TODO we are calculating complete and conformant twice
 	if self:complete() then
-		self.ui:toast('Completed a game of ' .. self.settings.variantName, 'complete')
+		self.ui:toast(self.settings.variantName .. ' complete')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 		self:startSpinning()
 	elseif self:conformant() then
@@ -813,6 +820,16 @@ function Baize:stopSpinning()
 		end
 		pile:refan(Card.transitionTo)
 	end
+end
+
+function Baize:twoColorCards()
+	self.settings.fourColorCards = false
+	self:createCardTextures()
+end
+
+function Baize:fourColorCards()
+	self.settings.fourColorCards = true
+	self:createCardTextures()
 end
 
 function Baize:resetSettings()

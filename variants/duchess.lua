@@ -31,8 +31,6 @@ end
 
 function Duchess:buildPiles()
 	-- log.trace('Duchess.buildPiles')
-	_G.BAIZE.settings.fourColorCards = false
-
 	Stock.new{x=1, y=2}
 
 	for i = 1, 4 do
@@ -145,7 +143,6 @@ function Duchess:tailTapped(tail)
 	if pile == _G.BAIZE.stock and #tail == 1 then
 		Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
 	else
-		log.trace('tap on card from pile', pile.category)
 		pile:tailTapped(tail)
 	end
 end

@@ -9,9 +9,7 @@ try as a .zip file in case variants and assets don't load
 args on command line to load variant
 
 BUG goto bookmark widget en/disable
-BUG card image not found after switching suitFilter variants (not properly understood)
 parameterize UI colors
-variant with reserve(s) Duchess
 https://github.com/healeycodes/boids
 status? virgin, complete, conformant, stuck...
 card rounded corners
@@ -23,10 +21,10 @@ stuck/movable (see gosol)
 statistics.json
 settings
 	cards simple/regular
+	cards 2/4 color
 	powerMoves on/off
-	mirror baize
-	mute sounds
-wikipedia in params
+	mirror baize on/off
+	mute sounds on/off
 
 UI
 	copy from csol
