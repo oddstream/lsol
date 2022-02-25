@@ -14,9 +14,9 @@ _G.PATIENCE_DEFAULT_SETTINGS = {
 	highlightMovable = true,
 	cardTransitionStep = 0.02,
 	cardRatio = 1.357,
-	cardDesign = 'Simple',
+	simpleCards = true,
 	powerMoves = true,
-	muteSound = false,
+	muteSounds = false,
 	mirrorBaize = false,
 	baizeColor = 'DarkGreen',
 	cardBackColor = 'CornflowerBlue',
@@ -52,13 +52,13 @@ _G.PATIENCE_VARIANTS = {
 
 _G.VARIANT_TYPES = {
 	-- All will automatically be added
-	Canfield = {'Duchess'},
-	['Forty Thieves'] = {'Forty Thieves', 'Limited', 'Lucas'},
-	Freecell = {'Eight Off', 'Freecell'},
-	Klondike = {'Klondike', 'Klondike (Turn Three)'},
-	Places = {'Australian', 'Yukon', 'Yukon Relaxed'},
-	Puzzlers = {'Freecell', 'Penguin', 'Simple Simon'},
-	Spiders = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
+	['Canfield >'] = {'Duchess'},
+	['Forty Thieves >'] = {'Forty Thieves', 'Limited', 'Lucas'},
+	['Freecell >'] = {'Eight Off', 'Freecell'},
+	['Klondike >'] = {'Klondike', 'Klondike (Turn Three)'},
+	['Places >'] = {'Australian', 'Yukon', 'Yukon Relaxed'},
+	['Puzzlers >'] = {'Freecell', 'Penguin', 'Simple Simon'},
+	['Spiders >'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
 }
 
 do
@@ -67,7 +67,7 @@ do
 		table.insert(lst, k)
 	end
 	-- table.sort(lst)
-	_G.VARIANT_TYPES['All'] = lst
+	_G.VARIANT_TYPES['All >'] = lst
 	-- table.sort(_G.VARIANT_TYPES)
 	-- for k,_ in pairs(_G.VARIANT_TYPES) do
 	-- 	print(k)
@@ -226,9 +226,16 @@ function love.keyreleased(key)
 end
 
 function love.wheelmoved(x, y)
-	_G.BAIZE:startDrag()
-	_G.BAIZE:dragBy(x*(_G.BAIZE.cardWidth/2),y*(_G.BAIZE.cardHeight/2))
-	_G.BAIZE:stopDrag()
+	local drw = _G.BAIZE.ui:findOpenDrawer()
+	if drw then
+		drw:startDrag()
+		drw:dragBy(0, y*24)
+		drw:stopDrag()
+	else
+		_G.BAIZE:startDrag()
+		_G.BAIZE:dragBy(x*24, y*24)
+		_G.BAIZE:stopDrag()
+	end
 end
 
 function love.quit()

@@ -160,7 +160,7 @@ function Util.unsortedPairs(pile, fn)
 end
 
 function Util.play(name)
-	if _G.BAIZE.settings.muteSound then
+	if _G.BAIZE.settings.muteSounds then
 		return
 	end
 	-- _G.PATIENCE_SOUNDS[name]:seek(0)

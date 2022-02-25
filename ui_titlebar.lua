@@ -8,23 +8,21 @@ local Titlebar = {}
 Titlebar.__index = Titlebar
 setmetatable(Titlebar, {__index = Bar})
 
-function Titlebar.new()
-	local o = {}
-	setmetatable(o, Titlebar)
+function Titlebar.new(o)
+	o = Bar.new(o)
 
 	o.height = 48
 	o.align = 'top'
 	o.font = love.graphics.newFont('assets/fonts/Roboto-Medium.ttf', 24)
 	o.spacex = o.font:getWidth('_')
-	o.widgets = {}
 
-	return o
+	return setmetatable(o, Titlebar)
 end
 
 -- use Bar.layout
 
 -- use Bar.update
 
--- use Bar.draw
+-- use Container.draw
 
 return Titlebar

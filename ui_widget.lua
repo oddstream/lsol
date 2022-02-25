@@ -9,16 +9,17 @@ local Widget = {
 Widget.__index = Widget
 
 function Widget.new(o)
-	setmetatable(o, Widget)
-	return o
+	return setmetatable(o, Widget)
 end
 
-function Widget:screenPos()
-	return self.parent.x + self.x, self.parent.y + self.y
-end
+-- function Widget:screenPos()
+-- 	return self.parent.x + self.x, self.parent.y + self.y
+-- end
 
 function Widget:screenRect()
-	return self.parent.x + self.x, self.parent.y + self.y, self.width, self.height
+	local x = self.parent.x + self.parent.dragOffset.x + self.x
+	local y = self.parent.y + self.parent.dragOffset.y + self.y
+	return x, y, self.width, self.height
 end
 
 -- Widget:layout() done by parent

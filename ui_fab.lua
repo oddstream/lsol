@@ -10,7 +10,6 @@ FAB.__index = FAB
 function FAB.new(o)
 	assert(o.icon)
 	assert(o.baizeCmd)
-	setmetatable(o, FAB)
 
 	local fname = 'assets/icons/' .. o.icon .. '.png'
 	local imageData = love.image.newImageData(fname)
@@ -34,15 +33,27 @@ function FAB.new(o)
 
 	o.texture = canvas
 	o.enabled = true
-	return o
+	return setmetatable(o, FAB)
 end
 
-function FAB:screenPos()
-	return self.x, self.y
-end
+-- function FAB:screenPos()
+-- 	return self.x, self.y
+-- end
 
 function FAB:screenRect()
 	return self.x, self.y, self.width, self.height
+end
+
+function FAB:startDrag(x, y)
+	-- can't drag a FAB
+end
+
+function FAB:dragBy(dx, dy)
+	-- can't drag a FAB
+end
+
+function FAB:stopDrag(x, y)
+	-- can't drag a FAB
 end
 
 function FAB:layout()

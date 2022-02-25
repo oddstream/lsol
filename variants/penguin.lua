@@ -38,24 +38,23 @@ end
 function Penguin:startGame()
 	-- Shuffle a 52-card pack and deal the first card face up to the top left of the board.
 	-- This card is called the Beak.
-	local fnext = 1
 	local faccept = _G.BAIZE.stock:peek().ord
 	for _, f in ipairs(_G.BAIZE.foundations) do
 		f.label = _G.ORD2STRING[faccept]
 	end
 	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.tableaux[1])
 
+	_G.BAIZE.stock:disinter(faccept)
+	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.foundations[1])
+	_G.BAIZE.stock:disinter(faccept)
+	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.foundations[2])
+	_G.BAIZE.stock:disinter(faccept)
+	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.foundations[3])
+
 	-- 49-card layout consisting of seven rows and seven columns
 	for _, pile in ipairs(_G.BAIZE.tableaux) do
 		while #pile.cards < 7 do
-			-- As and when the other three cards of the same rank turn up in the deal,
-			-- take them out and set them apart as foundations.
-			if _G.BAIZE.stock:peek().ord == faccept then
-				Util.moveCard(_G.BAIZE.stock, _G.BAIZE.foundations[fnext])
-				fnext = fnext + 1
-			else
-				Util.moveCard(_G.BAIZE.stock, pile)
-			end
+			Util.moveCard(_G.BAIZE.stock, pile)
 		end
 	end
 

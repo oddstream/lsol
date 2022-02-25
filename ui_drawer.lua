@@ -1,19 +1,17 @@
 -- drawer
 
+local Container = require 'ui_container'
+
 local Drawer = {}
 Drawer.__index = Drawer
+setmetatable(Drawer, {__index = Container})
 
-function Drawer.new()
-	local o = {}
-	setmetatable(o, Drawer)
-	return o
+function Drawer.new(o)
+	o = Container.new(o)
+	return setmetatable(o, Drawer)
 end
 
-function Drawer:screenRect()
-	return self.x, self.y, self.width, self.height -- bar is not scrollable, so baize == screen pos
-end
-
-function Drawer:visible()
+function Drawer:isOpen()
 	return self.x == 0
 end
 
@@ -22,6 +20,7 @@ function Drawer:hidden()
 end
 
 function Drawer:show()
+	self.dragOffset = {x=0, y=0}
 	self.aniState = 'right'
 end
 
@@ -59,7 +58,7 @@ function Drawer:layout()
 
 	for _, wgt in ipairs(self.widgets) do
 		if wgt.text then
-			-- TextWidget
+			-- TextWidget, Checkbox
 			wgt.width = self.font:getWidth(wgt.text)
 			wgt.height = self.font:getHeight(wgt.text)
 		else
@@ -71,16 +70,6 @@ function Drawer:layout()
 		wgt.y = nexty
 
 		nexty = wgt.y + wgt.height + self.spacey
-	end
-end
-
-function Drawer:draw()
-	if not self:hidden() then
-		love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 255))
-		love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
-		for _, w in ipairs(self.widgets) do
-			w:draw()
-		end
 	end
 end
 

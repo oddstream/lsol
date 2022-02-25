@@ -64,7 +64,9 @@ function Pile:fannedBaizeRect()
 	local px, py, pw, ph = self:baizeRect()
 	if #self.cards > 1 and self.fanType ~= 'FAN_NONE' then
 		local c = self:peek()
-		local cx, cy, cw, ch = c:baizeRect()
+		-- if c is being dragged, it will report a large rect
+		-- need the rect before it was dragged
+		local cx, cy, cw, ch = c:baizeStaticRect()
 		if self.fanType == 'FAN_DOWN' or self.fanType == 'FAN_DOWN3' then
 			ph = cy - py + ch
 		elseif self.fanType == 'FAN_RIGHT' or self.fanType == 'FAN_RIGHT3' then
@@ -281,7 +283,9 @@ function Pile:updateFromSaved(saved)
 		-- find sc in _G.BAIZE.deck
 		for _, dc in ipairs(_G.BAIZE.deck) do
 			if dc.pack == sc.pack and dc.ord == sc.ord and dc.suit == sc.suit then
-				dc.prone = sc.prone	-- TODO maybe flip
+				if dc.prone ~= sc.prone then
+					dc:flip()
+				end
 				self:push(dc)
 				break -- onto next saved card
 			end
@@ -449,6 +453,11 @@ function Pile:draw()
 			b.labelFont:getWidth(self.label) / 2,
 			b.labelFont:getHeight(self.label) / 2)
 	end
+--[[
+	love.graphics.setColor(1,1,1,1)
+	local px, py, pw, ph = self:fannedBaizeRect()	-- should be fannedScreenRect
+	love.graphics.rectangle('line', px, py, pw, ph)
+]]
 end
 
 return Pile

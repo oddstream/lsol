@@ -75,6 +75,176 @@ function Baize:getSavable()
 	return {recycles=self.recycles, bookmark=self.bookmark, piles=piles}
 end
 
+-- card graphics creation
+
+local pipInfo = {
+	--[[ 1 ]] {},
+	--[[ 2 ]] {
+		{x=0.5, y=0.166},
+		{x=0.5, y=0.833},
+	},
+	--[[ 3 ]] {
+		{x=0.5, y=0.166},
+		{x=0.5, y=0.5},
+		{x=0.5, y=0.833},
+	},
+	--[[ 4 ]] {
+		{x=0.375, y=0.166},	{x=0.625, y=0.166},
+		{x=0.375, y=0.833},	{x=0.625, y=0.833},
+	},
+	--[[ 5 ]] {
+		{x=0.375, y=0.166},	{x=0.625, y=0.166},
+		{x=0.5, y=0.5},
+		{x=0.375, y=0.833},	{x=0.625, y=0.833},
+	},
+	--[[ 6 ]] {
+		{x=0.375, y=0.166},	{x=0.625, y=0.166},
+		{x=0.375, y=0.5},	{x=0.625, y=0.5},
+		{x=0.375, y=0.833},	{x=0.625, y=0.833},
+	},
+	--[[ 7 ]] {
+		{x=0.375, y=0.166},	{x=0.625, y=0.166},
+		{x=0.5, y=0.333},
+		{x=0.375, y=0.5},	{x=0.625, y=0.5},
+		{x=0.375, y=0.833},	{x=0.625, y=0.833},
+	},
+	--[[ 8 ]] {
+		{x=0.375, y=0.166},	{x=0.625, y=0.166},
+		{x=0.5, y=0.333},
+		{x=0.375, y=0.5},	{x=0.625, y=0.5},
+		{x=0.5, y=0.666},
+		{x=0.375, y=0.833},	{x=0.625, y=0.833},
+	},
+	--[[ 9 ]] {
+		{x=0.375, y=0.166}, {x=0.625, y=0.166},
+		{x=0.375, y=0.4}, {x=0.625, y=0.4},
+		{x=0.5, y=0.5},
+		{x=0.375, y=0.6}, {x=0.625, y=0.6},
+		{x=0.375, y=0.833}, {x=0.625, y=0.833},
+	},
+	--[[ 10 ]] {
+		{x=0.375, y=0.166}, {x=0.625, y=0.166},
+		{x=0.5, y=0.3},
+		{x=0.375, y=0.4}, {x=0.625, y=0.4},
+		{x=0.375, y=0.6}, {x=0.625, y=0.6},
+		{x=0.5, y=0.7},
+		{x=0.375, y=0.833}, {x=0.625, y=0.833},
+
+	},
+	--[[ 11 ]] {},
+	--[[ 12 ]] {},
+	--[[ 13 ]] {},
+}
+
+function Baize:getSuitColor(suit)
+	local suitColor
+	if self.settings.fourColorCards then
+		if suit == '♣' then
+			suitColor = 'clubColor'
+		elseif suit == '♦' then
+			suitColor = 'diamondColor'
+		elseif suit == '♥' then
+			suitColor = 'heartColor'
+		elseif suit == '♠' then
+			suitColor = 'spadeColor'
+		end
+	else
+		if suit == '♦' or suit == '♥' then
+			suitColor = 'heartColor'
+		else
+			suitColor = 'spadeColor'
+		end
+	end
+	return suitColor
+end
+
+function Baize:createSimpleFace(ord, suit)
+	local canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
+	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+
+	love.graphics.setColor(Util.colorBytes('cardFaceColor'))
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+
+	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
+	love.graphics.setLineWidth(1)
+	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
+
+	love.graphics.setColor(Util.colorBytes(self:getSuitColor(suit)))
+
+	love.graphics.setFont(self.ordFont)
+	love.graphics.print(_G.ORD2STRING[ord], self.cardWidth / 10, 2)
+
+	love.graphics.setFont(self.suitFont)
+	love.graphics.print(suit, self.cardWidth - self.cardWidth / 10 - self.suitFontSize, 4)
+
+	love.graphics.setCanvas()	-- reset render target to the screen
+	return canvas
+end
+
+function Baize:createRegularFace(ord, suit)
+
+	local function printAt(str, rx, ry, font, angle)
+		angle = angle or 0.0
+		local ox = font:getWidth(str) / 2
+		local oy = font:getHeight(str) / 2
+		love.graphics.print(str,
+			self.cardWidth * rx,
+			self.cardHeight * ry,
+			angle,
+			1.0, 1.0,
+			ox, oy)
+	end
+
+	local canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
+	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+
+	love.graphics.setColor(Util.colorBytes('cardFaceColor'))
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+
+	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
+	love.graphics.setLineWidth(1)
+	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
+
+	local suitColor = self:getSuitColor(suit)
+
+	-- every card gets an ord top left and bottom right (inverted)
+	love.graphics.setColor(Util.colorBytes(suitColor))
+	love.graphics.setFont(self.ordFont)
+	printAt(_G.ORD2STRING[ord], 0.15, 0.15, self.ordFont)
+	printAt(_G.ORD2STRING[ord], 0.85, 0.85, self.ordFont, math.pi)
+
+	if ord > 1 and ord < 11 then
+		love.graphics.setColor(Util.colorBytes(suitColor))
+		love.graphics.setFont(self.suitFont)
+		local pips = pipInfo[ord]
+		for _, pip in ipairs(pips) do
+			local angle = 0
+			if pip.y > 0.5 then
+				angle = math.pi
+			end
+			printAt(suit, pip.x, pip.y, self.suitFont, angle)
+		end
+	else
+		-- Ace, Jack, Queen, King get suit runes at top right and bottom left
+		-- so the suit can be seen when fanned
+		-- they also get purdy rectangles in the middle
+
+		love.graphics.setColor(0,0,0,0.05)
+		love.graphics.rectangle('fill', self.cardWidth * 0.25, self.cardHeight * 0.25, self.cardWidth * 0.5, self.cardHeight * 0.5)
+
+		love.graphics.setColor(Util.colorBytes(suitColor))
+		love.graphics.setFont(self.suitFontLarge)
+		printAt(suit, 0.5, 0.5, self.suitFontLarge)
+
+		love.graphics.setFont(self.suitFont)
+		printAt(suit, 0.85, 0.15, self.suitFont)
+		printAt(suit, 0.15, 0.85, self.suitFont, math.pi)
+	end
+
+	love.graphics.setCanvas()	-- reset render target to the screen
+	return canvas
+end
+
 function Baize:createCardTextures()
 	-- PFTMB create textures for all possible cards, even if current variant has ordFilter and suitFilter
 	-- LÖVE drawing on the canvas with 0,0 origin at top left
@@ -84,12 +254,20 @@ function Baize:createCardTextures()
 	assert(self.cardWidth and self.cardWidth ~= 0)
 	assert(self.cardHeight and self.cardHeight ~= 0)
 
-	self.ordFontSize = self.cardWidth / 3
+	if self.settings.simpleCards then
+		self.ordFontSize = self.cardWidth / 3
+	else
+		self.ordFontSize = self.cardWidth / 4
+	end
 	self.ordFont = love.graphics.newFont('assets/fonts/Acme-Regular.ttf', self.ordFontSize)
-	self.suitFontSize = self.cardWidth / 3
+
+	if self.settings.simpleCards then
+		self.suitFontSize = self.cardWidth / 3
+	else
+		self.suitFontSize = self.cardWidth / 4
+	end
 	self.suitFont = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.suitFontSize)
-	self.pipFontSize = self.cardWidth / 4
-	self.pipFont = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.pipFontSize)
+	self.suitFontLarge = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.suitFontSize * 2)
 
 	local canvas
 
@@ -97,42 +275,11 @@ function Baize:createCardTextures()
 	self.cardTextureLibrary = {}
 	for _, ord in ipairs{1,2,3,4,5,6,7,8,9,10,11,12,13} do
 		for _, suit in ipairs{'♣','♦','♥','♠'} do
-			canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
-			love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
-
-			love.graphics.setColor(Util.colorBytes('cardFaceColor'))
-			love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
-
-			love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
-			love.graphics.setLineWidth(1)
-			love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
-
-			if self.settings.fourColorCards then
-				if suit == '♣' then
-					love.graphics.setColor(Util.colorBytes('clubColor'))
-				elseif suit == '♦' then
-					love.graphics.setColor(Util.colorBytes('diamondColor'))
-				elseif suit == '♥' then
-					love.graphics.setColor(Util.colorBytes('heartColor'))
-				elseif suit == '♠' then
-					love.graphics.setColor(Util.colorBytes('spadeColor'))
-				end
+			if self.settings.simpleCards then
+				self.cardTextureLibrary[string.format('%02u%s', ord, suit)] = self:createSimpleFace(ord, suit)
 			else
-				if suit == '♦' or suit == '♥' then
-					love.graphics.setColor(Util.colorBytes('heartColor'))
-				else
-					love.graphics.setColor(Util.colorBytes('spadeColor'))
-				end
+				self.cardTextureLibrary[string.format('%02u%s', ord, suit)] = self:createRegularFace(ord, suit)
 			end
-
-			love.graphics.setFont(self.ordFont)
-			love.graphics.print(_G.ORD2STRING[ord], self.cardWidth / 10, 2)
-
-			love.graphics.setFont(self.suitFont)
-			love.graphics.print(suit, self.cardWidth - self.cardWidth / 10 - self.suitFontSize, 4)
-
-			love.graphics.setCanvas()	-- reset render target to the screen
-			self.cardTextureLibrary[string.format('%02u%s', ord, suit)] = canvas
 		end
 	end
 
@@ -146,10 +293,10 @@ function Baize:createCardTextures()
 	love.graphics.setLineWidth(1)
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
-	if self.settings.cardDesign == 'Regular' then
-		local pipWidth = self.pipFont:getWidth('♠')
-		local pipHeight = self.pipFont:getHeight('♠')
-		love.graphics.setFont(self.pipFont)
+	if not self.settings.simpleCards then
+		local pipWidth = self.suitFont:getWidth('♠')
+		local pipHeight = self.suitFont:getHeight('♠')
+		love.graphics.setFont(self.suitFont)
 		love.graphics.setColor(0,0,0, 0.2)
 		love.graphics.print('♦', self.cardWidth / 2, self.cardHeight / 2 - pipHeight)	-- top right
 		love.graphics.print('♥', self.cardWidth / 2 - pipWidth, self.cardHeight / 2)	-- bottom left
@@ -173,6 +320,8 @@ function Baize:createCardTextures()
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardShadowTexture = canvas
 end
+
+---
 
 function Baize:loadScript(vname)
 	-- for v, _ in pairs(_G.PATIENCE_VARIANTS) do
@@ -280,6 +429,8 @@ function Baize:updateFromSaved(saved)
 		return false
 	end
 ]]
+	Util.play('undo')
+
 	for i = 1, #self.piles do
 		local pile = self.piles[i]
 		local savedPile = saved.piles[i]
@@ -340,7 +491,6 @@ function Baize:undo()
 		self.ui:toast('Cannot undo a completed game', 'blip')
 		return
 	end
-	Util.play('undo')
 	local _ = self:undoPop()	-- remove current state
 	local saved = self:undoPop()
 	assert(saved)
@@ -382,6 +532,17 @@ end
 
 function Baize:showVariantsDrawer(vtype)
 	self.ui:showVariantsDrawer(vtype)
+end
+
+function Baize:showSettingsDrawer()
+	self.ui:showSettingsDrawer()
+end
+
+function Baize:toggleSetting(var)
+	self.settings[var] = not self.settings[var]
+	if var == 'simpleCards' or var == 'fourColorCards' then
+		self:createCardTextures()
+	end
 end
 
 function Baize:changeVariant(vname)
@@ -596,28 +757,41 @@ function Baize:strokeStart(s)
 	local w = self.ui:findWidgetAt(s.x, s.y)
 	if w then
 		self.stroke:setDraggedObject(w, 'widget')
-		-- log.info('widget', w.text or w.icon)
+		-- tell the widget's parent (a container) that we may be dragging
+		if w.parent then
+			-- TODO FAB does not have a parent because it's not a container subclass
+			w.parent:startDrag(s.x, s.y)
+		end
+		-- log.info('strokeStart on widget', w.text or w.icon)
 	else
-		self.ui:hideDrawers()
-
-		local card, pile = self:findCardAt(s.x, s.y)
-		if card then
-			if not card.spinning then
-				local tail = pile:makeTail(card)
-				for _, c in ipairs(tail) do
-					c:startDrag()
-				end
-				-- hide the cursor
-				self.stroke:setDraggedObject(tail, 'tail')
-				-- print(tostring(card), 'tail len', #tail)
-			end
+		local con = self.ui:findContainerAt(s.x, s.y)
+		if con then
+			log.info('strokeStart on container')
+			self.stroke:setDraggedObject(con, 'container')
+			con:startDrag(s.x, s.y)
 		else
-			pile = self:findPileAt(s.x, s.y)
-			if pile then
-				self.stroke:setDraggedObject(pile, 'pile')
+			-- we didn't touch a widget, or container, so there's no need for a drawer to be open?
+			self.ui:hideDrawers()
+
+			local card, pile = self:findCardAt(s.x, s.y)
+			if card then
+				if not card.spinning then
+					local tail = pile:makeTail(card)
+					for _, c in ipairs(tail) do
+						c:startDrag()
+					end
+					-- hide the cursor
+					self.stroke:setDraggedObject(tail, 'tail')
+					-- print(tostring(card), 'tail len', #tail)
+				end
 			else
-				self:startDrag()
-				self.stroke:setDraggedObject(self, 'baize')
+				pile = self:findPileAt(s.x, s.y)
+				if pile then
+					self.stroke:setDraggedObject(pile, 'pile')
+				else
+					self:startDrag()
+					self.stroke:setDraggedObject(self, 'baize')
+				end
 			end
 		end
 	end
@@ -628,6 +802,12 @@ function Baize:strokeMove(s)
 		for _, c in ipairs(s.object) do
 			c:dragBy(s.dx, s.dy)
 		end
+	elseif s.type == 'widget' then
+		local wgt = s.object
+		wgt.parent:dragBy(s.dx, s.dy)
+	elseif s.type == 'container' then
+		local con = s.object
+		con:dragBy(s.dx, s.dy)
 	elseif s.type == 'baize' then
 		self:dragBy(s.dx, s.dy)
 	end
@@ -636,13 +816,15 @@ end
 function Baize:strokeTap(s)
 	-- log.info(s.event, s.x, s.y)
 	if s.type == 'widget' then
-		local w = s.object
-		if type(w.baizeCmd) == 'string' and type(_G.BAIZE[w.baizeCmd]) == 'function' then
+		local wgt = s.object
+		if type(wgt.baizeCmd) == 'string' and type(_G.BAIZE[wgt.baizeCmd]) == 'function' then
 			self.ui:hideDrawers()
-			if w.enabled then
-				self[w.baizeCmd](self, w.param)	-- w.param may be nil
+			if wgt.enabled then
+				self[wgt.baizeCmd](self, wgt.param)	-- w.param may be nil
 			end
 		end
+	elseif s.type == 'container' then
+		-- do nothing when tapping on a container
 	elseif s.type == 'tail' then
 		-- print('TRACE tap on', tostring(s.object[1]), 'parent', s.object[1].parent.category)
 		-- offer tailTapped to the script first
@@ -685,7 +867,7 @@ function Baize:strokeStop(s)
 		if not dst then
 			for _, c in ipairs(s.object) do c:cancelDrag() end
 		else
-			-- log.trace('intersection found', dst.category)
+			log.trace('intersection found', src.category, 'to', dst.category)
 			if src == dst then
 				for _, c in ipairs(tail) do c:cancelDrag() end
 			else

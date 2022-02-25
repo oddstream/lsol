@@ -17,8 +17,7 @@ Freecell.__index = Freecell
 function Freecell.new(o)
 	o = o or {}
 	o.wikipedia='https://en.wikipedia.org/wiki/FreeCell'
-	setmetatable(o, Freecell)
-	return o
+	return setmetatable(o, Freecell)
 end
 
 function Freecell:buildPiles()

@@ -6,23 +6,21 @@ local Statusbar = {}
 Statusbar.__index = Statusbar
 setmetatable(Statusbar, {__index = Bar})
 
-function Statusbar.new()
-	local o = {}
-	setmetatable(o, Statusbar)
+function Statusbar.new(o)
+	o = Bar.new(o)
 
 	o.height = 24
 	o.align = 'bottom'
 	o.font = love.graphics.newFont('assets/fonts/Roboto-Medium.ttf', 14)
 	o.spacex = o.font:getWidth('_')
-	o.widgets = {}
 
-	return o
+	return setmetatable(o, Statusbar)
 end
 
 -- use Bar.layout
 
 -- use Bar.update
 
--- use Bar.draw
+-- use Container.draw
 
 return Statusbar

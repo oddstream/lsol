@@ -1,7 +1,5 @@
 -- australian
 
-local log = require 'log'
-
 local CC = require 'cc'
 
 local Foundation = require 'pile_foundation'
@@ -17,8 +15,7 @@ Australian.__index = Australian
 function Australian.new(o)
 	o = o or {}
 	o.wikipedia='https://en.wikipedia.org/wiki/Australian_Patience'
-	setmetatable(o, Australian)
-	return o
+	return setmetatable(o, Australian)
 end
 
 function Australian:buildPiles()

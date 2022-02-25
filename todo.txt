@@ -5,18 +5,14 @@ but that would be inefficient
 just stick to the same as LÖVE (and raylib) and use x,y,width,height
 
 try as a .zip file in case variants and assets don't load
-
-args on command line to load variant
+try to make an Android build
 
 rename to lsol
-forty dealAces (move specified card)
-forty.lua
-	busy aces
-	josephine
+check FAN_LEFT
+Card transitioning boolean
 stats and settings shoud be in json
 	statistics.json
 	settings.json
-no sound when restarting deal
 BUG goto bookmark widget en/disable
 parameterize UI colors
 https://github.com/healeycodes/boids
@@ -26,16 +22,20 @@ touch
 	love.touchpressed
 	love.touchmoved
 	love.touchreleased
-drawer scrolling (when we have enough variants in All)
 scrunching (from gosol)
-regular card faces
 stuck/movable (see gosol)
 settings UI
-	cards simple/regular
+	tidy up checkbox widget
+	radio widget?
+	simple cards on/off
 	cards 2/4 color
 	powerMoves on/off
 	mirror baize on/off
 	mute sounds on/off
+	baize color >
+	card face color >
+	card back color >
+color picker drawer
 https://love2d.org/wiki/love.displayrotated
 
 UI

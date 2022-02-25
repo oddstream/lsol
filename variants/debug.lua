@@ -16,8 +16,7 @@ Debug.__index = Debug
 
 function Debug.new(o)
 	o = o or {}
-	setmetatable(o, Debug)
-	return o
+	return setmetatable(o, Debug)
 end
 
 function Debug:buildPiles()

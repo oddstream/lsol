@@ -1,18 +1,18 @@
 -- bar
 
-local log = require 'log'
+local Container = require 'ui_container'
 
 local Bar = {}
 Bar.__index = Bar
+setmetatable(Bar, {__index = Container})
 
-function Bar.new()
-	local o = {}
-	setmetatable(o, Bar)
-	return o
+function Bar.new(o)
+	o = Container.new(o)
+	return setmetatable(o, Bar)
 end
 
-function Bar:screenRect()
-	return self.x, self.y, self.width, self.height -- bar is not scrollable, so baize == screen pos
+function Bar:hidden()
+	return false
 end
 
 function Bar:update(dt)
@@ -56,14 +56,6 @@ function Bar:layout()
 		end
 		wgt.y = (self.height - wgt.height) / 2
 		-- log.trace(i, wgt.text or wgt.icon, wgt.align, wgt.x, wgt.y, wgt.width, wgt.height)
-	end
-end
-
-function Bar:draw()
-	love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 255))
-	love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
-	for _, w in ipairs(self.widgets) do
-		w:draw()
 	end
 end
 

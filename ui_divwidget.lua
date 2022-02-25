@@ -8,10 +8,9 @@ DivWidget.__index = DivWidget
 setmetatable(DivWidget, {__index = Widget})
 
 function DivWidget.new(o)
-	setmetatable(o, DivWidget)
 	o.enabled = false
 	o.height = 0
-	return o
+	return setmetatable(o, DivWidget)
 end
 
 function DivWidget:draw()

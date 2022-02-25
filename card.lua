@@ -72,6 +72,14 @@ function Card:baizeRect()
 	return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
+function Card:baizeStaticRect()
+	if self:dragging() then
+		return self.dragStart.x, self.dragStart.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
+	else
+		return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
+	end
+end
+
 function Card:screenRect()
 	return self.x  + _G.BAIZE.dragOffset.x, self.y  + _G.BAIZE.dragOffset.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
@@ -133,7 +141,7 @@ function Card:transitionTo(x, y)
 
 	self.src = {x = self.x, y = self.y}
 	self.dst = {x = x, y = y}
-	self.lerpStep = 0.1	-- starting from 0.0 feels a little laggy
+	self.lerpStep = 0.2	-- starting from 0.0 feels a little laggy
 	self.lerpStepAmount = _G.BAIZE.settings.cardTransitionStep
 end
 

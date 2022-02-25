@@ -8,6 +8,7 @@ local Statusbar = require 'ui_statusbar'
 local IconWidget = require 'ui_iconwidget'
 local TextWidget = require 'ui_textwidget'
 local DivWidget = require 'ui_divwidget'
+local Checkbox = require 'ui_checkbox'
 local FAB = require 'ui_fab'
 
 local Util = require 'util'
@@ -27,8 +28,15 @@ local menuWidgets = {
 	{text='Set bookmark', baizeCmd='setBookmark'},
 	{text='Go to bookmark', name='gotobookmark', enabled=false, baizeCmd='gotoBookmark'},
 	{},
-	{text='Settings...'},
+	{text='Settings...', baizeCmd='showSettingsDrawer'},
 	{text='Wikipedia...', baizeCmd='wikipedia'},
+}
+
+local settingsWidgets = {
+	{text='Simple cards', var='simpleCards'},
+	{text='Four color cards', var='fourColorCards'},
+	{text='Power moves', var='powerMoves'},
+	{text='Mute sounds', var='muteSounds'},
 }
 
 function UI.new()
@@ -39,7 +47,7 @@ function UI.new()
 	o.toastFont = love.graphics.newFont('assets/fonts/Roboto-Regular.ttf', 14)
 
 	local wgt
-	o.titlebar = Titlebar.new()
+	o.titlebar = Titlebar.new({})
 		wgt = IconWidget.new({parent=o.titlebar, name='menu', icon='menu', align='left', baizeCmd='toggleMenuDrawer'})
 		table.insert(o.titlebar.widgets, wgt)
 
@@ -51,7 +59,7 @@ function UI.new()
 		wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
 		table.insert(o.titlebar.widgets, wgt)
 
-	o.menudrawer = MenuDrawer.new()
+	o.menudrawer = MenuDrawer.new({})
 	for _, winfo in ipairs(menuWidgets) do
 		winfo.parent = o.menudrawer
 		if winfo.text then
@@ -61,7 +69,7 @@ function UI.new()
 		end
 	end
 
-	o.typesdrawer = MenuDrawer.new()
+	o.typesdrawer = MenuDrawer.new({})
 	for k, _ in pairs(_G.VARIANT_TYPES) do
 		wgt = TextWidget.new({parent=o.typesdrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
 		table.insert(o.typesdrawer.widgets, wgt)
@@ -70,7 +78,13 @@ function UI.new()
 
 	o.variantsdrawer = MenuDrawer.new({width=320})
 
-	o.statusbar = Statusbar.new()
+	o.settingsdrawer = MenuDrawer.new({})
+	for _, winfo in ipairs(settingsWidgets) do
+		winfo.parent = o.settingsdrawer
+		table.insert(o.settingsdrawer.widgets, Checkbox.new(winfo))
+	end
+
+	o.statusbar = Statusbar.new({})
 		wgt = TextWidget.new({parent=o.statusbar, name='stock', text='', align='left'})
 		table.insert(o.statusbar.widgets, wgt)
 		wgt = TextWidget.new({parent=o.statusbar, text='', align='center'})
@@ -78,9 +92,9 @@ function UI.new()
 		wgt = TextWidget.new({parent=o.statusbar, name='complete', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
-	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statusbar}
+	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.settingsdrawer, o.statusbar}
 
-	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer}
+	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.settingsdrawer}
 
 	return o
 end
@@ -133,7 +147,7 @@ function UI:updateWidget(name, text, enabled)
 end
 
 function UI:toggleMenuDrawer()
-	if self.menudrawer:visible() then
+	if self.menudrawer:isOpen() then
 		Util.play('menuclose')
 		self.menudrawer:hide()
 	else
@@ -144,6 +158,19 @@ end
 
 function UI:showVariantTypesDrawer()
 	self.typesdrawer:show()
+end
+
+function UI:showSettingsDrawer()
+	-- TODO go through widgets and determine if they are checked or unchecked
+	for _, wgt in ipairs(self.settingsdrawer.widgets) do
+		-- log.trace(wgt.var, 'is', _G.BAIZE.settings[wgt.var])
+		if _G.BAIZE.settings[wgt.var] then
+			wgt.checked = true
+		else
+			wgt.checked = false
+		end
+	end
+	self.settingsdrawer:show()
 end
 
 function UI:showVariantsDrawer(vtype)
@@ -159,6 +186,14 @@ function UI:showVariantsDrawer(vtype)
 		Util.play('menuopen')
 	else
 		log.error('unknown variant type', vtype)
+	end
+end
+
+function UI:findOpenDrawer()
+	for _, drw in ipairs(self.drawers) do
+		if drw:isOpen() then
+			return drw
+		end
 	end
 end
 
