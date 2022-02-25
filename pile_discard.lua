@@ -78,7 +78,7 @@ function Discard:draw()
 
 	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.setLineWidth(1)
-	love.graphics.rectangle('fill', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
+	love.graphics.rectangle('fill', x, y, b.cardWidth, b.cardHeight, b.cardRadiusX, b.cardRadiusY)
 end
 
 return Discard

@@ -79,11 +79,11 @@ function Util.colorBytes(s)
 		log.error('No setting for', s)
 		return 0.5, 0.5, 0.5
 	end
-	if not _G.PATIENCE_COLORS[setting] then
+	if not _G.LSOL_COLORS[setting] then
 		log.error('No color for', s)
 		return 0.5, 0.5, 0.5
 	end
-	return love.math.colorFromBytes(unpack(_G.PATIENCE_COLORS[setting]))
+	return love.math.colorFromBytes(unpack(_G.LSOL_COLORS[setting]))
 end
 
 function Util.makeCardPairs(tail)
@@ -163,9 +163,9 @@ function Util.play(name)
 	if _G.BAIZE.settings.muteSounds then
 		return
 	end
-	-- _G.PATIENCE_SOUNDS[name]:seek(0)
+	-- _G.LSOL_SOUNDS[name]:seek(0)
 	love.audio.stop()
-	love.audio.play(_G.PATIENCE_SOUNDS[name])
+	love.audio.play(_G.LSOL_SOUNDS[name])
 end
 
 return Util

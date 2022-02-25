@@ -4,6 +4,7 @@ local log = require 'log'
 
 local Titlebar = require 'ui_titlebar'
 local MenuDrawer = require 'ui_menudrawer'
+local TextDrawer = require 'ui_textdrawer'
 local Statusbar = require 'ui_statusbar'
 local IconWidget = require 'ui_iconwidget'
 local TextWidget = require 'ui_textwidget'
@@ -13,11 +14,7 @@ local FAB = require 'ui_fab'
 
 local Util = require 'util'
 
-local UI = {
-	-- titlebar
-	-- toast manager
-	-- statusbar
-}
+local UI = {}
 UI.__index = UI
 
 local menuWidgets = {
@@ -28,6 +25,7 @@ local menuWidgets = {
 	{text='Set bookmark', baizeCmd='setBookmark'},
 	{text='Go to bookmark', name='gotobookmark', enabled=false, baizeCmd='gotoBookmark'},
 	{},
+	{text='Statistics...', baizeCmd='showStatsDrawer'},
 	{text='Settings...', baizeCmd='showSettingsDrawer'},
 	{text='Wikipedia...', baizeCmd='wikipedia'},
 }
@@ -78,6 +76,8 @@ function UI.new()
 
 	o.variantsdrawer = MenuDrawer.new({width=320})
 
+	o.statisticsdrawer = TextDrawer.new({width=320})
+
 	o.settingsdrawer = MenuDrawer.new({})
 	for _, winfo in ipairs(settingsWidgets) do
 		winfo.parent = o.settingsdrawer
@@ -92,9 +92,9 @@ function UI.new()
 		wgt = TextWidget.new({parent=o.statusbar, name='complete', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
-	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.settingsdrawer, o.statusbar}
+	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statisticsdrawer, o.settingsdrawer, o.statusbar}
 
-	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.settingsdrawer}
+	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statisticsdrawer, o.settingsdrawer}
 
 	return o
 end
@@ -158,6 +158,10 @@ end
 
 function UI:showVariantTypesDrawer()
 	self.typesdrawer:show()
+end
+
+function UI:showStatsDrawer()
+	self.statisticsdrawer:show()
 end
 
 function UI:showSettingsDrawer()

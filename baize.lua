@@ -57,12 +57,12 @@ function Baize:loadSettings()
 	else
 		log.info('not loading', fname)
 	end
-	self.settings = settings or _G.PATIENCE_DEFAULT_SETTINGS
+	self.settings = settings or _G.LSOL_DEFAULT_SETTINGS
 end
 
 function Baize:saveSettings()
 	local fname = 'settings.bitser'
-	self.settings.lastVersion = _G.PATIENCE_VERSION
+	self.settings.lastVersion = _G.LSOL_VERSION
 	bitser.dumpLoveFile(fname, self.settings)
 	log.info('saved', fname)
 end
@@ -161,13 +161,13 @@ end
 function Baize:createSimpleFace(ord, suit)
 	local canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+	love.graphics.setLineWidth(1)
 
 	love.graphics.setColor(Util.colorBytes('cardFaceColor'))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadiusX, self.cardRadiusY)
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
-	love.graphics.setLineWidth(1)
-	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
+	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadiusX, self.cardRadiusY)
 
 	love.graphics.setColor(Util.colorBytes(self:getSuitColor(suit)))
 
@@ -197,13 +197,13 @@ function Baize:createRegularFace(ord, suit)
 
 	local canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+	love.graphics.setLineWidth(1)
 
 	love.graphics.setColor(Util.colorBytes('cardFaceColor'))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadiusX, self.cardRadiusY)
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
-	love.graphics.setLineWidth(1)
-	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
+	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadiusX, self.cardRadiusY)
 
 	local suitColor = self:getSuitColor(suit)
 
@@ -286,12 +286,13 @@ function Baize:createCardTextures()
 	-- card back
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+	love.graphics.setLineWidth(1)
+
 	love.graphics.setColor(Util.colorBytes('cardBackColor'))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadiusX, self.cardRadiusY)
 
 	love.graphics.setColor(1, 1, 1, 0.1)
-	love.graphics.setLineWidth(1)
-	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
+	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadiusX, self.cardRadiusY)
 
 	if not self.settings.simpleCards then
 		local pipWidth = self.suitFont:getWidth('♠')
@@ -315,8 +316,9 @@ function Baize:createCardTextures()
 	-- card shadow
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+	love.graphics.setLineWidth(1)
 	love.graphics.setColor(love.math.colorFromBytes(0, 0, 0, 128))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadiusX, self.cardRadiusY)
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardShadowTexture = canvas
 end
@@ -324,10 +326,10 @@ end
 ---
 
 function Baize:loadScript(vname)
-	-- for v, _ in pairs(_G.PATIENCE_VARIANTS) do
+	-- for v, _ in pairs(_G.LSOL_VARIANTS) do
 	-- 	log.info(v)
 	-- end
-	local vinfo = _G.PATIENCE_VARIANTS[vname]
+	local vinfo = _G.LSOL_VARIANTS[vname]
 	if not vinfo then
 		log.error('Unknown variant', vname)
 		return nil
@@ -498,27 +500,26 @@ function Baize:undo()
 	self:undoPush()	-- replace current state
 end
 
+local savedUndoStackFname = 'undoStack.bitser'
+
 function Baize:loadUndoStack()
-	local fname = 'undoStack.bitser'
 	local undoStack
-	local info = love.filesystem.getInfo(fname)
+	local info = love.filesystem.getInfo(savedUndoStackFname)
 	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
-		undoStack = bitser.loadLoveFile(fname)
-		log.info('loaded', fname)
+		undoStack = bitser.loadLoveFile(savedUndoStackFname)
+		log.info('loaded', savedUndoStackFname)
 	else
-		log.info('not loading', fname)
+		log.info('not loading', savedUndoStackFname)
 	end
+	love.filesystem.remove(savedUndoStackFname)	-- either way, delete it
 	self.undoStack = undoStack	-- it's ok for this to be nil
 end
 
 function Baize:saveUndoStack()
-	local fname = 'undoStack.bitser'
-	if self:complete() then
-		love.filesystem.remove(fname)
-	else
+	if not self:complete() then
 		self:undoPush()
-		bitser.dumpLoveFile(fname, self.undoStack)
-		log.info('saved', fname)
+		bitser.dumpLoveFile(savedUndoStackFname, self.undoStack)
+		log.info('saved', savedUndoStackFname)
 	end
 end
 
@@ -532,6 +533,12 @@ end
 
 function Baize:showVariantsDrawer(vtype)
 	self.ui:showVariantsDrawer(vtype)
+end
+
+
+function Baize:showStatsDrawer()
+	self.ui:showStatsDrawer()
+	self.stats:log(self.settings.variantName)
 end
 
 function Baize:showSettingsDrawer()
@@ -552,7 +559,13 @@ function Baize:changeVariant(vname)
 	end
 	local script = _G.BAIZE:loadScript(vname)
 	if script then
-		-- TODO record lost game if not complete
+		if #self.undoStack > 1 then
+			local percent = self:percentComplete()
+			if percent < 100 then
+				self.stats:recordLostGame(self.settings.variantName, percent)
+			end
+		end
+		--
 		self.settings.variantName = vname
 		self.script = script
 		self:resetPiles()
@@ -570,6 +583,12 @@ function Baize:changeVariant(vname)
 end
 
 function Baize:newDeal()
+	if #self.undoStack > 1 then
+		local percent = self:percentComplete()
+		if percent < 100 then
+			self.stats:recordLostGame(self.settings.variantName, percent)
+		end
+	end
 	self:stopSpinning()
 	self.ui:hideFAB()
 	for _, p in ipairs(self.piles) do
@@ -638,11 +657,12 @@ function Baize:layout()
 	local windowWidth, _, _ = love.window.getMode()
 	local slotWidth = windowWidth / (maxSlotX + 1) -- +1 gives a half card width gap either side
 	local pilePaddingX = slotWidth / 10
-	self.cardWidth = slotWidth - pilePaddingX
-	self.cardRadius = self.cardWidth / 15
+	self.cardWidth = math.floor(slotWidth - pilePaddingX)
+	self.cardRadiusX = math.floor(self.cardWidth / 16)
 	local slotHeight = slotWidth * self.settings.cardRatio
 	local pilePaddingY = slotHeight / 10
-	self.cardHeight = slotHeight - pilePaddingY
+	self.cardHeight = math.floor(slotHeight - pilePaddingY)
+	self.cardRadiusY = math.floor(self.cardHeight / 16)
 	local leftMargin = self.cardWidth / 2 + pilePaddingX
 	local topMargin = 48 + pilePaddingY
 
@@ -683,6 +703,7 @@ function Baize:afterUserMove()
 		self.ui:toast(self.settings.variantName .. ' complete', 'complete')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 		self:startSpinning()
+		self.stats:recordWonGame(self.settings.variantName)
 	elseif self:conformant() then
 		self.ui:showFAB{icon='done_all', baizeCmd='collect'}
 	else
@@ -1016,7 +1037,7 @@ end
 function Baize:resetSettings()
 	local vname = self.settings.variantName
 	self.settings = {}
-	for k,v in pairs(_G.PATIENCE_DEFAULT_SETTINGS) do
+	for k,v in pairs(_G.LSOL_DEFAULT_SETTINGS) do
 		self.settings[k] = v
 	end
 	self.settings.variantName = vname

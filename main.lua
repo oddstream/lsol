@@ -4,11 +4,12 @@ local log = require 'log'
 
 local Card = require 'card'
 local Baize = require 'baize'
+local Stats = require 'stats'
 local Util = require 'util'
 
-_G.PATIENCE_VERSION = '1'
+_G.LSOL_VERSION = '1'
 
-_G.PATIENCE_DEFAULT_SETTINGS = {
+_G.LSOL_DEFAULT_SETTINGS = {
 	lastVersion = 0,
 	variantName = 'Klondike',
 	highlightMovable = true,
@@ -29,7 +30,7 @@ _G.PATIENCE_DEFAULT_SETTINGS = {
 	fourColorCards = true,
 }
 
-_G.PATIENCE_VARIANTS = {
+_G.LSOL_VARIANTS = {
 	Australian = {file='australian.lua', params={}},
 	Duchess = {file='duchess.lua', params={}},
 	['Debug Klon'] = {file='debug.lua', params={spiderLike=false}},
@@ -63,7 +64,7 @@ _G.VARIANT_TYPES = {
 
 do
 	local lst = {}
-	for k,_ in pairs(_G._G.PATIENCE_VARIANTS) do
+	for k,_ in pairs(_G._G.LSOL_VARIANTS) do
 		table.insert(lst, k)
 	end
 	-- table.sort(lst)
@@ -77,7 +78,7 @@ do
 	-- end
 end
 
-_G.PATIENCE_COLORS = {
+_G.LSOL_COLORS = {
 	Black = {0,0,0},
 	White = {1,1,1},
 	Red = {255,0,0},
@@ -100,7 +101,7 @@ _G.PATIENCE_COLORS = {
 	UiHover = {255,215,0},	-- Gold
 }
 
-_G.PATIENCE_SOUNDS = {
+_G.LSOL_SOUNDS = {
 	deal = love.audio.newSource('assets/sounds/cardFan1.wav', 'static'),
 	load = love.audio.newSource('assets/sounds/cardFan2.wav', 'static'),
 	move1 = love.audio.newSource('assets/sounds/cardPlace3.wav', 'static'),
@@ -131,6 +132,7 @@ function love.load(args)
 
 	_G.BAIZE = Baize.new()
 	_G.BAIZE:loadSettings()
+	_G.BAIZE.stats = Stats.new()
 	_G.BAIZE:loadUndoStack()
 	if _G.BAIZE.undoStack then
 		_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
@@ -240,6 +242,7 @@ end
 
 function love.quit()
 	-- no args
+	_G.BAIZE.stats:save()
 	_G.BAIZE:saveSettings()
 	_G.BAIZE:saveUndoStack()
 end
