@@ -45,7 +45,9 @@ function Card.new(o)
 	o.y = -128
 
 	o.textureId = string.format('%02u%s', o.ord, o.suit)	-- used as index/key into Card Texture Library
-	o.lerpStep = 1.0	-- not transitioning
+
+	o.lerping = false
+	o.lerpStep = 1.0
 
 	o.flipStep = 0.0
 
@@ -113,13 +115,15 @@ function Card:flipping()
 end
 
 function Card:transitioning()
-	return self.lerpStep < 1.0 and self.dst and self.src and (self.x ~= self.dst.x or self.y ~= self.dst.y)
+	return self.lerping
+	-- return self.lerpStep < 1.0 and self.dst and self.src and (self.x ~= self.dst.x or self.y ~= self.dst.y)
 end
 
 function Card:stopTransition()
 	self.src = nil
 	self.dst = nil
 	self.lerpStep = 1.0
+	self.lerping = false
 end
 
 function Card:transitionTo(x, y)
@@ -143,6 +147,7 @@ function Card:transitionTo(x, y)
 	self.dst = {x = x, y = y}
 	self.lerpStep = 0.2	-- starting from 0.0 feels a little laggy
 	self.lerpStepAmount = _G.BAIZE.settings.cardTransitionStep
+	self.lerping = true
 end
 
 function Card:dragging()

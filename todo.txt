@@ -8,8 +8,8 @@ try as a .zip file in case variants and assets don't load
 try to make an Android build
 
 copy sumPercents back to gosol
+different cardRatio for landscape (1.357) and portrait (1.444)?
 check FAN_LEFT
-Card transitioning boolean
 BUG goto bookmark widget en/disable
 parameterize UI colors
 https://github.com/healeycodes/boids
@@ -20,6 +20,14 @@ touch
 	love.touchmoved
 	love.touchreleased
 scrunching (from gosol)
+scrunch function
+	given a pile of cards
+	and a width/height that the cards need to fit within
+		(eg x pos of first face up card to bottom of visible area)
+	compute stack factor of face up cards
+		(face down cards have constant stack factor)
+	number will be between 3 (min stack) and 6 (max stack)
+
 stuck/movable (see gosol)
 settings UI
 	tidy up checkbox widget

@@ -47,8 +47,6 @@ end
 function Util.overlapArea(x, y, w, h, X, Y, W, H)
 	local ox = math.max(0, math.min(x + w, X + W) - math.max(x, X));
 	local oy = math.max(0, math.min(y + h, Y + H) - math.max(y, Y));
-	-- local x = math.max(0, math.min(a.x2, b.x2) - math.max(a.x1, b.x1));
-	-- local y = math.max(0, math.min(a.y2, b.y2) - math.max(a.y1, b.y1));
 	return ox * oy;
 end
 

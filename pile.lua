@@ -9,16 +9,18 @@ local Util = require 'util'
 local Pile = {}
 Pile.__index = Pile
 
+local minFanFactor, maxFanFactor = 0.16666, 0.26666
+local backFanFactorH = minFanFactor
+local backFanFactorV = minFanFactor
+
 function Pile.new(o)
 	-- assert(type(o)=='table')
 	-- assert(type(o.x)=='number')
 	-- assert(type(o.y)=='number')
 	o.slot = {x = o.x, y = o.y}
 	o.cards = {}
-	o.faceFanFactorH = 4
-	o.faceFanFactorV = 3
-	o.backFanFactorH = 5
-	o.backFanFactorV = 5
+	o.faceFanFactorH = 0.25
+	o.faceFanFactorV = maxFanFactor
 	return setmetatable(o, Pile)
 end
 
@@ -37,14 +39,14 @@ end
 function Pile:setBaizePos(x, y)
 	self.x, self.y = x, y
 	if self.fanType == 'FAN_DOWN3' then
-		self.pos1 = {x=x, y=y + (_G.BAIZE.cardHeight / self.faceFanFactorV)}
-		self.pos2 = {x=x, y=y + (_G.BAIZE.cardHeight / self.faceFanFactorV) + (_G.BAIZE.cardHeight / self.faceFanFactorV)}
+		self.pos1 = {x=x, y=y + (_G.BAIZE.cardHeight * self.faceFanFactorV)}
+		self.pos2 = {x=x, y=y + (_G.BAIZE.cardHeight * self.faceFanFactorV) + (_G.BAIZE.cardHeight * self.faceFanFactorV)}
 	elseif self.fanType == 'FAN_LEFT3' then
-		self.pos1 = {x=x - (_G.BAIZE.cardHeight / self.faceFanFactorH), y=y}
-		self.pos2 = {x=x - (_G.BAIZE.cardHeight / self.faceFanFactorH)  + (_G.BAIZE.cardHeight / self.faceFanFactorH), y=y}
+		self.pos1 = {x=x - (_G.BAIZE.cardHeight * self.faceFanFactorH), y=y}
+		self.pos2 = {x=x - (_G.BAIZE.cardHeight * self.faceFanFactorH)  + (_G.BAIZE.cardHeight * self.faceFanFactorH), y=y}
 	elseif self.fanType == 'FAN_RIGHT3' then
-		self.pos1 = {x=x + (_G.BAIZE.cardHeight / self.faceFanFactorH), y=y}
-		self.pos2 = {x=x + (_G.BAIZE.cardHeight / self.faceFanFactorH)  + (_G.BAIZE.cardHeight / self.faceFanFactorH), y=y}
+		self.pos1 = {x=x + (_G.BAIZE.cardHeight * self.faceFanFactorH), y=y}
+		self.pos2 = {x=x + (_G.BAIZE.cardHeight * self.faceFanFactorH)  + (_G.BAIZE.cardHeight * self.faceFanFactorH), y=y}
 	end
 end
 
@@ -93,21 +95,21 @@ function Pile:posAfter(c)
 		-- do nothing
 	elseif self.fanType == 'FAN_DOWN' then
 		if c.prone then
-			y = y + (_G.BAIZE.cardHeight / self.backFanFactorV)
+			y = y + (_G.BAIZE.cardHeight * backFanFactorV)
 		else
-			y = y + (_G.BAIZE.cardHeight / self.faceFanFactorV)
+			y = y + (_G.BAIZE.cardHeight * self.faceFanFactorV)
 		end
 	elseif self.fanType == 'FAN_RIGHT' then
 		if c.prone then
-			x = x + (_G.BAIZE.cardWidth / self.backFanFactorH)
+			x = x + (_G.BAIZE.cardWidth * backFanFactorH)
 		else
-			x = x + (_G.BAIZE.cardWidth / self.faceFanFactorH)
+			x = x + (_G.BAIZE.cardWidth * self.faceFanFactorH)
 		end
 	elseif self.fanType == 'FAN_LEFT' then
 		if c.prone then
-			x = x - (_G.BAIZE.cardWidth / self.backFanFactorH)
+			x = x - (_G.BAIZE.cardWidth * backFanFactorH)
 		else
-			x = x - (_G.BAIZE.cardWidth / self.faceFanFactorH)
+			x = x - (_G.BAIZE.cardWidth * self.faceFanFactorH)
 		end
 	elseif self.fanType == 'FAN_RIGHT3' or self.fanType == 'FAN_LEFT3' or self.fanType == 'FAN_DOWN3' then
 		if #self.cards == 0 then
@@ -174,6 +176,50 @@ function Pile:refan(fn)
 			fn(c, self.pos1.x, self.pos1.y)
 		end
 	end
+end
+
+function Pile:calcStackFactors()
+	if #self.cards < 2 then
+		return maxFanFactor, maxFanFactor
+	end
+
+	-- need screen pos of first face up card
+
+	local cFirstUp
+	local cIdx
+	for i, c in ipairs(self.cards) do
+		if not c.prone then
+			cFirstUp = c
+			cIdx = i
+			break
+		end
+	end
+	if not cFirstUp then
+		return minFanFactor, minFanFactor
+	end
+
+	local cx, cy = cFirstUp:screenPos()
+	local nUpCards = #self.cards - cIdx + 1
+
+	local ww, wh = love.window.getMode()
+	local bw = ww - cx
+	local bh = wh - cy - 24	-- take off the status bar height
+
+	-- take off space occupied by face down cards
+	-- bw = bw - (ndown * _G.BAIZE.cardWidth * backFanFactorH)
+	-- bh = bh - (ndown * _G.BAIZE.cardHeight * backFanFactorV)
+
+	-- result = ((#cards - 1) * (cardheight * factor)) + cardheight
+	-- r = (n-1) * (h * f) + h
+	-- make factor the subject
+	-- f = (r - h) / (h * (n-1))
+
+	-- https://www.mymathtutors.com/algebra-tutors/adding-numerators/online-calculator---rearrange.html#c=solve_algstepsequationsolve&v239=r%2520%253D%2520%2528n-1%2529%2520*%2520%2528h%2520*%2520f%2529%2520%2B%2520h&v240=f
+
+	local fx = (bw - _G.BAIZE.cardWidth) / (_G.BAIZE.cardWidth * (nUpCards - 1))
+	local fy = (bh - _G.BAIZE.cardHeight) / (_G.BAIZE.cardHeight * (nUpCards - 1))
+	log.info(Util.clamp(fx, minFanFactor, maxFanFactor), Util.clamp(fy, minFanFactor, maxFanFactor))
+	return fx, fy
 end
 
 function Pile:peek()

@@ -14,7 +14,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	variantName = 'Klondike',
 	highlightMovable = true,
 	cardTransitionStep = 0.02,
-	cardRatio = 1.357,
+	cardRatio = 1.444, --1.357,
 	simpleCards = true,
 	powerMoves = true,
 	muteSounds = false,
@@ -185,7 +185,7 @@ function love.draw()
 end
 
 function love.resize(w,h)
-	log.trace('resize', w, h)
+	-- log.trace('resize', w, h)
 	_G.BAIZE:layout()
 	for _, pile in ipairs(_G.BAIZE.piles) do
 		pile:refan(Card.setBaizePos)
@@ -224,6 +224,12 @@ function love.keyreleased(key)
 		_G.BAIZE:twoColorCards()
 	elseif key == '4' then
 		_G.BAIZE:fourColorCards()
+	elseif key == 'x' then
+		for _, p in ipairs(_G.BAIZE.piles) do
+			if p.category == 'Tableau' or p.category == 'Reserve' then
+				p:calcStackFactors()
+			end
+		end
 	end
 end
 
