@@ -76,7 +76,7 @@ function UI.new()
 
 	o.variantsdrawer = MenuDrawer.new({width=320})
 
-	o.statisticsdrawer = TextDrawer.new({width=320})
+	o.statsdrawer = TextDrawer.new({width=320})
 
 	o.settingsdrawer = MenuDrawer.new({})
 	for _, winfo in ipairs(settingsWidgets) do
@@ -92,9 +92,9 @@ function UI.new()
 		wgt = TextWidget.new({parent=o.statusbar, name='complete', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
-	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statisticsdrawer, o.settingsdrawer, o.statusbar}
+	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.statusbar}
 
-	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statisticsdrawer, o.settingsdrawer}
+	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer}
 
 	return o
 end
@@ -119,7 +119,7 @@ function UI:findWidgetAt(x, y)
 	end
 	if self.fab then
 		if Util.inRect(x, y, self.fab:screenRect()) then
-			log.trace('FAB found')
+			-- log.trace('FAB found')
 			return self.fab
 		end
 	end
@@ -160,8 +160,15 @@ function UI:showVariantTypesDrawer()
 	self.typesdrawer:show()
 end
 
-function UI:showStatsDrawer()
-	self.statisticsdrawer:show()
+function UI:showStatsDrawer(strs)
+	self.statsdrawer.widgets = {}
+	for _, str in ipairs(strs) do
+		local wgt = TextWidget.new({parent=self.statsdrawer, text=str})
+		table.insert(self.statsdrawer.widgets, wgt)
+	end
+	Util.play('menuopen')
+	self.statsdrawer:layout()
+	self.statsdrawer:show()
 end
 
 function UI:showSettingsDrawer()

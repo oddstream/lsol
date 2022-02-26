@@ -1,6 +1,7 @@
 -- baize
 
 local bitser = require 'bitser'
+local json = require 'json'
 local log = require 'log'
 
 local Card = require 'card'
@@ -47,24 +48,33 @@ function Baize.new()
 	return o
 end
 
+local settingsFname = 'settings.json'
+
 function Baize:loadSettings()
-	local fname = 'settings.bitser'
 	local settings
-	local info = love.filesystem.getInfo(fname)
+	local info = love.filesystem.getInfo(settingsFname)
 	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
-		settings = bitser.loadLoveFile(fname)
-		log.info('loaded', fname)
+		local contents, size = love.filesystem.read(settingsFname)
+		if not contents then
+			log.error(size)
+		else
+			log.info('loaded', size, 'bytes from', settingsFname)
+			settings = json.decode(contents)
+		end
 	else
-		log.info('not loading', fname)
+		log.info('not loading', settingsFname)
 	end
 	self.settings = settings or _G.LSOL_DEFAULT_SETTINGS
 end
 
 function Baize:saveSettings()
-	local fname = 'settings.bitser'
 	self.settings.lastVersion = _G.LSOL_VERSION
-	bitser.dumpLoveFile(fname, self.settings)
-	log.info('saved', fname)
+	local success, message = love.filesystem.write(settingsFname, json.encode(self.settings))
+	if success then
+		log.info('wrote to', settingsFname)
+	else
+		log.error(message)
+	end
 end
 
 function Baize:getSavable()
@@ -537,8 +547,7 @@ end
 
 
 function Baize:showStatsDrawer()
-	self.ui:showStatsDrawer()
-	self.stats:log(self.settings.variantName)
+	self.ui:showStatsDrawer(self.stats:strings(self.settings.variantName))
 end
 
 function Baize:showSettingsDrawer()
@@ -888,7 +897,7 @@ function Baize:strokeStop(s)
 		if not dst then
 			for _, c in ipairs(s.object) do c:cancelDrag() end
 		else
-			log.trace('intersection found', src.category, 'to', dst.category)
+			-- log.trace('intersection found', src.category, 'to', dst.category)
 			if src == dst then
 				for _, c in ipairs(tail) do c:cancelDrag() end
 			else

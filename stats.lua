@@ -73,6 +73,7 @@ function Stats:recordWonGame(v)
 	local s = self:findVariant(v)
 
 	s.won = s.won + 1
+
 	if s.currStreak < 0 then
 		s.currStreak = 1
 	else
@@ -82,6 +83,8 @@ function Stats:recordWonGame(v)
 		s.bestStreak = s.currStreak
 	end
 
+	s.bestPercent = 100
+
 	log.info('recorded a won game of', v)
 end
 
@@ -89,6 +92,7 @@ function Stats:recordLostGame(v, percent)
 	local s = self:findVariant(v)
 
 	s.lost = s.lost + 1
+
 	if s.currStreak > 0 then
 		s.currStreak = -1
 	else
@@ -115,6 +119,24 @@ function Stats:log(v)
 	elseif s.currStreak < 1 then
 		log.info('on a losing streak of', s.currStreak)
 	end
+end
+
+function Stats:strings(v)
+	local s = self:findVariant(v)
+	local strs = {}
+	table.insert(strs, string.format('Played: %u, won: %u, lost %u', s.won+s.lost, s.won, s.lost))
+	table.insert(strs, string.format('Average percent: %d', averagePercent(s)))
+	if s.bestPercent < 100 then
+		table.insert(strs, string.format('Best percent: %d', s.bestPercent))
+	end
+	if s.currStreak > 0 then
+		table.insert(strs, string.format('On a winning streak of %d', s.currStreak))
+	elseif s.currStreak < 0 then
+		table.insert(strs, string.format('On a losing streak of %d', s.currStreak))
+	else
+		table.insert(strs, 'Not on a streak')
+	end
+	return strs
 end
 
 return Stats

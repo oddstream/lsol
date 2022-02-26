@@ -10,9 +10,6 @@ try to make an Android build
 copy sumPercents back to gosol
 check FAN_LEFT
 Card transitioning boolean
-stats and settings shoud be in json
-	statistics.json
-	settings.json
 BUG goto bookmark widget en/disable
 parameterize UI colors
 https://github.com/healeycodes/boids
