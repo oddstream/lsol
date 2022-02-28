@@ -1,5 +1,7 @@
 -- Card
 
+local log = require 'log'
+
 local Util = require 'util'
 
 local Card = {
@@ -64,6 +66,16 @@ function Card:setBaizePos(x, y)
 	self.x = x
 	self.y = y
 	self:stopTransition()
+--[[
+	if not self:dragging() then
+		local ssr = self.parent:screenBox()
+		if ssr then
+			if not Util.inRect(self.x, self.y, ssr.x, ssr.y, ssr.width, ssr.height) then
+				log.warn('card', tostring(self), 'outside ssr')
+			end
+		end
+	end
+]]
 end
 
 function Card:screenPos()

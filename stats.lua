@@ -124,17 +124,22 @@ end
 function Stats:strings(v)
 	local s = self:findVariant(v)
 	local strs = {}
-	table.insert(strs, string.format('Played: %u, won: %u, lost %u', s.won+s.lost, s.won, s.lost))
-	table.insert(strs, string.format('Average percent: %d', averagePercent(s)))
-	if s.bestPercent < 100 then
-		table.insert(strs, string.format('Best percent: %d', s.bestPercent))
-	end
-	if s.currStreak > 0 then
-		table.insert(strs, string.format('On a winning streak of %d', s.currStreak))
-	elseif s.currStreak < 0 then
-		table.insert(strs, string.format('On a losing streak of %d', s.currStreak))
+	if s.won + s.lost == 0 then
+		table.insert(strs, string.format('You have not played %s before', v))
 	else
-		table.insert(strs, 'Not on a streak')
+		table.insert(strs, string.format('Played: %u, won: %u, lost %u', s.won+s.lost, s.won, s.lost))
+		local avp = averagePercent(s)
+		if avp < 100 then
+			table.insert(strs, string.format('Average percent: %d', averagePercent(s)))
+		end
+		if s.bestPercent < 100 then
+			table.insert(strs, string.format('Best percent: %d', s.bestPercent))
+		end
+		if s.currStreak > 0 then
+			table.insert(strs, string.format('You are on a winning streak of %d', s.currStreak))
+		elseif s.currStreak < 0 then
+			table.insert(strs, string.format('You are on a losing streak of %d', s.currStreak))
+		end
 	end
 	return strs
 end

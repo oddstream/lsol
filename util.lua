@@ -50,6 +50,19 @@ function Util.overlapArea(x, y, w, h, X, Y, W, H)
 	return ox * oy;
 end
 
+function Util.rectContains(X, Y, W, H, x, y, w, h)
+	if x < X or y < Y then
+		return false
+	end
+	if x + w > X + W then
+		return false
+	end
+	if y + h > Y + H then
+		return false
+	end
+	return true
+end
+
 function Util.inRect(x, y, rx, ry, rw, rh)
 	return x >= rx and y >= ry and x < (rx + rw) and y < (ry + rh)
 end

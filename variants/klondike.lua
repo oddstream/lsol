@@ -1,7 +1,5 @@
 -- klondike
 
-local log = require 'log'
-
 local CC = require 'cc'
 
 local Foundation = require 'pile_foundation'
@@ -32,12 +30,9 @@ function Klondike:buildPiles()
 		local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
 		pile.label = 'K'
 	end
-	_G.BAIZE:setRecycles(32767)
 end
 
 function Klondike:startGame()
-	-- log.trace('Klondike.startGame')
-
 	local src = _G.BAIZE.stock
 	local dealDown = 0
 	for _, dst in ipairs(_G.BAIZE.tableaux) do
@@ -51,6 +46,7 @@ function Klondike:startGame()
 	for _ = 1, self.turn do
 		Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
 	end
+	_G.BAIZE:setRecycles(32767)
 end
 
 function Klondike:afterMove()

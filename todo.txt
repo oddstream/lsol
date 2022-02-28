@@ -7,8 +7,9 @@ just stick to the same as LÖVE (and raylib) and use x,y,width,height
 try as a .zip file in case variants and assets don't load
 try to make an Android build
 
-copy sumPercents back to gosol
 different cardRatio for landscape (1.357) and portrait (1.444)?
+use the statusbar middle widget for stats?
+remove time limit on tap?
 check FAN_LEFT
 BUG goto bookmark widget en/disable
 parameterize UI colors
@@ -16,18 +17,26 @@ https://github.com/healeycodes/boids
 status? virgin, complete, conformant, stuck...
 card rounded corners
 touch
+	convert stroke to use mouse, touch callback functions instead of polling in update
+	love.mousepressed
+	love.mousemoved
+	love.mousereleased
+	...mouse functions include isTouch parameter, so won't need separate touch functions?
 	love.touchpressed
 	love.touchmoved
 	love.touchreleased
 scrunching (from gosol)
-scrunch function
-	given a pile of cards
-	and a width/height that the cards need to fit within
-		(eg x pos of first face up card to bottom of visible area)
-	compute stack factor of face up cards
-		(face down cards have constant stack factor)
-	number will be between 3 (min stack) and 6 (max stack)
-
+	https://en.wikipedia.org/wiki/Gate_(solitaire)
+	each pile should know it's limit, calculated during layout
+	screen scrunch rect or baize scrunch rect?
+	after a card has finished moving, it should check if it's over limit
+	also check when popping, and fan factor is not at maximum
+	maybe use -1 for width/height of box to indicate 'window boundary'
+		otherwise would need to rerun layout everytime the baize scrolls!
+		but still need to refan after baize scroll
+	could wait until user goes quiet before check if peek() cards are outside the box
+		liking this idea
+		_G.BAIZE.lastInput (mouse/touch/key)
 stuck/movable (see gosol)
 settings UI
 	tidy up checkbox widget

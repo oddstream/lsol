@@ -45,6 +45,7 @@ function Baize.new()
 	o.recycles = 32767
 	o.bookmark = 0
 	o.ui = UI.new()
+	o.lastInput = love.timer.getTime()
 	return o
 end
 
@@ -174,10 +175,10 @@ function Baize:createSimpleFace(ord, suit)
 	love.graphics.setLineWidth(1)
 
 	love.graphics.setColor(Util.colorBytes('cardFaceColor'))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadiusX, self.cardRadiusY)
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
-	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadiusX, self.cardRadiusY)
+	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
 	love.graphics.setColor(Util.colorBytes(self:getSuitColor(suit)))
 
@@ -210,10 +211,10 @@ function Baize:createRegularFace(ord, suit)
 	love.graphics.setLineWidth(1)
 
 	love.graphics.setColor(Util.colorBytes('cardFaceColor'))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadiusX, self.cardRadiusY)
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
-	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadiusX, self.cardRadiusY)
+	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
 	local suitColor = self:getSuitColor(suit)
 
@@ -299,10 +300,10 @@ function Baize:createCardTextures()
 	love.graphics.setLineWidth(1)
 
 	love.graphics.setColor(Util.colorBytes('cardBackColor'))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadiusX, self.cardRadiusY)
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 	love.graphics.setColor(1, 1, 1, 0.1)
-	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadiusX, self.cardRadiusY)
+	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
 	if not self.settings.simpleCards then
 		local pipWidth = self.suitFont:getWidth('♠')
@@ -328,7 +329,7 @@ function Baize:createCardTextures()
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 	love.graphics.setLineWidth(1)
 	love.graphics.setColor(love.math.colorFromBytes(0, 0, 0, 128))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadiusX, self.cardRadiusY)
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardShadowTexture = canvas
 end
@@ -667,13 +668,13 @@ function Baize:layout()
 	local slotWidth = windowWidth / (maxSlotX + 1) -- +1 gives a half card width gap either side
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = math.floor(slotWidth - pilePaddingX)
-	self.cardRadiusX = math.floor(self.cardWidth / 16)
 	local slotHeight = slotWidth * self.settings.cardRatio
 	local pilePaddingY = slotHeight / 10
 	self.cardHeight = math.floor(slotHeight - pilePaddingY)
-	self.cardRadiusY = math.floor(self.cardHeight / 16)
 	local leftMargin = self.cardWidth / 2 + pilePaddingX
 	local topMargin = 48 + pilePaddingY
+
+	self.cardRadius = math.floor(self.cardWidth / 16)
 
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
 		self.labelFont = love.graphics.newFont('assets/fonts/Acme-Regular.ttf', self.cardWidth)
@@ -689,6 +690,52 @@ function Baize:layout()
 			leftMargin + ((pile.slot.x - 1) * (self.cardWidth + pilePaddingX)),
 			topMargin + ((pile.slot.y - 1) * (self.cardHeight + pilePaddingY))
 		)
+	end
+
+--[[
+	piles with fanType == FAN_DOWN, FAN_RIGHT or FAN_LEFT have a 'box'
+	within which, all the cards of that pile must fit
+	if the cards start to spill outside the box
+	then the fan factor is decreased and the cards are refanned
+
+	for example, consider a pile with fanType == FAN_DOWN:
+	the box will start at the x,y position of the pile, and be the same width as a card
+	the bottom of the box will either be the bottom of the baize,
+	or the top of another pile that is directly below this pile
+]]
+
+	for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
+		if pile.fanType == 'FAN_DOWN' then
+			pile.box = {
+				x = pile.x,
+				y = pile.y,
+				width = self.cardWidth,
+			}
+			if pile.boundaryPile then
+				pile.box.height = pile.boundaryPile.y - pile.y
+			else
+				pile.box.height = -1
+			end
+		elseif pile.fanType == 'FAN_RIGHT' then
+			pile.box = {
+				x = pile.x,
+				y = pile.y,
+				height = self.cardHeight
+			}
+			if pile.boundaryPile then
+				pile.box.width = pile.boundaryPile.x - pile.x
+			else
+				pile.box.width = -1
+			end
+		elseif pile.fanType == 'FAN_LEFT' then
+			pile.box = {
+				x = 0,
+				y = pile.y,
+				width = pile.x + self.cardWidth,
+				height = self.cardHeight
+			}
+		end
+
 		pile:refan(Card.setBaizePos)
 	end
 
@@ -953,6 +1000,7 @@ local function notifyStroke(s)
 	elseif s.event == 'stop' then
 		Baize.strokeStop(b, s)
 	end
+	b.lastInput = love.timer.getTime()
 end
 
 function Baize:setRecycles(n)
@@ -1064,6 +1112,29 @@ function Baize:wikipedia()
 	end
 end
 
+function Baize:scrunch()
+	for _, pile in ipairs(self.piles) do
+		if pile.box then
+			local c = pile:peek()
+			if c then
+				if pile.faceFanFactorH ~= 0.28 or pile.faceFanFactorV ~= 0.28 then
+					pile:calcFanFactor()
+					pile:refan(Card.transitionTo)
+				else
+					local cx, cy, cw, ch = c:baizeRect()
+					local box = pile:baizeBox()
+					-- make sure card is entirely within pile's box
+					if not Util.rectContains(box.x, box.y, box.width, box.height, cx, cy, cw, ch) then
+						log.warn('card outside box', tostring(c))
+						pile:calcFanFactor()
+						pile:refan(Card.transitionTo)
+					end
+				end
+			end
+		end
+	end
+end
+
 function Baize:update(dt)
 	if self.stroke == nil then
 		Stroke.start(notifyStroke)
@@ -1077,6 +1148,11 @@ function Baize:update(dt)
 		pile:update(dt)
 	end
 	self.ui:update(dt)
+
+	if (love.timer.getTime() - self.lastInput) > 2.0 then
+		self:scrunch()
+		self.lastInput = love.timer.getTime()
+	end
 end
 
 function Baize:draw()
@@ -1097,9 +1173,10 @@ function Baize:draw()
 	end
 	self.ui:draw()
 
-	-- love.graphics.setFont(self.ordFont)
+	-- love.graphics.setFont(self.suitFont)
 	-- love.graphics.setColor(love.math.colorFromBytes(255, 255, 240))	-- Ivory
 	-- love.graphics.print(string.format('#undoStack %d', #_G.BAIZE.undoStack, 10, 10))
+	-- love.graphics.print(string.format('%f', love.timer.getTime() - self.lastInput), 56, 2)
 end
 
 return Baize

@@ -114,7 +114,7 @@ function Stock:draw()
 	local x, y = self:screenPos()
 
 	love.graphics.setColor(1, 1, 1, 0.1)
-	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadiusX, b.cardRadiusY)
+	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	if self.rune then
 		love.graphics.setFont(b.runeFont)
 		love.graphics.print(self.rune,

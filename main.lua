@@ -35,7 +35,10 @@ _G.LSOL_VARIANTS = {
 	Duchess = {file='duchess.lua', params={}},
 	['Debug Klon'] = {file='debug.lua', params={spiderLike=false}},
 	['Debug Spid'] = {file='debug.lua', params={spiderLike=true}},
+	['Eight Off'] = {file='eightoff.lua'},
+	['Eight Off Relaxed'] = {file='eightoff.lua', params={relaxed=true}},
 	Freecell = {file='freecell.lua', params={}},
+	Gate = {file='gate.lua', params={}},
 	Klondike = {file='klondike.lua', params={}},
 	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3}},
 	['Forty Thieves'] = {file='forty.lua', params={tabs=10, cardsPerTab=4}},
@@ -52,14 +55,14 @@ _G.LSOL_VARIANTS = {
 }
 
 _G.VARIANT_TYPES = {
-	-- All will automatically be added
-	['Canfield >'] = {'Duchess'},
-	['Forty Thieves >'] = {'Forty Thieves', 'Limited', 'Lucas'},
-	['Freecell >'] = {'Eight Off', 'Freecell'},
-	['Klondike >'] = {'Klondike', 'Klondike (Turn Three)'},
-	['Places >'] = {'Australian', 'Yukon', 'Yukon Relaxed'},
-	['Puzzlers >'] = {'Freecell', 'Penguin', 'Simple Simon'},
-	['Spiders >'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
+	-- '> All' will automatically be added
+	['> Canfield'] = {'Duchess', 'Gate'},
+	['> Forty Thieves'] = {'Forty Thieves', 'Limited', 'Lucas'},
+	['> Freecell'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell'},
+	['> Klondike'] = {'Klondike', 'Klondike (Turn Three)'},
+	['> Places'] = {'Australian', 'Yukon', 'Yukon Relaxed'},
+	['> Puzzlers'] = {'Freecell', 'Penguin', 'Simple Simon'},
+	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
 }
 
 do
@@ -68,7 +71,7 @@ do
 		table.insert(lst, k)
 	end
 	-- table.sort(lst)
-	_G.VARIANT_TYPES['All >'] = lst
+	_G.VARIANT_TYPES['> All'] = lst
 	-- table.sort(_G.VARIANT_TYPES)
 	-- for k,_ in pairs(_G.VARIANT_TYPES) do
 	-- 	print(k)
@@ -231,6 +234,7 @@ function love.keyreleased(key)
 			end
 		end
 	end
+	_G.BAIZE.lastInput = love.timer.getTime()
 end
 
 function love.wheelmoved(x, y)
@@ -244,6 +248,7 @@ function love.wheelmoved(x, y)
 		_G.BAIZE:dragBy(x*24, y*24)
 		_G.BAIZE:stopDrag()
 	end
+	_G.BAIZE.lastInput = love.timer.getTime()
 end
 
 function love.quit()

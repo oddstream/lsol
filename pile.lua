@@ -9,18 +9,17 @@ local Util = require 'util'
 local Pile = {}
 Pile.__index = Pile
 
-local minFanFactor, maxFanFactor = 0.16666, 0.26666
-local backFanFactorH = minFanFactor
-local backFanFactorV = minFanFactor
+local minFanFactor, maxFanFactor = 0.16666, 0.28
+local backFanFactor = 0.1
 
 function Pile.new(o)
 	-- assert(type(o)=='table')
 	-- assert(type(o.x)=='number')
 	-- assert(type(o.y)=='number')
 	o.slot = {x = o.x, y = o.y}
+	o.x, o.y = 0, 0
 	o.cards = {}
-	o.faceFanFactorH = 0.25
-	o.faceFanFactorV = maxFanFactor
+	o.faceFanFactor = 0.28
 	return setmetatable(o, Pile)
 end
 
@@ -39,14 +38,14 @@ end
 function Pile:setBaizePos(x, y)
 	self.x, self.y = x, y
 	if self.fanType == 'FAN_DOWN3' then
-		self.pos1 = {x=x, y=y + (_G.BAIZE.cardHeight * self.faceFanFactorV)}
-		self.pos2 = {x=x, y=y + (_G.BAIZE.cardHeight * self.faceFanFactorV) + (_G.BAIZE.cardHeight * self.faceFanFactorV)}
+		self.pos1 = {x=x, y=y + (_G.BAIZE.cardHeight * self.faceFanFactor)}
+		self.pos2 = {x=x, y=y + (_G.BAIZE.cardHeight * self.faceFanFactor) + (_G.BAIZE.cardHeight * self.faceFanFactor)}
 	elseif self.fanType == 'FAN_LEFT3' then
-		self.pos1 = {x=x - (_G.BAIZE.cardHeight * self.faceFanFactorH), y=y}
-		self.pos2 = {x=x - (_G.BAIZE.cardHeight * self.faceFanFactorH)  + (_G.BAIZE.cardHeight * self.faceFanFactorH), y=y}
+		self.pos1 = {x=x - (_G.BAIZE.cardHeight * self.faceFanFactor), y=y}
+		self.pos2 = {x=x - (_G.BAIZE.cardHeight * self.faceFanFactor)  + (_G.BAIZE.cardHeight * self.faceFanFactor), y=y}
 	elseif self.fanType == 'FAN_RIGHT3' then
-		self.pos1 = {x=x + (_G.BAIZE.cardHeight * self.faceFanFactorH), y=y}
-		self.pos2 = {x=x + (_G.BAIZE.cardHeight * self.faceFanFactorH)  + (_G.BAIZE.cardHeight * self.faceFanFactorH), y=y}
+		self.pos1 = {x=x + (_G.BAIZE.cardHeight * self.faceFanFactor), y=y}
+		self.pos2 = {x=x + (_G.BAIZE.cardHeight * self.faceFanFactor)  + (_G.BAIZE.cardHeight * self.faceFanFactor), y=y}
 	end
 end
 
@@ -95,21 +94,21 @@ function Pile:posAfter(c)
 		-- do nothing
 	elseif self.fanType == 'FAN_DOWN' then
 		if c.prone then
-			y = y + (_G.BAIZE.cardHeight * backFanFactorV)
+			y = y + (_G.BAIZE.cardHeight * backFanFactor)
 		else
-			y = y + (_G.BAIZE.cardHeight * self.faceFanFactorV)
+			y = y + (_G.BAIZE.cardHeight * self.faceFanFactor)
 		end
 	elseif self.fanType == 'FAN_RIGHT' then
 		if c.prone then
-			x = x + (_G.BAIZE.cardWidth * backFanFactorH)
+			x = x + (_G.BAIZE.cardWidth * backFanFactor)
 		else
-			x = x + (_G.BAIZE.cardWidth * self.faceFanFactorH)
+			x = x + (_G.BAIZE.cardWidth * self.faceFanFactor)
 		end
 	elseif self.fanType == 'FAN_LEFT' then
 		if c.prone then
-			x = x - (_G.BAIZE.cardWidth * backFanFactorH)
+			x = x - (_G.BAIZE.cardWidth * backFanFactor)
 		else
-			x = x - (_G.BAIZE.cardWidth * self.faceFanFactorH)
+			x = x - (_G.BAIZE.cardWidth * self.faceFanFactor)
 		end
 	elseif self.fanType == 'FAN_RIGHT3' or self.fanType == 'FAN_LEFT3' or self.fanType == 'FAN_DOWN3' then
 		if #self.cards == 0 then
@@ -176,50 +175,66 @@ function Pile:refan(fn)
 			fn(c, self.pos1.x, self.pos1.y)
 		end
 	end
-end
-
-function Pile:calcStackFactors()
-	if #self.cards < 2 then
-		return maxFanFactor, maxFanFactor
-	end
-
-	-- need screen pos of first face up card
-
-	local cFirstUp
-	local cIdx
-	for i, c in ipairs(self.cards) do
-		if not c.prone then
-			cFirstUp = c
-			cIdx = i
-			break
+--[[
+	-- check to see if any cards have overrun
+	if self.fanType == 'FAN_DOWN' then
+		local cLast = self:peek()
+		local _, cy = cLast:screenPos()
+		local _, wh = love.window.getMode()
+		if cy + _G.BAIZE.cardHeight > wh - 24 then
+			log.info('card', tostring(cLast), 'has overrun')
 		end
 	end
-	if not cFirstUp then
-		return minFanFactor, minFanFactor
+]]
+end
+
+function Pile:baizeBox()
+	local box
+	if self.box then
+		local w, h = love.window.getMode()
+		box = {
+			x = self.box.x,
+			y = self.box.y,
+			width = self.box.width,
+			height = self.box.height}
+		if box.height == -1 then
+			box.height = h - 24 - box.y
+		elseif box.width == -1 then
+			box.width = w - box.x
+		end
 	end
+	return box
+end
 
-	local cx, cy = cFirstUp:screenPos()
-	local nUpCards = #self.cards - cIdx + 1
+function Pile:screenBox()
+	local box = self:baizeBox()
+	if box then
+		box.x = box.x + _G.BAIZE.dragOffset.x
+		box.y = box.y + _G.BAIZE.dragOffset.y
+	end
+	return box
+end
 
-	local ww, wh = love.window.getMode()
-	local bw = ww - cx
-	local bh = wh - cy - 24	-- take off the status bar height
-
-	-- take off space occupied by face down cards
-	-- bw = bw - (ndown * _G.BAIZE.cardWidth * backFanFactorH)
-	-- bh = bh - (ndown * _G.BAIZE.cardHeight * backFanFactorV)
-
+function Pile:calcFanFactor()
 	-- result = ((#cards - 1) * (cardheight * factor)) + cardheight
 	-- r = (n-1) * (h * f) + h
 	-- make factor the subject
 	-- f = (r - h) / (h * (n-1))
+	-- https://www.mymathtutors.com/algebra-tutors/adding-numerators/online-calculator---rearrange.html
 
-	-- https://www.mymathtutors.com/algebra-tutors/adding-numerators/online-calculator---rearrange.html#c=solve_algstepsequationsolve&v239=r%2520%253D%2520%2528n-1%2529%2520*%2520%2528h%2520*%2520f%2529%2520%2B%2520h&v240=f
-
-	local fx = (bw - _G.BAIZE.cardWidth) / (_G.BAIZE.cardWidth * (nUpCards - 1))
-	local fy = (bh - _G.BAIZE.cardHeight) / (_G.BAIZE.cardHeight * (nUpCards - 1))
-	log.info(Util.clamp(fx, minFanFactor, maxFanFactor), Util.clamp(fy, minFanFactor, maxFanFactor))
-	return fx, fy
+	if (not self.box) or (#self.cards < 4) then
+		return
+	end
+	local ff
+	local box = self:screenBox()
+	if self.fanType == 'FAN_DOWN' then
+		ff = (box.height - _G.BAIZE.cardHeight) / (_G.BAIZE.cardHeight * (#self.cards - 1))
+		ff = Util.clamp(ff, minFanFactor, maxFanFactor)
+	elseif self.fanType == 'FAN_RIGHT' or self.fanType == 'FAN_LEFT' then
+		ff = (box.width - _G.BAIZE.cardWidth) / (_G.BAIZE.cardWidth * (#self.cards - 1))
+		ff = Util.clamp(ff, minFanFactor, maxFanFactor)
+	end
+	self.faceFanFactor = ff
 end
 
 function Pile:peek()
@@ -481,7 +496,7 @@ function Pile:draw()
 
 	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.setLineWidth(1)
-	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadiusX, b.cardRadiusY)
+	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	if self.label then
 		local scale
 		if #self.label > 1 then
@@ -499,6 +514,21 @@ function Pile:draw()
 			b.labelFont:getWidth(self.label) / 2,
 			b.labelFont:getHeight(self.label) / 2)
 	end
+--[[
+	local ssr = self:screenBox()
+	if ssr then
+		love.graphics.setColor(0,0,1,1)
+		love.graphics.setLineWidth(1)
+		love.graphics.rectangle('line', ssr.x, ssr.y, ssr.width, ssr.height, 10, 10)
+	end
+]]
+--[[
+	love.graphics.setColor(1,0,0,1)
+	local px, py, pw, ph = self:calcFanFactor()
+	if px and py and pw and ph then
+		love.graphics.rectangle('line', px, py, pw, ph)
+	end
+]]
 --[[
 	love.graphics.setColor(1,1,1,1)
 	local px, py, pw, ph = self:fannedBaizeRect()	-- should be fannedScreenRect
