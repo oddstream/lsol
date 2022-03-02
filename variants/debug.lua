@@ -29,11 +29,9 @@ function Debug:buildPiles()
 			f.label = 'A'
 		end
 	end
-	Tableau.new({x=2, y=2, fanType='FAN_LEFT', moveType='MOVE_ANY'})
-	for x = 2, 12 do
-		Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+	for x = 1, 13 do
+		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
 	end
-	Tableau.new({x=12, y=2, fanType='FAN_RIGHT', moveType='MOVE_ANY'})
 end
 
 function Debug:startGame()

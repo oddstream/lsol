@@ -148,8 +148,11 @@ local pipInfo = {
 }
 
 function Baize:getSuitColor(suit)
+	if not self.settings.cardColors then
+		self.settings.cardColors = 2
+	end
 	local suitColor
-	if self.settings.fourColorCards then
+	if self.settings.cardColors == 4 then
 		if suit == '♣' then
 			suitColor = 'clubColor'
 		elseif suit == '♦' then
@@ -159,12 +162,16 @@ function Baize:getSuitColor(suit)
 		elseif suit == '♠' then
 			suitColor = 'spadeColor'
 		end
-	else
+	elseif self.settings.cardColors == 2 then
 		if suit == '♦' or suit == '♥' then
 			suitColor = 'heartColor'
 		else
 			suitColor = 'spadeColor'
 		end
+	elseif self.settings.cardColors == 1 then
+		suitColor = 'spadeColor'
+	else
+		log.error('unknown value for settings.cardColors', self.settings.cardColors)
 	end
 	return suitColor
 end
@@ -557,7 +564,7 @@ end
 
 function Baize:toggleSetting(var)
 	self.settings[var] = not self.settings[var]
-	if var == 'simpleCards' or var == 'fourColorCards' then
+	if var == 'simpleCards' then
 		self:createCardTextures()
 	end
 end
@@ -602,6 +609,7 @@ function Baize:newDeal()
 	self:stopSpinning()
 	self.ui:hideFAB()
 	for _, p in ipairs(self.piles) do
+		p.faceFanFactor = 0.28
 		p.cards = {}
 	end
 	for _, c in ipairs(self.deck) do
@@ -656,7 +664,7 @@ function Baize:layout()
 			if pile.slot.x > maxSlotX then
 				-- Duchess rule
 				if pile.fanType == 'FAN_RIGHT3' or pile.fanType == 'FAN_RIGHT' then
-					maxSlotX = pile.slot.x + 1
+					maxSlotX = pile.slot.x + 2
 				else
 					maxSlotX = pile.slot.x
 				end
@@ -824,6 +832,10 @@ function Baize:dragBy(dx, dy)
 end
 
 function Baize:stopDrag()
+	for _, pile in ipairs(self.piles) do
+		pile.faceFanFactor = 0.28
+		pile:refan(Card.transitionTo)
+	end
 end
 
 function Baize:strokeStart(s)
@@ -843,7 +855,7 @@ function Baize:strokeStart(s)
 	else
 		local con = self.ui:findContainerAt(s.x, s.y)
 		if con then
-			log.info('strokeStart on container')
+			-- log.info('strokeStart on container')
 			self.stroke:setDraggedObject(con, 'container')
 			con:startDrag(s.x, s.y)
 		else
@@ -1081,16 +1093,6 @@ function Baize:stopSpinning()
 	end
 end
 
-function Baize:twoColorCards()
-	self.settings.fourColorCards = false
-	self:createCardTextures()
-end
-
-function Baize:fourColorCards()
-	self.settings.fourColorCards = true
-	self:createCardTextures()
-end
-
 function Baize:resetSettings()
 	local vname = self.settings.variantName
 	self.settings = {}
@@ -1117,20 +1119,31 @@ function Baize:scrunch()
 		if pile.box then
 			local c = pile:peek()
 			if c then
-				if pile.faceFanFactorH ~= 0.28 or pile.faceFanFactorV ~= 0.28 then
-					pile:calcFanFactor()
-					pile:refan(Card.transitionTo)
+				if pile.faceFanFactor < 0.28 then
+					if pile:calcFanFactor() then
+						pile:refan(Card.transitionTo)
+					end
 				else
 					local cx, cy, cw, ch = c:baizeRect()
 					local box = pile:baizeBox()
 					-- make sure card is entirely within pile's box
 					if not Util.rectContains(box.x, box.y, box.width, box.height, cx, cy, cw, ch) then
 						log.warn('card outside box', tostring(c))
-						pile:calcFanFactor()
-						pile:refan(Card.transitionTo)
+						if pile:calcFanFactor() then
+							pile:refan(Card.transitionTo)
+						end
 					end
 				end
 			end
+		end
+	end
+end
+
+function Baize:simpleScrunch()
+	for _, pile in ipairs(self.piles) do
+		if pile.box and #pile.cards > 0 then
+			pile:calcFanFactor()
+			pile:refan(Card.transitionTo)
 		end
 	end
 end
@@ -1150,7 +1163,7 @@ function Baize:update(dt)
 	self.ui:update(dt)
 
 	if (love.timer.getTime() - self.lastInput) > 2.0 then
-		self:scrunch()
+		self:simpleScrunch()
 		self.lastInput = love.timer.getTime()
 	end
 end

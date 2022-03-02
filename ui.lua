@@ -32,7 +32,6 @@ local menuWidgets = {
 
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
-	{text='Four color cards', var='fourColorCards'},
 	{text='Power moves', var='powerMoves'},
 	{text='Mute sounds', var='muteSounds'},
 }

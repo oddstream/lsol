@@ -7,6 +7,7 @@ just stick to the same as LÖVE (and raylib) and use x,y,width,height
 try as a .zip file in case variants and assets don't load
 try to make an Android build
 
+scale down spinning cards
 different cardRatio for landscape (1.357) and portrait (1.444)?
 use the statusbar middle widget for stats?
 remove time limit on tap?
@@ -26,7 +27,7 @@ touch
 	love.touchmoved
 	love.touchreleased
 scrunching (from gosol)
-	https://en.wikipedia.org/wiki/Gate_(solitaire)
+	https://en.wikipedia.org/wiki/Beleaguered_Castle
 	each pile should know it's limit, calculated during layout
 	screen scrunch rect or baize scrunch rect?
 	after a card has finished moving, it should check if it's over limit
@@ -42,7 +43,7 @@ settings UI
 	tidy up checkbox widget
 	radio widget?
 	simple cards on/off
-	cards 2/4 color
+	cards 1/2/4 color
 	powerMoves on/off
 	mirror baize on/off
 	mute sounds on/off

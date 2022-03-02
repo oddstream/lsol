@@ -70,6 +70,7 @@ function Card:setBaizePos(x, y)
 	if not self:dragging() then
 		local ssr = self.parent:screenBox()
 		if ssr then
+			use Util.rectContains()
 			if not Util.inRect(self.x, self.y, ssr.x, ssr.y, ssr.width, ssr.height) then
 				log.warn('card', tostring(self), 'outside ssr')
 			end

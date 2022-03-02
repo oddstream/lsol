@@ -198,7 +198,7 @@ function Pile:baizeBox()
 			width = self.box.width,
 			height = self.box.height}
 		if box.height == -1 then
-			box.height = h - 24 - box.y
+			box.height = h - 24 - box.y + (_G.BAIZE.cardHeight / 2)
 		elseif box.width == -1 then
 			box.width = w - box.x
 		end
@@ -211,6 +211,7 @@ function Pile:screenBox()
 	if box then
 		box.x = box.x + _G.BAIZE.dragOffset.x
 		box.y = box.y + _G.BAIZE.dragOffset.y
+		box.height = box.height -  _G.BAIZE.dragOffset.y
 	end
 	return box
 end
@@ -223,7 +224,7 @@ function Pile:calcFanFactor()
 	-- https://www.mymathtutors.com/algebra-tutors/adding-numerators/online-calculator---rearrange.html
 
 	if (not self.box) or (#self.cards < 4) then
-		return
+		return false
 	end
 	local ff
 	local box = self:screenBox()
@@ -234,7 +235,11 @@ function Pile:calcFanFactor()
 		ff = (box.width - _G.BAIZE.cardWidth) / (_G.BAIZE.cardWidth * (#self.cards - 1))
 		ff = Util.clamp(ff, minFanFactor, maxFanFactor)
 	end
+	if ff == self.faceFanFactor then
+		return false
+	end
 	self.faceFanFactor = ff
+	return true
 end
 
 function Pile:peek()
@@ -354,6 +359,7 @@ function Pile:updateFromSaved(saved)
 	end
 
 	self.label = saved.label
+	self.faceFanFactor =  0.28
 end
 
 -- vtable functions
@@ -514,21 +520,14 @@ function Pile:draw()
 			b.labelFont:getWidth(self.label) / 2,
 			b.labelFont:getHeight(self.label) / 2)
 	end
---[[
+
 	local ssr = self:screenBox()
 	if ssr then
-		love.graphics.setColor(0,0,1,1)
+		love.graphics.setColor(1,1,1,0.1)
 		love.graphics.setLineWidth(1)
 		love.graphics.rectangle('line', ssr.x, ssr.y, ssr.width, ssr.height, 10, 10)
 	end
-]]
---[[
-	love.graphics.setColor(1,0,0,1)
-	local px, py, pw, ph = self:calcFanFactor()
-	if px and py and pw and ph then
-		love.graphics.rectangle('line', px, py, pw, ph)
-	end
-]]
+
 --[[
 	love.graphics.setColor(1,1,1,1)
 	local px, py, pw, ph = self:fannedBaizeRect()	-- should be fannedScreenRect

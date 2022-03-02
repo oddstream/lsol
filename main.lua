@@ -27,12 +27,14 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	diamondColor = 'OrangeRed',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
-	fourColorCards = true,
+	cardColors = 2,
 }
 
 _G.LSOL_VARIANTS = {
-	Australian = {file='australian.lua', params={}},
-	Duchess = {file='duchess.lua', params={}},
+	Australian = {file='australian.lua'},
+	['Beleaguered Castle'] = {file='castle.lua'},
+	['Flat Castle'] = {file='castle.lua', params={flat=true}},
+	Duchess = {file='duchess.lua'},
 	['Debug Klon'] = {file='debug.lua', params={spiderLike=false}},
 	['Debug Spid'] = {file='debug.lua', params={spiderLike=true}},
 	['Eight Off'] = {file='eightoff.lua'},
@@ -223,10 +225,15 @@ function love.keyreleased(key)
 		_G.BAIZE:stopSpinning()
 	elseif key == 'f' then
 		_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
+	elseif key == '1' then
+		_G.BAIZE.settings.cardColors = 1
+		_G.BAIZE:createCardTextures()
 	elseif key == '2' then
-		_G.BAIZE:twoColorCards()
+		_G.BAIZE.settings.cardColors = 2
+		_G.BAIZE:createCardTextures()
 	elseif key == '4' then
-		_G.BAIZE:fourColorCards()
+		_G.BAIZE.settings.cardColors = 4
+		_G.BAIZE:createCardTextures()
 	elseif key == 'x' then
 		for _, p in ipairs(_G.BAIZE.piles) do
 			if p.category == 'Tableau' or p.category == 'Reserve' then
