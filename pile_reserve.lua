@@ -33,10 +33,6 @@ function Reserve:conformant()
 	return #self.cards < 2
 end
 
-function Reserve:complete()
-	return #self.cards == 0
-end
-
 function Reserve:unsortedPairs()
 	if #self.cards == 0 then
 		return 0

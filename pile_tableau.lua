@@ -83,20 +83,6 @@ function Tableau:conformant()
 	return _G.BAIZE.script:unsortedPairs(self) == 0
 end
 
-function Tableau:complete()
-	if #self.cards == 0 then
-		return true
-	end
-	if _G.BAIZE.discards and #_G.BAIZE.discards > 0 then
-		if #self.cards == #_G.BAIZE.deck / #_G.BAIZE.discards then
-			if _G.BAIZE.script:unsortedPairs(self) == 0 then
-				return true
-			end
-		end
-	end
-	return false
-end
-
 function Tableau:unsortedPairs()
 	return _G.BAIZE.script:unsortedPairs(self)
 end

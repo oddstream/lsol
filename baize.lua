@@ -5,7 +5,6 @@ local json = require 'json'
 local log = require 'log'
 
 local Card = require 'card'
-local Stroke = require 'stroke'
 local Util = require 'util'
 
 local UI = require 'ui'
@@ -487,7 +486,7 @@ function Baize:undoPush()
 		self.ui:updateWidget('complete', 'CONFORMANT')
 	else
 		local percent = self:percentComplete()
-		self.ui:updateWidget('complete', string.format('%d%% COMPLETE', percent))
+		self.ui:updateWidget('complete', string.format('PROGRESS:%d%%', percent))
 	end
 end
 
@@ -838,31 +837,36 @@ function Baize:stopDrag()
 	end
 end
 
-function Baize:strokeStart(s)
-	-- log.info(s.event, s.x, s.y)
-	assert(self.stroke==nil)
-	self.stroke = s.stroke
-
-	local w = self.ui:findWidgetAt(s.x, s.y)
+function Baize:mousePressed(x, y, button)
+	if self.stroke then
+		log.warn('mousePressed', button, 'already a stroke')
+		return
+	end
+	self.stroke = {
+		init = {x=x, y=y},
+	}
+	local w = self.ui:findWidgetAt(x, y)
 	if w then
-		self.stroke:setDraggedObject(w, 'widget')
+		self.stroke.object = w
+		self.stroke.objectType = 'widget'
 		-- tell the widget's parent (a container) that we may be dragging
 		if w.parent then
 			-- TODO FAB does not have a parent because it's not a container subclass
-			w.parent:startDrag(s.x, s.y)
+			w.parent:startDrag(x, y)
 		end
 		-- log.info('strokeStart on widget', w.text or w.icon)
 	else
-		local con = self.ui:findContainerAt(s.x, s.y)
+		local con = self.ui:findContainerAt(x, y)
 		if con then
 			-- log.info('strokeStart on container')
-			self.stroke:setDraggedObject(con, 'container')
-			con:startDrag(s.x, s.y)
+			self.stroke.object = con
+			self.stroke.objectType = 'container'
+			con:startDrag(x, y)
 		else
 			-- we didn't touch a widget, or container, so there's no need for a drawer to be open?
 			self.ui:hideDrawers()
 
-			local card, pile = self:findCardAt(s.x, s.y)
+			local card, pile = self:findCardAt(x, y)
 			if card then
 				if not card.spinning then
 					local tail = pile:makeTail(card)
@@ -870,149 +874,144 @@ function Baize:strokeStart(s)
 						c:startDrag()
 					end
 					-- hide the cursor
-					self.stroke:setDraggedObject(tail, 'tail')
+					self.stroke.object = tail
+					self.stroke.objectType = 'tail'
 					-- print(tostring(card), 'tail len', #tail)
 				end
 			else
-				pile = self:findPileAt(s.x, s.y)
+				pile = self:findPileAt(x, y)
 				if pile then
-					self.stroke:setDraggedObject(pile, 'pile')
+					self.stroke.object = pile
+					self.stroke.objectType = 'pile'
 				else
 					self:startDrag()
-					self.stroke:setDraggedObject(self, 'baize')
+					self.stroke.object = self
+					self.stroke.objectType = 'baize'
 				end
 			end
 		end
 	end
 end
 
-function Baize:strokeMove(s)
-	if s.type == 'tail' then
-		for _, c in ipairs(s.object) do
-			c:dragBy(s.dx, s.dy)
+function Baize:mouseMoved(x, y, dx, dy)
+	if not self.stroke then
+		return
+	end
+	local dx2, dy2 = x - self.stroke.init.x, y - self.stroke.init.y
+	if self.stroke.objectType == 'tail' then
+		local tail = self.stroke.object
+		for _, c in ipairs(tail) do
+			c:dragBy(dx2, dy2)
 		end
-	elseif s.type == 'widget' then
-		local wgt = s.object
-		wgt.parent:dragBy(s.dx, s.dy)
-	elseif s.type == 'container' then
-		local con = s.object
-		con:dragBy(s.dx, s.dy)
-	elseif s.type == 'baize' then
-		self:dragBy(s.dx, s.dy)
+	elseif self.stroke.objectType == 'widget' then
+		local wgt = self.stroke.object
+		wgt.parent:dragBy(dx2, dy2)
+	elseif self.stroke.objectType == 'container' then
+		local con = self.stroke.object
+		con:dragBy(dx2, dy2)
+	elseif self.stroke.objectType == 'baize' then
+		self:dragBy(dx2, dy2)
 	end
 end
 
-function Baize:strokeTap(s)
-	-- log.info(s.event, s.x, s.y)
-	if s.type == 'widget' then
-		local wgt = s.object
+function Baize:mouseTapped(x, y, button)
+	if self.stroke.objectType == 'widget' then
+		local wgt = self.stroke.object
 		if type(wgt.baizeCmd) == 'string' and type(_G.BAIZE[wgt.baizeCmd]) == 'function' then
 			self.ui:hideDrawers()
 			if wgt.enabled then
 				self[wgt.baizeCmd](self, wgt.param)	-- w.param may be nil
 			end
 		end
-	elseif s.type == 'container' then
+	elseif self.stroke.objectType == 'container' then
 		-- do nothing when tapping on a container
-	elseif s.type == 'tail' then
-		-- print('TRACE tap on', tostring(s.object[1]), 'parent', s.object[1].parent.category)
+	elseif self.stroke.objectType == 'tail' then
+		-- print('TRACE tap on', tostring(self.stroke.object[1]), 'parent', self.stroke.object[1].parent.category)
 		-- offer tailTapped to the script first
 		-- the script can then call Pile.tailTapped if it likes
+		local tail = self.stroke.object
+		for _, c in ipairs(tail) do c:cancelDrag() end
 		local oldSnap = self:stateSnapshot()
-		self.script:tailTapped(s.object)
+		self.script:tailTapped(tail)
 		local newSnap = self:stateSnapshot()
 		if Util.baizeChanged(oldSnap, newSnap) then
 			self:afterUserMove()
+		else
+			Util.play('blip')
 		end
-	elseif s.type == 'pile' then
-		-- print('TRACE tap on', s.object.category)
+	elseif self.stroke.objectType == 'pile' then
+		-- print('TRACE tap on', self.stroke.object.category)
 		local oldSnap = self:stateSnapshot()
-		self.script:pileTapped(s.object)
+		self.script:pileTapped(self.stroke.object)
 		local newSnap = self:stateSnapshot()
 		if Util.baizeChanged(oldSnap, newSnap) then
 			self:afterUserMove()
+		else
+			Util.play('blip')
 		end
-	elseif s.type == 'baize' then
+	elseif self.stroke.objectType == 'baize' then
 		-- TODO close any open UI drawer
 	end
 end
 
-function Baize:strokeCancel(s)
-	-- log.info(s.event, s.x, s.y)
-	if s.type == 'tail' then
-		for _, c in ipairs(s.object) do
-			c:cancelDrag()
-		end
+function Baize:mouseReleased(x, y, button)
+	if not self.stroke then
+		return
 	end
-end
-
-function Baize:strokeStop(s)
-	-- log.info(s.event, s.x, s.y)
-	if s.type == 'tail' then
-		local tail = s.object
-		assert(#tail>0)
-		local src = tail[1].parent
-		local dst = self:largestIntersection(tail[1])
-		if not dst then
-			for _, c in ipairs(s.object) do c:cancelDrag() end
-		else
-			-- log.trace('intersection found', src.category, 'to', dst.category)
-			if src == dst then
+	if math.abs(self.stroke.init.x - x) < 3 and math.abs(self.stroke.init.y - y) < 3 then
+		self:mouseTapped(x, y, button)
+	else
+		if self.stroke.objectType == 'tail' then
+			local tail = self.stroke.object
+			local src = tail[1].parent
+			local dst = self:largestIntersection(tail[1])
+			if not dst then
 				for _, c in ipairs(tail) do c:cancelDrag() end
 			else
-				local err = src:canMoveTail(tail)
-				if err then
-					self.ui:toast(err, 'blip')
+				if src == dst then
 					for _, c in ipairs(tail) do c:cancelDrag() end
 				else
-					err = dst:canAcceptTail(tail)
+					local err = src:canMoveTail(tail)
 					if err then
 						self.ui:toast(err, 'blip')
 						for _, c in ipairs(tail) do c:cancelDrag() end
 					else
-						err = self.script:tailMoveError(tail)
+						err = dst:canAcceptTail(tail)
 						if err then
 							self.ui:toast(err, 'blip')
 							for _, c in ipairs(tail) do c:cancelDrag() end
 						else
-							for _, c in ipairs(tail) do c:stopDrag() end
-
-							local oldSnap = self:stateSnapshot()
-							if #tail == 1 then
-								Util.moveCard(src, dst)
+							err = self.script:tailMoveError(tail)
+							if err then
+								self.ui:toast(err, 'blip')
+								for _, c in ipairs(tail) do c:cancelDrag() end
 							else
-								Util.moveCards(src, src:indexOf(tail[1]), dst)
-							end
-							local newSnap = self:stateSnapshot()
-							if Util.baizeChanged(oldSnap, newSnap) then
-								self:afterUserMove()
+								for _, c in ipairs(tail) do c:stopDrag() end
+
+								local oldSnap = self:stateSnapshot()
+								if #tail == 1 then
+									Util.moveCard(src, dst)
+								else
+									Util.moveCards(src, src:indexOf(tail[1]), dst)
+								end
+								local newSnap = self:stateSnapshot()
+								if Util.baizeChanged(oldSnap, newSnap) then
+									self:afterUserMove()
+								end
 							end
 						end
 					end
 				end
 			end
+		elseif self.stroke.objectType == 'pile' then
+			-- do nothing, we don't drag piles
+		elseif self.stroke.type == 'baize' then
+			self:stopDrag()
 		end
-	elseif s.type == 'pile' then
-		-- do nothing, we don't drag piles
-	elseif s.type == 'baize' then
-		self:stopDrag()
 	end
-end
 
-local function notifyStroke(s)
-	local b = _G.BAIZE
-	if s.event == 'start' then
-		Baize.strokeStart(b, s)
-	elseif s.event == 'move' then
-		Baize.strokeMove(b, s)
-	elseif s.event == 'tap' then
-		Baize.strokeTap(b, s)
-	elseif s.event == 'cancel' then
-		Baize.strokeCancel(b, s)
-	elseif s.event == 'stop' then
-		Baize.strokeStop(b, s)
-	end
-	b.lastInput = love.timer.getTime()
+	self.lastInput = love.timer.getTime()
+	self.stroke = nil
 end
 
 function Baize:setRecycles(n)
@@ -1052,9 +1051,55 @@ function Baize:conformant()
 end
 
 function Baize:complete()
-	for _, pile in ipairs(self.piles) do
-		if not pile:complete() then
-			return false
+	-- Bisley rule - game is complete when all piles except foundations are empty
+	-- would normally have 52 / 13 == 4 foundations
+	-- Bisley has 8 foundations
+	-- 1 pack 52 cards, 13 cards per suit, 4 foundations
+	-- 2 packs 104 cards, 13 cards per suit, 8 foundations
+
+	-- Spider rule - game has discard piles
+	-- discards should either be empty or contain 13 conformant cards
+	-- tableaux should either be empty or contain 13 conformant cards
+
+	-- Normal rule - all piles except foundations are empty
+	if self.discards and #self.discards > 0 then
+		for _, pile in ipairs(self.piles) do
+			if pile.category == 'Discard' then
+				-- discard must be empty
+				-- or have (eg) 13 cards (which we know are conformant, else they wouldn't have got here)
+				if (#pile.cards == 0) then
+					-- thats' fine
+				elseif (#pile.cards == #self.deck / #self.discards) then
+					-- that's fine
+				else
+					return false
+				end
+			elseif pile.category == 'Tableau' then
+				-- tableau must be empty
+				-- or have (eg) 13 conformant cards
+				if (#pile.cards == 0) then
+					-- that's fine
+				elseif (#pile.cards == #self.deck / #self.discards) then
+					if not pile:conformant() then
+						return false
+					end
+				else
+					return false
+				end
+			else
+				-- any other pile type must be empty
+				if #pile.cards > 0 then
+					return false
+				end
+			end
+		end
+	else
+		for _, pile in ipairs(self.piles) do
+			if pile.category ~= 'Foundation' then
+				if #pile.cards > 0 then
+					return false
+				end
+			end
 		end
 	end
 	return true
@@ -1114,57 +1159,48 @@ function Baize:wikipedia()
 	end
 end
 
-function Baize:scrunch()
+function Baize:j_adoube()
+
+	local function mayNeedAdjusting(pile)
+		if not pile.box then
+			return false
+		end
+		if pile.faceFanFactor < 0.28 then
+			return true
+		end
+		if #pile.cards < 4 then
+			return false
+		end
+		local c = pile:peek()
+		local cx, cy, cw, ch = c:baizeRect()
+		local box = pile:baizeBox()
+		-- make sure card is entirely within pile's box
+		if not Util.rectContains(box.x, box.y, box.width, box.height, cx, cy, cw, ch) then
+			return true
+		end
+		return false
+	end
+
 	for _, pile in ipairs(self.piles) do
-		if pile.box then
-			local c = pile:peek()
-			if c then
-				if pile.faceFanFactor < 0.28 then
-					if pile:calcFanFactor() then
-						pile:refan(Card.transitionTo)
-					end
-				else
-					local cx, cy, cw, ch = c:baizeRect()
-					local box = pile:baizeBox()
-					-- make sure card is entirely within pile's box
-					if not Util.rectContains(box.x, box.y, box.width, box.height, cx, cy, cw, ch) then
-						log.warn('card outside box', tostring(c))
-						if pile:calcFanFactor() then
-							pile:refan(Card.transitionTo)
-						end
-					end
-				end
+		if mayNeedAdjusting(pile) then
+			if pile:calcFanFactor() then
+				pile:refan(Card.transitionTo)
 			end
 		end
 	end
 end
 
-function Baize:simpleScrunch()
-	for _, pile in ipairs(self.piles) do
-		if pile.box and #pile.cards > 0 then
-			pile:calcFanFactor()
-			pile:refan(Card.transitionTo)
-		end
-	end
-end
-
 function Baize:update(dt)
-	if self.stroke == nil then
-		Stroke.start(notifyStroke)
-	else
-		self.stroke:update()
-		if self.stroke:isCancelled() or self.stroke:isReleased() then
-			self.stroke = nil
-		end
-	end
 	for _, pile in ipairs(self.piles) do
 		pile:update(dt)
 	end
 	self.ui:update(dt)
 
-	if (love.timer.getTime() - self.lastInput) > 2.0 then
-		self:simpleScrunch()
-		self.lastInput = love.timer.getTime()
+	if not self.stroke then
+		if (love.timer.getTime() - self.lastInput) > 2.0 then
+			self:j_adoube()
+			self.lastInput = love.timer.getTime()
+		end
 	end
 end
 

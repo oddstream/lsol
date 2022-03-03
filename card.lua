@@ -189,6 +189,15 @@ function Card:stopDrag()
 	self.dragStart = nil
 end
 
+function Card:wasDragged()
+	if self.dragStart then
+		if self.dragStart.x ~= self.x or self.dragStart.y ~= self.y then
+			return true
+		end
+	end
+	return false
+end
+
 function Card:startSpinning()
 	self.directionX = math.random(-3, 3)
 	self.directionY = math.random(-3, 3)
@@ -300,7 +309,7 @@ function Card:draw()
 			y = y - yoffset / 2
 		end
 		if self.spinning then
-			love.graphics.draw(img, x, y, self.angle * math.pi / 180.0)
+			love.graphics.draw(img, x, y, self.angle * math.pi / 180.0, 1.1, 1.1)
 		else
 			love.graphics.draw(img, x, y)
 		end

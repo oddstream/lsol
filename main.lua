@@ -9,6 +9,29 @@ local Util = require 'util'
 
 _G.LSOL_VERSION = '1'
 
+if not _G.table.contains then
+  function _G.table.contains(tab, val)
+    for index, value in ipairs(tab) do
+      if value == val then
+        return true, index
+      end
+    end
+    return false, 0
+  end
+end
+
+--[[
+Lua (and some engines based on it, like LÖVE) has output buffered by default,
+so if you only print a small number of bytes,
+you may see the results only after the script is completed.
+
+If you want to see the print output immediately, 
+add io.stdout:setvbuf("no") to your script,
+which will turn the buffering off.
+
+There may be a small performance penalty as the output will be flushed after each print.
+]]
+
 _G.LSOL_DEFAULT_SETTINGS = {
 	lastVersion = 0,
 	variantName = 'Klondike',
@@ -33,6 +56,8 @@ _G.LSOL_DEFAULT_SETTINGS = {
 _G.LSOL_VARIANTS = {
 	Australian = {file='australian.lua'},
 	['Beleaguered Castle'] = {file='castle.lua'},
+	Bisley = {file='bisley.lua'},
+	['Bisley Debug'] = {file='bisley.lua', params={debug=true}},
 	['Flat Castle'] = {file='castle.lua', params={flat=true}},
 	Duchess = {file='duchess.lua'},
 	['Debug Klon'] = {file='debug.lua', params={spiderLike=false}},
@@ -124,13 +149,17 @@ _G.LSOL_SOUNDS = {
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
 function love.load(args)
-	-- if args then
-	-- 	print('args')
-	-- 	for k, v in pairs(args) do
-	-- 		print(k, v)
-	-- 	end
-	-- end
+	io.stdout:setvbuf("no")
 
+	if args then
+		print('args')
+		for k, v in pairs(args) do
+			print(k, v)
+		end
+	end
+
+	if arg[#arg] == "-debug" then require("mobdebug").start() end
+	
 	math.randomseed(os.time())
 
 	-- love.graphics.setLineStyle('smooth')
@@ -242,6 +271,18 @@ function love.keyreleased(key)
 		end
 	end
 	_G.BAIZE.lastInput = love.timer.getTime()
+end
+
+function love.mousepressed(x, y, button, istouch, presses)
+	_G.BAIZE:mousePressed(x, y, button)
+end
+
+function love.mousemoved(x, y, dx, dy, istouch)
+	_G.BAIZE:mouseMoved(x, y, dx, dy)
+end
+
+function love.mousereleased(x, y, button, istouch, presses)
+	_G.BAIZE:mouseReleased(x, y, button)
 end
 
 function love.wheelmoved(x, y)

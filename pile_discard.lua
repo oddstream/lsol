@@ -57,16 +57,6 @@ function Discard:conformant()
 	return false
 end
 
-function Discard:complete()
-	if #self.cards == 0 then
-		return true
-	end
-	if #self.cards == #_G.BAIZE.deck / #_G.BAIZE.discards then
-		return true
-	end
-	return false
-end
-
 function Discard:unsortedPairs()
 	-- you can only put a sorted sequence into a Discard, so this will always be zero
 	return 0

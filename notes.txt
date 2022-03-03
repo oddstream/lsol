@@ -65,3 +65,8 @@ https://docs.coronalabs.com/api/library/display/safeActualContentHeight.html
 
 https://docs.coronalabs.com/api/library/display/safeScreenOriginX.html
 
+ZeroBraneStudio
+Can't find love2d executable in any of the following folders: /home/gilbert/android-studio/jre/bin, /home/gilbert/go/bin, /usr/local/sbin, /usr/local/bin, /usr/sbin, /usr/bin, /sbin, /bin, /usr/games, /usr/local/games, /snap/bin, /snap/bin, /usr/local/go/bin, /home/gilbert/, /home/bin
+
+ If löve executable is in the same folder where your game folders are or in one of the folders listed in PATH, it will be found by the IDE. If the executable is in a different location, you may need to specify this location in cfg/user.lua file (see cfg/user-sample.lua for details on how this is done).
+ 

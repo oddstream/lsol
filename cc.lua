@@ -33,6 +33,19 @@ function CC.Down(cpair)
 	return nil
 end
 
+function CC.UpOrDownSuit(cpair)
+	if cpair[1].suit ~= cpair[2].suit then
+		return 'Cards must be the same suit'
+	end
+	if cpair[1].ord == cpair[2].ord + 1 then
+		return nil	-- eg 4 on 3
+	elseif cpair[1].ord + 1 == cpair[2].ord then
+		return nil	-- eg 3 on 4
+	else
+		return 'Cards must be up or down'
+	end
+end
+
 function CC.UpSuit(cpair)
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must be the same suit'

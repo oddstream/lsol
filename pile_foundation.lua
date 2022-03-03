@@ -47,10 +47,6 @@ function Foundation:conformant()
 	return true
 end
 
-function Foundation:complete()
-	return #self.cards == #_G.BAIZE.deck / #_G.BAIZE.foundations
-end
-
 function Foundation:unsortedPairs()
 	return 0
 end

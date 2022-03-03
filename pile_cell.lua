@@ -49,10 +49,6 @@ function Cell:conformant()
 	return true
 end
 
-function Cell:complete()
-	return #self.cards == 0
-end
-
 function Cell:unsortedPairs()
 	return 0
 end

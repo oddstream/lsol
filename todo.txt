@@ -7,25 +7,17 @@ just stick to the same as LÖVE (and raylib) and use x,y,width,height
 try as a .zip file in case variants and assets don't load
 try to make an Android build
 
-scale down spinning cards
+shoud we allow horizontal baize scrolling? left and right? why?
+fan factor in a mixed pile
+BUG mouse fatigue when not moving
 different cardRatio for landscape (1.357) and portrait (1.444)?
 use the statusbar middle widget for stats?
-remove time limit on tap?
 check FAN_LEFT
 BUG goto bookmark widget en/disable
 parameterize UI colors
 https://github.com/healeycodes/boids
 status? virgin, complete, conformant, stuck...
 card rounded corners
-touch
-	convert stroke to use mouse, touch callback functions instead of polling in update
-	love.mousepressed
-	love.mousemoved
-	love.mousereleased
-	...mouse functions include isTouch parameter, so won't need separate touch functions?
-	love.touchpressed
-	love.touchmoved
-	love.touchreleased
 scrunching (from gosol)
 	https://en.wikipedia.org/wiki/Beleaguered_Castle
 	each pile should know it's limit, calculated during layout

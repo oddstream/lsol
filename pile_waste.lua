@@ -39,10 +39,6 @@ function Waste:conformant()
 	return #self.cards < 2
 end
 
-function Waste:complete()
-	return #self.cards == 0
-end
-
 function Waste:unsortedPairs()
 	if #self.cards == 0 then
 		return 0

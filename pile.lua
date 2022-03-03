@@ -448,10 +448,6 @@ function Pile:conformant()
 	log.warn('base conformant should not be called')
 end
 
-function Pile:complete()
-	log.warn('base complete should not be called')
-end
-
 function Pile:unsortedPairs()
 	log.warn('base unsortedPairs should not be called')
 end
@@ -520,14 +516,14 @@ function Pile:draw()
 			b.labelFont:getWidth(self.label) / 2,
 			b.labelFont:getHeight(self.label) / 2)
 	end
-
+--[[
 	local ssr = self:screenBox()
 	if ssr then
 		love.graphics.setColor(1,1,1,0.1)
 		love.graphics.setLineWidth(1)
 		love.graphics.rectangle('line', ssr.x, ssr.y, ssr.width, ssr.height, 10, 10)
 	end
-
+]]
 --[[
 	love.graphics.setColor(1,1,1,1)
 	local px, py, pw, ph = self:fannedBaizeRect()	-- should be fannedScreenRect
