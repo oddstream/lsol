@@ -7,16 +7,18 @@ just stick to the same as LÖVE (and raylib) and use x,y,width,height
 try as a .zip file in case variants and assets don't load
 try to make an Android build
 
-shoud we allow horizontal baize scrolling? left and right? why?
+https://en.wikipedia.org/wiki/Rouge_et_Noir_(patience)
+https://www.politaire.com/rougeetnoir
+https://www.politaire.com/help/rougeetnoir
+
+BUG Yukon stuck
 fan factor in a mixed pile
 BUG mouse fatigue when not moving
 different cardRatio for landscape (1.357) and portrait (1.444)?
-use the statusbar middle widget for stats?
 check FAN_LEFT
 BUG goto bookmark widget en/disable
 parameterize UI colors
 https://github.com/healeycodes/boids
-status? virgin, complete, conformant, stuck...
 card rounded corners
 scrunching (from gosol)
 	https://en.wikipedia.org/wiki/Beleaguered_Castle
@@ -30,8 +32,8 @@ scrunching (from gosol)
 	could wait until user goes quiet before check if peek() cards are outside the box
 		liking this idea
 		_G.BAIZE.lastInput (mouse/touch/key)
-stuck/movable (see gosol)
 settings UI
+	smart colors option
 	tidy up checkbox widget
 	radio widget?
 	simple cards on/off

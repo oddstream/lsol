@@ -19,7 +19,7 @@ local Card = {
 	-- dst {x, y}
 	-- lerpStep			current lerp value 0.0 .. 1.0; if < 1.0, card is lerping
 	-- lerpStepAmount	the amount a transitioning card moves each tick
-
+	-- lerping			a boolean to save some messy comparisons
 	-- dragStart {x,y}
 
 	-- flipStep

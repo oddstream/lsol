@@ -43,6 +43,7 @@ function Baize.new()
 	o.undoStack = {}
 	o.recycles = 32767
 	o.bookmark = 0
+	o.status = 'virgin'	-- afoot, stuck, collect, conformant, complete
 	o.ui = UI.new()
 	o.lastInput = love.timer.getTime()
 	return o
@@ -352,7 +353,6 @@ function Baize:loadScript(vname)
 		return nil
 	end
 	local fname = 'variants/' .. vinfo.file
-	log.trace('looking for file', fname)
 
 	local info = love.filesystem.getInfo('variants', 'directory')
 	if not info then
@@ -380,7 +380,18 @@ function Baize:loadScript(vname)
 		return nil
 	end
 
-	return result.new(vinfo.params)
+	local newColors = 2
+	if self.settings.useCardColors then
+		if vinfo.cc then
+			newColors = vinfo.cc
+		end
+	end
+	if self.settings.cardColors ~= newColors then
+		self.settings.cardColors = newColors
+		self:createCardTextures()
+	end
+
+	return result.new(vinfo)
 end
 
 function Baize:resetPiles()
@@ -432,6 +443,116 @@ function Baize:percentComplete()
 	return 100 - Util.mapValue(unsorted, 0, pairs, 0, 100)
 end
 
+function Baize:countMoves()
+
+	local function findHomeForTail(owner, tail)
+		if #tail == 1 then
+			for _, dst in ipairs(self.foundations) do
+				if dst ~= owner then
+					local err = dst:canAcceptTail(tail)
+					if not err then
+						return dst
+					end
+				end
+			end
+			for _, dst in ipairs(self.cells) do
+				if dst ~= owner then
+					local err = dst:canAcceptTail(tail)
+					if not err then
+						return dst
+					end
+				end
+			end
+		end
+		for _, dst in ipairs(self.tableaux) do
+			if dst ~= owner then
+				local err = dst:canAcceptTail(tail)
+				if not err then
+					return dst
+				end
+			end
+		end
+		return nil
+	end
+
+	local function meaninglessMove(src, dst, tail)
+		if dst.category == 'Foundation' then
+			return false
+		end
+		if #dst.cards == 0 then
+			if #tail == #src.cards then
+				return true
+			end
+		end
+		return false
+	end
+
+	local moves, fmoves = 0, 0
+
+	if #self.stock.cards > 0 then
+		moves = moves + 1
+	end
+
+	if self.waste and #self.waste.cards > 0 then
+		local tail = {self.waste:peek()}
+		local dst = findHomeForTail(self.waste, tail)
+		if dst then
+			moves = moves + 1
+			if dst.category == 'Foundation' then
+				fmoves = fmoves + 1
+			end
+		end
+
+		if #self.stock.cards == 0 and self.recycles > 0 then
+			moves = moves + 1
+		end
+	end
+
+	for _, pile in ipairs(self.cells) do
+		if #pile.cards > 0 then
+			local tail = {pile:peek()}
+			local dst = findHomeForTail(pile, tail)
+			if dst then
+				moves = moves + 1
+				if dst.category == 'Foundation' then
+					fmoves = fmoves + 1
+				end
+			end
+		end
+	end
+
+	for _, pile in ipairs(self.reserves) do
+		if #pile.cards > 0 then
+			local tail = {pile:peek()}
+			local dst = findHomeForTail(pile, tail)
+			if dst then
+				moves = moves + 1
+				if dst.category == 'Foundation' then
+					fmoves = fmoves + 1
+				end
+			end
+		end
+	end
+
+	for _, pile in ipairs(self.tableaux) do
+		for _, card in ipairs(pile.cards) do
+			if card.prone then
+				break
+			end
+			local tail = pile:makeTail(card)
+			local dst = findHomeForTail(pile, tail)
+			if dst and not meaninglessMove(pile, dst, tail) then
+				moves = moves + 1
+				if dst.category == 'Foundation' then
+					fmoves = fmoves + 1
+				end
+			end
+		end
+	end
+
+	return moves, fmoves
+end
+
 function Baize:updateFromSaved(saved)
 	if #saved.piles ~= #self.piles then
 		log.error('saved piles do not match')
@@ -463,12 +584,33 @@ function Baize:updateFromSaved(saved)
 	self:setRecycles(saved.recycles)	-- updates stock rune
 end
 
-function Baize:undoPush()
-	local saved = self:getSavable()
-	table.insert(self.undoStack, saved)
+function Baize:updateStatus()
+	local moves, fmoves = 0, 0
+	if #self.undoStack == 1 then
+		self.status = 'virgin'
+	elseif #self.undoStack > 1 then
+		self.status = 'afoot'
+	end
 
-	self.ui:updateWidget('undo', nil, #self.undoStack > 1)
-	self.ui:updateWidget('restartdeal', nil, #self.undoStack > 1)
+	if self:complete() then
+		self.status = 'complete'
+	elseif self:conformant() then
+		self.status = 'conformant'
+	else
+		moves, fmoves = self:countMoves()
+		if moves == 0 then
+			self.status = 'stuck'
+		elseif fmoves > 0 then
+			self.status = 'collect'
+		end
+	end
+	return moves, fmoves
+end
+
+function Baize:updateUI()
+	self.ui:updateWidget('undo', nil, not (self.status == 'virgin' or self.status == 'complete'))
+	self.ui:updateWidget('restartdeal', nil, self.status ~= 'virgin')
+	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
 
 	if self.stock:hidden() then
 		self.ui:updateWidget('stock', '')
@@ -480,14 +622,36 @@ function Baize:undoPush()
 		end
 	end
 
-	if self:complete() then
-		self.ui:updateWidget('complete', 'COMPLETE')
-	elseif self:conformant() then
-		self.ui:updateWidget('complete', 'CONFORMANT')
+	self.ui:updateWidget('status', self.status)
+
+	if self.status == 'complete' then
+		self.ui:updateWidget('progress', 'COMPLETE')
 	else
 		local percent = self:percentComplete()
-		self.ui:updateWidget('complete', string.format('PROGRESS:%d%%', percent))
+		self.ui:updateWidget('progress', string.format('PROGRESS:%d%%', percent))
 	end
+
+	if self.status == 'complete' then
+		self.ui:toast(self.settings.variantName .. ' complete', 'complete')
+		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
+		self:startSpinning()
+		self.stats:recordWonGame(self.settings.variantName)
+	elseif self.status == 'stuck' then
+		self.ui:toast(self.settings.variantName .. ' stuck', 'blip')
+		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
+	elseif self.status == 'collect' then
+		self.ui:showFAB{icon='done', baizeCmd='collect'}
+	elseif self.status == 'conformant' then
+		self.ui:showFAB{icon='done_all', baizeCmd='collect'}
+	else
+		self.ui:hideFAB()
+	end
+end
+
+function Baize:undoPush()
+	-- TODO might need to determine status here and save it into the undo stack
+	local saved = self:getSavable()
+	table.insert(self.undoStack, saved)
 end
 
 function Baize:undoPeek()
@@ -506,7 +670,7 @@ function Baize:undo()
 		self.ui:toast('Nothing to undo', 'blip')
 		return
 	end
-	if self:complete() then
+	if self.status == 'complete' then
 		self.ui:toast('Cannot undo a completed game', 'blip')
 		return
 	end
@@ -515,6 +679,8 @@ function Baize:undo()
 	assert(saved)
 	self:updateFromSaved(saved)
 	self:undoPush()	-- replace current state
+	self:updateStatus()
+	self:updateUI()
 end
 
 local savedUndoStackFname = 'undoStack.bitser'
@@ -533,7 +699,7 @@ function Baize:loadUndoStack()
 end
 
 function Baize:saveUndoStack()
-	if not self:complete() then
+	if not self.status ~= 'complete' then
 		self:undoPush()
 		bitser.dumpLoveFile(savedUndoStackFname, self.undoStack)
 		log.info('saved', savedUndoStackFname)
@@ -591,8 +757,9 @@ function Baize:changeVariant(vname)
 		self.ui:toast('Starting a new game of ' .. self.settings.variantName, 'deal')
 		self.script:startGame()
 		self:undoPush()
+		self:updateStatus()
+		self:updateUI()
 		self.ui:updateWidget('title', vname)
-		self.ui:hideFAB()
 	else
 		self.ui:toast('Do not know how to play ' .. vname, 'blip')
 	end
@@ -619,6 +786,8 @@ function Baize:newDeal()
 	self.ui:toast('Starting a new game of ' .. self.settings.variantName, 'deal')
 	self.script:startGame()
 	self:undoPush()
+	self:updateStatus()
+	self:updateUI()
 end
 
 function Baize:restartDeal()
@@ -628,6 +797,8 @@ function Baize:restartDeal()
 	end
 	self:updateFromSaved(saved)
 	self:undoPush()
+	self:updateStatus()
+	self:updateUI()
 end
 
 function Baize:setBookmark()
@@ -650,8 +821,9 @@ function Baize:gotoBookmark()
 		saved = self:undoPop()
 	end
 	self:updateFromSaved(saved)
-	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
 	self:undoPush()
+	self:updateStatus()
+	self:updateUI()
 end
 
 function Baize:layout()
@@ -761,18 +933,8 @@ function Baize:afterUserMove()
 	-- log.trace('Baize:afterUserMove')
 	self.script:afterMove()
 	self:undoPush()
-	-- TODO we are calculating complete and conformant twice
-	if self:complete() then
-		self.ui:toast(self.settings.variantName .. ' complete', 'complete')
-		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
-		self:startSpinning()
-		self.stats:recordWonGame(self.settings.variantName)
-	elseif self:conformant() then
-		self.ui:showFAB{icon='done_all', baizeCmd='collect'}
-	else
-		self.ui:hideFAB()
-	end
-	-- TODO FABs stuck (new deal), can_collect (collect)
+	self:updateStatus()
+	self:updateUI()
 end
 
 function Baize:findCardAt(x, y)
@@ -820,10 +982,12 @@ function Baize:startDrag()
 end
 
 function Baize:dragBy(dx, dy)
+--[[
 	self.dragOffset.x = self.dragStart.x + dx
 	if self.dragOffset.x > 0 then
 		self.dragOffset.x = 0	-- DragOffset should only ever be 0 or -ve
 	end
+]]
 	self.dragOffset.y = self.dragStart.y + dy
 	if self.dragOffset.y > 0 then
 		self.dragOffset.y = 0	-- DragOffset should only ever be 0 or -ve
@@ -905,7 +1069,9 @@ function Baize:mouseMoved(x, y, dx, dy)
 		end
 	elseif self.stroke.objectType == 'widget' then
 		local wgt = self.stroke.object
-		wgt.parent:dragBy(dx2, dy2)
+		if wgt.parent then	-- FAB does not have a parent
+			wgt.parent:dragBy(dx2, dy2)
+		end
 	elseif self.stroke.objectType == 'container' then
 		local con = self.stroke.object
 		con:dragBy(dx2, dy2)

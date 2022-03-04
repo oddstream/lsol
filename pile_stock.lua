@@ -52,14 +52,10 @@ function Stock.new(o)
 end
 
 function Stock:shuffle()
-	log.info('shuffling cards')
-	-- Util.play('shuffle')
-	for _ = 1, 6 do
-		for i = #self.cards, 2, -1 do
-			local j = math.random(i)
-			if i ~= j then
-				self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
-			end
+	for i = #self.cards, 2, -1 do
+		local j = math.random(i)
+		if i ~= j then
+			self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
 		end
 	end
 end

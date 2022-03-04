@@ -20,18 +20,6 @@ if not _G.table.contains then
   end
 end
 
---[[
-Lua (and some engines based on it, like LÖVE) has output buffered by default,
-so if you only print a small number of bytes,
-you may see the results only after the script is completed.
-
-If you want to see the print output immediately, 
-add io.stdout:setvbuf("no") to your script,
-which will turn the buffering off.
-
-There may be a small performance penalty as the output will be flushed after each print.
-]]
-
 _G.LSOL_DEFAULT_SETTINGS = {
 	lastVersion = 0,
 	variantName = 'Klondike',
@@ -50,35 +38,36 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	diamondColor = 'OrangeRed',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
-	cardColors = 2,
+	cardColors = 2,		-- current number of card colors
+	useCardColors = false,
 }
 
 _G.LSOL_VARIANTS = {
-	Australian = {file='australian.lua'},
-	['Beleaguered Castle'] = {file='castle.lua'},
+	Australian = {file='australian.lua', cc=4},
+	['Beleaguered Castle'] = {file='castle.lua', cc=1},
 	Bisley = {file='bisley.lua'},
-	['Bisley Debug'] = {file='bisley.lua', params={debug=true}},
-	['Flat Castle'] = {file='castle.lua', params={flat=true}},
+	['Bisley Debug'] = {file='bisley.lua', debug=true},
+	['Flat Castle'] = {file='castle.lua', cc=1, flat=true},
 	Duchess = {file='duchess.lua'},
-	['Debug Klon'] = {file='debug.lua', params={spiderLike=false}},
-	['Debug Spid'] = {file='debug.lua', params={spiderLike=true}},
+	['Debug Klon'] = {file='debug.lua', cc=4, spiderLike=false},
+	['Debug Spid'] = {file='debug.lua', cc=4, spiderLike=true},
 	['Eight Off'] = {file='eightoff.lua'},
-	['Eight Off Relaxed'] = {file='eightoff.lua', params={relaxed=true}},
-	Freecell = {file='freecell.lua', params={}},
-	Gate = {file='gate.lua', params={}},
-	Klondike = {file='klondike.lua', params={}},
-	['Klondike (Turn Three)']  = {file='klondike.lua', params={turn=3}},
-	['Forty Thieves'] = {file='forty.lua', params={tabs=10, cardsPerTab=4}},
-	Limited = {file='forty.lua', params={tabs=12, cardsPerTab=3}},
-	Lucas = {file='forty.lua', params={tabs=13, cardsPerTab=3, dealAces=true}},
+	['Eight Off Relaxed'] = {file='eightoff.lua', relaxed=true},
+	Freecell = {file='freecell.lua'},
+	Gate = {file='gate.lua'},
+	Klondike = {file='klondike.lua'},
+	['Klondike (Turn Three)']  = {file='klondike.lua', turn=3},
+	['Forty Thieves'] = {file='forty.lua', cc=4, tabs=10, cardsPerTab=4},
+	Limited = {file='forty.lua', cc=4, tabs=12, cardsPerTab=3},
+	Lucas = {file='forty.lua', cc=4, tabs=13, cardsPerTab=3, dealAces=true},
 	Penguin = {file='penguin.lua'},
-	['Simple Simon'] = {file='simplesimon.lua', params={}},
-	Spider = {file='spider.lua', params={packs=2, suitFilter={'♣','♦','♥','♠'}}},
-	['Spider One Suit'] = {file='spider.lua', params={packs=8, suitFilter={'♠'}}},
-	['Spider Two Suits'] = {file='spider.lua', params={packs=4, suitFilter={'♥', '♠'}}},
-	Yukon = {file='yukon.lua', params={}},
-	['Yukon Relaxed'] = {file='yukon.lua', params={relaxed=true}},
-	['Yukon Cells'] = {file='yukon.lua', params={cells=true}},
+	['Simple Simon'] = {file='simplesimon.lua', cc=4},
+	Spider = {file='spider.lua', packs=2, suitFilter={'♣','♦','♥','♠'}},
+	['Spider One Suit'] = {file='spider.lua', packs=8, suitFilter={'♠'}},
+	['Spider Two Suits'] = {file='spider.lua', packs=4, suitFilter={'♥', '♠'}},
+	Yukon = {file='yukon.lua'},
+	['Yukon Relaxed'] = {file='yukon.lua', relaxed=true},
+	['Yukon Cells'] = {file='yukon.lua', cells=true},
 }
 
 _G.VARIANT_TYPES = {
@@ -149,17 +138,27 @@ _G.LSOL_SOUNDS = {
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
 function love.load(args)
-	io.stdout:setvbuf("no")
+--[[
+Lua (and some engines based on it, like LÖVE) has output buffered by default,
+so if you only print a small number of bytes,
+you may see the results only after the script is completed.
+
+If you want to see the print output immediately,
+add io.stdout:setvbuf("no") to your script,
+which will turn the buffering off.
+
+There may be a small performance penalty as the output will be flushed after each print.
+]]
+
+	io.stdout:setvbuf('no')	-- 'no', 'full' or 'line'
 
 	if args then
-		print('args')
 		for k, v in pairs(args) do
 			print(k, v)
 		end
+		if arg[#arg] == "-debug" then require("mobdebug").start() end
 	end
 
-	if arg[#arg] == "-debug" then require("mobdebug").start() end
-	
 	math.randomseed(os.time())
 
 	-- love.graphics.setLineStyle('smooth')

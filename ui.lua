@@ -32,6 +32,7 @@ local menuWidgets = {
 
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
+	{text='Colored cards', var='useCardColors'},
 	{text='Power moves', var='powerMoves'},
 	{text='Mute sounds', var='muteSounds'},
 }
@@ -53,8 +54,8 @@ function UI.new()
 
 		wgt = IconWidget.new({parent=o.titlebar, name='undo', icon='undo', align='right', baizeCmd='undo'})
 		table.insert(o.titlebar.widgets, wgt)
-		wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
-		table.insert(o.titlebar.widgets, wgt)
+		-- wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
+		-- table.insert(o.titlebar.widgets, wgt)
 
 	o.menudrawer = MenuDrawer.new({})
 	for _, winfo in ipairs(menuWidgets) do
@@ -86,9 +87,9 @@ function UI.new()
 	o.statusbar = Statusbar.new({})
 		wgt = TextWidget.new({parent=o.statusbar, name='stock', text='', align='left'})
 		table.insert(o.statusbar.widgets, wgt)
-		wgt = TextWidget.new({parent=o.statusbar, text='', align='center'})
+		wgt = TextWidget.new({parent=o.statusbar, name='status', text='', align='center'})
 		table.insert(o.statusbar.widgets, wgt)
-		wgt = TextWidget.new({parent=o.statusbar, name='complete', text='', align='right'})
+		wgt = TextWidget.new({parent=o.statusbar, name='progress', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
 	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.statusbar}
