@@ -19,24 +19,24 @@ end
 
 function Bisley:buildPiles()
 	Stock.new({x=6, y=-4})
-	
+
 	self.downFoundations = {}
 	for x = 1, 4 do
 		local pile = Foundation.new({x=x, y=1})
 		pile.label = 'K'
 		table.insert(self.downFoundations, pile)
 	end
-	
+
 	self.upFoundations = {}
 	for x = 1, 4 do
 		local pile = Foundation.new({x=x, y=2})
 		pile.label = 'A'
 		table.insert(self.upFoundations, pile)
 	end
-	
+
 	assert(#self.upFoundations==4)
 	assert(#self.downFoundations==4)
-	
+
 	for x = 1, 13 do
 		local pile = Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ONE'})
 		if not self.debug then
@@ -50,7 +50,7 @@ function Bisley:startGame()
 	assert(#self.downFoundations==4)
 
 	local src = _G.BAIZE.stock
-	
+
 	for _, dst in ipairs(self.upFoundations) do
 		Util.moveCardByOrd(src, dst, 1)
 	end
@@ -71,8 +71,8 @@ function Bisley:startGame()
 	end
 end
 
-function Bisley:afterMove()
-end
+-- function Bisley:afterMove()
+-- end
 
 function Bisley:tailMoveError(tail)
 	return nil
@@ -107,13 +107,13 @@ function Bisley:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.UpOrDownSuit)
 end
 
-function Bisley:pileTapped(pile)
-end
+-- function Bisley:pileTapped(pile)
+-- end
 
-function Bisley:tailTapped(tail)
-	local card = tail[1]
-	local pile = card.parent
-	pile:tailTapped(tail)
-end
+-- function Bisley:tailTapped(tail)
+-- 	local card = tail[1]
+-- 	local pile = card.parent
+-- 	pile:tailTapped(tail)
+-- end
 
 return Bisley

@@ -54,8 +54,8 @@ function Forty:startGame()
 	end
 end
 
-function Forty:afterMove()
-end
+-- function Forty:afterMove()
+-- end
 
 function Forty:tailMoveError(tail)
 	local card = tail[1]
@@ -94,8 +94,8 @@ function Forty:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
-function Forty:pileTapped(pile)
-end
+-- function Forty:pileTapped(pile)
+-- end
 
 function Forty:tailTapped(tail)
 	local card = tail[1]

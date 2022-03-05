@@ -58,8 +58,8 @@ function EightOff:startGame()
 	end
 end
 
-function EightOff:afterMove()
-end
+-- function EightOff:afterMove()
+-- end
 
 function EightOff:tailMoveError(tail)
 	local pile = tail[1].parent
@@ -96,13 +96,13 @@ function EightOff:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
-function EightOff:pileTapped(pile)
-end
+-- function EightOff:pileTapped(pile)
+-- end
 
-function EightOff:tailTapped(tail)
-	local card = tail[1]
-	local pile = card.parent
-	pile:tailTapped(tail)
-end
+-- function EightOff:tailTapped(tail)
+-- 	local card = tail[1]
+-- 	local pile = card.parent
+-- 	pile:tailTapped(tail)
+-- end
 
 return EightOff

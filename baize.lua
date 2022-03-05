@@ -704,7 +704,6 @@ function Baize:showVariantsDrawer(vtype)
 	self.ui:showVariantsDrawer(vtype)
 end
 
-
 function Baize:showStatsDrawer()
 	self.ui:showStatsDrawer(self.stats:strings(self.settings.variantName))
 end
@@ -927,7 +926,9 @@ end
 
 function Baize:afterUserMove()
 	-- log.trace('Baize:afterUserMove')
-	self.script:afterMove()
+	if self.script.afterMove() then
+		self.script:afterMove()
+	end
 	self:undoPush()
 	self:updateStatus()
 	self:updateUI()
@@ -1094,7 +1095,11 @@ function Baize:mouseTapped(x, y, button)
 		local tail = self.stroke.object
 		for _, c in ipairs(tail) do c:cancelDrag() end
 		local oldSnap = self:stateSnapshot()
-		self.script:tailTapped(tail)
+		if self.script.tailTapped then
+			self.script:tailTapped(tail)
+		else
+			tail[1].parent:tailTapped(tail)
+		end
 		local newSnap = self:stateSnapshot()
 		if Util.baizeChanged(oldSnap, newSnap) then
 			self:afterUserMove()
@@ -1103,13 +1108,16 @@ function Baize:mouseTapped(x, y, button)
 		end
 	elseif self.stroke.objectType == 'pile' then
 		-- print('TRACE tap on', self.stroke.object.category)
-		local oldSnap = self:stateSnapshot()
-		self.script:pileTapped(self.stroke.object)
-		local newSnap = self:stateSnapshot()
-		if Util.baizeChanged(oldSnap, newSnap) then
-			self:afterUserMove()
-		else
-			Util.play('blip')
+		-- nb there is no Pile:pileTapped()
+		if self.script.pileTapped then
+			local oldSnap = self:stateSnapshot()
+			self.script:pileTapped(self.stroke.object)
+			local newSnap = self:stateSnapshot()
+			if Util.baizeChanged(oldSnap, newSnap) then
+				self:afterUserMove()
+			else
+				Util.play('blip')
+			end
 		end
 	elseif self.stroke.objectType == 'baize' then
 		-- TODO close any open UI drawer

@@ -52,8 +52,8 @@ function Spider:startGame()
 	_G.BAIZE:setRecycles(0)
 end
 
-function Spider:afterMove()
-end
+-- function Spider:afterMove()
+-- end
 
 function Spider:tailMoveError(tail)
 	local pile = tail[1].parent
@@ -102,7 +102,9 @@ function Spider:unsortedPairs(pile)
 end
 
 function Spider:pileTapped(pile)
-	_G.BAIZE.ui:toast('No more cards in Stock', 'blip')
+	if pile.category == 'Stock' then
+		_G.BAIZE.ui:toast('No more cards in Stock', 'blip')
+	end
 end
 
 function Spider:tailTapped(tail)

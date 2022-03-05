@@ -61,8 +61,8 @@ function SimpleSimon:startGame()
 	end
 end
 
-function SimpleSimon:afterMove()
-end
+-- function SimpleSimon:afterMove()
+-- end
 
 function SimpleSimon:tailMoveError(tail)
 	local pile = tail[1].parent
@@ -110,13 +110,13 @@ function SimpleSimon:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
-function SimpleSimon:pileTapped(pile)
-end
+-- function SimpleSimon:pileTapped(pile)
+-- end
 
-function SimpleSimon:tailTapped(tail)
-	local card = tail[1]
-	local pile = card.parent
-	pile:tailTapped(tail)
-end
+-- function SimpleSimon:tailTapped(tail)
+-- 	local card = tail[1]
+-- 	local pile = card.parent
+-- 	pile:tailTapped(tail)
+-- end
 
 return SimpleSimon

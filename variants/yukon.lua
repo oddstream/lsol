@@ -68,8 +68,8 @@ function Yukon:startGame()
 	end
 end
 
-function Yukon:afterMove()
-end
+-- function Yukon:afterMove()
+-- end
 
 function Yukon:tailMoveError(tail)
 end
@@ -95,13 +95,13 @@ function Yukon:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
-function Yukon:pileTapped(pile)
-end
+-- function Yukon:pileTapped(pile)
+-- end
 
-function Yukon:tailTapped(tail)
-	local card = tail[1]
-	local pile = card.parent
-	pile:tailTapped(tail)
-end
+-- function Yukon:tailTapped(tail)
+-- 	local card = tail[1]
+-- 	local pile = card.parent
+-- 	pile:tailTapped(tail)
+-- end
 
 return Yukon

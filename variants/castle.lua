@@ -51,8 +51,8 @@ function Castle:startGame()
 	end
 end
 
-function Castle:afterMove()
-end
+-- function Castle:afterMove()
+-- end
 
 function Castle:tailMoveError(tail)
 	return nil
@@ -79,13 +79,13 @@ function Castle:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.Down)
 end
 
-function Castle:pileTapped(pile)
-end
+-- function Castle:pileTapped(pile)
+-- end
 
-function Castle:tailTapped(tail)
-	local card = tail[1]
-	local pile = card.parent
-	pile:tailTapped(tail)
-end
+-- function Castle:tailTapped(tail)
+-- 	local card = tail[1]
+-- 	local pile = card.parent
+-- 	pile:tailTapped(tail)
+-- end
 
 return Castle

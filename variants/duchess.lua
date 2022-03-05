@@ -28,7 +28,7 @@ function Duchess.new(o)
 end
 
 function Duchess:buildPiles()
-	-- log.trace('Duchess.buildPiles')
+	log.trace('Duchess.buildPiles')
 	Stock.new{x=1, y=2}
 
 	for i = 1, 4 do
@@ -37,8 +37,10 @@ function Duchess:buildPiles()
 
 	Waste.new{x=1, y=3, fanType='FAN_DOWN3'}
 
+	assert(#_G.BAIZE.foundations == 0)
 	for x = 3, 6 do
-		Foundation.new{x=x, y=2}
+		local f = Foundation.new{x=x, y=2}
+		assert(not f.label)
 	end
 
 	for x = 3, 6 do
@@ -47,7 +49,7 @@ function Duchess:buildPiles()
 end
 
 function Duchess:startGame()
-	-- log.trace('Duchess.startGame')
+	log.trace('Duchess.startGame')
 
 	_G.BAIZE:setRecycles(1)
 
@@ -71,6 +73,23 @@ function Duchess:startGame()
 end
 
 function Duchess:afterMove()
+	local f1 = _G.BAIZE.foundations[1]
+	if not f1.label then
+		-- To start the game, the player will choose among the top cards of the reserve fans which will start the first foundation pile.
+		-- Once he/she makes that decision and picks a card, the three other cards with the same rank,
+		-- whenever they become available, will start the other three foundations.
+		for _, f in ipairs(_G.BAIZE.foundations) do
+			-- find where the first card landed
+			if #f.cards > 0 then
+				local c = f:peek()
+				-- grab it's ordinal and apply it to all the foundations
+				for _, pile in ipairs(_G.BAIZE.foundations) do
+					pile.label = _G.ORD2STRING[c.ord]
+				end
+				break
+			end
+		end
+	end
 end
 
 function Duchess:tailMoveError(tail)
@@ -91,14 +110,8 @@ function Duchess:tailAppendError(dst, tail)
 	if dst.category == 'Foundation' then
 		if #dst.cards == 0 then
 			if not dst.label then
-				-- To start the game, the player will choose among the top cards of the reserve fans which will start the first foundation pile.
-				-- Once he/she makes that decision and picks a card, the three other cards with the same rank,
-				-- whenever they become available, will start the other three foundations.
 				if tail[1].parent.category ~= 'Reserve' then
 					return 'The first Foundation card must come from a Reserve'
-				end
-				for _, pile in ipairs(_G.BAIZE.foundations) do
-					pile.label = _G.ORD2STRING[tail[1].ord]
 				end
 			end
 			return CC.Empty(dst, tail[1])

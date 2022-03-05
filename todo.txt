@@ -13,7 +13,14 @@ https://www.politaire.com/help/rougeetnoir
 
 https://wiki.gnome.org/Apps/Aisleriot/Games
 
-BUG can't call createCardTextures() in loadScript()
+https://en.wikipedia.org/wiki/Gamification
+
+Duchess bug fix back to gosol
+
+small display of moves, tmoves, fmoves
+reset stats for this game
+count unsuccessful taps
+statusbar ticker widget for statistics? width=one third
 guide to making a new variant
 	pick up new variants automatically?
 not entirely happy with card flipping
@@ -38,14 +45,8 @@ scrunching (from gosol)
 		liking this idea
 		_G.BAIZE.lastInput (mouse/touch/key)
 settings UI
-	smart colors option
-	tidy up checkbox widget
-	radio widget?
-	simple cards on/off
-	cards 1/2/4 color
-	powerMoves on/off
+	tidy up radio, checkbox widget
 	mirror baize on/off
-	mute sounds on/off
 	baize color >
 	card face color >
 	card back color >
@@ -53,6 +54,5 @@ color picker drawer
 https://love2d.org/wiki/love.displayrotated
 
 UI
-	copy from csol
 	https://github.com/flamendless/Slab/wiki
 

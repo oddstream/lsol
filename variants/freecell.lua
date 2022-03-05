@@ -54,8 +54,8 @@ function Freecell:startGame()
 	end
 end
 
-function Freecell:afterMove()
-end
+-- function Freecell:afterMove()
+-- end
 
 function Freecell:tailMoveError(tail)
 	local pile = tail[1].parent
@@ -92,13 +92,13 @@ function Freecell:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
-function Freecell:pileTapped(pile)
-end
+-- function Freecell:pileTapped(pile)
+-- end
 
-function Freecell:tailTapped(tail)
-	local card = tail[1]
-	local pile = card.parent
-	pile:tailTapped(tail)
-end
+-- function Freecell:tailTapped(tail)
+-- 	local card = tail[1]
+-- 	local pile = card.parent
+-- 	pile:tailTapped(tail)
+-- end
 
 return Freecell

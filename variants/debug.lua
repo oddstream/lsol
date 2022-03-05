@@ -49,8 +49,8 @@ function Debug:startGame()
 	end
 end
 
-function Debug:afterMove()
-end
+-- function Debug:afterMove()
+-- end
 
 function Debug:tailMoveError(tail)
 	local pile = tail[1].parent
@@ -104,13 +104,13 @@ function Debug:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
-function Debug:pileTapped(pile)
-end
+-- function Debug:pileTapped(pile)
+-- end
 
-function Debug:tailTapped(tail)
-	local card = tail[1]
-	local pile = card.parent
-	pile:tailTapped(tail)
-end
+-- function Debug:tailTapped(tail)
+-- 	local card = tail[1]
+-- 	local pile = card.parent
+-- 	pile:tailTapped(tail)
+-- end
 
 return Debug

@@ -76,9 +76,9 @@ function Australian:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
-function Australian:pileTapped(pile)
-	-- no recycles
-end
+-- function Australian:pileTapped(pile)
+-- 	-- no recycles
+-- end
 
 function Australian:tailTapped(tail)
 	local card = tail[1]

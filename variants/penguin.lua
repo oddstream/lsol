@@ -76,8 +76,8 @@ function Penguin:startGame()
 	end
 end
 
-function Penguin:afterMove()
-end
+-- function Penguin:afterMove()
+-- end
 
 function Penguin:tailMoveError(tail)
 	local pile = tail[1].parent
@@ -114,13 +114,13 @@ function Penguin:unsortedPairs(pile)
 	return Util.unsortedPairs(pile, CC.DownSuitWrap)
 end
 
-function Penguin:pileTapped(pile)
-end
+-- function Penguin:pileTapped(pile)
+-- end
 
-function Penguin:tailTapped(tail)
-	local card = tail[1]
-	local pile = card.parent
-	pile:tailTapped(tail)
-end
+-- function Penguin:tailTapped(tail)
+-- 	local card = tail[1]
+-- 	local pile = card.parent
+-- 	pile:tailTapped(tail)
+-- end
 
 return Penguin
