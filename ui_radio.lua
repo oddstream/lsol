@@ -1,19 +1,20 @@
--- check box
+-- radio button
 
 local log = require 'log'
 
 local Widget = require 'ui_widget'
 local Util = require 'util'
 
-local Checkbox = {}
-Checkbox.__index = Checkbox
-setmetatable(Checkbox, {__index = Widget})
+local Radio = {}
+Radio.__index = Radio
+setmetatable(Radio, {__index = Widget})
 
-function Checkbox.new(o)
+function Radio.new(o)
 	assert(o.text)
 	assert(o.var)
+	assert(o.grp)
 
-	local fname = 'assets/icons/check_box.png'
+	local fname = 'assets/icons/radio_button_checked.png'
 	local imageData = love.image.newImageData(fname)
 	if not imageData then
 		log.error('could not load', fname)
@@ -23,7 +24,7 @@ function Checkbox.new(o)
 		o.imgChecked = love.graphics.newImage(imageData)
 	end
 
-	fname = 'assets/icons/check_box_outline_blank.png'
+	fname = 'assets/icons/radio_button_unchecked.png'
 	imageData = love.image.newImageData(fname)
 	if not imageData then
 		log.error('could not load', fname)
@@ -31,13 +32,13 @@ function Checkbox.new(o)
 		o.imgUnchecked = love.graphics.newImage(imageData)
 	end
 
-	o.baizeCmd = 'toggleSetting'
-	o.param = o.var
+	o.baizeCmd = 'toggleRadio'
+	o.param = o
 	o.enabled = true
-	return setmetatable(o, Checkbox)
+	return setmetatable(o, Radio)
 end
 
-function Checkbox:draw()
+function Radio:draw()
 	local cx, cy, cw, ch = self.parent:screenRect()
 	local wx, wy, ww, wh = self:screenRect()
 
@@ -76,4 +77,4 @@ function Checkbox:draw()
 	end
 end
 
-return Checkbox
+return Radio

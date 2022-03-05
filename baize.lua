@@ -148,11 +148,8 @@ local pipInfo = {
 }
 
 function Baize:getSuitColor(suit)
-	if not self.settings.cardColors then
-		self.settings.cardColors = 2
-	end
 	local suitColor
-	if self.settings.cardColors == 4 then
+	if self.settings.fourColorCards then
 		if suit == '♣' then
 			suitColor = 'clubColor'
 		elseif suit == '♦' then
@@ -162,16 +159,16 @@ function Baize:getSuitColor(suit)
 		elseif suit == '♠' then
 			suitColor = 'spadeColor'
 		end
-	elseif self.settings.cardColors == 2 then
+	elseif self.settings.twoColorCards then
 		if suit == '♦' or suit == '♥' then
 			suitColor = 'heartColor'
 		else
 			suitColor = 'spadeColor'
 		end
-	elseif self.settings.cardColors == 1 then
+	elseif self.settings.oneColorCards then
 		suitColor = 'spadeColor'
 	else
-		log.error('unknown value for settings.cardColors', self.settings.cardColors)
+		log.error('unknown value for color of cards in settings')
 	end
 	return suitColor
 end
@@ -380,17 +377,6 @@ function Baize:loadScript(vname)
 		return nil
 	end
 
-	local newColors = 2
-	if self.settings.useCardColors then
-		if vinfo.cc then
-			newColors = vinfo.cc
-		end
-	end
-	if self.settings.cardColors ~= newColors then
-		self.settings.cardColors = newColors
-		self:createCardTextures()
-	end
-
 	return result.new(vinfo)
 end
 
@@ -479,11 +465,11 @@ function Baize:countMoves()
 		if dst.category == 'Foundation' then
 			return false
 		end
-		if #dst.cards == 0 then
-			if #tail == #src.cards then
-				return true
-			end
-		end
+		-- if #dst.cards == 0 then
+		-- 	if #tail == #src.cards then
+		-- 		return true
+		-- 	end
+		-- end
 		return false
 	end
 
@@ -536,15 +522,14 @@ function Baize:countMoves()
 
 	for _, pile in ipairs(self.tableaux) do
 		for _, card in ipairs(pile.cards) do
-			if card.prone then
-				break
-			end
-			local tail = pile:makeTail(card)
-			local dst = findHomeForTail(pile, tail)
-			if dst and not meaninglessMove(pile, dst, tail) then
-				moves = moves + 1
-				if dst.category == 'Foundation' then
-					fmoves = fmoves + 1
+			if not card.prone then
+				local tail = pile:makeTail(card)
+				local dst = findHomeForTail(pile, tail)
+				if dst and not meaninglessMove(pile, dst, tail) then
+					moves = moves + 1
+					if dst.category == 'Foundation' then
+						fmoves = fmoves + 1
+					end
 				end
 			end
 		end
@@ -608,6 +593,7 @@ function Baize:updateStatus()
 end
 
 function Baize:updateUI()
+	self.ui:updateWidget('collect', nil, self.status == 'collect' or self.status == 'conformant')
 	self.ui:updateWidget('undo', nil, not (self.status == 'virgin' or self.status == 'complete'))
 	self.ui:updateWidget('restartdeal', nil, self.status ~= 'virgin')
 	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
@@ -640,7 +626,7 @@ function Baize:updateUI()
 		self.ui:toast(self.settings.variantName .. ' stuck', 'blip')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 	elseif self.status == 'collect' then
-		self.ui:showFAB{icon='done', baizeCmd='collect'}
+		-- self.ui:showFAB{icon='done', baizeCmd='collect'}
 	elseif self.status == 'conformant' then
 		self.ui:showFAB{icon='done_all', baizeCmd='collect'}
 	else
@@ -732,6 +718,16 @@ function Baize:toggleSetting(var)
 	if var == 'simpleCards' then
 		self:createCardTextures()
 	end
+end
+
+function Baize:toggleRadio(radio)
+	-- radio.var will be the button pressed (which should be toggled on)
+	-- radio.grp will be the radios in this group (which should be toggled off)
+	for _, s in ipairs(radio.grp) do
+		self.settings[s] = false
+	end
+	self.settings[radio.var] = true
+	self:createCardTextures()
 end
 
 function Baize:changeVariant(vname)

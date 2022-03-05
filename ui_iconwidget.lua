@@ -42,7 +42,7 @@ function IconWidget:draw()
 				wy = wy + 2
 			end
 		else
-			love.graphics.setColor(0.9,0.9,0.9,1)
+			love.graphics.setColor(1,1,1,1)
 		end
 	else
 		love.graphics.setColor(0.5,0.5,0.5,1)

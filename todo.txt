@@ -11,7 +11,12 @@ https://en.wikipedia.org/wiki/Rouge_et_Noir_(patience)
 https://www.politaire.com/rougeetnoir
 https://www.politaire.com/help/rougeetnoir
 
-BUG Yukon stuck
+https://wiki.gnome.org/Apps/Aisleriot/Games
+
+BUG can't call createCardTextures() in loadScript()
+guide to making a new variant
+	pick up new variants automatically?
+not entirely happy with card flipping
 fan factor in a mixed pile
 BUG mouse fatigue when not moving
 different cardRatio for landscape (1.357) and portrait (1.444)?

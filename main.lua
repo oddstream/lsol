@@ -38,8 +38,9 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	diamondColor = 'OrangeRed',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
-	cardColors = 2,		-- current number of card colors
-	useCardColors = false,
+	oneColorCards = false,
+	twoColorCards = true,
+	fourColorCards = false,
 }
 
 _G.LSOL_VARIANTS = {
@@ -51,7 +52,7 @@ _G.LSOL_VARIANTS = {
 	Duchess = {file='duchess.lua'},
 	['Debug Klon'] = {file='debug.lua', cc=4, spiderLike=false},
 	['Debug Spid'] = {file='debug.lua', cc=4, spiderLike=true},
-	['Eight Off'] = {file='eightoff.lua'},
+	['Eight Off'] = {file='eightoff.lua', cc=4},
 	['Eight Off Relaxed'] = {file='eightoff.lua', relaxed=true},
 	Freecell = {file='freecell.lua'},
 	Gate = {file='gate.lua'},
@@ -77,7 +78,7 @@ _G.VARIANT_TYPES = {
 	['> Freecell'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell'},
 	['> Klondike'] = {'Klondike', 'Klondike (Turn Three)'},
 	['> Places'] = {'Australian', 'Yukon', 'Yukon Relaxed'},
-	['> Puzzlers'] = {'Freecell', 'Penguin', 'Simple Simon'},
+	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
 }
 

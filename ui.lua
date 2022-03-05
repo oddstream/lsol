@@ -10,6 +10,7 @@ local IconWidget = require 'ui_iconwidget'
 local TextWidget = require 'ui_textwidget'
 local DivWidget = require 'ui_divwidget'
 local Checkbox = require 'ui_checkbox'
+local Radio = require 'ui_radio'
 local FAB = require 'ui_fab'
 
 local Util = require 'util'
@@ -32,7 +33,9 @@ local menuWidgets = {
 
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
-	{text='Colored cards', var='useCardColors'},
+	{text='One-color cards', var='oneColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
+	{text='Two-color cards', var='twoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
+	{text='Four-color cards', var='fourColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
 	{text='Power moves', var='powerMoves'},
 	{text='Mute sounds', var='muteSounds'},
 }
@@ -54,8 +57,8 @@ function UI.new()
 
 		wgt = IconWidget.new({parent=o.titlebar, name='undo', icon='undo', align='right', baizeCmd='undo'})
 		table.insert(o.titlebar.widgets, wgt)
-		-- wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
-		-- table.insert(o.titlebar.widgets, wgt)
+		wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
+		table.insert(o.titlebar.widgets, wgt)
 
 	o.menudrawer = MenuDrawer.new({})
 	for _, winfo in ipairs(menuWidgets) do
@@ -78,10 +81,14 @@ function UI.new()
 
 	o.statsdrawer = TextDrawer.new({width=320})
 
-	o.settingsdrawer = MenuDrawer.new({})
+	o.settingsdrawer = MenuDrawer.new({width=320})
 	for _, winfo in ipairs(settingsWidgets) do
 		winfo.parent = o.settingsdrawer
-		table.insert(o.settingsdrawer.widgets, Checkbox.new(winfo))
+		if winfo.grp then
+			table.insert(o.settingsdrawer.widgets, Radio.new(winfo))
+		else
+			table.insert(o.settingsdrawer.widgets, Checkbox.new(winfo))
+		end
 	end
 
 	o.statusbar = Statusbar.new({})
@@ -175,10 +182,12 @@ function UI:showSettingsDrawer()
 	-- TODO go through widgets and determine if they are checked or unchecked
 	for _, wgt in ipairs(self.settingsdrawer.widgets) do
 		-- log.trace(wgt.var, 'is', _G.BAIZE.settings[wgt.var])
-		if _G.BAIZE.settings[wgt.var] then
-			wgt.checked = true
-		else
-			wgt.checked = false
+		if wgt.var then
+			if _G.BAIZE.settings[wgt.var] then
+				wgt.checked = true
+			else
+				wgt.checked = false
+			end
 		end
 	end
 	self.settingsdrawer:show()
