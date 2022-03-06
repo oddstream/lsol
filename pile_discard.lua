@@ -45,10 +45,6 @@ function Discard:tailTapped(tail)
 	-- do nothing
 end
 
-function Discard:collect()
-	-- override Pile.collect to do nothing
-end
-
 function Discard:conformant()
 	-- no Baize that contains any discard piles should be Conformant,
 	-- because there is no use showing the collect all FAB

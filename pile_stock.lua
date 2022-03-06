@@ -88,10 +88,6 @@ function Stock:tailTapped(tail)
 	-- do nothing, handled by script, which had first dibs
 end
 
-function Stock:collect()
-	-- override Pile.collect to do nothing
-end
-
 function Stock:conformant()
 	return #self.cards == 0
 end

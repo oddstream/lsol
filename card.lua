@@ -309,7 +309,8 @@ function Card:draw()
 			y = y - yoffset / 2
 		end
 		if self.spinning then
-			love.graphics.draw(img, x, y, self.angle * math.pi / 180.0, 1.1, 1.1)
+			-- love.graphics.draw(img, x, y, self.angle * math.pi / 180.0, 1.1, 1.1)
+			love.graphics.draw(img, x, y, math.rad(self.angle), 1.1, 1.1)
 		else
 			love.graphics.draw(img, x, y)
 		end

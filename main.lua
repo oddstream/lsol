@@ -255,20 +255,20 @@ function love.keyreleased(key)
 	elseif key == 'f' then
 		_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
 	elseif key == '1' then
-		_G.BAIZE.settings.cardColors = 1
+		_G.BAIZE.settings.oneColorCards = true
+		_G.BAIZE.settings.twoColorCards = false
+		_G.BAIZE.settings.fourColorCards = false
 		_G.BAIZE:createCardTextures()
 	elseif key == '2' then
-		_G.BAIZE.settings.cardColors = 2
+		_G.BAIZE.settings.oneColorCards = false
+		_G.BAIZE.settings.twoColorCards = true
+		_G.BAIZE.settings.fourColorCards = false
 		_G.BAIZE:createCardTextures()
 	elseif key == '4' then
-		_G.BAIZE.settings.cardColors = 4
+		_G.BAIZE.settings.oneColorCards = false
+		_G.BAIZE.settings.twoColorCards = false
+		_G.BAIZE.settings.fourColorCards = true
 		_G.BAIZE:createCardTextures()
-	elseif key == 'x' then
-		for _, p in ipairs(_G.BAIZE.piles) do
-			if p.category == 'Tableau' or p.category == 'Reserve' then
-				p:calcStackFactors()
-			end
-		end
 	end
 	_G.BAIZE.lastInput = love.timer.getTime()
 end
@@ -303,5 +303,8 @@ function love.quit()
 	-- no args
 	_G.BAIZE.stats:save()
 	_G.BAIZE:saveSettings()
-	_G.BAIZE:saveUndoStack()
+	-- don't save completed game, to stop win being recorded when it's reloaded
+	if _G.BAIZE.status ~= 'complete' then
+		_G.BAIZE:saveUndoStack()
+	end
 end

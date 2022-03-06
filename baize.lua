@@ -592,9 +592,21 @@ function Baize:updateStatus()
 	return moves, fmoves
 end
 
+--[[
+     or
+     and
+     <     >     <=    >=    ~=    ==
+     ..
+     +     -
+     *     /     %
+     not   #     - (unary)
+     ^
+]]
+
 function Baize:updateUI()
 	self.ui:updateWidget('collect', nil, self.status == 'collect' or self.status == 'conformant')
-	self.ui:updateWidget('undo', nil, not (self.status == 'virgin' or self.status == 'complete'))
+	local undoable = #self.undoStack > 1 and self.status ~= 'complete'
+	self.ui:updateWidget('undo', nil, undoable)
 	self.ui:updateWidget('restartdeal', nil, self.status ~= 'virgin')
 	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
 
@@ -608,13 +620,13 @@ function Baize:updateUI()
 		end
 	end
 
-	self.ui:updateWidget('status', self.status)
+	self.ui:updateWidget('status', string.format('%s(%d)', self.status, #self.undoStack))
 
 	if self.status == 'complete' then
 		self.ui:updateWidget('progress', 'COMPLETE')
 	else
 		local percent = self:percentComplete()
-		self.ui:updateWidget('progress', string.format('PROGRESS:%d%%', percent))
+		self.ui:updateWidget('progress', string.format('%d%%', percent))
 	end
 
 	if self.status == 'complete' then
@@ -926,7 +938,7 @@ end
 
 function Baize:afterUserMove()
 	-- log.trace('Baize:afterUserMove')
-	if self.script.afterMove() then
+	if self.script.afterMove then
 		self.script:afterMove()
 	end
 	self:undoPush()
@@ -1276,19 +1288,40 @@ function Baize:complete()
 end
 
 function Baize:collect()
-	local outerState = self:stateSnapshot()
-	while true do
-		local innerState = self:stateSnapshot()
-		for _, pile in ipairs(self.piles) do
-			pile:collect()
+	-- collect should be exactly the same as the user tapping repeatedly on the
+	-- waste, cell, reserve and tableau piles
+	-- nb there is no collecting in games with discard piles (ie spiders)
+
+	-- TODO could move this back to vtable
+	local function collectFromPile(pile)
+		local cardsMoved = 0
+		if pile then
+			for _, fp in ipairs(self.foundations) do
+				while true do
+					local card = pile:peek()
+					if not card then break end
+					local err = fp:canAcceptCard(card)
+					if err then
+						break	-- done with this foundation, try another
+					end
+					Util.moveCard(pile, fp)
+					cardsMoved = cardsMoved + 1
+					self:afterUserMove()
+				end
+			end
 		end
-		if not Util.baizeChanged(innerState, self:stateSnapshot()) then
-			break
+		return cardsMoved
+	end
+
+	local totalCardsMoved
+	repeat
+		totalCardsMoved = collectFromPile(self.waste)
+		for _, piles in ipairs({self.cells, self.reserves, self.tableaux}) do
+			for _, pile in ipairs(piles) do
+				totalCardsMoved = totalCardsMoved + collectFromPile(pile)
+			end
 		end
-	end
-	if Util.baizeChanged(outerState, self:stateSnapshot()) then
-		self:afterUserMove()
-	end
+	until totalCardsMoved == 0
 end
 
 function Baize:startSpinning()

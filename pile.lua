@@ -427,23 +427,6 @@ function Pile:tailTapped(tail)
 	end
 end
 
-function Pile:collect()
-	for _, fp in ipairs(_G.BAIZE.foundations) do
-		while true do
-			-- loop to get as many cards as possible from this pile
-			if #self.cards == 0 then
-				return
-			end
-			local err = fp:canAcceptCard(self:peek())
-			if err then
-				-- this foundation doesn't want this card; onto the next one
-				break
-			end
-			Util.moveCard(self, fp)
-		end
-	end
-end
-
 function Pile:conformant()
 	log.warn('base conformant should not be called')
 end

@@ -39,10 +39,6 @@ function Foundation:tailTapped(tail)
 	-- do nothing
 end
 
-function Foundation:collect()
-	-- override Pile.collect to do nothing
-end
-
 function Foundation:conformant()
 	return true
 end

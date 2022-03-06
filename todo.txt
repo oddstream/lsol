@@ -7,6 +7,12 @@ just stick to the same as LÖVE (and raylib) and use x,y,width,height
 try as a .zip file in case variants and assets don't load
 try to make an Android build
 
+REGRESSION TESTS
+	collect on an virgin Duchess
+	collect on a completed game
+	undo Duchess after first move
+	exit when game is complete - restart - is another win recorded?
+
 https://en.wikipedia.org/wiki/Rouge_et_Noir_(patience)
 https://www.politaire.com/rougeetnoir
 https://www.politaire.com/help/rougeetnoir
