@@ -2,7 +2,7 @@
 
 local log = require 'log'
 
-local Variant = require 'Variant'
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Cell = require 'pile_cell'
