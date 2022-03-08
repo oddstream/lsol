@@ -1,5 +1,6 @@
 -- australian
 
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Foundation = require 'pile_foundation'
@@ -11,6 +12,7 @@ local Util = require 'util'
 
 local Australian = {}
 Australian.__index = Australian
+setmetatable(Australian, {__index = Variant})
 
 function Australian.new(o)
 	o = o or {}

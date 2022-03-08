@@ -2,6 +2,7 @@
 
 local log = require 'log'
 
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Cell = require 'pile_cell'
@@ -13,6 +14,7 @@ local Util = require 'util'
 
 local EightOff = {}
 EightOff.__index = EightOff
+setmetatable(EightOff, {__index = Variant})
 
 function EightOff.new(o)
 	o = o or {}

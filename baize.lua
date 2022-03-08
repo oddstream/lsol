@@ -417,6 +417,7 @@ function Baize:allCards()
 end
 ]]
 
+--[[
 function Baize:percentComplete()
 	local pairs = 0
 	local unsorted = 0
@@ -428,6 +429,7 @@ function Baize:percentComplete()
 	end
 	return 100 - Util.mapValue(unsorted, 0, pairs, 0, 100)
 end
+]]
 
 function Baize:countMoves()
 
@@ -577,9 +579,9 @@ function Baize:updateStatus()
 		self.status = 'afoot'
 	end
 
-	if self:complete() then
+	if self.script:complete() then
 		self.status = 'complete'
-	elseif self:conformant() then
+	elseif self.script:conformant() then
 		self.status = 'conformant'
 	else
 		moves, fmoves = self:countMoves()
@@ -625,7 +627,7 @@ function Baize:updateUI()
 	if self.status == 'complete' then
 		self.ui:updateWidget('progress', 'COMPLETE')
 	else
-		local percent = self:percentComplete()
+		local percent = self.script:percentComplete()
 		self.ui:updateWidget('progress', string.format('%d%%', percent))
 	end
 
@@ -746,17 +748,17 @@ function Baize:changeVariant(vname)
 	if vname == self.settings.variantName then
 		return
 	end
-	local script = _G.BAIZE:loadScript(vname)
-	if script then
+	local newScript = _G.BAIZE:loadScript(vname)
+	if newScript then
 		if #self.undoStack > 1 then
-			local percent = self:percentComplete()
+			local percent = self.script:percentComplete()
 			if percent < 100 then
 				self.stats:recordLostGame(self.settings.variantName, percent)
 			end
 		end
 		--
 		self.settings.variantName = vname
-		self.script = script
+		self.script = newScript
 		self:resetPiles()
 		self.script:buildPiles()
 		self:layout()
@@ -774,7 +776,7 @@ end
 
 function Baize:newDeal()
 	if #self.undoStack > 1 then
-		local percent = self:percentComplete()
+		local percent = self.script:percentComplete()
 		if percent < 100 then
 			self.stats:recordLostGame(self.settings.variantName, percent)
 		end
@@ -1107,11 +1109,7 @@ function Baize:mouseTapped(x, y, button)
 		local tail = self.stroke.object
 		for _, c in ipairs(tail) do c:cancelDrag() end
 		local oldSnap = self:stateSnapshot()
-		if self.script.tailTapped then
-			self.script:tailTapped(tail)
-		else
-			tail[1].parent:tailTapped(tail)
-		end
+		self.script:tailTapped(tail)
 		local newSnap = self:stateSnapshot()
 		if Util.baizeChanged(oldSnap, newSnap) then
 			self:afterUserMove()

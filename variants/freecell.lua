@@ -2,6 +2,7 @@
 
 local log = require 'log'
 
+local Variant = require 'Variant'
 local CC = require 'cc'
 
 local Cell = require 'pile_cell'
@@ -13,6 +14,7 @@ local Util = require 'util'
 
 local Freecell = {}
 Freecell.__index = Freecell
+setmetatable(Freecell, {__index = Variant})
 
 function Freecell.new(o)
 	o = o or {}

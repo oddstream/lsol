@@ -1,7 +1,8 @@
 -- gate
 
-local log = require 'log'
+-- local log = require 'log'
 
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Foundation = require 'pile_foundation'
@@ -14,6 +15,7 @@ local Util = require 'util'
 
 local Gate = {}
 Gate.__index = Gate
+setmetatable(Gate, {__index = Variant})
 
 function Gate.new(o)
 	o = o or {}

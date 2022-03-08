@@ -1,7 +1,8 @@
 -- spider
 
-local log = require 'log'
+-- local log = require 'log'
 
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Discard = require 'pile_discard'
@@ -12,6 +13,7 @@ local Util = require 'util'
 
 local Spider = {}
 Spider.__index = Spider
+setmetatable(Spider, {__index = Variant})
 
 function Spider.new(o)
 	assert(o)

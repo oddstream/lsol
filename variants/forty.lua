@@ -2,6 +2,7 @@
 
 -- local log = require 'log'
 
+local Variant = 'variant'
 local CC = require 'cc'
 
 local Foundation = require 'pile_foundation'
@@ -13,6 +14,7 @@ local Util = require 'util'
 
 local Forty = {}
 Forty.__index = Forty
+setmetatable(Forty, {__index = Variant})
 
 function Forty.new(o)
 	o = o or {}

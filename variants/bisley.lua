@@ -1,5 +1,6 @@
 -- Bisley
 
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Foundation = require 'pile_foundation'
@@ -10,6 +11,7 @@ local Util = require 'util'
 
 local Bisley = {}
 Bisley.__index = Bisley
+setmetatable(Bisley, {__index = Variant})
 
 function Bisley.new(o)
 	o = o or {}

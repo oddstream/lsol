@@ -1,5 +1,6 @@
 -- klondike
 
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Foundation = require 'pile_foundation'
@@ -11,6 +12,7 @@ local Util = require 'util'
 
 local Klondike = {}
 Klondike.__index = Klondike
+setmetatable(Klondike, {__index = Variant})
 
 function Klondike.new(o)
 	o = o or {}

@@ -44,6 +44,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 }
 
 _G.LSOL_VARIANTS = {
+	Accordian = {file='accordian.lua', cc=1},
 	Australian = {file='australian.lua', cc=4},
 	['Beleaguered Castle'] = {file='castle.lua', cc=1},
 	Bisley = {file='bisley.lua'},
@@ -84,18 +85,53 @@ _G.VARIANT_TYPES = {
 
 do
 	local lst = {}
-	for k,_ in pairs(_G._G.LSOL_VARIANTS) do
+	for k,_ in pairs(_G.LSOL_VARIANTS) do
 		table.insert(lst, k)
 	end
-	-- table.sort(lst)
+	-- sorting happens after widgets are added to types/variants drawers
 	_G.VARIANT_TYPES['> All'] = lst
-	-- table.sort(_G.VARIANT_TYPES)
 	-- for k,_ in pairs(_G.VARIANT_TYPES) do
 	-- 	print(k)
 	-- 	for k2,v2 in pairs(v) do
 	-- 		print(k2, v2)
 	-- 	end
 	-- end
+end
+
+do
+	local stats = Stats.new()
+	local function played(v)
+		return stats[v].won + stats[v].lost
+	end
+
+	-- can only sort a table of keys with numeric indexes, not an associative array
+	local tab = {}
+	for k,_ in pairs(stats) do
+		table.insert(tab, {vname=k, played=played(k)})
+	end
+
+	if #tab > 2 then
+		-- log.info('presort', #tab)
+		-- for i, v in ipairs(tab) do
+		-- 	log.info(i, v.vname, v.played)
+		-- end
+
+		-- compare function receives two arguments
+		-- and must return true if the first argument should come first in the sorted array
+		table.sort(tab, function(a,b) return a.played > b.played end)
+
+		-- log.info('postsort', #tab)
+		-- for i, v in ipairs(tab) do
+		-- 	log.info(i, v.vname, v.played)
+		-- end
+
+		local lst = {}
+		for i=1, 3 do
+			table.insert(lst, tab[i].vname)
+		end
+		_G.VARIANT_TYPES['> Favorites'] = lst
+		-- beware - this short list will be alpha sorted before it's displayed
+	end
 end
 
 _G.LSOL_COLORS = {
@@ -165,8 +201,9 @@ There may be a small performance penalty as the output will be flushed after eac
 	-- love.graphics.setLineStyle('smooth')
 
 	_G.BAIZE = Baize.new()
-	_G.BAIZE:loadSettings()
+
 	_G.BAIZE.stats = Stats.new()
+	_G.BAIZE:loadSettings()
 	_G.BAIZE:loadUndoStack()
 	if _G.BAIZE.undoStack then
 		_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)

@@ -1,5 +1,7 @@
 -- cc
 
+local log = require 'log'
+
 local CC = {}
 
 function CC.EitherProne(cpair)
@@ -105,6 +107,29 @@ function CC.DownAltColorWrap(cpair)
 		return 'Cards must go down in rank (Kings on Aces allowed)'
 	end
 	return nil
+end
+
+function CC.Accordian(cpair)
+
+	local function getPileIdx(pile)
+		for i, p in ipairs(_G.BAIZE.piles) do
+			if p == pile then
+				return i
+			end
+		end
+		return -1
+	end
+
+	if not ((cpair[1].ord == cpair[2].ord) or (cpair[1].suit == cpair[2].suit)) then
+		return 'Cards must be the same rank or suit'
+	end
+	local p1x = getPileIdx(cpair[1].parent)
+	local p2x = getPileIdx(cpair[2].parent)
+	log.trace(p1x, p2x)
+	if (p1x + 1 == p2x) or (p1x + 3 == p2x) then
+		return nil
+	end
+	return 'A card can be moved on top of another card immediately to its left or three cards to its left'
 end
 
 return CC

@@ -1,5 +1,6 @@
 -- Beleaguered Castle
 
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Foundation = require 'pile_foundation'
@@ -10,6 +11,7 @@ local Util = require 'util'
 
 local Castle = {}
 Castle.__index = Castle
+setmetatable(Castle, {__index = Variant})
 
 function Castle.new(o)
 	o = o or {}

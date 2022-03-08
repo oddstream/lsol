@@ -13,6 +13,8 @@ REGRESSION TESTS
 	undo Duchess after first move
 	exit when game is complete - restart - is another win recorded?
 
+https://en.wikipedia.org/wiki/Accordion_(card_game)
+
 https://en.wikipedia.org/wiki/Rouge_et_Noir_(patience)
 https://www.politaire.com/rougeetnoir
 https://www.politaire.com/help/rougeetnoir
@@ -23,13 +25,29 @@ https://en.wikipedia.org/wiki/Gamification
 
 Duchess bug fix back to gosol
 
+Variant
+	pileTapped
+	tailTapped
+	percentComplete
+	unsortedPairs
+		used by percentComplete and conformant, but only on Tableau piles
+		the other six pile types can give quick answers
+
+could calculate favorites from examining statistics
+
+shuffling animation?
+	face down cards get spinning then dealt?
+
 small display of moves, tmoves, fmoves
 reset stats for this game
+import/export stats (to and from opsole)
+
 count unsuccessful taps
 statusbar ticker widget for statistics? width=one third
 guide to making a new variant
 	pick up new variants automatically?
 not entirely happy with card flipping
+	look at some other apps
 fan factor in a mixed pile
 BUG mouse fatigue when not moving
 different cardRatio for landscape (1.357) and portrait (1.444)?

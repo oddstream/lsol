@@ -2,6 +2,7 @@
 
 local log = require 'log'
 
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Discard = require 'pile_discard'
@@ -13,6 +14,7 @@ local Util = require 'util'
 
 local Debug = {}
 Debug.__index = Debug
+setmetatable(Debug, {__index = Variant})
 
 function Debug.new(o)
 	o = o or {}

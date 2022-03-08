@@ -2,6 +2,7 @@
 
 local log = require 'log'
 
+local Variant = require 'variant'
 local CC = require 'cc'
 
 local Discard = require 'pile_discard'
@@ -12,6 +13,7 @@ local Util = require 'util'
 
 local SimpleSimon = {}
 SimpleSimon.__index = SimpleSimon
+setmetatable(SimpleSimon, {__index = Variant})
 
 function SimpleSimon.new(o)
 	o = o or {}
