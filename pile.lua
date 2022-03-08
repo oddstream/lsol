@@ -301,7 +301,7 @@ function Pile:indexOf(card)
 	return 0
 end
 
-function Pile:canMoveTail(tail)
+function Pile:moveTailError(tail)
 --[[
 	if tail[1].parent.category ~= 'Stock' then
 		for _, c in ipairs(tail) do
@@ -364,13 +364,13 @@ end
 
 -- vtable functions
 
-function Pile.canAcceptCard(c)
-	log.warn('base canAcceptCard should not be called')
+function Pile.acceptCardError(c)
+	log.warn('base acceptCardError should not be called')
 	return nil
 end
 
-function Pile.canAcceptTail(c)
-	log.warn('base canAcceptTail should not be called')
+function Pile.acceptTailError(c)
+	log.warn('base acceptTailError should not be called')
 	return nil
 end
 
@@ -381,7 +381,7 @@ function Pile:tailTapped(tail)
 	-- try to send a single card to a foundation
 	if #tail == 1 then
 		for _, dst in ipairs(_G.BAIZE.foundations) do
-			local err = dst:canAcceptCard(tappedCard)
+			local err = dst:acceptCardError(tappedCard)
 			if not err then
 				Util.moveCard(src, dst)
 				return
@@ -393,10 +393,10 @@ function Pile:tailTapped(tail)
 	for _, dst in ipairs(_G.BAIZE.tableaux) do
 		if dst ~= src then
 			-- can the tail be moved in general?
-			local err = src:canMoveTail(tail)
+			local err = src:moveTailError(tail)
 			if not err then
 				-- can the dst accept the tail?
-				err = dst:canAcceptTail(tail)
+				err = dst:acceptTailError(tail)
 				if not err then
 					-- is the tail conformant enough to move?
 					err = _G.BAIZE.script:tailMoveError(tail)

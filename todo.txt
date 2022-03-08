@@ -33,10 +33,12 @@ Variant
 		used by percentComplete and conformant, but only on Tableau piles
 		the other six pile types can give quick answers
 
-could calculate favorites from examining statistics
-
 shuffling animation?
 	face down cards get spinning then dealt?
+
+card height option short/medium/tall
+
+mirror ord and suit on simple cards for Beleaguered_Castle
 
 small display of moves, tmoves, fmoves
 reset stats for this game

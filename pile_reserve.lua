@@ -17,11 +17,11 @@ end
 
 -- vtable functions
 
-function Reserve:canAcceptCard(c)
+function Reserve:acceptCardError(c)
 	return 'Cannot move a card to a Reserve'
 end
 
-function Reserve:canAcceptTail(c)
+function Reserve:acceptTailError(c)
 	return 'Cannot move a card to a Reserve'
 end
 

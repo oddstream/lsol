@@ -437,7 +437,7 @@ function Baize:countMoves()
 		if #tail == 1 then
 			for _, dst in ipairs(self.foundations) do
 				if dst ~= owner then
-					local err = dst:canAcceptTail(tail)
+					local err = dst:acceptTailError(tail)
 					if not err then
 						return dst
 					end
@@ -445,7 +445,7 @@ function Baize:countMoves()
 			end
 			for _, dst in ipairs(self.cells) do
 				if dst ~= owner then
-					local err = dst:canAcceptTail(tail)
+					local err = dst:acceptTailError(tail)
 					if not err then
 						return dst
 					end
@@ -454,7 +454,7 @@ function Baize:countMoves()
 		end
 		for _, dst in ipairs(self.tableaux) do
 			if dst ~= owner then
-				local err = dst:canAcceptTail(tail)
+				local err = dst:acceptTailError(tail)
 				if not err then
 					return dst
 				end
@@ -467,11 +467,14 @@ function Baize:countMoves()
 		if dst.category == 'Foundation' then
 			return false
 		end
-		-- if #dst.cards == 0 then
-		-- 	if #tail == #src.cards then
-		-- 		return true
-		-- 	end
-		-- end
+		-- moving an entire pile to another empty pile of the same type is pointless
+		if #dst.cards == 0 then
+			if #tail == #src.cards then
+				if src.category == dst.category then
+					return true
+				end
+			end
+		end
 		return false
 	end
 
@@ -483,14 +486,15 @@ function Baize:countMoves()
 
 	if self.waste and #self.waste.cards > 0 then
 		local tail = {self.waste:peek()}
-		local dst = findHomeForTail(self.waste, tail)
-		if dst then
-			moves = moves + 1
-			if dst.category == 'Foundation' then
-				fmoves = fmoves + 1
+		if not self.waste:moveTailError(tail) then
+			local dst = findHomeForTail(self.waste, tail)
+			if dst then
+				moves = moves + 1
+				if dst.category == 'Foundation' then
+					fmoves = fmoves + 1
+				end
 			end
 		end
-
 		if #self.stock.cards == 0 and self.recycles > 0 then
 			moves = moves + 1
 		end
@@ -499,11 +503,13 @@ function Baize:countMoves()
 	for _, pile in ipairs(self.cells) do
 		if #pile.cards > 0 then
 			local tail = {pile:peek()}
-			local dst = findHomeForTail(pile, tail)
-			if dst then
-				moves = moves + 1
-				if dst.category == 'Foundation' then
-					fmoves = fmoves + 1
+			if not pile:moveTailError(tail) then
+				local dst = findHomeForTail(pile, tail)
+				if dst then
+					moves = moves + 1
+					if dst.category == 'Foundation' then
+						fmoves = fmoves + 1
+					end
 				end
 			end
 		end
@@ -512,11 +518,13 @@ function Baize:countMoves()
 	for _, pile in ipairs(self.reserves) do
 		if #pile.cards > 0 then
 			local tail = {pile:peek()}
-			local dst = findHomeForTail(pile, tail)
-			if dst then
-				moves = moves + 1
-				if dst.category == 'Foundation' then
-					fmoves = fmoves + 1
+			if not pile:moveTailError(tail) then
+				local dst = findHomeForTail(pile, tail)
+				if dst then
+					moves = moves + 1
+					if dst.category == 'Foundation' then
+						fmoves = fmoves + 1
+					end
 				end
 			end
 		end
@@ -526,11 +534,13 @@ function Baize:countMoves()
 		for _, card in ipairs(pile.cards) do
 			if not card.prone then
 				local tail = pile:makeTail(card)
-				local dst = findHomeForTail(pile, tail)
-				if dst and not meaninglessMove(pile, dst, tail) then
-					moves = moves + 1
-					if dst.category == 'Foundation' then
-						fmoves = fmoves + 1
+				if not pile:moveTailError(tail) then
+					local dst = findHomeForTail(pile, tail)
+					if dst and not meaninglessMove(pile, dst, tail) then
+						moves = moves + 1
+						if dst.category == 'Foundation' then
+							fmoves = fmoves + 1
+						end
 					end
 				end
 			end
@@ -589,6 +599,8 @@ function Baize:updateStatus()
 			self.status = 'stuck'
 		elseif fmoves > 0 then
 			self.status = 'collect'
+		else
+			self.status = string.format('afoot %d %d', moves, fmoves)
 		end
 	end
 	return moves, fmoves
@@ -622,7 +634,8 @@ function Baize:updateUI()
 		end
 	end
 
-	self.ui:updateWidget('status', string.format('%s(%d)', self.status, #self.undoStack))
+	-- self.ui:updateWidget('status', string.format('%s(%d)', self.status, #self.undoStack))
+	self.ui:updateWidget('status', self.status)
 
 	if self.status == 'complete' then
 		self.ui:updateWidget('progress', 'COMPLETE')
@@ -1151,12 +1164,12 @@ function Baize:mouseReleased(x, y, button)
 				if src == dst then
 					for _, c in ipairs(tail) do c:cancelDrag() end
 				else
-					local err = src:canMoveTail(tail)
+					local err = src:moveTailError(tail)
 					if err then
 						self.ui:toast(err, 'blip')
 						for _, c in ipairs(tail) do c:cancelDrag() end
 					else
-						err = dst:canAcceptTail(tail)
+						err = dst:acceptTailError(tail)
 						if err then
 							self.ui:toast(err, 'blip')
 							for _, c in ipairs(tail) do c:cancelDrag() end
@@ -1298,7 +1311,7 @@ function Baize:collect()
 				while true do
 					local card = pile:peek()
 					if not card then break end
-					local err = fp:canAcceptCard(card)
+					local err = fp:acceptCardError(card)
 					if err then
 						break	-- done with this foundation, try another
 					end

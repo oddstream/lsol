@@ -76,11 +76,11 @@ end
 
 -- vtable functions
 
-function Stock:canAcceptCard(c)
+function Stock:acceptCardError(c)
 	return 'Cannot move cards to the Stock'
 end
 
-function Stock:canAcceptTail(tail)
+function Stock:acceptTailError(tail)
 	return 'Cannot move cards to the Stock'
 end
 

@@ -16,7 +16,7 @@ function Tableau.new(o)
 	return setmetatable(o, Tableau)
 end
 
-function Tableau:canAcceptCard(c)
+function Tableau:acceptCardError(c)
 	if c.prone then
 		return 'Cannot add a face down card to a Tableau'
 	end
@@ -44,7 +44,7 @@ local function powerMoves(pileTarget)
 	return n
 end
 
-function Tableau:canAcceptTail(tail)
+function Tableau:acceptTailError(tail)
 	for _, c in ipairs(tail) do
 		if c.prone then
 			return 'Cannot add a face down card'

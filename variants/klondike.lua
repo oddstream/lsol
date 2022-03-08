@@ -24,29 +24,50 @@ end
 function Klondike:buildPiles()
 	Stock.new({x=1, y=1})
 	Waste.new({x=2, y=1, fanType='FAN_RIGHT3'})
-	for x = 5, 8 do
-		local pile = Foundation.new({x=x, y=1})
-		pile.label = 'A'
-	end
-	for x = 1, 8 do
-		local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
-		pile.label = 'K'
+	if self.athena then
+		for x = 4, 7 do
+			local pile = Foundation.new({x=x, y=1})
+			pile.label = 'A'
+		end
+		for x = 1, 7 do
+			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			pile.label = 'K'
+		end
+	else
+		for x = 5, 8 do
+			local pile = Foundation.new({x=x, y=1})
+			pile.label = 'A'
+		end
+		for x = 1, 8 do
+			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			pile.label = 'K'
+		end
 	end
 end
 
 function Klondike:startGame()
 	local src = _G.BAIZE.stock
-	local dealDown = 0
-	for _, dst in ipairs(_G.BAIZE.tableaux) do
-		for _ = 1, dealDown do
-			local card = Util.moveCard(src, dst)
-			card.prone = true
+	if self.athena then
+		for _, dst in ipairs(_G.BAIZE.tableaux) do
+			for _= 1, 2 do
+				local card = Util.moveCard(src, dst)
+				card.prone = true
+				Util.moveCard(src, dst)
+			end
 		end
-		dealDown = dealDown + 1
-		Util.moveCard(src, dst)
-	end
-	for _ = 1, self.turn do
-		Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
+	else
+		local dealDown = 0
+		for _, dst in ipairs(_G.BAIZE.tableaux) do
+			for _ = 1, dealDown do
+				local card = Util.moveCard(src, dst)
+				card.prone = true
+			end
+			dealDown = dealDown + 1
+			Util.moveCard(src, dst)
+		end
+		for _ = 1, self.turn do
+			Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
+		end
 	end
 	_G.BAIZE:setRecycles(32767)
 end

@@ -16,7 +16,7 @@ function Cell.new(o)
 	return setmetatable(o, Cell)
 end
 
-function Cell:canAcceptCard(c)
+function Cell:acceptCardError(c)
 	if #self.cards ~= 0 then
 		return 'A Cell can only contain one card'
 	end
@@ -27,7 +27,7 @@ function Cell:canAcceptCard(c)
 	return nil
 end
 
-function Cell:canAcceptTail(tail)
+function Cell:acceptTailError(tail)
 	if #self.cards ~= 0 then
 		return 'A Cell can only contain one card'
 	end

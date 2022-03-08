@@ -18,7 +18,7 @@ end
 
 -- vtable functions
 
-function Foundation:canAcceptCard(c)
+function Foundation:acceptCardError(c)
 	if c.prone then
 		return 'Cannot move a face down card'
 	end -- eg being dragged from Stock
@@ -28,7 +28,7 @@ function Foundation:canAcceptCard(c)
 	return _G.BAIZE.script:tailAppendError(self, {c})
 end
 
-function Foundation:canAcceptTail(tail)
+function Foundation:acceptTailError(tail)
 	if #tail > 1 then
 		return 'Cannot move more than one card to a Foundation'
 	end

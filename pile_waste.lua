@@ -17,18 +17,18 @@ end
 
 -- vtable functions
 
-function Waste:canAcceptCard(c)
+function Waste:acceptCardError(c)
 	if c.parent.category ~= 'Stock' then
 		return 'Waste can only accept cards from the Stock'
 	end
 	return nil
 end
 
-function Waste:canAcceptTail(tail)
+function Waste:acceptTailError(tail)
 	if #tail > 1 then
 		return 'Can only move a single card to Waste'
 	end
-	return self:canAcceptCard(tail[1])
+	return self:acceptCardError(tail[1])
 end
 
 -- use Pile.tailTapped

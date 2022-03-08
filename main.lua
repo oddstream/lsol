@@ -45,6 +45,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 
 _G.LSOL_VARIANTS = {
 	Accordian = {file='accordian.lua', cc=1},
+	Athena = {file='klondike.lua', athena=true},
 	Australian = {file='australian.lua', cc=4},
 	['Beleaguered Castle'] = {file='castle.lua', cc=1},
 	Bisley = {file='bisley.lua'},
@@ -77,7 +78,7 @@ _G.VARIANT_TYPES = {
 	['> Canfield'] = {'Duchess', 'Gate'},
 	['> Forty Thieves'] = {'Forty Thieves', 'Limited', 'Lucas'},
 	['> Freecell'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell'},
-	['> Klondike'] = {'Klondike', 'Klondike (Turn Three)'},
+	['> Klondike'] = {'Athena', 'Klondike', 'Klondike (Turn Three)'},
 	['> Places'] = {'Australian', 'Yukon', 'Yukon Relaxed'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
