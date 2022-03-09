@@ -59,7 +59,7 @@ end
 -- function Freecell:afterMove()
 -- end
 
-function Freecell:tailMoveError(tail)
+function Freecell:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)

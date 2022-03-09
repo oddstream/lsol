@@ -73,7 +73,7 @@ end
 -- function Yukon:afterMove()
 -- end
 
-function Yukon:tailMoveError(tail)
+function Yukon:moveTailError(tail)
 end
 
 function Yukon:tailAppendError(dst, tail)

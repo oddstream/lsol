@@ -38,6 +38,7 @@ local settingsWidgets = {
 	{text='Four-color cards', var='fourColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
 	{text='Power moves', var='powerMoves'},
 	{text='Mute sounds', var='muteSounds'},
+	{text='Debug', var='debug'},
 }
 
 function UI.new()
@@ -173,6 +174,8 @@ function UI:showStatsDrawer(strs)
 		local wgt = TextWidget.new({parent=self.statsdrawer, text=str})
 		table.insert(self.statsdrawer.widgets, wgt)
 	end
+	local wgt = TextWidget.new({parent=self.statsdrawer, text='[ Reset ]', baizeCmd='resetStats'})
+	table.insert(self.statsdrawer.widgets, wgt)
 	Util.play('menuopen')
 	self.statsdrawer:layout()
 	self.statsdrawer:show()

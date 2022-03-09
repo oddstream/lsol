@@ -478,6 +478,12 @@ function Baize:countMoves()
 		return false
 	end
 
+	if self.settings.debug then
+		for _, c in ipairs(self.deck) do
+			c.movable = false
+		end
+	end
+
 	local moves, fmoves = 0, 0
 
 	if #self.stock.cards > 0 then
@@ -493,6 +499,7 @@ function Baize:countMoves()
 				if dst.category == 'Foundation' then
 					fmoves = fmoves + 1
 				end
+				if self.settings.debug then tail[1].movable = true end
 			end
 		end
 		if #self.stock.cards == 0 and self.recycles > 0 then
@@ -505,11 +512,12 @@ function Baize:countMoves()
 			local tail = {pile:peek()}
 			if not pile:moveTailError(tail) then
 				local dst = findHomeForTail(pile, tail)
-				if dst then
+				if dst and not meaninglessMove(pile, dst, tail) then
 					moves = moves + 1
 					if dst.category == 'Foundation' then
 						fmoves = fmoves + 1
 					end
+					if self.settings.debug then tail[1].movable = true end
 				end
 			end
 		end
@@ -525,6 +533,7 @@ function Baize:countMoves()
 					if dst.category == 'Foundation' then
 						fmoves = fmoves + 1
 					end
+					if self.settings.debug then tail[1].movable = true end
 				end
 			end
 		end
@@ -535,11 +544,14 @@ function Baize:countMoves()
 			if not card.prone then
 				local tail = pile:makeTail(card)
 				if not pile:moveTailError(tail) then
-					local dst = findHomeForTail(pile, tail)
-					if dst and not meaninglessMove(pile, dst, tail) then
-						moves = moves + 1
-						if dst.category == 'Foundation' then
-							fmoves = fmoves + 1
+					if not self.script:moveTailError(tail) then
+						local dst = findHomeForTail(pile, tail)
+						if dst and not meaninglessMove(pile, dst, tail) then
+							moves = moves + 1
+							if dst.category == 'Foundation' then
+								fmoves = fmoves + 1
+							end
+							if self.settings.debug then tail[1].movable = true end
 						end
 					end
 				end
@@ -634,8 +646,10 @@ function Baize:updateUI()
 		end
 	end
 
-	-- self.ui:updateWidget('status', string.format('%s(%d)', self.status, #self.undoStack))
-	self.ui:updateWidget('status', self.status)
+	if self.settings.debug then
+		-- self.ui:updateWidget('status', string.format('%s(%d)', self.status, #self.undoStack))
+		self.ui:updateWidget('status', self.status)
+	end
 
 	if self.status == 'complete' then
 		self.ui:updateWidget('progress', 'COMPLETE')
@@ -739,10 +753,20 @@ function Baize:showSettingsDrawer()
 	self.ui:showSettingsDrawer()
 end
 
+function Baize:resetStats()
+	self.stats:reset(self.settings.variantName)
+	self.ui:toast(string.format('Statistics for %s have been reset', self.settings.variantName))
+end
+
 function Baize:toggleSetting(var)
 	self.settings[var] = not self.settings[var]
 	if var == 'simpleCards' then
 		self:createCardTextures()
+	elseif var == 'debug' then
+		for _, c in ipairs(self.deck) do
+			c.movable = false
+		end
+		self:updateUI()
 	end
 end
 
@@ -1164,17 +1188,19 @@ function Baize:mouseReleased(x, y, button)
 				if src == dst then
 					for _, c in ipairs(tail) do c:cancelDrag() end
 				else
+					-- can the tail be moved in general?
 					local err = src:moveTailError(tail)
 					if err then
 						self.ui:toast(err, 'blip')
 						for _, c in ipairs(tail) do c:cancelDrag() end
 					else
-						err = dst:acceptTailError(tail)
+						-- is the variant ok with moving this tail?
+						err = self.script:moveTailError(tail)
 						if err then
 							self.ui:toast(err, 'blip')
 							for _, c in ipairs(tail) do c:cancelDrag() end
 						else
-							err = self.script:tailMoveError(tail)
+							err = dst:acceptTailError(tail)
 							if err then
 								self.ui:toast(err, 'blip')
 								for _, c in ipairs(tail) do c:cancelDrag() end

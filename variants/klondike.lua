@@ -81,7 +81,7 @@ function Klondike:afterMove()
 	end
 end
 
-function Klondike:tailMoveError(tail)
+function Klondike:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)
@@ -95,7 +95,7 @@ function Klondike:tailMoveError(tail)
 	return nil
 end
 --[[
-function Klondike.Tableau.tailMoveError(tail)
+function Klondike.Tableau.moveTailError(tail)
 	local cpairs = Util.makeCardPairs(tail)
 	for _, cpair in ipairs(cpairs) do
 		local err = CC.DownAltColor(cpair)

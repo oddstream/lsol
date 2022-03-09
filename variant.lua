@@ -24,7 +24,7 @@ function Variant:afterMove()
 	-- do nothing if variant does not implement this
 end
 
-function Variant:tailMoveError(tail)
+function Variant:moveTailError(tail)
 	log.error('base function should not be called')
 	return nil
 end

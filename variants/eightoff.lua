@@ -63,7 +63,7 @@ end
 -- function EightOff:afterMove()
 -- end
 
-function EightOff:tailMoveError(tail)
+function EightOff:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)

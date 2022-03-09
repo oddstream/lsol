@@ -81,7 +81,7 @@ end
 -- function Penguin:afterMove()
 -- end
 
-function Penguin:tailMoveError(tail)
+function Penguin:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)

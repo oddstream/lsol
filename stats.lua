@@ -110,6 +110,7 @@ function Stats:recordLostGame(v, percent)
 	log.info('recorded a lost game of', v)
 end
 
+--[[
 function Stats:log(v)
 	local s = self:findVariant(v)
 	log.info('played', s.won + s.lost, 'won', s.won, 'lost', s.lost)
@@ -120,6 +121,7 @@ function Stats:log(v)
 		log.info('on a losing streak of', s.currStreak)
 	end
 end
+]]
 
 function Stats:strings(v)
 	local s = self:findVariant(v)
@@ -142,6 +144,14 @@ function Stats:strings(v)
 		end
 	end
 	return strs
+end
+
+function Stats:reset(v)
+	self[v] = nil
+	-- local s = self:findVariant(v)
+	-- for k, _ in pairs(s) do
+	-- 	s[k] = 0
+	-- end
 end
 
 return Stats

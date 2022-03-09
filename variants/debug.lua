@@ -54,7 +54,7 @@ end
 -- function Debug:afterMove()
 -- end
 
-function Debug:tailMoveError(tail)
+function Debug:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)

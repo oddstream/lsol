@@ -94,7 +94,7 @@ function Duchess:afterMove()
 	end
 end
 
-function Duchess:tailMoveError(tail)
+function Duchess:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)

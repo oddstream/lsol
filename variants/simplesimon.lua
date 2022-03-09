@@ -66,7 +66,7 @@ end
 -- function SimpleSimon:afterMove()
 -- end
 
-function SimpleSimon:tailMoveError(tail)
+function SimpleSimon:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)

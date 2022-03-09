@@ -56,7 +56,7 @@ end
 -- function Castle:afterMove()
 -- end
 
-function Castle:tailMoveError(tail)
+function Castle:moveTailError(tail)
 	return nil
 end
 

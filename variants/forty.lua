@@ -59,7 +59,7 @@ end
 -- function Forty:afterMove()
 -- end
 
-function Forty:tailMoveError(tail)
+function Forty:moveTailError(tail)
 	local card = tail[1]
 	local pile = card.parent
 	if pile.category == 'Tableau' then

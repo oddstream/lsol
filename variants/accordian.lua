@@ -73,7 +73,7 @@ function Accordian:afterMove()
 ]]
 end
 
-function Accordian:tailMoveError(tail)
+function Accordian:moveTailError(tail)
 	return nil
 end
 

@@ -57,7 +57,7 @@ end
 -- function Spider:afterMove()
 -- end
 
-function Spider:tailMoveError(tail)
+function Spider:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)

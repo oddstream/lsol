@@ -62,7 +62,7 @@ function Gate:afterMove()
 	end
 end
 
-function Gate:tailMoveError(tail)
+function Gate:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)

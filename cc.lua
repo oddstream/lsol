@@ -132,4 +132,12 @@ function CC.Accordian(cpair)
 	return 'A card can be moved on top of another card immediately to its left or three cards to its left'
 end
 
+function CC.Thirteen(cpair)
+	local sum = cpair[1].ord + cpair[2].ord
+	if sum ~= 13 then
+		return string.format('The cards must add up to 13, not %d', sum)
+	end
+	return nil
+end
+
 return CC

@@ -76,7 +76,7 @@ end
 -- function Bisley:afterMove()
 -- end
 
-function Bisley:tailMoveError(tail)
+function Bisley:moveTailError(tail)
 	return nil
 end
 

@@ -395,11 +395,11 @@ function Pile:tailTapped(tail)
 			-- can the tail be moved in general?
 			local err = src:moveTailError(tail)
 			if not err then
-				-- can the dst accept the tail?
-				err = dst:acceptTailError(tail)
+				-- is the tail conformant enough to move?
+				err = _G.BAIZE.script:moveTailError(tail)
 				if not err then
-					-- is the tail conformant enough to move?
-					err = _G.BAIZE.script:tailMoveError(tail)
+				-- can the dst accept the tail?
+					err = dst:acceptTailError(tail)
 					if not err then
 						if (#dst.cards == 0) and (not dst.label) then
 							-- annoying to move cards to an empty pile

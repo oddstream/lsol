@@ -53,7 +53,7 @@ function Australian:afterMove()
 	end
 end
 
-function Australian:tailMoveError(tail)
+function Australian:moveTailError(tail)
 	return nil
 end
 

@@ -21,6 +21,7 @@ if not _G.table.contains then
 end
 
 _G.LSOL_DEFAULT_SETTINGS = {
+	debug = false,
 	lastVersion = 0,
 	variantName = 'Klondike',
 	highlightMovable = true,
@@ -68,6 +69,10 @@ _G.LSOL_VARIANTS = {
 	Spider = {file='spider.lua', packs=2, suitFilter={'♣','♦','♥','♠'}},
 	['Spider One Suit'] = {file='spider.lua', packs=8, suitFilter={'♠'}},
 	['Spider Two Suits'] = {file='spider.lua', packs=4, suitFilter={'♥', '♠'}},
+	Thirteens = {file='thirteens.lua'},
+	['Classic Westcliff'] = {file='westcliff.lua', classic=true},
+	['American Westcliff'] = {file='westcliff.lua', american=true},
+	Easthaven = {file='westcliff.lua', easthaven=true},
 	Yukon = {file='yukon.lua'},
 	['Yukon Relaxed'] = {file='yukon.lua', relaxed=true},
 	['Yukon Cells'] = {file='yukon.lua', cells=true},
@@ -78,7 +83,7 @@ _G.VARIANT_TYPES = {
 	['> Canfield'] = {'Duchess', 'Gate'},
 	['> Forty Thieves'] = {'Forty Thieves', 'Limited', 'Lucas'},
 	['> Freecell'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell'},
-	['> Klondike'] = {'Athena', 'Klondike', 'Klondike (Turn Three)'},
+	['> Klondike'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff'},
 	['> Places'] = {'Australian', 'Yukon', 'Yukon Relaxed'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},

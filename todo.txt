@@ -13,7 +13,7 @@ REGRESSION TESTS
 	undo Duchess after first move
 	exit when game is complete - restart - is another win recorded?
 
-https://en.wikipedia.org/wiki/Accordion_(card_game)
+finish https://en.wikipedia.org/wiki/Accordion_(card_game)
 
 https://en.wikipedia.org/wiki/Rouge_et_Noir_(patience)
 https://www.politaire.com/rougeetnoir
@@ -23,9 +23,12 @@ https://wiki.gnome.org/Apps/Aisleriot/Games
 
 https://en.wikipedia.org/wiki/Gamification
 
-https://en.wikipedia.org/wiki/Westcliff_(card_game)
-
 Duchess bug fix back to gosol
+
+pile:moveTailError AND script:moveTailError
+	couldn't pile call script?
+	script:moveTailError() checks that tail is conformant, returns err string
+	script:unsortedPairs() says HOW conformant a pile is, returns an int
 
 Variant de-pickle:
 	pileTapped
@@ -45,7 +48,6 @@ mirror ord and suit on simple cards for Beleaguered_Castle
 
 debug small display of moves, tmoves, fmoves
 
-reset stats for this game
 import/export stats (to and from opsole)
 
 count unsuccessful taps
