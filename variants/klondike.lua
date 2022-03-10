@@ -16,7 +16,8 @@ setmetatable(Klondike, {__index = Variant})
 
 function Klondike.new(o)
 	o = o or {}
-	o.wikipedia='https://en.wikipedia.org/wiki/Klondike_(solitaire)'
+	o.tabCompareFn = CC.DownAltColor
+	o.wikipedia = 'https://en.wikipedia.org/wiki/Klondike_(solitaire)'
 	o.turn = o.turn or 1
 	return setmetatable(o, Klondike)
 end
@@ -122,10 +123,6 @@ function Klondike:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Klondike:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
 function Klondike:pileTapped(pile)

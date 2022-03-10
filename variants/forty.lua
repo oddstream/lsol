@@ -18,6 +18,7 @@ setmetatable(Forty, {__index = Variant})
 
 function Forty.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.DownSuit
 	o.wikipedia = 'https://en.wikipedia.org/wiki/Forty_Thieves_(solitaire)'
 	o.packs = o.packs or 2
 	o.suitFilter = o.suitFilter or {'♣','♦','♥','♠'}
@@ -90,10 +91,6 @@ function Forty:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Forty:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
 -- function Forty:pileTapped(pile)

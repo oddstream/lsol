@@ -417,20 +417,6 @@ function Baize:allCards()
 end
 ]]
 
---[[
-function Baize:percentComplete()
-	local pairs = 0
-	local unsorted = 0
-	for _, p in ipairs(self.piles) do
-		if #p.cards > 1 then
-			pairs = pairs + #p.cards
-		end
-		unsorted = unsorted + p:unsortedPairs()
-	end
-	return 100 - Util.mapValue(unsorted, 0, pairs, 0, 100)
-end
-]]
-
 function Baize:countMoves()
 
 	local function findHomeForTail(owner, tail)
@@ -475,6 +461,8 @@ function Baize:countMoves()
 				end
 			end
 		end
+		-- TODO disregard if tail is already in middle of a conformant pile
+		-- i.e. not the first card in a conformant run
 		return false
 	end
 

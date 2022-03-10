@@ -25,6 +25,10 @@ https://en.wikipedia.org/wiki/Gamification
 
 Duchess bug fix back to gosol
 
+Are you sure? dialog
+	for reset stats
+	resign game
+
 pile:moveTailError AND script:moveTailError
 	couldn't pile call script?
 	script:moveTailError() checks that tail is conformant, returns err string

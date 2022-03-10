@@ -19,6 +19,7 @@ setmetatable(Gate, {__index = Variant})
 
 function Gate.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.DownAltColor
 	o.wikipedia='https://en.wikipedia.org/wiki/Gate_(solitaire)'
 	return setmetatable(o, Gate)
 end
@@ -101,10 +102,6 @@ function Gate:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Gate:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
 function Gate:pileTapped(pile)

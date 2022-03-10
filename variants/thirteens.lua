@@ -1,6 +1,6 @@
 -- thirteens
 
-local log = require 'log'
+-- local log = require 'log'
 
 local Variant = require 'variant'
 local CC = require 'cc'
@@ -16,8 +16,8 @@ Thirteens.__index = Thirteens
 setmetatable(Thirteens, {__index = Variant})
 
 function Thirteens.new(o)
-	o = o or {}
-	o.wikipedia='https://en.wikipedia.org/wiki/Good_Thirteen'
+	o.tabCompareFn = CC.Thirteen
+	o.wikipedia = 'https://en.wikipedia.org/wiki/Good_Thirteen'
 	return setmetatable(o, Thirteens)
 end
 
@@ -70,9 +70,9 @@ function Thirteens:tailAppendError(dst, tail)
 	return nil
 end
 
-function Thirteens:unsortedPairs(pile)
-	return 0
-end
+-- function Thirteens:unsortedPairs(pile)
+-- 	return 0
+-- end
 
 -- function Thirteens:pileTapped(pile)
 -- end

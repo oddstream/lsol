@@ -16,8 +16,8 @@ Spider.__index = Spider
 setmetatable(Spider, {__index = Variant})
 
 function Spider.new(o)
-	assert(o)
-	o.wikipedia='https://en.wikipedia.org/wiki/Spider_(solitaire)'
+	o.tabCompareFn = CC.DownSuit
+	o.wikipedia = 'https://en.wikipedia.org/wiki/Spider_(solitaire)'
 	o.packs = o.packs or 2
 	o.suitFilter = o.suitFilter or {'♣','♦','♥','♠'}
 	return setmetatable(o, Spider)
@@ -97,10 +97,6 @@ function Spider:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Spider:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
 function Spider:pileTapped(pile)

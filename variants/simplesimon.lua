@@ -17,7 +17,8 @@ setmetatable(SimpleSimon, {__index = Variant})
 
 function SimpleSimon.new(o)
 	o = o or {}
-	o.wikipedia='https://en.wikipedia.org/wiki/Simple_Simon_(solitaire)'
+	o.tabCompareFn = CC.DownSuit
+	o.wikipedia = 'https://en.wikipedia.org/wiki/Simple_Simon_(solitaire)'
 	return setmetatable(o, SimpleSimon)
 end
 
@@ -106,10 +107,6 @@ function SimpleSimon:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function SimpleSimon:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
 -- function SimpleSimon:pileTapped(pile)

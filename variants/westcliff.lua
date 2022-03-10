@@ -15,8 +15,8 @@ West.__index = West
 setmetatable(West, {__index = Variant})
 
 function West.new(o)
-	o = o or {}
-	o.wikipedia='https://en.wikipedia.org/wiki/Westcliff_(card_game)'
+	o.tabCompareFn = CC.DownAltColor
+	o.wikipedia = 'https://en.wikipedia.org/wiki/Westcliff_(card_game)'
 	return setmetatable(o, West)
 end
 
@@ -127,10 +127,6 @@ function West:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function West:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
 -- function West:pileTapped(pile)

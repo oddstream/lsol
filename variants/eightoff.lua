@@ -18,6 +18,7 @@ setmetatable(EightOff, {__index = Variant})
 
 function EightOff.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.DownSuit
 	o.wikipedia='https://en.wikipedia.org/wiki/Eight_Off'
 	return setmetatable(o, EightOff)
 end
@@ -92,10 +93,6 @@ function EightOff:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function EightOff:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
 -- function EightOff:pileTapped(pile)

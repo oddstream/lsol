@@ -6,7 +6,7 @@
     It is closely related to Canfield.
 ]]
 
-local log = require 'log'
+-- local log = require 'log'
 
 local Variant = require 'variant'
 local CC = require 'cc'
@@ -25,12 +25,13 @@ setmetatable(Duchess, {__index = Variant})
 
 function Duchess.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.DownAltColorWrap
 	o.wikipedia='https://en.wikipedia.org/wiki/Duchess_(solitaire)'
 	return setmetatable(o, Duchess)
 end
 
 function Duchess:buildPiles()
-	log.trace('Duchess.buildPiles')
+	-- log.trace('Duchess.buildPiles')
 	Stock.new{x=1, y=2}
 
 	for i = 1, 4 do
@@ -51,7 +52,7 @@ function Duchess:buildPiles()
 end
 
 function Duchess:startGame()
-	log.trace('Duchess.startGame')
+	-- log.trace('Duchess.startGame')
 
 	_G.BAIZE:setRecycles(1)
 
@@ -138,10 +139,6 @@ function Duchess:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Duchess:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownAltColorWrap)
 end
 
 function Duchess:pileTapped(pile)

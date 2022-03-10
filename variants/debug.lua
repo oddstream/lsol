@@ -18,6 +18,7 @@ setmetatable(Debug, {__index = Variant})
 
 function Debug.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.DownSuit
 	return setmetatable(o, Debug)
 end
 
@@ -100,10 +101,6 @@ function Debug:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Debug:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
 -- function Debug:pileTapped(pile)

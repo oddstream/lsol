@@ -17,7 +17,7 @@ Yukon.__index = Yukon
 setmetatable(Yukon, {__index = Variant})
 
 function Yukon.new(o)
-	o = o or {}
+	o.tabCompareFn = CC.DownAltColor
 	o.wikipedia = 'https://en.wikipedia.org/wiki/Yukon_(solitaire)'
 	o.packs = o.packs or 1
 	o.suitFilter = o.suitFilter or {'♣','♦','♥','♠'}
@@ -91,10 +91,6 @@ function Yukon:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Yukon:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
 -- function Yukon:pileTapped(pile)

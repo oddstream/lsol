@@ -15,6 +15,7 @@ setmetatable(Castle, {__index = Variant})
 
 function Castle.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.Down
 	o.wikipedia='https://en.wikipedia.org/wiki/Beleaguered_Castle'
 	return setmetatable(o, Castle)
 end
@@ -75,10 +76,6 @@ function Castle:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Castle:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.Down)
 end
 
 -- function Castle:pileTapped(pile)

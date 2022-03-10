@@ -18,6 +18,7 @@ setmetatable(Freecell, {__index = Variant})
 
 function Freecell.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.DownAltColor
 	o.wikipedia='https://en.wikipedia.org/wiki/FreeCell'
 	return setmetatable(o, Freecell)
 end
@@ -88,10 +89,6 @@ function Freecell:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Freecell:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownAltColor)
 end
 
 -- function Freecell:pileTapped(pile)

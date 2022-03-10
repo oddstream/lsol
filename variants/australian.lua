@@ -16,6 +16,7 @@ setmetatable(Australian, {__index = Variant})
 
 function Australian.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.DownSuit
 	o.wikipedia='https://en.wikipedia.org/wiki/Australian_Patience'
 	return setmetatable(o, Australian)
 end
@@ -72,10 +73,6 @@ function Australian:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Australian:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownSuit)
 end
 
 -- function Australian:pileTapped(pile)

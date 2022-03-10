@@ -18,6 +18,7 @@ setmetatable(Penguin, {__index = Variant})
 
 function Penguin.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.DownSuitWrap
 	o.wikipedia = 'https://en.wikipedia.org/wiki/Penguin_(solitaire)'
 	return setmetatable(o, Penguin)
 end
@@ -110,10 +111,6 @@ function Penguin:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Penguin:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.DownSuitWrap)
 end
 
 -- function Penguin:pileTapped(pile)

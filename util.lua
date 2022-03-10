@@ -151,12 +151,12 @@ function Util.moveCards(src, idx, dst)
 	src:flipUpExposedCard()
 end
 
-function Util.unsortedPairs(pile, fn)
-	if #pile.cards < 2 then
+function Util.unsortedPairs(tail, fn)
+	if #tail < 2 then
 		return 0
 	end
 	local unsorted = 0
-	local cpairs = Util.makeCardPairs(pile.cards)
+	local cpairs = Util.makeCardPairs(tail)
 	for _, cpair in ipairs(cpairs) do
 		if CC.EitherProne(cpair) then
 			unsorted = unsorted + 1

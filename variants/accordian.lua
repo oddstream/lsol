@@ -15,6 +15,7 @@ setmetatable(Accordian, {__index = Variant})
 
 function Accordian.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.Accordian
 	o.wikipedia='https://en.wikipedia.org/wiki/Accordion_(card_game)'
 	return setmetatable(o, Accordian)
 end
@@ -88,16 +89,9 @@ function Accordian:tailAppendError(dst, tail)
 	return nil
 end
 
-function Accordian:unsortedPairs(pile)
-	return #pile.cards
-	-- local empty = 0
-	-- for _, p in ipairs(_G.BAIZE.tableaux) do
-	-- 	if #p.cards == 0 then
-	-- 		empty = empty + 1
-	-- 	end
-	-- end
-	-- return 52 - empty
-end
+-- function Accordian:unsortedPairs(pile)
+-- 	return #pile.cards
+-- end
 
 function Accordian:percentComplete()
 	local empty = 0
@@ -107,6 +101,10 @@ function Accordian:percentComplete()
 		end
 	end
 	return 100 - Util.mapValue(52 - empty, 0, 52, 1, 100)
+end
+
+function Accordian:conformant()
+	return false
 end
 
 function Accordian:complete()

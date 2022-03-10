@@ -15,6 +15,7 @@ setmetatable(Bisley, {__index = Variant})
 
 function Bisley.new(o)
 	o = o or {}
+	o.tabCompareFn = CC.UpOrDownSuit
 	o.wikipedia='https://en.wikipedia.org/wiki/Bisley_(card_game)'
 	return setmetatable(o, Bisley)
 end
@@ -103,10 +104,6 @@ function Bisley:tailAppendError(dst, tail)
 		end
 	end
 	return nil
-end
-
-function Bisley:unsortedPairs(pile)
-	return Util.unsortedPairs(pile, CC.UpOrDownSuit)
 end
 
 -- function Bisley:pileTapped(pile)

@@ -1,8 +1,8 @@
 -- class Tableau, derived from Pile
 
-local log = require 'log'
-
 local Pile = require 'pile'
+
+local Util = require 'util'
 
 local Tableau = {}
 Tableau.__index = Tableau
@@ -80,11 +80,11 @@ end
 -- use Pile.collect
 
 function Tableau:conformant()
-	return _G.BAIZE.script:unsortedPairs(self) == 0
+	return Util.unsortedPairs(self.cards, _G.BAIZE.script.tabCompareFn) == 0
 end
 
 function Tableau:unsortedPairs()
-	return _G.BAIZE.script:unsortedPairs(self)
+	return Util.unsortedPairs(self.cards, _G.BAIZE.script.tabCompareFn)
 end
 
 return Tableau
