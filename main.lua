@@ -46,6 +46,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 
 _G.LSOL_VARIANTS = {
 	Accordian = {file='accordian.lua', cc=1},
+	['American Toad'] = {file='amtoad.lua'},
 	Athena = {file='klondike.lua', athena=true},
 	Australian = {file='australian.lua', cc=4},
 	['Beleaguered Castle'] = {file='castle.lua', cc=1},

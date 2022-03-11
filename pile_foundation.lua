@@ -39,10 +39,6 @@ function Foundation:tailTapped(tail)
 	-- do nothing
 end
 
-function Foundation:conformant()
-	return true
-end
-
 function Foundation:unsortedPairs()
 	return 0
 end

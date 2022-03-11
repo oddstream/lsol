@@ -45,10 +45,6 @@ end
 
 -- use Pile.collect
 
-function Cell:conformant()
-	return true
-end
-
 function Cell:unsortedPairs()
 	return 0
 end

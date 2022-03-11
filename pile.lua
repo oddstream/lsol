@@ -427,10 +427,6 @@ function Pile:tailTapped(tail)
 	end
 end
 
-function Pile:conformant()
-	log.warn('base conformant should not be called')
-end
-
 function Pile:unsortedPairs()
 	log.warn('base unsortedPairs should not be called')
 end

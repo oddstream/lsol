@@ -79,10 +79,6 @@ end
 
 -- use Pile.collect
 
-function Tableau:conformant()
-	return Util.unsortedPairs(self.cards, _G.BAIZE.script.tabCompareFn) == 0
-end
-
 function Tableau:unsortedPairs()
 	return Util.unsortedPairs(self.cards, _G.BAIZE.script.tabCompareFn)
 end

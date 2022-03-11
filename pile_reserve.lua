@@ -29,10 +29,6 @@ end
 
 -- use Pile.collect
 
-function Reserve:conformant()
-	return #self.cards < 2
-end
-
 function Reserve:unsortedPairs()
 	if #self.cards == 0 then
 		return 0

@@ -45,14 +45,6 @@ function Discard:tailTapped(tail)
 	-- do nothing
 end
 
-function Discard:conformant()
-	-- no Baize that contains any discard piles should be Conformant,
-	-- because there is no use showing the collect all FAB
-	-- because that would do nothing
-	-- because cards are not collected to discard piles
-	return false
-end
-
 function Discard:unsortedPairs()
 	-- you can only put a sorted sequence into a Discard, so this will always be zero
 	return 0

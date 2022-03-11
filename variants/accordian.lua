@@ -103,10 +103,6 @@ function Accordian:percentComplete()
 	return 100 - Util.mapValue(52 - empty, 0, 52, 1, 100)
 end
 
-function Accordian:conformant()
-	return false
-end
-
 function Accordian:complete()
 	local occupied = 0
 	for _, p in ipairs(_G.BAIZE.tableaux) do

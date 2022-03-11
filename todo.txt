@@ -25,6 +25,15 @@ https://en.wikipedia.org/wiki/Gamification
 
 Duchess bug fix back to gosol
 
+BUG jammed American Toad; just because a pile is conformant doesn't mean it's collectable
+	pile needs to have collectable card on top
+	empty foundation started from 7
+	remaining pile was 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, K, Q, J
+	conformant has no meaning
+	it doesn't for spider anyway
+	retire Baize:conformant and script:conformant
+	leave Pile:conformant (only used when there are discard piles) - find another way
+
 Are you sure? dialog
 	for reset stats
 	resign game

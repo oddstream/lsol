@@ -59,12 +59,6 @@ function Variant:complete()
 	return _G.BAIZE:complete()
 end
 
-function Variant:conformant()
-	-- trigger the default behaviour
-	-- variants (eg Accordian) can override this
-	return _G.BAIZE:conformant()
-end
-
 -- there is no default for pileTapped
 -- it's up to each variant to implement this
 -- pileTapped on a Stock pile will usually recycle Waste cards to Stock

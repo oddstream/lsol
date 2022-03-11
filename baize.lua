@@ -43,7 +43,7 @@ function Baize.new()
 	o.undoStack = {}
 	o.recycles = 32767
 	o.bookmark = 0
-	o.status = 'virgin'	-- afoot, stuck, collect, conformant, complete
+	o.status = 'virgin'	-- afoot, stuck, collect, complete
 	o.ui = UI.new()
 	o.lastInput = love.timer.getTime()
 	return o
@@ -591,8 +591,6 @@ function Baize:updateStatus()
 
 	if self.script:complete() then
 		self.status = 'complete'
-	elseif self.script:conformant() then
-		self.status = 'conformant'
 	else
 		moves, fmoves = self:countMoves()
 		if moves == 0 then
@@ -618,7 +616,7 @@ end
 ]]
 
 function Baize:updateUI()
-	self.ui:updateWidget('collect', nil, self.status == 'collect' or self.status == 'conformant')
+	self.ui:updateWidget('collect', nil, self.status == 'collect')
 	local undoable = #self.undoStack > 1 and self.status ~= 'complete'
 	self.ui:updateWidget('undo', nil, undoable)
 	self.ui:updateWidget('restartdeal', nil, self.status ~= 'virgin')
@@ -656,8 +654,6 @@ function Baize:updateUI()
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 	elseif self.status == 'collect' then
 		-- self.ui:showFAB{icon='done', baizeCmd='collect'}
-	elseif self.status == 'conformant' then
-		self.ui:showFAB{icon='done_all', baizeCmd='collect'}
 	else
 		self.ui:hideFAB()
 	end
@@ -1248,15 +1244,6 @@ function Baize:recycleWasteToStock()
 	end
 end
 
-function Baize:conformant()
-	for _, pile in ipairs(self.piles) do
-		if not pile:conformant() then
-			return false
-		end
-	end
-	return true
-end
-
 function Baize:complete()
 	-- Bisley rule - game is complete when all piles except foundations are empty
 	-- would normally have 52 / 13 == 4 foundations
@@ -1287,7 +1274,7 @@ function Baize:complete()
 				if (#pile.cards == 0) then
 					-- that's fine
 				elseif (#pile.cards == #self.deck / #self.discards) then
-					if not pile:conformant() then
+					if Util.unsortedPairs(pile.cards, self.script.tabCompareFn) > 0 then
 						return false
 					end
 				else
