@@ -31,7 +31,15 @@ end
 
 function IconWidget:draw()
 	-- very important!: reset color before drawing to canvas to have colors properly displayed
+	local cx, cy, cw, ch = self.parent:screenRect()
 	local wx, wy, ww, wh = self:screenRect()
+
+	if wy < cy then
+		return
+	end
+	if wy + wh > cy + ch then
+		return
+	end
 
 	if self.enabled then
 		local mx, my = love.mouse.getPosition()
@@ -50,6 +58,14 @@ function IconWidget:draw()
 	if self.img then
 		love.graphics.draw(self.img, wx, wy)
 	end
+
+	if self.text then
+		love.graphics.setFont(self.parent.font)
+		wx = wx + 36 + 36
+		wy = wy + 2
+		love.graphics.print(self.text, wx, wy)
+	end
+
 end
 
 return IconWidget

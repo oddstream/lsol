@@ -19,16 +19,16 @@ local UI = {}
 UI.__index = UI
 
 local menuWidgets = {
-	{text='New deal', baizeCmd='newDeal'},
-	{text='Restart deal', name='restartdeal', enabled=false, baizeCmd='restartDeal'},
-	{text='Find game...', baizeCmd='showVariantTypesDrawer'},
+	{text='New deal', icon='star', baizeCmd='newDeal'},
+	{text='Restart deal', icon='restore', name='restartdeal', enabled=false, baizeCmd='restartDeal'},
+	{text='Find game...', icon='search', baizeCmd='showVariantTypesDrawer'},
 	{},
-	{text='Set bookmark', baizeCmd='setBookmark'},
-	{text='Go to bookmark', name='gotobookmark', enabled=false, baizeCmd='gotoBookmark'},
+	{text='Set bookmark', icon='bookmark_add', baizeCmd='setBookmark'},
+	{text='Go to bookmark', icon='bookmark', name='gotobookmark', enabled=false, baizeCmd='gotoBookmark'},
 	{},
-	{text='Statistics...', baizeCmd='showStatsDrawer'},
-	{text='Settings...', baizeCmd='showSettingsDrawer'},
-	{text='Wikipedia...', baizeCmd='wikipedia'},
+	{text='Statistics...', icon='list', baizeCmd='showStatsDrawer'},
+	{text='Settings...', icon='settings', baizeCmd='showSettingsDrawer'},
+	{text='Wikipedia...', icon='info', baizeCmd='wikipedia'},
 }
 
 local settingsWidgets = {
@@ -61,17 +61,17 @@ function UI.new()
 		wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
 		table.insert(o.titlebar.widgets, wgt)
 
-	o.menudrawer = MenuDrawer.new({})
+	o.menudrawer = MenuDrawer.new({width=320})
 	for _, winfo in ipairs(menuWidgets) do
 		winfo.parent = o.menudrawer
 		if winfo.text then
-			table.insert(o.menudrawer.widgets, TextWidget.new(winfo))
+			table.insert(o.menudrawer.widgets, IconWidget.new(winfo))
 		else
 			table.insert(o.menudrawer.widgets, DivWidget.new(winfo))
 		end
 	end
 
-	o.typesdrawer = MenuDrawer.new({})
+	o.typesdrawer = MenuDrawer.new({width=320})
 	for k, _ in pairs(_G.VARIANT_TYPES) do
 		wgt = TextWidget.new({parent=o.typesdrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
 		table.insert(o.typesdrawer.widgets, wgt)

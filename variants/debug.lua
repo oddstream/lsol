@@ -34,6 +34,7 @@ function Debug:buildPiles()
 	end
 	for x = 1, 13 do
 		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		Tableau.new({x=x, y=5, fanType='FAN_DOWN', moveType='MOVE_ANY'})
 	end
 end
 
@@ -42,7 +43,7 @@ function Debug:startGame()
 	src = _G.BAIZE.stock
 
 	for _, dst in ipairs(_G.BAIZE.tableaux) do
-		for i = 1, 4 do
+		for i = 1, 2 do
 			Util.moveCard(src, dst)
 		end
 	end

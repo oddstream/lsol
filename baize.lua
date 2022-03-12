@@ -44,6 +44,7 @@ function Baize.new()
 	o.recycles = 32767
 	o.bookmark = 0
 	o.status = 'virgin'	-- afoot, stuck, collect, complete
+	o.percent = 0
 	o.ui = UI.new()
 	o.lastInput = love.timer.getTime()
 	return o
@@ -500,7 +501,7 @@ function Baize:countMoves()
 			local tail = {pile:peek()}
 			if not pile:moveTailError(tail) then
 				local dst = findHomeForTail(pile, tail)
-				if dst and not meaninglessMove(pile, dst, tail) then
+				if dst --[[and not meaninglessMove(pile, dst, tail)]] then
 					moves = moves + 1
 					if dst.category == 'Foundation' then
 						fmoves = fmoves + 1
@@ -534,7 +535,7 @@ function Baize:countMoves()
 				if not pile:moveTailError(tail) then
 					if not self.script:moveTailError(tail) then
 						local dst = findHomeForTail(pile, tail)
-						if dst and not meaninglessMove(pile, dst, tail) then
+						if dst --[[and not meaninglessMove(pile, dst, tail)]] then
 							moves = moves + 1
 							if dst.category == 'Foundation' then
 								fmoves = fmoves + 1
@@ -601,6 +602,9 @@ function Baize:updateStatus()
 			self.status = string.format('afoot %d %d', moves, fmoves)
 		end
 	end
+
+	self.percent = self.script:percentComplete()
+
 	return moves, fmoves
 end
 
@@ -616,6 +620,16 @@ end
 ]]
 
 function Baize:updateUI()
+
+	local anyProneCards = function()
+		for _, c in ipairs(self.deck) do
+			if c.prone then
+				return true
+			end
+		end
+		return false
+	end
+
 	self.ui:updateWidget('collect', nil, self.status == 'collect')
 	local undoable = #self.undoStack > 1 and self.status ~= 'complete'
 	self.ui:updateWidget('undo', nil, undoable)
@@ -640,8 +654,7 @@ function Baize:updateUI()
 	if self.status == 'complete' then
 		self.ui:updateWidget('progress', 'COMPLETE')
 	else
-		local percent = self.script:percentComplete()
-		self.ui:updateWidget('progress', string.format('%d%%', percent))
+		self.ui:updateWidget('progress', string.format('%d%%', self.percent))
 	end
 
 	if self.status == 'complete' then
@@ -652,8 +665,8 @@ function Baize:updateUI()
 	elseif self.status == 'stuck' then
 		self.ui:toast(self.settings.variantName .. ' stuck', 'blip')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
-	elseif self.status == 'collect' then
-		-- self.ui:showFAB{icon='done', baizeCmd='collect'}
+	elseif (self.status == 'collect') and (self.percent == 100) and (not anyProneCards()) then
+		self.ui:showFAB{icon='done_all', baizeCmd='collect'}
 	else
 		self.ui:hideFAB()
 	end
@@ -772,9 +785,8 @@ function Baize:changeVariant(vname)
 	local newScript = _G.BAIZE:loadScript(vname)
 	if newScript then
 		if #self.undoStack > 1 then
-			local percent = self.script:percentComplete()
-			if percent < 100 then
-				self.stats:recordLostGame(self.settings.variantName, percent)
+			if self.percent < 100 then
+				self.stats:recordLostGame(self.settings.variantName, self.percent)
 			end
 		end
 		--
@@ -797,9 +809,8 @@ end
 
 function Baize:newDeal()
 	if #self.undoStack > 1 then
-		local percent = self.script:percentComplete()
-		if percent < 100 then
-			self.stats:recordLostGame(self.settings.variantName, percent)
+		if self.percent < 100 then
+			self.stats:recordLostGame(self.settings.variantName, self.percent)
 		end
 	end
 	self:stopSpinning()

@@ -23,7 +23,8 @@ https://wiki.gnome.org/Apps/Aisleriot/Games
 
 https://en.wikipedia.org/wiki/Gamification
 
-Duchess bug fix back to gosol
+retire done_all from gosol
+new scrunch algorithm & logic to gosol
 
 BUG jammed American Toad; just because a pile is conformant doesn't mean it's collectable
 	pile needs to have collectable card on top
