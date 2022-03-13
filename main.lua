@@ -58,7 +58,9 @@ _G.LSOL_VARIANTS = {
 	['Debug Spid'] = {file='debug.lua', cc=4, spiderLike=true},
 	['Eight Off'] = {file='eightoff.lua', cc=4},
 	['Eight Off Relaxed'] = {file='eightoff.lua', relaxed=true},
-	Freecell = {file='freecell.lua'},
+	Freecell = {file='freecell.lua', bakers=false, relaxed=true},
+	['Baker\'s Game'] = {file='freecell.lua', bakers=true, relaxed=false},
+	['Baker\'s Game Relaxed'] = {file='freecell.lua', bakers=true, relaxed=true},
 	Gate = {file='gate.lua'},
 	Klondike = {file='klondike.lua'},
 	['Klondike (Turn Three)']  = {file='klondike.lua', turn=3},
@@ -83,7 +85,7 @@ _G.VARIANT_TYPES = {
 	-- '> All' will automatically be added
 	['> Canfield'] = {'Duchess', 'Gate'},
 	['> Forty Thieves'] = {'Forty Thieves', 'Limited', 'Lucas'},
-	['> Freecell'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell'},
+	['> Freecell'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed'},
 	['> Klondike'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff'},
 	['> Places'] = {'Australian', 'Yukon', 'Yukon Relaxed'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon'},
@@ -163,6 +165,11 @@ _G.LSOL_COLORS = {
 	UiForeground = {1,1,1,1},
 	UiHover = {255,215,0},	-- Gold
 }
+
+_G.ORD_FONT = 'assets/fonts/Acme-Regular.ttf'
+_G.SUIT_FONT = 'assets/fonts/DejaVuSans.ttf'
+_G.UI_MEDIUM_FONT = 'assets/fonts/Roboto-Medium.ttf'
+_G.UI_REGULAR_FONT = 'assets/fonts/Roboto-Regular.ttf'
 
 _G.LSOL_SOUNDS = {
 	deal = love.audio.newSource('assets/sounds/cardFan1.wav', 'static'),
@@ -272,7 +279,7 @@ function love.resize(w,h)
 end
 
 function love.keyreleased(key)
-	log.info(key)
+	-- log.info(key)
 	if key == 'u' then
 		_G.BAIZE:undo()
 	elseif key == 'c' then

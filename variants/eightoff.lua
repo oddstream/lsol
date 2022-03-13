@@ -19,7 +19,7 @@ setmetatable(EightOff, {__index = Variant})
 function EightOff.new(o)
 	o = o or {}
 	o.tabCompareFn = CC.DownSuit
-	o.wikipedia='https://en.wikipedia.org/wiki/Eight_Off'
+	o.wikipedia = 'https://en.wikipedia.org/wiki/Eight_Off'
 	return setmetatable(o, EightOff)
 end
 

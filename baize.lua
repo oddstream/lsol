@@ -130,16 +130,16 @@ local pipInfo = {
 	--[[ 9 ]] {
 		{x=0.375, y=0.166}, {x=0.625, y=0.166},
 		{x=0.375, y=0.4}, {x=0.625, y=0.4},
-		{x=0.5, y=0.5},
+		{x=0.5, y=0.5, scale=0.75},
 		{x=0.375, y=0.6}, {x=0.625, y=0.6},
 		{x=0.375, y=0.833}, {x=0.625, y=0.833},
 	},
 	--[[ 10 ]] {
 		{x=0.375, y=0.166}, {x=0.625, y=0.166},
-		{x=0.5, y=0.3},
+		{x=0.5, y=0.3, scale=0.75},
 		{x=0.375, y=0.4}, {x=0.625, y=0.4},
 		{x=0.375, y=0.6}, {x=0.625, y=0.6},
-		{x=0.5, y=0.7},
+		{x=0.5, y=0.7, scale=0.75},
 		{x=0.375, y=0.833}, {x=0.625, y=0.833},
 
 	},
@@ -199,7 +199,8 @@ end
 
 function Baize:createRegularFace(ord, suit)
 
-	local function printAt(str, rx, ry, font, angle)
+	local function printAt(str, rx, ry, font, scale, angle)
+		scale = scale or 1.0
 		angle = angle or 0.0
 		local ox = font:getWidth(str) / 2
 		local oy = font:getHeight(str) / 2
@@ -207,7 +208,7 @@ function Baize:createRegularFace(ord, suit)
 			self.cardWidth * rx,
 			self.cardHeight * ry,
 			angle,
-			1.0, 1.0,
+			scale, scale,
 			ox, oy)
 	end
 
@@ -227,18 +228,19 @@ function Baize:createRegularFace(ord, suit)
 	love.graphics.setColor(Util.colorBytes(suitColor))
 	love.graphics.setFont(self.ordFont)
 	printAt(_G.ORD2STRING[ord], 0.15, 0.15, self.ordFont)
-	printAt(_G.ORD2STRING[ord], 0.85, 0.85, self.ordFont, math.pi)
+	printAt(_G.ORD2STRING[ord], 0.85, 0.85, self.ordFont, 1.0, math.pi)
 
 	if ord > 1 and ord < 11 then
 		love.graphics.setColor(Util.colorBytes(suitColor))
 		love.graphics.setFont(self.suitFont)
 		local pips = pipInfo[ord]
 		for _, pip in ipairs(pips) do
+			local scale = pip.scale or 1.0
 			local angle = 0
 			if pip.y > 0.5 then
 				angle = math.pi
 			end
-			printAt(suit, pip.x, pip.y, self.suitFont, angle)
+			printAt(suit, pip.x, pip.y, self.suitFont, scale, angle)
 		end
 	else
 		-- Ace, Jack, Queen, King get suit runes at top right and bottom left
@@ -254,7 +256,7 @@ function Baize:createRegularFace(ord, suit)
 
 		love.graphics.setFont(self.suitFont)
 		printAt(suit, 0.85, 0.15, self.suitFont)
-		printAt(suit, 0.15, 0.85, self.suitFont, math.pi)
+		printAt(suit, 0.15, 0.85, self.suitFont, 1.0, math.pi)
 	end
 
 	love.graphics.setCanvas()	-- reset render target to the screen
@@ -273,17 +275,17 @@ function Baize:createCardTextures()
 	if self.settings.simpleCards then
 		self.ordFontSize = self.cardWidth / 3
 	else
-		self.ordFontSize = self.cardWidth / 4
+		self.ordFontSize = self.cardWidth / 3.75
 	end
-	self.ordFont = love.graphics.newFont('assets/fonts/Acme-Regular.ttf', self.ordFontSize)
+	self.ordFont = love.graphics.newFont(_G.ORD_FONT, self.ordFontSize)
 
 	if self.settings.simpleCards then
 		self.suitFontSize = self.cardWidth / 3
 	else
-		self.suitFontSize = self.cardWidth / 4
+		self.suitFontSize = self.cardWidth / 3.75
 	end
-	self.suitFont = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.suitFontSize)
-	self.suitFontLarge = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.suitFontSize * 2)
+	self.suitFont = love.graphics.newFont(_G.SUIT_FONT, self.suitFontSize)
+	self.suitFontLarge = love.graphics.newFont(_G.SUIT_FONT, self.suitFontSize * 2)
 
 	local canvas
 
@@ -649,6 +651,8 @@ function Baize:updateUI()
 	if self.settings.debug then
 		-- self.ui:updateWidget('status', string.format('%s(%d)', self.status, #self.undoStack))
 		self.ui:updateWidget('status', self.status)
+	else
+		self.ui:updateWidget('status', string.format('MOVES:%d', #self.undoStack - 1))
 	end
 
 	if self.status == 'complete' then
@@ -661,7 +665,7 @@ function Baize:updateUI()
 		self.ui:toast(self.settings.variantName .. ' complete', 'complete')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 		self:startSpinning()
-		self.stats:recordWonGame(self.settings.variantName)
+		self.stats:recordWonGame(self.settings.variantName, #self.undoStack - 1)
 	elseif self.status == 'stuck' then
 		self.ui:toast(self.settings.variantName .. ' stuck', 'blip')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
@@ -897,8 +901,8 @@ function Baize:layout()
 	self.cardRadius = math.floor(self.cardWidth / 16)
 
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
-		self.labelFont = love.graphics.newFont('assets/fonts/Acme-Regular.ttf', self.cardWidth)
-		self.runeFont = love.graphics.newFont('assets/fonts/DejaVuSans.ttf', self.cardWidth)
+		self.labelFont = love.graphics.newFont(_G.ORD_FONT, self.cardWidth)
+		self.runeFont = love.graphics.newFont(_G.SUIT_FONT, self.cardWidth)
 		self:createCardTextures()
 	end
 

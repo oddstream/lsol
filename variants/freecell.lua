@@ -18,8 +18,13 @@ setmetatable(Freecell, {__index = Variant})
 
 function Freecell.new(o)
 	o = o or {}
-	o.tabCompareFn = CC.DownAltColor
-	o.wikipedia='https://en.wikipedia.org/wiki/FreeCell'
+	if o.bakers then
+		o.tabCompareFn = CC.DownSuit
+		o.wikipedia = 'https://en.wikipedia.org/wiki/Baker%27s_Game'
+	else
+		o.tabCompareFn = CC.DownAltColor
+		o.wikipedia = 'https://en.wikipedia.org/wiki/FreeCell'
+	end
 	return setmetatable(o, Freecell)
 end
 
@@ -33,7 +38,10 @@ function Freecell:buildPiles()
 		f.label = 'A'
 	end
 	for x = 1, 8 do
-		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+		if self.relaxed == false then
+			t.label = 'K'
+		end
 	end
 end
 
@@ -65,7 +73,7 @@ function Freecell:moveTailError(tail)
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)
 		for _, cpair in ipairs(cpairs) do
-			local err = CC.DownAltColor(cpair)
+			local err = self.tabCompareFn(cpair)
 			if err then
 				return err
 			end
@@ -85,7 +93,7 @@ function Freecell:tailAppendError(dst, tail)
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
 		else
-			return CC.DownAltColor({dst:peek(), tail[1]})
+			return self.tabCompareFn({dst:peek(), tail[1]})
 		end
 	end
 	return nil

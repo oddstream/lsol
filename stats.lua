@@ -64,12 +64,15 @@ function Stats:findVariant(v)
 			worstStreak = 0,
 			sumPercents = 0,
 			bestPercent = 0,
+			bestMoves = 0,
+			worstMoves = 0,
+			sumMoves = 0,
 		}
 	end
 	return self[v]
 end
 
-function Stats:recordWonGame(v)
+function Stats:recordWonGame(v, moves)
 	local s = self:findVariant(v)
 
 	s.won = s.won + 1
@@ -84,6 +87,14 @@ function Stats:recordWonGame(v)
 	end
 
 	s.bestPercent = 100
+
+	if s.bestMoves == 0 or moves < s.bestMoves then
+		s.bestMoves = moves
+	end
+	if s.worstMoves == 0 or moves > s.worstMoves then
+		s.worstMoves = moves
+	end
+	s.sumMoves = s.sumMoves + moves
 
 	log.info('recorded a won game of', v)
 end
@@ -135,7 +146,14 @@ function Stats:strings(v)
 			table.insert(strs, string.format('Average percent: %d', averagePercent(s)))
 		end
 		if s.bestPercent < 100 then
+			-- not yet won a game
+			table.insert(strs, 'You have yet to win a game')
 			table.insert(strs, string.format('Best percent: %d', s.bestPercent))
+		else
+			-- won at leat one game
+			table.insert(strs, string.format('Best number of moves: %d', s.bestMoves))
+			table.insert(strs, string.format('Worst number of moves: %d', s.worstMoves))
+			table.insert(strs, string.format('Average number of moves: %d', s.sumMoves / s.won))
 		end
 		if s.currStreak > 0 then
 			table.insert(strs, string.format('You are on a winning streak of %d', s.currStreak))

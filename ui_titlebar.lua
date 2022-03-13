@@ -13,7 +13,7 @@ function Titlebar.new(o)
 
 	o.height = 48
 	o.align = 'top'
-	o.font = love.graphics.newFont('assets/fonts/Roboto-Medium.ttf', 24)
+	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, 24)
 	o.spacex = o.font:getWidth('_')
 
 	return setmetatable(o, Titlebar)

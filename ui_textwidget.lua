@@ -42,6 +42,11 @@ function TextWidget:draw()
 		love.graphics.setColor(0.5,0.5,0.5,1)
 	end
 	love.graphics.print(self.text, wx, wy)
+
+	if _G.BAIZE.settings.debug then
+		love.graphics.rectangle('line', wx, wy, ww, wh)
+	end
+
 end
 
 return TextWidget

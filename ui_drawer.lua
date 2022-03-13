@@ -57,15 +57,24 @@ function Drawer:layout()
 	local nexty = self.spacey
 
 	for _, wgt in ipairs(self.widgets) do
-		if wgt.text then
-			-- TextWidget, Checkbox
+
+		if wgt.img and wgt.text then
+			wgt.width = 36 + 36 + self.font:getWidth(wgt.text)
+			wgt.height = 36
+		elseif wgt.img then
+			wgt.width = 36
+			wgt.height = 36
+		elseif wgt.text then
 			wgt.width = self.font:getWidth(wgt.text)
 			wgt.height = self.font:getHeight(wgt.text)
-		else
+		end
+
+		if (not wgt.img) and (not wgt.text) then
 			-- DivWidget
 			wgt.width = self.width
-			-- wgt.height = 36
+			wgt.height = 0
 		end
+
 		wgt.x = self.spacex
 		wgt.y = nexty
 

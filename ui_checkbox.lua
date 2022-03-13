@@ -34,6 +34,12 @@ function Checkbox.new(o)
 	o.baizeCmd = 'toggleSetting'
 	o.param = o.var
 	o.enabled = true
+
+	-- check and img will be updated when drawer is shown by showSettingsDrawer
+	-- supply some values for now, so layout works
+	o.checked = true
+	o.img = o.imgChecked
+
 	return setmetatable(o, Checkbox)
 end
 
@@ -64,16 +70,17 @@ function Checkbox:draw()
 	else
 		love.graphics.setColor(0.5,0.5,0.5,1)
 	end
-	if self.checked then
-		love.graphics.draw(self.imgChecked, wx, wy)
-	else
-		love.graphics.draw(self.imgUnchecked, wx, wy)
-	end
-	wx = wx + self.imgWidth + 3
-	wy = wy + 3 -- TODO
+
+	love.graphics.draw(self.img, wx, wy)
+
 	if self.text then
-		love.graphics.print(self.text, wx, wy)
+		love.graphics.print(self.text, wx + 36 + 3, wy + 2)
 	end
+
+	if _G.BAIZE.settings.debug then
+		love.graphics.rectangle('line', wx, wy, ww, wh)
+	end
+
 end
 
 return Checkbox

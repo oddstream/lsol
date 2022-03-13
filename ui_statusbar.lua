@@ -11,7 +11,7 @@ function Statusbar.new(o)
 
 	o.height = 24
 	o.align = 'bottom'
-	o.font = love.graphics.newFont('assets/fonts/Roboto-Medium.ttf', 14)
+	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, 14)
 	o.spacex = o.font:getWidth('_')
 
 	return setmetatable(o, Statusbar)

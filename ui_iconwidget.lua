@@ -61,9 +61,11 @@ function IconWidget:draw()
 
 	if self.text then
 		love.graphics.setFont(self.parent.font)
-		wx = wx + 36 + 36
-		wy = wy + 2
-		love.graphics.print(self.text, wx, wy)
+		love.graphics.print(self.text, wx + 36 + 4, wy + 2)
+	end
+
+	if _G.BAIZE.settings.debug then
+		love.graphics.rectangle('line', wx, wy, ww, wh)
 	end
 
 end

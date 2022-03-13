@@ -13,6 +13,12 @@ REGRESSION TESTS
 	undo Duchess after first move
 	exit when game is complete - restart - is another win recorded?
 
++ BUG sometimes not descrunching
+
++ prettify stats
+
++ scrunching with overlapping pile, not just screen limit
+
 finish https://en.wikipedia.org/wiki/Accordion_(card_game)
 
 https://en.wikipedia.org/wiki/Rouge_et_Noir_(patience)
@@ -66,7 +72,6 @@ import/export stats (to and from opsole)
 
 count unsuccessful taps
 
-statusbar ticker widget for statistics? width=one third
 guide to making a new variant
 	pick up new variants automatically?
 
@@ -76,7 +81,6 @@ not entirely happy with card flipping
 fan factor in a mixed pile
 BUG mouse fatigue when not moving
 check FAN_LEFT
-BUG goto bookmark widget en/disable
 parameterize UI colors
 https://github.com/healeycodes/boids
 card rounded corners

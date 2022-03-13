@@ -46,7 +46,7 @@ function UI.new()
 	setmetatable(o, UI)
 
 	o.toasts = {} -- a queue of toasts; oldest to the left
-	o.toastFont = love.graphics.newFont('assets/fonts/Roboto-Regular.ttf', 14)
+	o.toastFont = love.graphics.newFont(_G.UI_REGULAR_FONT, 14)
 
 	local wgt
 	o.titlebar = Titlebar.new({})
@@ -188,8 +188,10 @@ function UI:showSettingsDrawer()
 		if wgt.var then
 			if _G.BAIZE.settings[wgt.var] then
 				wgt.checked = true
+				wgt.img = wgt.imgChecked
 			else
 				wgt.checked = false
+				wgt.img = wgt.imgUnchecked
 			end
 		end
 	end
