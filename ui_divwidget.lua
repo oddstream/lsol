@@ -14,9 +14,21 @@ function DivWidget.new(o)
 end
 
 function DivWidget:draw()
-	local x, y = self.parent.x, self.parent.y + self.y
-	love.graphics.setColor(0.5,0.5,0.5,1)
-	love.graphics.line(x, y, x + self.width, y)
+	-- very important!: reset color before drawing to canvas to have colors properly displayed
+	--[[
+	local cx, cy, cw, ch = self.parent:screenRect()
+	local wx, wy, ww, wh = self:screenRect()
+
+	if wy < cy then
+		return
+	end
+	if wy + wh > cy + ch then
+		return
+	end
+
+	love.graphics.setColor(0.1,0.1,0.1,1)
+	love.graphics.line(wx - self.parent.spacex, wy, ww, wy)
+	]]
 end
 
 return DivWidget

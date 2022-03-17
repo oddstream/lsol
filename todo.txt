@@ -13,11 +13,26 @@ REGRESSION TESTS
 	undo Duchess after first move
 	exit when game is complete - restart - is another win recorded?
 
+ANDROID
+	alias adb=$HOME/Android/Sdk/platform-tools/adb
+	adb devices
+		List of devices attached
+		ZY223Z8MVL	device
+	zip -9 -r lsol.love .
+	adb push lsol.love sdcard/Download
+		... appears in X-plore Download folder (not SDCARD, oddly)
+
+	Android ww=1176 wh=1008
+	no orientation change - landscape only?
+	"if you just distribute .love files for android, where the game always starts in landscape mode. "
+	https://love2d.org/wiki/love.graphics.rotate
+	scale
+	love.window.getDPIScale( ) returns 1 on Linux, 3 on Android
+	https://love2d.org/wiki/love.window.getDPIScale
+
 + BUG sometimes not descrunching
 
 + prettify stats
-
-+ scrunching with overlapping pile, not just screen limit
 
 finish https://en.wikipedia.org/wiki/Accordion_(card_game)
 

@@ -138,7 +138,7 @@ function Stats:strings(v)
 	local s = self:findVariant(v)
 	local strs = {}
 	if s.won + s.lost == 0 then
-		table.insert(strs, string.format('You have not played %s before', v))
+		table.insert(strs, 'You have not played this before')
 	else
 		table.insert(strs, string.format('Played: %u, won: %u, lost %u', s.won+s.lost, s.won, s.lost))
 		local avp = averagePercent(s)

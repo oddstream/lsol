@@ -33,8 +33,9 @@ function Debug:buildPiles()
 		end
 	end
 	for x = 1, 13 do
-		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
-		Tableau.new({x=x, y=5, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		local tUpper = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		local tLower = Tableau.new({x=x, y=5, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		tUpper.boundaryPile = tLower
 	end
 end
 

@@ -29,6 +29,8 @@ local menuWidgets = {
 	{text='Statistics...', icon='list', baizeCmd='showStatsDrawer'},
 	{text='Settings...', icon='settings', baizeCmd='showSettingsDrawer'},
 	{text='Wikipedia...', icon='info', baizeCmd='wikipedia'},
+	{},
+	{text='Quit', icon='close', baizeCmd='quit'},
 }
 
 local settingsWidgets = {
@@ -80,7 +82,7 @@ function UI.new()
 
 	o.variantsdrawer = MenuDrawer.new({width=320})
 
-	o.statsdrawer = TextDrawer.new({width=320})
+	o.statsdrawer = TextDrawer.new({width=420})
 
 	o.settingsdrawer = MenuDrawer.new({width=320})
 	for _, winfo in ipairs(settingsWidgets) do
@@ -174,7 +176,9 @@ function UI:showStatsDrawer(strs)
 		local wgt = TextWidget.new({parent=self.statsdrawer, text=str})
 		table.insert(self.statsdrawer.widgets, wgt)
 	end
-	local wgt = TextWidget.new({parent=self.statsdrawer, text='[ Reset ]', baizeCmd='resetStats'})
+	local wgt = DivWidget.new({parent=self.statsdrawer})
+	table.insert(self.statsdrawer.widgets, wgt)
+	wgt = TextWidget.new({parent=self.statsdrawer, text='[ Reset ]', baizeCmd='resetStats'})
 	table.insert(self.statsdrawer.widgets, wgt)
 	Util.play('menuopen')
 	self.statsdrawer:layout()

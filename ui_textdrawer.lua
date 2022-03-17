@@ -13,7 +13,7 @@ function TextDrawer.new(o)
 	o.aniState = 'stop'
 	o.x = -o.width -- starts hidden
 	o.y = 48 -- below titlebar
-	o.font = love.graphics.newFont(_G.UI_REGULAR_FONT, 14)
+	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, 24)
 	o.spacex = o.font:getHeight('_')
 	o.spacey = o.font:getHeight('!')
 	o.widgets = {}

@@ -1420,6 +1420,10 @@ function Baize:j_adoube()
 	end
 end
 
+function Baize:quit()
+	love.event.quit(0)
+end
+
 function Baize:update(dt)
 	for _, pile in ipairs(self.piles) do
 		pile:update(dt)
@@ -1435,6 +1439,12 @@ function Baize:update(dt)
 end
 
 function Baize:draw()
+	-- -- Transform the coordinate system so the top left in-game corner is in
+	-- -- the bottom left corner of the screen.
+	-- local screenWidth, screenHeight = love.graphics.getDimensions()
+	-- love.graphics.translate(0, screenHeight)
+	-- love.graphics.rotate(-math.pi/2)
+
 	for _, pile in ipairs(self.piles) do
 		pile:draw()
 	end
@@ -1452,6 +1462,10 @@ function Baize:draw()
 	end
 	self.ui:draw()
 
+	if self.settings.debug then
+		local ww, wh = love.window.getMode()
+		love.graphics.print(string.format('%s %d ww=%d, wh=%d', love.system.getOS(), love.window.getDPIScale(), ww, wh), 56, 16)
+	end
 	-- love.graphics.setFont(self.suitFont)
 	-- love.graphics.setColor(love.math.colorFromBytes(255, 255, 240))	-- Ivory
 	-- love.graphics.print(string.format('#undoStack %d', #_G.BAIZE.undoStack, 10, 10))

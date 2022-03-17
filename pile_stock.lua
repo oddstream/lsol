@@ -31,7 +31,7 @@ function Stock.new(o)
 			end
 		end
 	end
-	log.info('made', #o.cards, 'cards')
+	-- log.info('made', #o.cards, 'cards')
 
 	o:shuffle()
 

@@ -212,6 +212,12 @@ There may be a small performance penalty as the output will be flushed after eac
 
 	math.randomseed(os.time())
 
+	if love.system.getOS() == 'Android' then
+		-- force portrait mode
+		love.window.setMode(1080, 1920, {resizable=true, usedpiscale=false})
+	-- else
+	-- 	love.window.setMode(1920/2, 1080/2, {resizable=true, minwidth=640, minheight=640})
+	end
 	-- love.graphics.setLineStyle('smooth')
 
 	_G.BAIZE = Baize.new()
@@ -294,17 +300,6 @@ function love.keyreleased(key)
 		else
 			_G.BAIZE:setBookmark()
 		end
-	elseif key == 'd' then
-		_G.BAIZE:resetSettings()
-		_G.BAIZE.ui:toast('Settings reset to defaults')
-	elseif key == 't' then
-		_G.BAIZE.ui:toast(string.format('Toast %f', math.random()))
-	elseif key == 'up' then
-		_G.BAIZE:startSpinning()
-	elseif key == 'down' then
-		_G.BAIZE:stopSpinning()
-	elseif key == 'f' then
-		_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
 	elseif key == '1' then
 		_G.BAIZE.settings.oneColorCards = true
 		_G.BAIZE.settings.twoColorCards = false
@@ -321,6 +316,22 @@ function love.keyreleased(key)
 		_G.BAIZE.settings.fourColorCards = true
 		_G.BAIZE:createCardTextures()
 	end
+
+	if _G.BAIZE.settings.debug then
+		if key == 'd' then
+			_G.BAIZE:resetSettings()
+			_G.BAIZE.ui:toast('Settings reset to defaults')
+		elseif key == 't' then
+			_G.BAIZE.ui:toast(string.format('Toast %f', math.random()))
+		elseif key == 'up' then
+			_G.BAIZE:startSpinning()
+		elseif key == 'down' then
+			_G.BAIZE:stopSpinning()
+		elseif key == 'f' then
+			_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
+		end
+	end
+
 	_G.BAIZE.lastInput = love.timer.getTime()
 end
 
@@ -348,6 +359,12 @@ function love.wheelmoved(x, y)
 		_G.BAIZE:stopDrag()
 	end
 	_G.BAIZE.lastInput = love.timer.getTime()
+end
+
+function love.displayrotated(index, orientation)
+	orientation = love.window.getDisplayOrientation(index)
+	_G.BAIZE:layout()
+	_G.BAIZE.ui:toast('display rotated ' .. tostring(index) .. ' ' .. tostring(orientation))
 end
 
 function love.quit()

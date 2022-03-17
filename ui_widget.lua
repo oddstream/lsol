@@ -4,17 +4,13 @@ local Widget = {
 	-- parent
 	-- x, y	relative to parent
 	-- width, height
-	-- align -1 (top/left), 0 (center), +1 (bottom/right)
+	-- align
 }
 Widget.__index = Widget
 
 function Widget.new(o)
 	return setmetatable(o, Widget)
 end
-
--- function Widget:screenPos()
--- 	return self.parent.x + self.x, self.parent.y + self.y
--- end
 
 function Widget:screenRect()
 	local x = self.parent.x + self.parent.dragOffset.x + self.x
