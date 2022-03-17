@@ -48,7 +48,7 @@ Some will never make it here because they are just poor games:
 * Bookmarking positions (really good for puzzle-style games like Freecell or Simple Simon).
 * Scalable cards; when running on a desktop, just resize the window to make the cards fit the baize.
 * Simple or regular card designs.
-* One-tap interface. Tapping on a card or cards tries to move them to a foundation, or to a suitable tableau pile. An empty tableau with a constraint is not considered suitable, as empty tableau are precious.
+* One-tap interface. Tapping on a card or cards tries to move them to a foundation, or to a suitable tableau pile. An empty tableau with a constraint is not considered suitable, as empty tableaux are precious.
 * Cards in red and black (best for games like Klondike or Yukon where cards are sorted into alternating colors), or in four colors (for games where cards are sorted by suit, like Australian or Spider).
 * Every game has a link to it's Wikipedia page.
 * Statistics (including percent complete and streaks; percent is good for games that are not often won, and streaks are good for games that are).
@@ -140,6 +140,10 @@ Some variants (eg Freecell or Forty Thieves) only allow you to move one card at 
 you to move them, one at a time, via an empty pile or cell. Enabling power moves automates this, allowing multi-card moves between piles.
 The number of cards you can move is calculated from the number of empty piles and cells (if any).
 
+#### Mirror baize
+
+For left-handed players on mobile devices.
+
 #### Mute sounds
 
 So you can, for example, listen to an audio book while playing.
@@ -191,7 +195,6 @@ that anyone else ever has, or ever will.
 
 ## TODO
 
-* Mirrored baize, for left handed mobile players.
 * Get it working on Android (agggh! help!).
 * Get it working on iOS. But, I don't have a Macintosh and am reluctant to pay Apple the annual App Store fee, and jump through their hoops. If you want to do this, let me know and we'll collaborate.
 * I'd like it to have an inter-user high scores table, but the Google Play games services interface and setup is inpenetrable to me at the moment.
