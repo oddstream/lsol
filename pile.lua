@@ -38,14 +38,17 @@ end
 function Pile:setBaizePos(x, y)
 	self.x, self.y = x, y
 	if self.fanType == 'FAN_DOWN3' then
-		self.pos1 = {x=x, y=y + (_G.BAIZE.cardHeight * self.faceFanFactor)}
-		self.pos2 = {x=x, y=y + (_G.BAIZE.cardHeight * self.faceFanFactor) + (_G.BAIZE.cardHeight * self.faceFanFactor)}
+		local h = _G.BAIZE.cardHeight * self.faceFanFactor
+		self.pos1 = {x=x, y=y + h}
+		self.pos2 = {x=x, y=y + h * 2}
 	elseif self.fanType == 'FAN_LEFT3' then
-		self.pos1 = {x=x - (_G.BAIZE.cardHeight * self.faceFanFactor), y=y}
-		self.pos2 = {x=x - (_G.BAIZE.cardHeight * self.faceFanFactor)  + (_G.BAIZE.cardHeight * self.faceFanFactor), y=y}
+		local w = _G.BAIZE.cardWidth * self.faceFanFactor
+		self.pos1 = {x=x - w, y=y}
+		self.pos2 = {x=x - w * 2, y=y}
 	elseif self.fanType == 'FAN_RIGHT3' then
-		self.pos1 = {x=x + (_G.BAIZE.cardHeight * self.faceFanFactor), y=y}
-		self.pos2 = {x=x + (_G.BAIZE.cardHeight * self.faceFanFactor)  + (_G.BAIZE.cardHeight * self.faceFanFactor), y=y}
+		local w = _G.BAIZE.cardWidth * self.faceFanFactor
+		self.pos1 = {x=x + w, y=y}
+		self.pos2 = {x=x + w * 2, y=y}
 	end
 end
 

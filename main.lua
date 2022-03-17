@@ -230,6 +230,9 @@ There may be a small performance penalty as the output will be flushed after eac
 		if _G.BAIZE.script then
 			_G.BAIZE:resetPiles()
 			_G.BAIZE.script:buildPiles()
+			if _G.BAIZE.settings.mirrorBaize then
+				_G.BAIZE:mirrorSlots()
+			end
 			_G.BAIZE:layout()
 			-- don't reset
 			-- don't startGame
@@ -247,6 +250,9 @@ There may be a small performance penalty as the output will be flushed after eac
 		if _G.BAIZE.script then
 			_G.BAIZE:resetPiles()
 			_G.BAIZE.script:buildPiles()
+			if _G.BAIZE.settings.mirrorBaize then
+				_G.BAIZE:mirrorSlots()
+			end
 			_G.BAIZE:layout()
 			_G.BAIZE:resetState()
 			_G.BAIZE.ui:toast('Starting a new game of ' .. _G.BAIZE.settings.variantName, 'deal')

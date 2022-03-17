@@ -39,6 +39,7 @@ local settingsWidgets = {
 	{text='Two-color cards', var='twoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
 	{text='Four-color cards', var='fourColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
 	{text='Power moves', var='powerMoves'},
+	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
 	{text='Debug', var='debug'},
 }

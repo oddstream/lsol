@@ -763,6 +763,17 @@ function Baize:toggleSetting(var)
 	self.settings[var] = not self.settings[var]
 	if var == 'simpleCards' then
 		self:createCardTextures()
+	elseif var == 'mirrorBaize' then
+		self:undoPush()
+		-- local undoStack = self.undoStack
+		self:resetPiles()
+		self.script:buildPiles()
+		if self.settings.mirrorBaize then
+			self:mirrorSlots()
+		end
+		self:layout()
+		-- self.undoStack = undoStack
+		self:undo()
 	elseif var == 'debug' then
 		for _, c in ipairs(self.deck) do
 			c.movable = false
@@ -798,6 +809,9 @@ function Baize:changeVariant(vname)
 		self.script = newScript
 		self:resetPiles()
 		self.script:buildPiles()
+		if self.settings.mirrorBaize then
+			self:mirrorSlots()
+		end
 		self:layout()
 		self:resetState()
 		self.ui:toast('Starting a new game of ' .. self.settings.variantName, 'deal')
@@ -964,6 +978,42 @@ function Baize:layout()
 	end
 
 	self.ui:layout()
+end
+
+function Baize:mirrorSlots()
+--[[
+	0 1 2 3 4 5
+	5 4 3 2 1 0
+
+	0 1 2 3 4
+	4 3 2 1 0
+]]
+	local minX = 32767
+	local maxX = 0
+	for _, p in ipairs(self.piles) do
+		if p.slot.x > 0 and p.slot.y > 0 then	-- ignore hidden piles
+			if p.slot.x < minX then
+				minX = p.slot.x
+			end
+			if p.slot.x > maxX then
+				maxX = p.slot.x
+			end
+		end
+	end
+	for _, p in ipairs(self.piles) do
+		if p.slot.x > 0 and p.slot.y > 0 then	-- ignore hidden piles
+			p.slot.x = maxX - p.slot.x + minX
+			if p.fanType == 'FAN_RIGHT' then
+				p.fanType = 'FAN_LEFT'
+			elseif p.fanType == 'FAN_LEFT' then
+				p.fanType = 'FAN_RIGHT'
+			elseif p.fanType == 'FAN_LEFT3' then
+				p.fanType = 'FAN_RIGHT3'
+			elseif p.fanType == 'FAN_RIGHT3' then
+				p.fanType = 'FAN_LEFT3'
+			end
+		end
+	end
 end
 
 function Baize:stateSnapshot()

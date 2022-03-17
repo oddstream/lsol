@@ -31,7 +31,6 @@ ANDROID
 	https://love2d.org/wiki/love.window.getDPIScale
 
 + BUG sometimes not descrunching
-
 + prettify stats
 
 finish https://en.wikipedia.org/wiki/Accordion_(card_game)
