@@ -1448,7 +1448,7 @@ function Baize:j_adoube()
 		if pile.faceFanFactor < 0.28 then
 			return true
 		end
-		if #pile.cards < 4 then
+		if #pile.cards < 3 then
 			return false
 		end
 		local c = pile:peek()

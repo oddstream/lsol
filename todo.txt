@@ -30,8 +30,10 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Android
 	https://love2d.org/wiki/love.window.getDPIScale
 
-+ BUG sometimes not descrunching
++ remove dragStart, dx2, dy2
++ BUG sometimes not descrunching (may be fixed)
 + prettify stats
++ toast some stats when starting a game?
 
 finish https://en.wikipedia.org/wiki/Accordion_(card_game)
 
