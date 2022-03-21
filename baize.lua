@@ -1155,6 +1155,7 @@ function Baize:mousePressed(x, y, button)
 end
 
 function Baize:mouseMoved(x, y, dx, dy)
+	-- dx, dy The amount moved along the x- and y-axis since the last time love.mousemoved was called.
 	if not self.stroke then
 		return
 	end
@@ -1232,9 +1233,11 @@ function Baize:mouseReleased(x, y, button)
 			local src = tail[1].parent
 			local dst = self:largestIntersection(tail[1])
 			if not dst then
+				log.trace('no intersection')
 				for _, c in ipairs(tail) do c:cancelDrag() end
 			else
 				if src == dst then
+					log.trace('src == dst')
 					for _, c in ipairs(tail) do c:cancelDrag() end
 				else
 					-- can the tail be moved in general?

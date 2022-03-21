@@ -88,8 +88,11 @@ function Card:baizeRect()
 end
 
 function Card:baizeStaticRect()
-	-- TODO maybe reinstate drag starting point
-	return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
+	if self:dragging() then
+		return self.dragStart.x, self.dragStart.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
+	else
+		return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
+	end
 end
 
 function Card:screenRect()
