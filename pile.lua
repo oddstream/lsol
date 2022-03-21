@@ -436,9 +436,9 @@ end
 
 -- game engine functions
 
-function Pile:update(dt)
+function Pile:update(dt_seconds)
 	for _, c in ipairs(self.cards) do
-		c:update(dt)
+		c:update(dt_seconds)
 	end
 end
 

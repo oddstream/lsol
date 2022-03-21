@@ -51,7 +51,7 @@ _G.LSOL_VARIANTS = {
 	Australian = {file='australian.lua', cc=4},
 	['Beleaguered Castle'] = {file='castle.lua', cc=1},
 	Bisley = {file='bisley.lua'},
-	['Bisley Debug'] = {file='bisley.lua', debug=true},
+	-- ['Bisley Debug'] = {file='bisley.lua', debug=true},
 	['Flat Castle'] = {file='castle.lua', cc=1, flat=true},
 	Duchess = {file='duchess.lua'},
 	['Debug Klon'] = {file='debug.lua', cc=4, spiderLike=false},
@@ -214,6 +214,7 @@ There may be a small performance penalty as the output will be flushed after eac
 
 	if love.system.getOS() == 'Android' then
 		-- force portrait mode
+		-- do not use dpi scale (which would be 3)
 		love.window.setMode(1080, 1920, {resizable=true, usedpiscale=false})
 	-- else
 	-- 	love.window.setMode(1920/2, 1080/2, {resizable=true, minwidth=640, minheight=640})
@@ -273,8 +274,8 @@ There may be a small performance penalty as the output will be flushed after eac
 ]]
 end
 
-function love.update(dt)
-	_G.BAIZE:update(dt)
+function love.update(dt_seconds)
+	_G.BAIZE:update(dt_seconds)
 end
 
 function love.draw()

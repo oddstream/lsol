@@ -1129,7 +1129,7 @@ function Baize:mousePressed(x, y, button)
 
 			local card, pile = self:findCardAt(x, y)
 			if card then
-				if not card.spinning then
+				if card.spinDegrees == 0 then
 					local tail = pile:makeTail(card)
 					for _, c in ipairs(tail) do
 						c:startDrag()
@@ -1474,11 +1474,11 @@ function Baize:quit()
 	love.event.quit(0)
 end
 
-function Baize:update(dt)
+function Baize:update(dt_seconds)
 	for _, pile in ipairs(self.piles) do
-		pile:update(dt)
+		pile:update(dt_seconds)
 	end
-	self.ui:update(dt)
+	self.ui:update(dt_seconds)
 
 	if not self.stroke then
 		if (love.timer.getTime() - self.lastInput) > 2.0 then

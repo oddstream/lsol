@@ -30,7 +30,7 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Android
 	https://love2d.org/wiki/love.window.getDPIScale
 
-+ remove dragStart, dx2, dy2
++ remove dragStart, dx2, dy2, but dragSTart is used for other things eg is a card being dragged
 + BUG sometimes not descrunching (may be fixed)
 + prettify stats
 + toast some stats when starting a game?

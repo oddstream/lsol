@@ -247,15 +247,15 @@ end
 
 function UI:toast(message, soundName)
 
-	-- if we are already displaying this message, reset ticksLeft and quit
+	-- if we are already displaying this message, reset secondsLeft and quit
 	for _, t in ipairs(self.toasts) do
 		if t.message == message then
-			t.ticksLeft = 4
-			table.sort(self.toasts, function(a, b) return a.ticksLeft > b.ticksLeft end)
+			t.secondsLeft = 4
+			table.sort(self.toasts, function(a, b) return a.secondsLeft > b.secondsLeft end)
 			return
 		end
 	end
-	local t = {message=message, ticksLeft=4 + #self.toasts}
+	local t = {message=message, secondsLeft=4 + #self.toasts}
 	table.insert(self.toasts, 1, t)
 
 	if soundName then
@@ -272,18 +272,18 @@ function UI:layout()
 	end
 end
 
-function UI:update(dt)
+function UI:update(dt_seconds)
 
 	for _, con in ipairs(self.containers) do
-		con:update(dt)
+		con:update(dt_seconds)
 	end
 
 	if #self.toasts > 0 then
 		for _, t in ipairs(self.toasts) do
-			t.ticksLeft = t.ticksLeft - dt
+			t.secondsLeft = t.secondsLeft - dt_seconds
 		end
 		-- remove the oldest (last in table) if it has expired
-		if self.toasts[#self.toasts].ticksLeft < 0.0 then
+		if self.toasts[#self.toasts].secondsLeft < 0.0 then
 			table.remove(self.toasts)
 		end
 	end
@@ -319,7 +319,7 @@ function UI:draw()
 	if #self.toasts > 0 then
 		for i = 1, #self.toasts do
 			drawToast(self.toasts[i].message, i * (48 + 12))
-			-- drawToast(string.format('%d %s', self.toasts[i].ticksLeft, self.toasts[i].message), i * (48 + 12))
+			-- drawToast(string.format('%d %s', self.toasts[i].secondsLeft, self.toasts[i].message), i * (48 + 12))
 		end
 	end
 

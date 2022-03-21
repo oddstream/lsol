@@ -26,7 +26,7 @@ local Card = {
 	-- flipWidth
 
 	-- directionX, directionY
-	-- angle, spin
+	-- degrees, spin
 }
 Card.__index = Card
 
@@ -53,7 +53,7 @@ function Card.new(o)
 
 	o.flipStep = 0.0
 
-	o.spinning = false
+	o.spinDegrees = 0
 
 	return setmetatable(o, Card)
 end
@@ -88,11 +88,8 @@ function Card:baizeRect()
 end
 
 function Card:baizeStaticRect()
-	if self:dragging() then
-		return self.dragStart.x, self.dragStart.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
-	else
-		return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
-	end
+	-- TODO maybe reinstate drag starting point
+	return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
 function Card:screenRect()
@@ -141,7 +138,7 @@ end
 
 function Card:transitionTo(x, y)
 
-	if self.spinning then
+	if self.spinDegrees ~= 0 then
 		return
 	end
 
@@ -201,18 +198,16 @@ end
 function Card:startSpinning()
 	self.directionX = math.random(-3, 3)
 	self.directionY = math.random(-3, 3)
-	self.angle = 0
-	self.spin = math.random() - 0.5
-	self.spinning = true
+	self.degrees = 0
+	self.spinDegrees = math.random() - 0.5
 end
 
 function Card:stopSpinning()
-	self.angle = 0
-	self.spin = 0
-	self.spinning = false
+	self.degrees = 0
+	self.spinDegrees = 0
 end
 
-function Card:update(dt)
+function Card:update(dt_seconds)
 	if self:transitioning() then
 		self.lerpStep = self.lerpStep + self.lerpStepAmount
 		if self.lerpStep < 1.0 then
@@ -235,14 +230,14 @@ function Card:update(dt)
 			self.flipStep = 0.0
 		end
 	end
-	if self.spinning then
+	if self.spinDegrees ~= 0 then
 		self.x = self.x + self.directionX
 		self.y = self.y + self.directionY
-		self.angle  = self.angle + self.spin
-		if self.angle > 360 then
-			self.angle = self.angle - 360
-		elseif self.angle < 0 then
-			self.angle = self.angle + 360
+		self.degrees  = self.degrees + self.spinDegrees
+		if self.degrees > 360 then
+			self.degrees = self.degrees - 360
+		elseif self.degrees < 0 then
+			self.degrees = self.degrees + 360
 		end
 		local windowWidth, windowHeight, _ = love.window.getMode()
 		windowWidth = windowWidth - _G.BAIZE.dragOffset.x
@@ -251,11 +246,11 @@ function Card:update(dt)
 		local centery = self.y + _G.BAIZE.cardHeight / 2
 		if (centerx < 0) or (centerx > windowWidth) then
 			self.directionX = -self.directionX
-			self.spin = math.random() - 0.5
+			self.spinDegrees = math.random() - 0.5
 		end
 		if (centery < 0) or (centery > windowHeight) then
 			self.directionY = -self.directionY
-			self.spin = math.random() - 0.5
+			self.spinDegrees = math.random() - 0.5
 		end
 	end
 end
@@ -308,9 +303,9 @@ function Card:draw()
 			x = x - xoffset / 2
 			y = y - yoffset / 2
 		end
-		if self.spinning then
-			-- love.graphics.draw(img, x, y, self.angle * math.pi / 180.0, 1.1, 1.1)
-			love.graphics.draw(img, x, y, math.rad(self.angle), 1.1, 1.1)
+		if self.spinDegrees ~= 0 then
+			-- love.graphics.draw(img, x, y, self.degrees * math.pi / 180.0, 1.1, 1.1)
+			love.graphics.draw(img, x, y, math.rad(self.degrees), 1.1, 1.1)
 		else
 			love.graphics.draw(img, x, y)
 			if self.movable then

@@ -15,7 +15,7 @@ function Bar:hidden()
 	return false
 end
 
-function Bar:update(dt)
+function Bar:update(dt_seconds)
 	-- nothing to do
 end
 
