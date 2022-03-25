@@ -87,6 +87,8 @@ debug small display of moves, tmoves, fmoves
 import/export stats (to and from opsole)
 
 count unsuccessful taps
+count undos
+	...special prize for completing a game with both == 0
 
 guide to making a new variant
 	pick up new variants automatically?

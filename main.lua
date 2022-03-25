@@ -82,7 +82,7 @@ _G.LSOL_VARIANTS = {
 }
 
 _G.VARIANT_TYPES = {
-	-- '> All' will automatically be added
+	-- '> All' and maybe '> Favorites' will automatically be added
 	['> Canfield'] = {'Duchess', 'Gate'},
 	['> Forty Thieves'] = {'Forty Thieves', 'Limited', 'Lucas'},
 	['> Freecell'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed'},
