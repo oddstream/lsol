@@ -188,6 +188,25 @@ _G.LSOL_SOUNDS = {
 
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
+local function createWindowIcon()
+	local size = 32	-- small size let the OS fuzz it up
+	local heart = '♥'
+
+	local canvas = love.graphics.newCanvas(size, size)
+	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+
+	love.graphics.setColor(love.math.colorFromBytes(unpack(_G.LSOL_COLORS['Crimson'])))
+	local fnt = love.graphics.newFont(_G.SUIT_FONT, size)
+	love.graphics.setFont(fnt)
+	local w = fnt:getWidth(heart)
+	local h = fnt:getHeight(heart)
+
+	love.graphics.print(heart, size/2 - w/2, size/2 - h/2)
+
+	love.graphics.setCanvas()	-- reset render target to the screen
+	return canvas:newImageData()
+end
+
 function love.load(args)
 --[[
 Lua (and some engines based on it, like LÖVE) has output buffered by default,
@@ -216,10 +235,11 @@ There may be a small performance penalty as the output will be flushed after eac
 		-- force portrait mode
 		-- do not use dpi scale (which would be 3)
 		love.window.setMode(1080, 1920, {resizable=true, usedpiscale=false})
-	-- else
-	-- 	love.window.setMode(1920/2, 1080/2, {resizable=true, minwidth=640, minheight=640})
+	else
+		love.window.setIcon(createWindowIcon())
+		love.window.setMode(1920/2, 1080/2, {resizable=true, minwidth=640, minheight=640})
 	end
-	-- love.graphics.setLineStyle('smooth')
+	love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
 
 	_G.BAIZE = Baize.new()
 

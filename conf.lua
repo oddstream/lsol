@@ -15,8 +15,6 @@ function love.conf(t)
 	-- In version 11.4 and later for Android, this also allows changing orientation between landscape and portrait.
 	t.window.resizable = true
 
-	t.window.icon = 'assets/appicon.png'
-
 	t.modules.joystick = false
 	t.modules.physics = false
 end

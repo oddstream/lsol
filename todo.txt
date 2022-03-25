@@ -4,7 +4,6 @@ could use point {x,y} and rectangle {x, y, width, height}
 but that would be inefficient
 just stick to the same as LÖVE (and raylib) and use x,y,width,height
 
-try as a .zip file in case variants and assets don't load
 try to make an Android build
 
 REGRESSION TESTS
@@ -30,6 +29,8 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Android
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ create white heart on green background for desktop logo
+	success = love.window.setIcon( imagedata )
 + remove dragStart, dx2, dy2, but dragSTart is used for other things eg is a card being dragged
 + BUG sometimes not descrunching (may be fixed)
 + prettify stats
