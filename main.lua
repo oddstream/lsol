@@ -35,8 +35,10 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardBackColor = 'CornflowerBlue',
 	cardFaceColor = 'Ivory',
 	cardFaceHighlightColor = 'Gold',
-	clubColor = 'Indigo',
-	diamondColor = 'OrangeRed',
+	-- clubColor = 'Indigo',
+	clubColor = 'DarkBlue',
+	-- diamondColor = 'OrangeRed',
+	diamondColor = 'DarkGreen',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
 	oneColorCards = false,
@@ -248,7 +250,7 @@ There may be a small performance penalty as the output will be flushed after eac
 		love.window.setMode(1080, 1920, {resizable=true, usedpiscale=false})
 	else
 		love.window.setIcon(createWindowIcon())
-		love.window.setMode(1920/2, 1080/2, {resizable=true, minwidth=640, minheight=640})
+		love.window.setMode(1920, 1080, {resizable=true, minwidth=640, minheight=640})
 	end
 	love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
 

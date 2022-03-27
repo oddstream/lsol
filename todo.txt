@@ -119,13 +119,9 @@ scrunching (from gosol)
 		_G.BAIZE.lastInput (mouse/touch/key)
 settings UI
 	tidy up radio, checkbox widget
-	mirror baize on/off
 	baize color >
 	card face color >
 	card back color >
 color picker drawer
 https://love2d.org/wiki/love.displayrotated
-
-UI
-	https://github.com/flamendless/Slab/wiki
 

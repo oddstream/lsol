@@ -60,14 +60,16 @@ function Drawer:layout()
 
 	local nexty = self.spacey
 
+	local iconSize = 36 * _G.UISCALE
+
 	for _, wgt in ipairs(self.widgets) do
 
 		if wgt.img and wgt.text then
-			wgt.width = 36 + 36 + self.font:getWidth(wgt.text)
-			wgt.height = 36
+			wgt.width = iconSize + iconSize + self.font:getWidth(wgt.text)
+			wgt.height = iconSize
 		elseif wgt.img then
-			wgt.width = 36
-			wgt.height = 36
+			wgt.width = iconSize
+			wgt.height = iconSize
 		elseif wgt.text then
 			wgt.width = self.font:getWidth(wgt.text)
 			wgt.height = self.font:getHeight(wgt.text)

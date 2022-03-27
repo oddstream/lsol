@@ -75,10 +75,11 @@ function Radio:draw()
 	love.graphics.draw(self.img, wx, wy, 0, _G.UISCALE, _G.UISCALE)
 
 	if self.text then
-		love.graphics.print(self.text, wx + 36 + 4, wy + 2)
+		love.graphics.print(self.text, wx + self.imgWidth + 8, wy + 3)
 	end
 
 	if _G.BAIZE.settings.debug then
+		love.graphics.setColor(0.5,0.5,0.5,1)
 		love.graphics.rectangle('line', wx, wy, ww, wh)
 	end
 
