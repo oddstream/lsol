@@ -18,8 +18,8 @@ function Checkbox.new(o)
 	if not imageData then
 		log.error('could not load', fname)
 	else
-		o.imgWidth = imageData:getWidth()
-		o.imgHeight = imageData:getHeight()
+		o.imgWidth = imageData:getWidth() * _G.UISCALE
+		o.imgHeight = imageData:getHeight() * _G.UISCALE
 		o.imgChecked = love.graphics.newImage(imageData)
 	end
 
@@ -71,7 +71,7 @@ function Checkbox:draw()
 		love.graphics.setColor(0.5,0.5,0.5,1)
 	end
 
-	love.graphics.draw(self.img, wx, wy)
+	love.graphics.draw(self.img, wx, wy, 0, _G.UISCALE, _G.UISCALE)
 
 	if self.text then
 		love.graphics.print(self.text, wx + 36 + 3, wy + 2)

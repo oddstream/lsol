@@ -187,11 +187,14 @@ function Baize:createSimpleFace(ord, suit)
 
 	love.graphics.setColor(Util.colorBytes(self:getSuitColor(suit)))
 
+	local ords = _G.ORD2STRING[ord]
+	-- local ordw, ordh = self.ordFont:getWidth(ords), self.ordFont:getHeight(ords)
 	love.graphics.setFont(self.ordFont)
-	love.graphics.print(_G.ORD2STRING[ord], self.cardWidth / 10, 2)
+	love.graphics.print(ords, self.cardWidth * 0.1, 2)
 
+	-- local suitw, suith = self.ordFont:getWidth(suit), self.ordFont:getHeight(suit)
 	love.graphics.setFont(self.suitFont)
-	love.graphics.print(suit, self.cardWidth - self.cardWidth / 10 - self.suitFontSize, 4)
+	love.graphics.print(suit, self.cardWidth * 0.6, 4)
 
 	love.graphics.setCanvas()	-- reset render target to the screen
 	return canvas
@@ -324,7 +327,7 @@ function Baize:createCardTextures()
 		love.graphics.print('♠', self.cardWidth / 2, self.cardHeight / 2)	-- bottom right
 		local ox = self.cardWidth / 8
 		local oy = self.cardHeight / 8
-		love.graphics.setLineWidth(4)
+		love.graphics.setLineWidth(2)
 		love.graphics.rectangle('line', ox, oy, self.cardWidth-(ox*2), self.cardHeight-(oy*2))
 	end
 
@@ -763,6 +766,9 @@ function Baize:toggleSetting(var)
 	self.settings[var] = not self.settings[var]
 	if var == 'simpleCards' then
 		self:createCardTextures()
+	elseif var == 'shortCards' then
+		self:layout()
+		self:createCardTextures()
 	elseif var == 'mirrorBaize' then
 		self:undoPush()
 		-- local undoStack = self.undoStack
@@ -902,15 +908,20 @@ function Baize:layout()
 		end
 	end
 
+	local cardRatio = 1.444
+	if self.settings.shortCards then
+		cardRatio = 1.222
+	end
+
 	local windowWidth, _, _ = love.window.getMode()
 	local slotWidth = windowWidth / (maxSlotX + 1) -- +1 gives a half card width gap either side
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = math.floor(slotWidth - pilePaddingX)
-	local slotHeight = slotWidth * self.settings.cardRatio
+	local slotHeight = slotWidth * cardRatio
 	local pilePaddingY = slotHeight / 10
 	self.cardHeight = math.floor(slotHeight - pilePaddingY)
 	local leftMargin = self.cardWidth / 2 + pilePaddingX
-	local topMargin = 48 + pilePaddingY
+	local topMargin = _G.TITLEBARHEIGHT + pilePaddingY
 
 	self.cardRadius = math.floor(self.cardWidth / 16)
 

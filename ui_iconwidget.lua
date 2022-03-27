@@ -22,8 +22,8 @@ function IconWidget.new(o)
 	else
 		o.img = love.graphics.newImage(imageData)
 		assert(o.img)
-		o.imgWidth = imageData:getWidth()
-		o.imgHeight = imageData:getHeight()
+		o.imgWidth = imageData:getWidth() * _G.UISCALE
+		o.imgHeight = imageData:getHeight() * _G.UISCALE
 		-- log.trace('loaded', fname, o.imgWidth, o.imgHeight)
 	end
 	return setmetatable(o, IconWidget)
@@ -55,13 +55,18 @@ function IconWidget:draw()
 	else
 		love.graphics.setColor(0.5,0.5,0.5,1)
 	end
+
+	local gap
 	if self.img then
-		love.graphics.draw(self.img, wx, wy)
+		love.graphics.draw(self.img, wx, wy, 0, _G.UISCALE, _G.UISCALE)
+		gap = self.imgWidth
+	else
+		gap = 0
 	end
 
 	if self.text then
 		love.graphics.setFont(self.parent.font)
-		love.graphics.print(self.text, wx + 36 + 4, wy + 2)
+		love.graphics.print(self.text, wx + gap + 4, wy + 2)
 	end
 
 	if _G.BAIZE.settings.debug then

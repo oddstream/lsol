@@ -175,8 +175,12 @@ function Util.play(name)
 		return
 	end
 	-- _G.LSOL_SOUNDS[name]:seek(0)
-	love.audio.stop()
-	love.audio.play(_G.LSOL_SOUNDS[name])
+	-- love.audio.stop()
+	if _G.LSOL_SOUNDS[name] then
+		love.audio.play(_G.LSOL_SOUNDS[name])
+	else
+		log.error('no sound for', name)
+	end
 end
 
 return Util

@@ -15,6 +15,11 @@ function love.conf(t)
 	-- In version 11.4 and later for Android, this also allows changing orientation between landscape and portrait.
 	t.window.resizable = true
 
+	t.accelerometerjoystick = false      -- Enable the accelerometer on iOS and Android by exposing it as a Joystick (boolean)
+	t.audio.mic = false                 -- Request and use microphone capabilities in Android (boolean)
+	t.audio.mixwithsystem = true        -- Keep background music playing when opening LOVE (boolean, iOS and Android only)
+
 	t.modules.joystick = false
 	t.modules.physics = false
+	t.modules.video = false
 end

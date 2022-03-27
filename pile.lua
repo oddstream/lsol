@@ -184,7 +184,7 @@ function Pile:refan(fn)
 		local cLast = self:peek()
 		local _, cy = cLast:screenPos()
 		local _, wh = love.window.getMode()
-		if cy + _G.BAIZE.cardHeight > wh - 24 then
+		if cy + _G.BAIZE.cardHeight > wh - _G.STATUSBARHEIGHT then
 			log.info('card', tostring(cLast), 'has overrun')
 		end
 	end
@@ -201,7 +201,7 @@ function Pile:baizeBox()
 			width = self.box.width,
 			height = self.box.height}
 		if box.height == -1 then
-			box.height = h - 24 - box.y + (_G.BAIZE.cardHeight / 2)
+			box.height = h - _G.STATUSBARHEIGHT - box.y + (_G.BAIZE.cardHeight / 2)
 		elseif box.width == -1 then
 			box.width = w - box.x
 		end

@@ -2,6 +2,8 @@
 
 local Container = require 'ui_container'
 
+local Util = require('util')
+
 local Drawer = {}
 Drawer.__index = Drawer
 setmetatable(Drawer, {__index = Container})
@@ -20,11 +22,13 @@ function Drawer:hidden()
 end
 
 function Drawer:show()
+	Util.play('menushow')
 	self.dragOffset = {x=0, y=0}
 	self.aniState = 'right'
 end
 
 function Drawer:hide()
+	-- Util.play('menuhide')
 	self.aniState = 'left'
 end
 
@@ -34,14 +38,14 @@ function Drawer:update()
 			self.x = -self.width
 			self.aniState = 'stop'
 		else
-			self.x = self.x - 16
+			self.x = self.x - (16 * _G.UISCALE)
 		end
 	elseif self.aniState == 'right' then
 		if self.x >= 0 then
 			self.x = 0
 			self.aniState = 'stop'
 		else
-			self.x = self.x + 16
+			self.x = self.x + (16 * _G.UISCALE)
 		end
 	end
 end
@@ -50,9 +54,9 @@ function Drawer:layout()
 	local _, h, _ = love.window.getMode()
 
 	-- x set dynamically
-	self.y = 48 -- below titlebar
+	self.y = _G.TITLEBARHEIGHT -- below titlebar
 	-- width set when created
-	self.height = h - 48 - 24	-- does not cover title or status bars
+	self.height = h - _G.TITLEBARHEIGHT - _G.STATUSBARHEIGHT	-- does not cover title or status bars
 
 	local nexty = self.spacey
 

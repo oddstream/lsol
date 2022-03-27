@@ -26,7 +26,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	variantName = 'Klondike',
 	highlightMovable = true,
 	cardTransitionStep = 0.02,
-	cardRatio = 1.444, --1.357,
+	-- cardRatio = 1.444, --1.357,
 	simpleCards = true,
 	powerMoves = true,
 	muteSounds = false,
@@ -42,6 +42,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	oneColorCards = false,
 	twoColorCards = true,
 	fourColorCards = false,
+	shortCards = false,
 }
 
 _G.LSOL_VARIANTS = {
@@ -171,6 +172,12 @@ _G.SUIT_FONT = 'assets/fonts/DejaVuSans.ttf'
 _G.UI_MEDIUM_FONT = 'assets/fonts/Roboto-Medium.ttf'
 _G.UI_REGULAR_FONT = 'assets/fonts/Roboto-Regular.ttf'
 
+_G.UISCALE = 1
+_G.TITLEBARHEIGHT = 48 * _G.UISCALE
+_G.STATUSBARHEIGHT = 24 * _G.UISCALE
+_G.UIFONTSIZE = 24 * _G.UISCALE
+_G.UIFONTSIZE_SMALL = 14 * _G.UISCALE
+
 _G.LSOL_SOUNDS = {
 	deal = love.audio.newSource('assets/sounds/cardFan1.wav', 'static'),
 	load = love.audio.newSource('assets/sounds/cardFan2.wav', 'static'),
@@ -179,8 +186,8 @@ _G.LSOL_SOUNDS = {
 	move3 = love.audio.newSource('assets/sounds/cardPlace1.wav', 'static'),
 	move4 = love.audio.newSource('assets/sounds/cardPlace2.wav', 'static'),
 	undo = love.audio.newSource('assets/sounds/cardOpenPackage2.wav', 'static'),
-	menuopen = love.audio.newSource('assets/sounds/cardSlide1.wav', 'static'),
-	menuclose = love.audio.newSource('assets/sounds/cardSlide2.wav', 'static'),
+	menushow = love.audio.newSource('assets/sounds/cardSlide1.wav', 'static'),
+	menuhide = love.audio.newSource('assets/sounds/cardSlide2.wav', 'static'),
 	uitap =  love.audio.newSource('assets/sounds/cardSlide8.wav', 'static'),
 	complete = love.audio.newSource('assets/sounds/complete.wav', 'static'),
 	blip = love.audio.newSource('assets/sounds/249895__alienxxx__blip2.wav', 'static'),
@@ -342,6 +349,18 @@ function love.keyreleased(key)
 		_G.BAIZE.settings.twoColorCards = false
 		_G.BAIZE.settings.fourColorCards = true
 		_G.BAIZE:createCardTextures()
+	end
+
+	if love.system.getOS() == 'Android' then
+		if key == 'escape' then		-- Android return/back?
+			love.event.quit(0)
+		elseif key == 'home' then
+			love.event.quit(0)
+		elseif key == 'menu' then
+			_G.BAIZE.ui:toggleMenuDrawer()
+		elseif key == 'search' then
+			_G.BAIZE.ui:showVariantTypesDrawer()
+		end
 	end
 
 	if _G.BAIZE.settings.debug then

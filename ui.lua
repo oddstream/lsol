@@ -35,6 +35,7 @@ local menuWidgets = {
 
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
+	{text='Short cards', var='shortCards'},
 	{text='One-color cards', var='oneColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
 	{text='Two-color cards', var='twoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
 	{text='Four-color cards', var='fourColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
@@ -49,7 +50,7 @@ function UI.new()
 	setmetatable(o, UI)
 
 	o.toasts = {} -- a queue of toasts; oldest to the left
-	o.toastFont = love.graphics.newFont(_G.UI_REGULAR_FONT, 14)
+	o.toastFont = love.graphics.newFont(_G.UI_REGULAR_FONT, _G.UIFONTSIZE_SMALL)
 
 	local wgt
 	o.titlebar = Titlebar.new({})
@@ -64,7 +65,7 @@ function UI.new()
 		wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
 		table.insert(o.titlebar.widgets, wgt)
 
-	o.menudrawer = MenuDrawer.new({width=320})
+	o.menudrawer = MenuDrawer.new({width=320 * _G.UISCALE})
 	for _, winfo in ipairs(menuWidgets) do
 		winfo.parent = o.menudrawer
 		if winfo.text then
@@ -74,18 +75,18 @@ function UI.new()
 		end
 	end
 
-	o.typesdrawer = MenuDrawer.new({width=320})
+	o.typesdrawer = MenuDrawer.new({width=320 * _G.UISCALE})
 	for k, _ in pairs(_G.VARIANT_TYPES) do
 		wgt = TextWidget.new({parent=o.typesdrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
 		table.insert(o.typesdrawer.widgets, wgt)
 	end
 	table.sort(o.typesdrawer.widgets, function(a, b) return a.text < b.text end)
 
-	o.variantsdrawer = MenuDrawer.new({width=320})
+	o.variantsdrawer = MenuDrawer.new({width=320 * _G.UISCALE})
 
-	o.statsdrawer = TextDrawer.new({width=420})
+	o.statsdrawer = TextDrawer.new({width=420 * _G.UISCALE})
 
-	o.settingsdrawer = MenuDrawer.new({width=320})
+	o.settingsdrawer = MenuDrawer.new({width=320 * _G.UISCALE})
 	for _, winfo in ipairs(settingsWidgets) do
 		winfo.parent = o.settingsdrawer
 		if winfo.grp then
@@ -159,10 +160,8 @@ end
 
 function UI:toggleMenuDrawer()
 	if self.menudrawer:isOpen() then
-		Util.play('menuclose')
 		self.menudrawer:hide()
 	else
-		Util.play('menuopen')
 		self.menudrawer:show()
 	end
 end
@@ -181,7 +180,6 @@ function UI:showStatsDrawer(strs)
 	table.insert(self.statsdrawer.widgets, wgt)
 	wgt = TextWidget.new({parent=self.statsdrawer, text='[ Reset ]', baizeCmd='resetStats'})
 	table.insert(self.statsdrawer.widgets, wgt)
-	Util.play('menuopen')
 	self.statsdrawer:layout()
 	self.statsdrawer:show()
 end
@@ -213,7 +211,6 @@ function UI:showVariantsDrawer(vtype)
 		table.sort(self.variantsdrawer.widgets, function(a, b) return a.text < b.text end)
 		self.variantsdrawer:layout()
 		self.variantsdrawer:show()
-		Util.play('menuopen')
 	else
 		log.error('unknown variant type', vtype)
 	end

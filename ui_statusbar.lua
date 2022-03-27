@@ -9,9 +9,9 @@ setmetatable(Statusbar, {__index = Bar})
 function Statusbar.new(o)
 	o = Bar.new(o)
 
-	o.height = 24
+	o.height = _G.STATUSBARHEIGHT
 	o.align = 'bottom'
-	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, 14)
+	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE_SMALL)
 	o.spacex = o.font:getWidth('_')
 
 	return setmetatable(o, Statusbar)
