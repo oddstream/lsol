@@ -172,7 +172,11 @@ _G.SUIT_FONT = 'assets/fonts/DejaVuSans.ttf'
 _G.UI_MEDIUM_FONT = 'assets/fonts/Roboto-Medium.ttf'
 _G.UI_REGULAR_FONT = 'assets/fonts/Roboto-Regular.ttf'
 
-_G.UISCALE = 1
+if love.system.getOS() == 'Android' then
+	_G.UISCALE = 2
+else
+	_G.UISCALE = 1
+end
 _G.TITLEBARHEIGHT = 48 * _G.UISCALE
 _G.STATUSBARHEIGHT = 24 * _G.UISCALE
 _G.UIFONTSIZE = 24 * _G.UISCALE
