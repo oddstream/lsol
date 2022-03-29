@@ -1,12 +1,32 @@
+https://github.com/love2d/love-android
+	clone this to love-android
+
+https://github.com/love2d/love-android/wiki/Game-Packaging
+
+https://developer.android.com/studio/build/building-cmdline
+
+https://docs.microsoft.com/en-us/xamarin/android/deploy-test/signing/manually-signing-the-apk
+
+https://github.com/EmmanuelOga/columns
+https://github.com/a327ex
+	example LÖVE games
+
+https://github.com/rxi/json.lua
+	json library
+
+https://github.com/gvx/bitser
+	bitser library
+
+
+https://play.google.com/apps/test/com.oddstream.lovesolitaire/1
+https://play.google.com/apps/test/com.oddstream.lovesolitaire/2
+
 Go-style indenting with tabs
 function and variable names in cascalCase
 class names in PascalCase
 constants in UPPER_CASE
     includes string constants like FAN_NONE, MOVE_NONE
 
-Use gosol as a model
-
-json https://github.com/rxi/json.lua
 
 LÖVE game loop https://github.com/a327ex/blog/issues/15
 https://github.com/a327ex/BYTEPATH/tree/master/tutorial/tutorial-code/05%20-%20Game%20Basics
@@ -69,4 +89,3 @@ ZeroBraneStudio
 Can't find love2d executable in any of the following folders: /home/gilbert/android-studio/jre/bin, /home/gilbert/go/bin, /usr/local/sbin, /usr/local/bin, /usr/sbin, /usr/bin, /sbin, /bin, /usr/games, /usr/local/games, /snap/bin, /snap/bin, /usr/local/go/bin, /home/gilbert/, /home/bin
 
  If löve executable is in the same folder where your game folders are or in one of the folders listed in PATH, it will be found by the IDE. If the executable is in a different location, you may need to specify this location in cfg/user.lua file (see cfg/user-sample.lua for details on how this is done).
- 

@@ -36,9 +36,9 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardFaceColor = 'Ivory',
 	cardFaceHighlightColor = 'Gold',
 	-- clubColor = 'Indigo',
-	clubColor = 'DarkBlue',
+	clubColor = 'DarkGreen',
 	-- diamondColor = 'OrangeRed',
-	diamondColor = 'DarkGreen',
+	diamondColor = 'DarkBlue',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
 	oneColorCards = false,
@@ -49,6 +49,8 @@ _G.LSOL_DEFAULT_SETTINGS = {
 
 _G.LSOL_VARIANTS = {
 	Accordian = {file='accordian.lua', cc=1},
+	['Agnes Bernauer'] = {file='agnes.lua', cc=4, bernauer=true},
+	['Agnes Sorel'] = {file='agnes.lua', cc=4, sorel=true},
 	['American Toad'] = {file='amtoad.lua'},
 	Athena = {file='klondike.lua', athena=true},
 	Australian = {file='australian.lua', cc=4},
@@ -86,10 +88,12 @@ _G.LSOL_VARIANTS = {
 
 _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
-	['> Canfield'] = {'Duchess', 'Gate'},
+	['> Animals'] = {'Scorpion', 'Wasp', 'Spider One Suit', 'Spider Two Suits', 'Spider'},
+	['> Canfields'] = {'Duchess', 'Gate'},
 	['> Forty Thieves'] = {'Forty Thieves', 'Limited', 'Lucas'},
-	['> Freecell'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed'},
-	['> Klondike'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff'},
+	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed'},
+	['> Klondikes'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer'},
+	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine'},
 	['> Places'] = {'Australian', 'Yukon', 'Yukon Relaxed'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
@@ -250,7 +254,8 @@ There may be a small performance penalty as the output will be flushed after eac
 		love.window.setMode(1080, 1920, {resizable=true, usedpiscale=false})
 	else
 		love.window.setIcon(createWindowIcon())
-		love.window.setMode(1920, 1080, {resizable=true, minwidth=640, minheight=640})
+		-- love.window.setMode(1024, 500, {resizable=true, minwidth=640, minheight=500})
+		love.window.setMode(1024, 1024, {resizable=true, minwidth=640, minheight=500})
 	end
 	love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
 
@@ -316,7 +321,9 @@ function love.draw()
 end
 
 function love.resize(w,h)
-	-- log.trace('resize', w, h)
+	-- if _G.BAIZE.settings.debug then
+		-- log.trace('resize', w, h)
+	-- end
 	_G.BAIZE:layout()
 	for _, pile in ipairs(_G.BAIZE.piles) do
 		pile:refan(Card.setBaizePos)

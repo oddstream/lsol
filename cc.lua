@@ -90,6 +90,25 @@ function CC.DownSuitWrap(cpair)
 	return nil
 end
 
+function CC.DownColor(cpair)
+	if cpair[1].black ~= cpair[2].black then
+		return 'Cards must be the same color'
+	end
+	return CC.Down(cpair)
+end
+
+function CC.DownColorWrap(cpair)
+	if cpair[1].black ~= cpair[2].black then
+		return 'Cards must be the same color'
+	end
+	if cpair[1].ord == 1 and cpair[2].ord == 13 then
+		-- King on Ace
+	elseif cpair[1].ord ~= cpair[2].ord + 1 then
+		return 'Cards must go down in rank (Kings on Aces allowed)'
+	end
+	return nil
+end
+
 function CC.DownAltColor(cpair)
 	if cpair[1].black == cpair[2].black then
 		return 'Cards must be in alternating colors'

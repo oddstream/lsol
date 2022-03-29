@@ -1462,7 +1462,8 @@ function Baize:j_adoube()
 		if pile.faceFanFactor < 0.28 then
 			return true
 		end
-		if #pile.cards < 3 then
+		if #pile.cards < 2 then
+			-- pile may have had, say, 12 scrunched cards, and it's left with 2 after a collect
 			return false
 		end
 		local c = pile:peek()

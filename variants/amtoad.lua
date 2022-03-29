@@ -35,7 +35,7 @@ end
 function AmToad:startGame()
 	local src = _G.BAIZE.stock
 
-	for i = 1, 20 do
+	for _ = 1, 20 do
 		local card = Util.moveCard(src, _G.BAIZE.reserves[1])
 		card.prone = true
 	end

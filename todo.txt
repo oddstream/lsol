@@ -4,13 +4,6 @@ could use point {x,y} and rectangle {x, y, width, height}
 but that would be inefficient
 just stick to the same as LÖVE (and raylib) and use x,y,width,height
 
-try to make an Android build
-	NoRecord
-	bundle
-	generate keystore
-	./gradlew bundleNoRecordEmbed
-	"The Release APK is not signed, thus you need to sign it manually."
-
 REGRESSION TESTS
 	collect on an virgin Duchess
 	collect on a completed game
@@ -28,13 +21,55 @@ ANDROID
 		... Android LÖVE app runs 11.3, so doesn't handle orientation, need to build APK/AAB
 
 	Android ww=1176 wh=1008
-	no orientation change - landscape only?
 	"if you just distribute .love files for android, where the game always starts in landscape mode. "
 	https://love2d.org/wiki/love.graphics.rotate
 	scale
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Android
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ Add all the Opsole variants
+	Agnes Bernauer (from gosol)
+	Assembly
+	Baker's Dozen
+	Beleaguered Castle
+	Blockade
+	Canfield
+	Chessboard
+	Creepy Crawly
+	Cruel
+	Good Measure
+	Fortress
+	Forty and Eight
+	Number Ten
+	Baker's Game
+	Josephine
+	Busy Aces
+	Martha
+	Osmosis
+	Peek
+	Perseverance
+	Rainbow Canfield
+	Scorpion
+	Single Rail
+	Sir Tommy
+	Little Spider
+	Spiderette (One Suit)
+	Spiderette (Two Suits)
+	Storehouse Canfield
+	Thoughtful
+	Wasp
+	Will o' the Wisp
+	Russian
+	Crimean
+	Ukrainian
+	Romanian
+
++ Your feature graphic must be a PNG or JPEG, up to 1MB, and 1,024 px by 500 px
+	https://www.norio.be/graphic-generator/
++ youtube clip public or unlisted, ads must be turned off, not age-restricted, landscape
+	Ctrl + Alt + Shift + R
+	https://youtu.be/O3tIxkjc5Qg
++ 'creating a variant' document
 + remove dragStart, dx2, dy2, but dragStart is used for other things eg is a card being dragged
 + BUG sometimes not descrunching (may be fixed)
 + prettify stats
