@@ -86,6 +86,8 @@ _G.LSOL_VARIANTS = {
 	['Yukon Relaxed'] = {file='yukon.lua', cc=2, relaxed=true},
 	['Yukon Cells'] = {file='yukon.lua', cc=2, cells=true},
 	['Russian'] = {file='yukon.lua', cc=4, russian=true},
+	['Crimean'] = {file='crimean.lua', cc=4, crimean=true},
+	['Ukrainian'] = {file='crimean.lua', cc=4, ukrainian=true},
 }
 
 _G.VARIANT_TYPES = {
@@ -96,7 +98,7 @@ _G.VARIANT_TYPES = {
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed'},
 	['> Klondikes'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine'},
-	['> Places'] = {'Australian', 'Yukon', 'Yukon Relaxed','Russian'},
+	['> Places'] = {'Australian', 'Yukon', 'Yukon Relaxed','Russian','Crimean','Ukrainian'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
 }
