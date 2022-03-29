@@ -21,6 +21,11 @@ function Yukon.new(o)
 	o.wikipedia = 'https://en.wikipedia.org/wiki/Yukon_(solitaire)'
 	o.packs = o.packs or 1
 	o.suitFilter = o.suitFilter or {'♣','♦','♥','♠'}
+	if o.russian then
+		o.tabCompareFn = CC.DownSuit
+	else
+		o.tabCompareFn = CC.DownAltColor
+	end
 	return setmetatable(o, Yukon)
 end
 
@@ -87,7 +92,7 @@ function Yukon:tailAppendError(dst, tail)
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
 		else
-			return CC.DownAltColor({dst:peek(), tail[1]})
+			return self.tabCompareFn({dst:peek(), tail[1]})
 		end
 	end
 	return nil

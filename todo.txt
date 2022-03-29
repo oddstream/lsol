@@ -28,8 +28,7 @@ ANDROID
 	https://love2d.org/wiki/love.window.getDPIScale
 
 + Add all the Opsole variants
-	Agnes Bernauer (from gosol)
-	Assembly
+	+ https://www.solitairelaboratory.com/virtuoso.html
 	Baker's Dozen
 	Beleaguered Castle
 	Blockade
