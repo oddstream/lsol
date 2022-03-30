@@ -30,7 +30,7 @@ local menuWidgets = {
 	{text='Settings...', icon='settings', baizeCmd='showSettingsDrawer'},
 	{text='Wikipedia...', icon='info', baizeCmd='wikipedia'},
 	{},
-	{text='Quit', icon='close', baizeCmd='quit'},
+	{text='Save and quit', icon='close', baizeCmd='quit'},
 }
 
 local settingsWidgets = {
@@ -65,7 +65,7 @@ function UI.new()
 		wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
 		table.insert(o.titlebar.widgets, wgt)
 
-	o.menudrawer = MenuDrawer.new({width=320 * _G.UISCALE})
+	o.menudrawer = MenuDrawer.new({width=320 * _G.UI_SCALE})
 	for _, winfo in ipairs(menuWidgets) do
 		winfo.parent = o.menudrawer
 		if winfo.text then
@@ -75,18 +75,18 @@ function UI.new()
 		end
 	end
 
-	o.typesdrawer = MenuDrawer.new({width=320 * _G.UISCALE})
+	o.typesdrawer = MenuDrawer.new({width=320 * _G.UI_SCALE})
 	for k, _ in pairs(_G.VARIANT_TYPES) do
 		wgt = TextWidget.new({parent=o.typesdrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
 		table.insert(o.typesdrawer.widgets, wgt)
 	end
 	table.sort(o.typesdrawer.widgets, function(a, b) return a.text < b.text end)
 
-	o.variantsdrawer = MenuDrawer.new({width=320 * _G.UISCALE})
+	o.variantsdrawer = MenuDrawer.new({width=320 * _G.UI_SCALE})
 
-	o.statsdrawer = TextDrawer.new({width=420 * _G.UISCALE})
+	o.statsdrawer = TextDrawer.new({width=420 * _G.UI_SCALE})
 
-	o.settingsdrawer = MenuDrawer.new({width=320 * _G.UISCALE})
+	o.settingsdrawer = MenuDrawer.new({width=320 * _G.UI_SCALE})
 	for _, winfo in ipairs(settingsWidgets) do
 		winfo.parent = o.settingsdrawer
 		if winfo.grp then
@@ -308,7 +308,8 @@ function UI:draw()
 		local mw = self.toastFont:getWidth(message)
 		local mh = self.toastFont:getHeight(message)
 		local rw = mw + self.toastFont:getWidth('M') * 2
-		love.graphics.rectangle('fill', (sw - rw) / 2, ((sh - 48) / 2) + y, rw, 48)
+		local rh = mh + self.toastFont:getHeight('M') * 2
+		love.graphics.rectangle('fill', (sw - rw) / 2, ((sh - rh) / 2) + y, rw, rh)
 		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.print(message, (sw - mw) / 2, ((sh - mh) / 2) + y)
 	end

@@ -22,8 +22,8 @@ function IconWidget.new(o)
 	else
 		o.img = love.graphics.newImage(imageData)
 		assert(o.img)
-		o.imgWidth = imageData:getWidth() * _G.UISCALE
-		o.imgHeight = imageData:getHeight() * _G.UISCALE
+		o.imgWidth = imageData:getWidth() * _G.UI_SCALE
+		o.imgHeight = imageData:getHeight() * _G.UI_SCALE
 		-- log.trace('loaded', fname, o.imgWidth, o.imgHeight)
 	end
 	return setmetatable(o, IconWidget)
@@ -58,7 +58,7 @@ function IconWidget:draw()
 
 	local iconWidth
 	if self.img then
-		love.graphics.draw(self.img, wx, wy, 0, _G.UISCALE, _G.UISCALE)
+		love.graphics.draw(self.img, wx, wy, 0, _G.UI_SCALE, _G.UI_SCALE)
 		iconWidth = self.imgWidth
 	else
 		iconWidth = 0

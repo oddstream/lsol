@@ -14,11 +14,12 @@ function Drawer.new(o)
 end
 
 function Drawer:isOpen()
-	return self.x == 0
+	return self.x == _G.UI_SAFEX
 end
 
 function Drawer:hidden()
-	return self.x == -self.width
+	local closedx = _G.UI_SAFEX - self.width
+	return self.x <= closedx
 end
 
 function Drawer:show()
@@ -34,33 +35,36 @@ end
 
 function Drawer:update()
 	if self.aniState == 'left' then
-		if self.x <= -self.width then
-			self.x = -self.width
+		-- draw is fully closed when x == left edge of safe area - width
+		local closedx = _G.UI_SAFEX - self.width
+		if self.x <= closedx then
+			self.x = closedx
 			self.aniState = 'stop'
 		else
-			self.x = self.x - (16 * _G.UISCALE)
+			self.x = self.x - (16 * _G.UI_SCALE)
 		end
 	elseif self.aniState == 'right' then
-		if self.x >= 0 then
-			self.x = 0
+		-- draw is fully open when x == left edge of safe area
+		if self.x >= _G.UI_SAFEX then
+			self.x = _G.UI_SAFEX
 			self.aniState = 'stop'
 		else
-			self.x = self.x + (16 * _G.UISCALE)
+			self.x = self.x + (16 * _G.UI_SCALE)
 		end
 	end
 end
 
 function Drawer:layout()
-	local _, h, _ = love.window.getMode()
+	-- local _, h, _ = love.window.getMode()
 
 	-- x set dynamically
-	self.y = _G.TITLEBARHEIGHT -- below titlebar
+	self.y = _G.UI_SAFEY + _G.TITLEBARHEIGHT -- below titlebar
 	-- width set when created
-	self.height = h - _G.TITLEBARHEIGHT - _G.STATUSBARHEIGHT	-- does not cover title or status bars
+	self.height = _G.UI_SAFEH - _G.TITLEBARHEIGHT - _G.STATUSBARHEIGHT	-- does not cover title or status bars
 
 	local nexty = self.spacey
 
-	local iconSize = 36 * _G.UISCALE
+	local iconSize = 36 * _G.UI_SCALE
 
 	for _, wgt in ipairs(self.widgets) do
 
@@ -87,5 +91,7 @@ function Drawer:layout()
 		nexty = wgt.y + wgt.height + self.spacey
 	end
 end
+
+-- Drawer:draw() is done by Container:draw()
 
 return Drawer

@@ -242,6 +242,7 @@ function Card:update(dt_seconds)
 		elseif self.degrees < 0 then
 			self.degrees = self.degrees + 360
 		end
+		-- use the whole window, not just the safe area
 		local windowWidth, windowHeight, _ = love.window.getMode()
 		windowWidth = windowWidth - _G.BAIZE.dragOffset.x
 		windowHeight = windowHeight - _G.BAIZE.dragOffset.y

@@ -182,15 +182,16 @@ _G.SUIT_FONT = 'assets/fonts/DejaVuSans.ttf'
 _G.UI_MEDIUM_FONT = 'assets/fonts/Roboto-Medium.ttf'
 _G.UI_REGULAR_FONT = 'assets/fonts/Roboto-Regular.ttf'
 
-if love.system.getOS() == 'Android' then
-	_G.UISCALE = 2
-else
-	_G.UISCALE = 1
-end
-_G.TITLEBARHEIGHT = 48 * _G.UISCALE
-_G.STATUSBARHEIGHT = 24 * _G.UISCALE
-_G.UIFONTSIZE = 24 * _G.UISCALE
-_G.UIFONTSIZE_SMALL = 14 * _G.UISCALE
+-- if love.system.getOS() == 'Android' then
+-- 	_G.UI_SCALE = 2
+-- else
+-- 	_G.UI_SCALE = 1
+-- end
+_G.UI_SCALE = 0.5
+_G.TITLEBARHEIGHT = 48 * _G.UI_SCALE
+_G.STATUSBARHEIGHT = 24 * _G.UI_SCALE
+_G.UIFONTSIZE = 24 * _G.UI_SCALE
+_G.UIFONTSIZE_SMALL = 14 * _G.UI_SCALE
 
 _G.LSOL_SOUNDS = {
 	deal = love.audio.newSource('assets/sounds/cardFan1.wav', 'static'),
@@ -252,6 +253,13 @@ There may be a small performance penalty as the output will be flushed after eac
 
 	math.randomseed(os.time())
 
+	--[[
+		Lenovo Tab M10 HD Gen 2		800 x 1280 pixels, 16:10 ratio (~149 ppi density)
+		https://www.gsmarena.com/lenovo_tab_m10_hd_gen_2-10406.php
+
+		Motorola Moto G4			1080 x 1920 pixels, 16:9 ratio (~401 ppi density)
+		https://www.gsmarena.com/motorola_moto_g4-8103.php
+	]]
 	if love.system.getOS() == 'Android' then
 		-- force portrait mode
 		-- do not use dpi scale (which would be 3)
@@ -259,9 +267,14 @@ There may be a small performance penalty as the output will be flushed after eac
 	else
 		love.window.setIcon(createWindowIcon())
 		-- love.window.setMode(1024, 500, {resizable=true, minwidth=640, minheight=500})
-		love.window.setMode(1024, 1024, {resizable=true, minwidth=640, minheight=500})
+		love.window.setMode(1080/2, 1920/2, {resizable=true, minwidth=640, minheight=500})
 	end
 	love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
+
+	_G.UI_SAFEX,
+	_G.UI_SAFEY,
+	_G.UI_SAFEW,
+	_G.UI_SAFEH = love.window.getSafeArea()
 
 	_G.BAIZE = Baize.new()
 
@@ -307,6 +320,8 @@ There may be a small performance penalty as the output will be flushed after eac
 	end
 	love.graphics.setBackgroundColor(Util.colorBytes('baizeColor'))
 	_G.BAIZE.ui:updateWidget('title', _G.BAIZE.settings.variantName)
+
+	-- _G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
 	--[[
 	print(love.filesystem.getAppdataDirectory())	-- /home/gilbert/.local/share/
 	print(love.filesystem.getSourceBaseDirectory())	-- /home/gilbert
@@ -342,7 +357,8 @@ function love.keyreleased(key)
 	elseif key == 'c' then
 		_G.BAIZE:collect()
 	elseif key == 'n' then
-		_G.BAIZE:newDeal()
+		-- _G.BAIZE:newDeal()
+		_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
 	elseif key == 'r' then
 		_G.BAIZE:restartDeal()
 	elseif key == 'b' then
@@ -425,9 +441,13 @@ function love.wheelmoved(x, y)
 end
 
 function love.displayrotated(index, orientation)
-	orientation = love.window.getDisplayOrientation(index)
+	-- Due to a bug in LOVE 11.3, the orientation value is boolean true instead. A workaround is as follows:
+	-- orientation = love.window.getDisplayOrientation(index)
 	_G.BAIZE:layout()
-	_G.BAIZE.ui:toast('display rotated ' .. tostring(index) .. ' ' .. tostring(orientation))
+	if _G.BAIZE.settings.debug then
+		_G.BAIZE.ui:toast('displayrotated ' .. tostring(orientation))
+		_G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
+	end
 end
 
 function love.quit()

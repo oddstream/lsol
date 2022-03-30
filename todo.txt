@@ -27,6 +27,9 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Android
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ x, y, w, h = love.window.getSafeArea()
+	fake a safe area in Baize:layout()
++ UI scaling when dpi is high?
 + Add all the Opsole variants
 	+ https://www.solitairelaboratory.com/virtuoso.html
 	Baker's Dozen
@@ -58,9 +61,6 @@ ANDROID
 	Thoughtful
 	Wasp
 	Will o' the Wisp
-	Russian
-	Crimean
-	Ukrainian
 	Romanian
 
 + Your feature graphic must be a PNG or JPEG, up to 1MB, and 1,024 px by 500 px

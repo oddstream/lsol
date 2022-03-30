@@ -20,18 +20,18 @@ function Bar:update(dt_seconds)
 end
 
 function Bar:layout()
-	local w, h, _ = love.window.getMode()
+	-- local w, h, _ = love.window.getMode()
 
-	self.x = 0
+	self.x = _G.UI_SAFEX
 	if self.align == 'top' then
-		self.y = 0
+		self.y = _G.UI_SAFEY
 	elseif self.align == 'bottom' then
-		self.y = h - self.height
+		self.y = _G.UI_SAFEY + _G.UI_SAFEH - self.height
 	end
-	self.width = w
+	self.width = _G.UI_SAFEW
 	-- height set by subclass
 
-	local nextLeft = self.x + self.spacex
+	local nextLeft = self.spacex
 	local nextRight = self.width - self.spacex
 
 	for i, wgt in ipairs(self.widgets) do

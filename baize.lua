@@ -913,15 +913,30 @@ function Baize:layout()
 		cardRatio = 1.222
 	end
 
-	local windowWidth, _, _ = love.window.getMode()
-	local slotWidth = windowWidth / (maxSlotX + 1) -- +1 gives a half card width gap either side
+	local safex, safey, safew, safeh = love.window.getSafeArea()
+	if self.settings.debug then
+		local ww, wh, _ = love.window.getMode()
+		safex, safey, safew, safeh = 50, 50, ww - (50*2), wh - (50*2)
+		log.info(ww, wh, ':=', safex, safey, safew, safeh)
+	end
+	_G.UI_SAFEX = safex
+	_G.UI_SAFEY = safey
+	_G.UI_SAFEW = safew
+	_G.UI_SAFEH = safeh
+
+	-- local windowWidth, _, _ = love.window.getMode()
+	-- local slotWidth = windowWidth / (maxSlotX + 1) -- +1 gives a half card width gap either side
+	local slotWidth = safew / (maxSlotX + 1)
+
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = math.floor(slotWidth - pilePaddingX)
 	local slotHeight = slotWidth * cardRatio
 	local pilePaddingY = slotHeight / 10
 	self.cardHeight = math.floor(slotHeight - pilePaddingY)
-	local leftMargin = self.cardWidth / 2 + pilePaddingX
-	local topMargin = _G.TITLEBARHEIGHT + pilePaddingY
+	-- local leftMargin = self.cardWidth / 2 + pilePaddingX
+	local leftMargin = safex + self.cardWidth / 2 + pilePaddingX
+	-- local topMargin = _G.TITLEBARHEIGHT + pilePaddingY
+	local topMargin = safey + _G.TITLEBARHEIGHT + pilePaddingY
 
 	self.cardRadius = math.floor(self.cardWidth / 16)
 

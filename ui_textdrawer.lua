@@ -14,8 +14,8 @@ function TextDrawer.new(o)
 	o.x = -o.width -- starts hidden
 	o.y = _G.TITLEBARHEIGHT -- below titlebar
 	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE)
-	o.spacex = o.font:getHeight('_')
-	o.spacey = o.font:getHeight('!')
+	o.spacex = o.font:getWidth('M')
+	o.spacey = o.font:getHeight('M')
 	o.widgets = {}
 
 	o:layout()	-- instantiates .height

@@ -18,8 +18,8 @@ function FAB.new(o)
 		log.error('could not load', fname)
 	else
 		imgIcon = love.graphics.newImage(imageData)
-		o.width = imageData:getWidth() * 2  * _G.UISCALE
-		o.height = imageData:getHeight() * 2 * _G.UISCALE
+		o.width = imageData:getWidth() * 2 -- * _G.UI_SCALE
+		o.height = imageData:getHeight() * 2 -- * _G.UI_SCALE
 		-- log.trace('loaded', fname)
 	end
 
@@ -28,7 +28,7 @@ function FAB.new(o)
 	love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 128))
 	love.graphics.circle('fill', o.width/2, o.height/2, o.width/2)
 	love.graphics.setColor(1,1,1,1)
-	love.graphics.draw(imgIcon, o.width / 4, o.height / 4, 0, _G.UISCALE, _G.UISCALE)
+	love.graphics.draw(imgIcon, o.width / 4, o.height / 4) --, 0, _G.UI_SCALE, _G.UI_SCALE)
 	love.graphics.setCanvas()
 
 	o.texture = canvas
@@ -57,10 +57,8 @@ function FAB:stopDrag(x, y)
 end
 
 function FAB:layout()
-	local w, h, _ = love.window.getMode()
-
-	self.x = w - (self.width * 1.5)
-	self.y = h - (self.height * 1.5) - _G.STATUSBARHEIGHT
+	self.x = (_G.UI_SAFEX + _G.UI_SAFEW) - (self.width * 1.5)
+	self.y = (_G.UI_SAFEY + _G.UI_SAFEH) - (self.height * 1.5) - _G.STATUSBARHEIGHT
 end
 
 function FAB:draw()
@@ -73,7 +71,7 @@ function FAB:draw()
 				y = y + 2
 			end
 		end
-		love.graphics.draw(self.texture, x, y, 0, _G.UISCALE, _G.UISCALE)
+		love.graphics.draw(self.texture, x, y) --, 0, _G.UI_SCALE, _G.UI_SCALE)
 	end
 end
 
