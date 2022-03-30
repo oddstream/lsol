@@ -1544,7 +1544,7 @@ function Baize:draw()
 
 	if self.settings.debug then
 		local ww, wh = love.window.getMode()
-		love.graphics.print(string.format('%s %d ww=%d, wh=%d', love.system.getOS(), love.window.getDPIScale(), ww, wh), 56, 16)
+		love.graphics.print(string.format('%s sc=%d ww=%d, wh=%d', love.system.getOS(), love.window.getDPIScale(), ww, wh), 56, 16)
 	end
 	-- love.graphics.setFont(self.suitFont)
 	-- love.graphics.setColor(love.math.colorFromBytes(255, 255, 240))	-- Ivory

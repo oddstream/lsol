@@ -182,17 +182,6 @@ _G.SUIT_FONT = 'assets/fonts/DejaVuSans.ttf'
 _G.UI_MEDIUM_FONT = 'assets/fonts/Roboto-Medium.ttf'
 _G.UI_REGULAR_FONT = 'assets/fonts/Roboto-Regular.ttf'
 
--- if love.system.getOS() == 'Android' then
--- 	_G.UI_SCALE = 2
--- else
--- 	_G.UI_SCALE = 1
--- end
-_G.UI_SCALE = 0.5
-_G.TITLEBARHEIGHT = 48 * _G.UI_SCALE
-_G.STATUSBARHEIGHT = 24 * _G.UI_SCALE
-_G.UIFONTSIZE = 24 * _G.UI_SCALE
-_G.UIFONTSIZE_SMALL = 14 * _G.UI_SCALE
-
 _G.LSOL_SOUNDS = {
 	deal = love.audio.newSource('assets/sounds/cardFan1.wav', 'static'),
 	load = love.audio.newSource('assets/sounds/cardFan2.wav', 'static'),
@@ -260,15 +249,25 @@ There may be a small performance penalty as the output will be flushed after eac
 		Motorola Moto G4			1080 x 1920 pixels, 16:9 ratio (~401 ppi density)
 		https://www.gsmarena.com/motorola_moto_g4-8103.php
 	]]
+
+	_G.UI_SCALE = 1		-- love.window.getDPIScale() will always return 1 because usedpiscale is off in conf.lua
+						-- besides which 3 would be to much
+
 	if love.system.getOS() == 'Android' then
 		-- force portrait mode
-		-- do not use dpi scale (which would be 3)
+		-- do not use dpi scale (which would be 3 on Moto G4)
 		love.window.setMode(1080, 1920, {resizable=true, usedpiscale=false})
 	else
 		love.window.setIcon(createWindowIcon())
 		-- love.window.setMode(1024, 500, {resizable=true, minwidth=640, minheight=500})
 		love.window.setMode(1080/2, 1920/2, {resizable=true, minwidth=640, minheight=500})
 	end
+
+	_G.TITLEBARHEIGHT = 48 * _G.UI_SCALE
+	_G.STATUSBARHEIGHT = 24 * _G.UI_SCALE
+	_G.UIFONTSIZE = 24 * _G.UI_SCALE
+	_G.UIFONTSIZE_SMALL = 14 * _G.UI_SCALE
+
 	love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
 
 	_G.UI_SAFEX,
@@ -357,8 +356,8 @@ function love.keyreleased(key)
 	elseif key == 'c' then
 		_G.BAIZE:collect()
 	elseif key == 'n' then
-		-- _G.BAIZE:newDeal()
-		_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
+		_G.BAIZE:newDeal()
+		-- _G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
 	elseif key == 'r' then
 		_G.BAIZE:restartDeal()
 	elseif key == 'b' then
