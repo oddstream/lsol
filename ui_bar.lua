@@ -20,8 +20,6 @@ function Bar:update(dt_seconds)
 end
 
 function Bar:layout()
-	-- local w, h, _ = love.window.getMode()
-
 	self.x = _G.UI_SAFEX
 	if self.align == 'top' then
 		self.y = _G.UI_SAFEY

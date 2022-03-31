@@ -55,8 +55,6 @@ function Drawer:update()
 end
 
 function Drawer:layout()
-	-- local _, h, _ = love.window.getMode()
-
 	-- x set dynamically
 	self.y = _G.UI_SAFEY + _G.TITLEBARHEIGHT -- below titlebar
 	-- width set when created

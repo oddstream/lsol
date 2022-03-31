@@ -26,7 +26,6 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	variantName = 'Klondike',
 	highlightMovable = true,
 	cardTransitionStep = 0.02,
-	-- cardRatio = 1.444, --1.357,
 	simpleCards = true,
 	powerMoves = true,
 	muteSounds = false,
@@ -35,15 +34,14 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardBackColor = 'CornflowerBlue',
 	cardFaceColor = 'Ivory',
 	cardFaceHighlightColor = 'Gold',
-	-- clubColor = 'Indigo',
 	clubColor = 'DarkGreen',
-	-- diamondColor = 'OrangeRed',
-	diamondColor = 'DarkBlue',
+	diamondColor = 'Indigo',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
 	oneColorCards = false,
 	twoColorCards = true,
 	fourColorCards = false,
+	autoColorCards = false,
 	shortCards = false,
 }
 
@@ -51,23 +49,23 @@ _G.LSOL_VARIANTS = {
 	Accordian = {file='accordian.lua', cc=1},
 	['Agnes Bernauer'] = {file='agnes.lua', cc=2, bernauer=true},
 	['Agnes Sorel'] = {file='agnes.lua', cc=4, sorel=true},
-	['American Toad'] = {file='amtoad.lua'},
-	Athena = {file='klondike.lua', athena=true},
+	['American Toad'] = {file='amtoad.lua', cc=4},
+	Athena = {file='klondike.lua', athena=true, cc=2},
 	Assembly = {file='assembly.lua', cc=1},
 	Australian = {file='australian.lua', cc=4},
 	['Beleaguered Castle'] = {file='castle.lua', cc=1},
-	Bisley = {file='bisley.lua'},
-	-- ['Bisley Debug'] = {file='bisley.lua', debug=true},
+	Bisley = {file='bisley.lua', cc=4},
+	-- ['Bisley Debug'] = {file='bisley.lua', cc=4, debug=true},
 	['Flat Castle'] = {file='castle.lua', cc=1, flat=true},
-	Duchess = {file='duchess.lua'},
+	Duchess = {file='duchess.lua', cc=2},
 	['Debug Klon'] = {file='debug.lua', cc=4, spiderLike=false},
 	['Debug Spid'] = {file='debug.lua', cc=4, spiderLike=true},
 	['Eight Off'] = {file='eightoff.lua', cc=4},
 	['Eight Off Relaxed'] = {file='eightoff.lua', cc=4, relaxed=true},
 	Freecell = {file='freecell.lua', cc=2, bakers=false, relaxed=true},
-	['Baker\'s Game'] = {file='freecell.lua', bakers=true, relaxed=false},
-	['Baker\'s Game Relaxed'] = {file='freecell.lua', bakers=true, relaxed=true},
-	Gate = {file='gate.lua'},
+	['Baker\'s Game'] = {file='freecell.lua', bakers=true, cc=4, relaxed=false},
+	['Baker\'s Game Relaxed'] = {file='freecell.lua', bakers=true, cc=4, relaxed=true},
+	Gate = {file='gate.lua', cc=2},
 	Klondike = {file='klondike.lua', cc=2},
 	['Klondike (Turn Three)']  = {file='klondike.lua', cc=2, turn=3},
 	['Forty Thieves'] = {file='forty.lua', cc=4, tabs=10, cardsPerTab=4},
@@ -75,10 +73,10 @@ _G.LSOL_VARIANTS = {
 	Lucas = {file='forty.lua', cc=4, tabs=13, cardsPerTab=3, dealAces=true},
 	Penguin = {file='penguin.lua', cc=4},
 	['Simple Simon'] = {file='simplesimon.lua', cc=4},
-	Spider = {file='spider.lua', packs=2, suitFilter={'♣','♦','♥','♠'}},
-	['Spider One Suit'] = {file='spider.lua', packs=8, suitFilter={'♠'}},
-	['Spider Two Suits'] = {file='spider.lua', packs=4, suitFilter={'♥', '♠'}},
-	Thirteens = {file='thirteens.lua'},
+	Spider = {file='spider.lua', packs=2, cc=4, suitFilter={'♣','♦','♥','♠'}},
+	['Spider One Suit'] = {file='spider.lua', cc=1, packs=8, suitFilter={'♠'}},
+	['Spider Two Suits'] = {file='spider.lua', cc=2, packs=4, suitFilter={'♥', '♠'}},
+	Thirteens = {file='thirteens.lua', cc=1},
 	['Classic Westcliff'] = {file='westcliff.lua', cc=2, classic=true},
 	['American Westcliff'] = {file='westcliff.lua', cc=2, american=true},
 	Easthaven = {file='westcliff.lua', cc=2, easthaven=true},
@@ -253,14 +251,21 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.UI_SCALE = 1		-- love.window.getDPIScale() will always return 1 because usedpiscale is off in conf.lua
 						-- besides which 3 would be to much
 
+	-- https://love2d.org/forums/viewtopic.php?f=3&t=84348&p=215242&hilit=rounded+rectangle#p215242
+	local limits = love.graphics.getSystemLimits( )
+	-- log.info(limits.canvasmsaa)	-- 16
+	-- log.info(limits.texturesize)	-- 16384
+	-- log.info(limits.multicanvas)	-- 8
+
 	if love.system.getOS() == 'Android' then
 		-- force portrait mode
 		-- do not use dpi scale (which would be 3 on Moto G4)
-		love.window.setMode(1080, 1920, {resizable=true, usedpiscale=false})
+		love.window.setMode(1080, 1920, {resizable=true, msaa=limits.canvasmsaa, usedpiscale=false})
 	else
 		love.window.setIcon(createWindowIcon())
 		-- love.window.setMode(1024, 500, {resizable=true, minwidth=640, minheight=500})
-		love.window.setMode(1080/2, 1920/2, {resizable=true, minwidth=640, minheight=500})
+		-- love.window.setMode(1080/2, 1920/2, {resizable=true, minwidth=640, minheight=500})
+		love.window.setMode(1024, 1024, {resizable=true, msaa=limits.canvasmsaa, minwidth=640, minheight=500})
 	end
 
 	_G.TITLEBARHEIGHT = 48 * _G.UI_SCALE
@@ -370,16 +375,19 @@ function love.keyreleased(key)
 		_G.BAIZE.settings.oneColorCards = true
 		_G.BAIZE.settings.twoColorCards = false
 		_G.BAIZE.settings.fourColorCards = false
+		_G.BAIZE.settings.autoColorCards = false
 		_G.BAIZE:createCardTextures()
 	elseif key == '2' then
 		_G.BAIZE.settings.oneColorCards = false
 		_G.BAIZE.settings.twoColorCards = true
 		_G.BAIZE.settings.fourColorCards = false
+		_G.BAIZE.settings.autoColorCards = false
 		_G.BAIZE:createCardTextures()
 	elseif key == '4' then
 		_G.BAIZE.settings.oneColorCards = false
 		_G.BAIZE.settings.twoColorCards = false
 		_G.BAIZE.settings.fourColorCards = true
+		_G.BAIZE.settings.autoColorCards = false
 		_G.BAIZE:createCardTextures()
 	end
 

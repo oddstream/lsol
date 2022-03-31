@@ -36,9 +36,10 @@ local menuWidgets = {
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
 	{text='Short cards', var='shortCards'},
-	{text='One-color cards', var='oneColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
-	{text='Two-color cards', var='twoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
-	{text='Four-color cards', var='fourColorCards', grp={'oneColorCards','twoColorCards','fourColorCards'}},
+	{text='One-color cards', var='oneColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
+	{text='Two-color cards', var='twoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
+	{text='Four-color cards', var='fourColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
+	{text='Auto-color cards', var='autoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
 	{text='Power moves', var='powerMoves'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},

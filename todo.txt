@@ -29,7 +29,13 @@ ANDROID
 
 + x, y, w, h = love.window.getSafeArea()
 	fake a safe area in Baize:layout()
+
 + UI scaling when dpi is high?
+
+	getSafeArea() - values returned are in DPI-scaled units (the same coordinate system as most other window-related APIs), not in pixels.
+	The units of love.graphics.getWidth, love.graphics.getHeight, love.mouse.getPosition, mouse events, love.touch.getPosition, and touch events are always in terms of pixels.
+	love.graphics.getMode() returns pixels
+
 + Add all the Opsole variants
 	+ https://www.solitairelaboratory.com/virtuoso.html
 	Baker's Dozen

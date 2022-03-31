@@ -31,7 +31,7 @@ function Checkbox.new(o)
 		o.imgUnchecked = love.graphics.newImage(imageData)
 	end
 
-	o.baizeCmd = 'toggleSetting'
+	o.baizeCmd = 'toggleCheckbox'
 	o.param = o.var
 	o.enabled = true
 

@@ -168,6 +168,28 @@ function Baize:getSuitColor(suit)
 		end
 	elseif self.settings.oneColorCards then
 		suitColor = 'spadeColor'
+	elseif self.settings.autoColorCards then
+		if self.script.cc == 4 then
+			if suit == '♣' then
+				suitColor = 'clubColor'
+			elseif suit == '♦' then
+				suitColor = 'diamondColor'
+			elseif suit == '♥' then
+				suitColor = 'heartColor'
+			elseif suit == '♠' then
+				suitColor = 'spadeColor'
+			end
+		elseif self.script.cc == 2 then
+			if suit == '♦' or suit == '♥' then
+				suitColor = 'heartColor'
+			else
+				suitColor = 'spadeColor'
+			end
+		elseif self.script.cc == 1 then
+			suitColor = 'spadeColor'
+		else
+			log.error('unknown value for color of cards in script')
+		end
 	else
 		log.error('unknown value for color of cards in settings')
 	end
@@ -762,7 +784,7 @@ function Baize:resetStats()
 	self.ui:toast(string.format('Statistics for %s have been reset', self.settings.variantName))
 end
 
-function Baize:toggleSetting(var)
+function Baize:toggleCheckbox(var)
 	self.settings[var] = not self.settings[var]
 	if var == 'simpleCards' then
 		self:createCardTextures()
@@ -826,6 +848,9 @@ function Baize:changeVariant(vname)
 		self:updateStatus()
 		self:updateUI()
 		self.ui:updateWidget('title', vname)
+		if self.settings.autoColorCards then
+			self:createCardTextures()
+		end
 	else
 		self.ui:toast('Do not know how to play ' .. vname, 'blip')
 	end
@@ -914,6 +939,11 @@ function Baize:layout()
 	end
 
 	local safex, safey, safew, safeh = love.window.getSafeArea()
+	-- values returned are in DPI-scaled units (the same coordinate system as most other window-related APIs), not in pixels
+	safex = love.window.toPixels(safex)
+	safey = love.window.toPixels(safey)
+	safew = love.window.toPixels(safew)
+	safeh = love.window.toPixels(safeh)
 	if self.settings.debug then
 		local ww, wh, _ = love.window.getMode()
 		safex, safey, safew, safeh = 50, 50, ww - (50*2), wh - (50*2)
@@ -1543,8 +1573,7 @@ function Baize:draw()
 	self.ui:draw()
 
 	if self.settings.debug then
-		local ww, wh = love.window.getMode()
-		love.graphics.print(string.format('%s sc=%d ww=%d, wh=%d', love.system.getOS(), love.window.getDPIScale(), ww, wh), 56, 16)
+		love.graphics.print(string.format('%s sc=%d ww=%d, wh=%d', love.system.getOS(), love.window.getDPIScale(), love.graphics.getWidth(), love.graphics.getHeight()), 56, 16)
 	end
 	-- love.graphics.setFont(self.suitFont)
 	-- love.graphics.setColor(love.math.colorFromBytes(255, 255, 240))	-- Ivory
