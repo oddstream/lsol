@@ -38,8 +38,6 @@ ANDROID
 
 + Add all the Opsole variants
 	+ https://www.solitairelaboratory.com/virtuoso.html
-	Beleaguered Castle
-	Blockade
 	Canfield
 	Chessboard
 	Creepy Crawly

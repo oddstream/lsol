@@ -57,6 +57,7 @@ _G.LSOL_VARIANTS = {
 	['Baker\'s Dozen (Wide)'] = {file='bakers.lua', wide=true, cc=1},
 	['Beleaguered Castle'] = {file='castle.lua', cc=1},
 	Bisley = {file='bisley.lua', cc=4},
+	Blockade = {file='blockade.lua', cc=4},
 	-- ['Bisley Debug'] = {file='bisley.lua', cc=4, debug=true},
 	['Flat Castle'] = {file='castle.lua', cc=1, flat=true},
 	Duchess = {file='duchess.lua', cc=2},
@@ -94,6 +95,7 @@ _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
 	['> Animals'] = {'Scorpion', 'Wasp', 'Spider One Suit', 'Spider Two Suits', 'Spider'},
 	['> Canfields'] = {'Duchess', 'Gate'},
+	['> Easier'] = {'Accordian','American Toad','Blockade','Lucas','Spider One Suit'},
 	['> Forty Thieves'] = {'Forty Thieves', 'Limited', 'Lucas'},
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed'},
 	['> Klondikes'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer'},
