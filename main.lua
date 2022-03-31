@@ -53,6 +53,8 @@ _G.LSOL_VARIANTS = {
 	Athena = {file='klondike.lua', athena=true, cc=2},
 	Assembly = {file='assembly.lua', cc=1},
 	Australian = {file='australian.lua', cc=4},
+	['Baker\'s Dozen'] = {file='bakers.lua', cc=1},
+	['Baker\'s Dozen (Wide)'] = {file='bakers.lua', wide=true, cc=1},
 	['Beleaguered Castle'] = {file='castle.lua', cc=1},
 	Bisley = {file='bisley.lua', cc=4},
 	-- ['Bisley Debug'] = {file='bisley.lua', cc=4, debug=true},
@@ -97,7 +99,7 @@ _G.VARIANT_TYPES = {
 	['> Klondikes'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine'},
 	['> Places'] = {'Australian', 'Yukon', 'Yukon Relaxed','Russian','Crimean','Ukrainian'},
-	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon'},
+	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
 }
 

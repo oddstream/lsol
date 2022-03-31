@@ -126,7 +126,7 @@ function Util.moveCard(src, dst)
 end
 
 function Util.moveCardByOrd(src, dst, ord)
-	local c = src:disinter(ord)
+	local c = src:disinterOneCard(ord)
 	if c then
 		return Util.moveCard(src, dst)
 	end

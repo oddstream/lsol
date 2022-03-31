@@ -38,7 +38,6 @@ ANDROID
 
 + Add all the Opsole variants
 	+ https://www.solitairelaboratory.com/virtuoso.html
-	Baker's Dozen
 	Beleaguered Castle
 	Blockade
 	Canfield
@@ -120,9 +119,6 @@ Variant de-pickle:
 shuffling animation?
 	face down cards get spinning then dealt?
 
-card height option short/medium/tall
-	different cardRatio for landscape (1.357) and portrait (1.444)?
-
 mirror ord and suit on simple cards for Beleaguered_Castle
 
 debug small display of moves, tmoves, fmoves
@@ -144,7 +140,6 @@ BUG mouse fatigue when not moving
 check FAN_LEFT
 parameterize UI colors
 https://github.com/healeycodes/boids
-card rounded corners
 scrunching (from gosol)
 	https://en.wikipedia.org/wiki/Beleaguered_Castle
 	each pile should know it's limit, calculated during layout

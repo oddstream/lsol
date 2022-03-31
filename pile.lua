@@ -139,6 +139,7 @@ function Pile:posAfter(c)
 end
 
 function Pile:refan(fn)
+	fn = fn or Card.transitionTo
 	if #self.cards == 0 then
 		return
 	end
@@ -266,17 +267,26 @@ function Pile:push(c)
 	-- c:setBaizePos(x, y)
 end
 
-function Pile:bury(ord)
-	for i, c in ipairs(self.cards) do
+function Pile:buryCards(ord)
+	local tmp = {}
+	for _, c in ipairs(self.cards) do
 		if c.ord == ord then
-			self.cards[i], self.cards[1] = self.cards[1], self.cards[i]
-			return c
+			table.insert(tmp, c)
 		end
 	end
-	return nil
+	for _, c in ipairs(self.cards) do
+		if c.ord ~= ord then
+			table.insert(tmp, c)
+		end
+	end
+	self.cards = {}
+	for i = 1, #tmp do
+		self:push(tmp[i])
+	end
 end
 
-function Pile:disinter(ord)
+function Pile:disinterOneCard(ord)
+	-- TODO used by Penguin but this don't look right
 	for i, c in ipairs(self.cards) do
 		if c.ord == ord then
 			self.cards[i], self.cards[#self.cards] = self.cards[#self.cards], self.cards[i]
