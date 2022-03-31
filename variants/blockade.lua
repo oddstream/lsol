@@ -37,14 +37,20 @@ function Blockade:buildPiles()
 end
 
 function Blockade:startGame()
-	_G.BAIZE:setRecycles(0)
-	for _, pile in ipairs(_G.BAIZE.tableaux) do
-		Util.moveCard(_G.BAIZE.stock, pile)
+	for _, tab in ipairs(_G.BAIZE.tableaux) do
+		Util.moveCard(_G.BAIZE.stock, tab)
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
--- function Blockade:afterMove()
--- end
+function Blockade:afterMove()
+	-- An empty pile will be filled up immediately by a card from the stock.
+	for _, tab in ipairs(_G.BAIZE.tableaux) do
+		if #tab.cards == 0 then
+			Util.moveCard(_G.BAIZE.stock, tab)
+		end
+	end
+end
 
 function Blockade:moveTailError(tail)
 	local card = tail[1]
