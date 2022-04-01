@@ -52,7 +52,7 @@ function Klondike:startGame()
 		for _, dst in ipairs(_G.BAIZE.tableaux) do
 			for _= 1, 2 do
 				local card = Util.moveCard(src, dst)
-				card.prone = true
+				if not self.thoughtful then card.prone = true end
 				Util.moveCard(src, dst)
 			end
 		end
@@ -61,7 +61,7 @@ function Klondike:startGame()
 		for _, dst in ipairs(_G.BAIZE.tableaux) do
 			for _ = 1, dealDown do
 				local card = Util.moveCard(src, dst)
-				card.prone = true
+				if not self.thoughtful then card.prone = true end
 			end
 			dealDown = dealDown + 1
 			Util.moveCard(src, dst)

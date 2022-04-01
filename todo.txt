@@ -24,11 +24,8 @@ ANDROID
 	"if you just distribute .love files for android, where the game always starts in landscape mode. "
 	https://love2d.org/wiki/love.graphics.rotate
 	scale
-	love.window.getDPIScale( ) returns 1 on Linux, 3 on Android
+	love.window.getDPIScale( ) returns 1 on Linux, 3 on Moto G4
 	https://love2d.org/wiki/love.window.getDPIScale
-
-+ x, y, w, h = love.window.getSafeArea()
-	fake a safe area in Baize:layout()
 
 + UI scaling when dpi is high?
 
@@ -38,31 +35,21 @@ ANDROID
 
 + Add all the Opsole variants
 	+ https://www.solitairelaboratory.com/virtuoso.html
-	Canfield
-	Chessboard
 	Creepy Crawly
 	Cruel
 	Good Measure
-	Fortress
 	Forty and Eight
 	Number Ten
-	Baker's Game
-	Josephine
 	Busy Aces
 	Martha
-	Osmosis
-	Peek
+	Osmosis + Peek
 	Perseverance
-	Rainbow Canfield
-	Scorpion
+	Scorpion, Wasp
 	Single Rail
 	Sir Tommy
 	Little Spider
 	Spiderette (One Suit)
 	Spiderette (Two Suits)
-	Storehouse Canfield
-	Thoughtful
-	Wasp
 	Will o' the Wisp
 	Romanian
 

@@ -116,6 +116,15 @@ function CC.DownAltColor(cpair)
 	return CC.Down(cpair)
 end
 
+function CC.DownWrap(cpair)
+	if cpair[1].ord == 1 and cpair[2].ord == 13 then
+		-- King on Ace
+	elseif cpair[1].ord ~= cpair[2].ord + 1 then
+		return 'Cards must go down in rank (Kings on Aces allowed)'
+	end
+	return nil
+end
+
 function CC.DownAltColorWrap(cpair)
 	if cpair[1].black == cpair[2].black then
 		return 'Cards must be in alternating colors'
