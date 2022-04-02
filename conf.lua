@@ -10,7 +10,7 @@ function love.conf(t)
 	-- The highdpi window flag must be enabled to use the full pixel density of a Retina screen on Mac OS X and iOS.
 	-- The flag currently does nothing on Windows and Linux, and on Android it is effectively always enabled.
 	t.window.highdpi = true
-	t.window.usedpiscale = false			-- Enable automatic DPI scaling when highdpi is set to true as well (boolean)
+	t.window.usedpiscale = true			-- Enable automatic DPI scaling when highdpi is set to true as well (boolean)
 
 	-- If set to true this allows the user to resize the game's window.
 	-- In version 11.4 and later for Android, this also allows changing orientation between landscape and portrait.

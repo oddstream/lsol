@@ -667,9 +667,9 @@ function Baize:updateUI()
 		self.ui:updateWidget('stock', '')
 	else
 		if self.waste then
-			self.ui:updateWidget('stock', string.format('STOCK:%d  WASTE:%d', #self.stock.cards, #self.waste.cards))
+			self.ui:updateWidget('stock', string.format('%d:%d', #self.stock.cards, #self.waste.cards))
 		else
-			self.ui:updateWidget('stock', string.format('STOCK:%d', #self.stock.cards))
+			self.ui:updateWidget('stock', string.format('%d', #self.stock.cards))
 		end
 	end
 
@@ -677,7 +677,7 @@ function Baize:updateUI()
 		-- self.ui:updateWidget('status', string.format('%s(%d)', self.status, #self.undoStack))
 		self.ui:updateWidget('status', self.status)
 	else
-		self.ui:updateWidget('status', string.format('MOVES:%d', #self.undoStack - 1))
+		self.ui:updateWidget('status', string.format('%d', #self.undoStack - 1))
 	end
 
 	if self.status == 'complete' then
@@ -699,6 +699,8 @@ function Baize:updateUI()
 	else
 		self.ui:hideFAB()
 	end
+
+	-- log.trace('updateUI', debug.getinfo(2).name)
 end
 
 function Baize:undoPush()
@@ -940,10 +942,10 @@ function Baize:layout()
 
 	local safex, safey, safew, safeh = love.window.getSafeArea()
 	-- values returned are in DPI-scaled units (the same coordinate system as most other window-related APIs), not in pixels
-	safex = love.window.toPixels(safex)
-	safey = love.window.toPixels(safey)
-	safew = love.window.toPixels(safew)
-	safeh = love.window.toPixels(safeh)
+	-- safex = love.window.toPixels(safex)
+	-- safey = love.window.toPixels(safey)
+	-- safew = love.window.toPixels(safew)
+	-- safeh = love.window.toPixels(safeh)
 	if self.settings.debug then
 		local ww, wh, _ = love.window.getMode()
 		safex, safey, safew, safeh = 50, 50, ww - (50*2), wh - (50*2)

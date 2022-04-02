@@ -21,6 +21,18 @@ https://github.com/gvx/bitser
 https://play.google.com/apps/test/com.oddstream.lovesolitaire/1
 https://play.google.com/apps/test/com.oddstream.lovesolitaire/2
 
+# adb
+adb devices -l
+
+adb -s ZY223Z8MVL push lsola.apk sdcard
+adb -s HVA2JH79 push lsola.apk sdcard
+
+adb -s HVA2JH79 install lsola.apk
+adb -s ZY223Z8MVL install lsola.apk
+
+adb -s HVA2JH79 shell pm uninstall com.oddstream.lovesolitaire
+adb -s ZY223Z8MVL shell pm uninstall com.oddstream.lovesolitaire
+
 Go-style indenting with tabs
 function and variable names in cascalCase
 class names in PascalCase

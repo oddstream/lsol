@@ -257,8 +257,11 @@ There may be a small performance penalty as the output will be flushed after eac
 		https://www.gsmarena.com/motorola_moto_g4-8103.php
 	]]
 
-	_G.UI_SCALE = 1		-- love.window.getDPIScale() will always return 1 because usedpiscale is off in conf.lua
-						-- besides which 3 would be to much
+	_G.UI_SCALE = 1
+	local DPIScale = love.window.getDPIScale()
+	if DPIScale > 1 then
+		_G.UI_SCALE = 1 - (DPIScale/10)	-- so a DPIScale of 3 would scale the UI from 1.0 to 0.7
+	end
 
 	-- https://love2d.org/forums/viewtopic.php?f=3&t=84348&p=215242&hilit=rounded+rectangle#p215242
 	local limits = love.graphics.getSystemLimits( )
@@ -269,7 +272,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	if love.system.getOS() == 'Android' then
 		-- force portrait mode
 		-- do not use dpi scale (which would be 3 on Moto G4)
-		love.window.setMode(1080, 1920, {resizable=true, msaa=limits.canvasmsaa, usedpiscale=false})
+		love.window.setMode(1080, 1920, {resizable=true, msaa=limits.canvasmsaa, usedpiscale=true})
 	else
 		love.window.setIcon(createWindowIcon())
 		-- love.window.setMode(1024, 500, {resizable=true, minwidth=640, minheight=500})
@@ -280,7 +283,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.TITLEBARHEIGHT = 48 * _G.UI_SCALE
 	_G.STATUSBARHEIGHT = 24 * _G.UI_SCALE
 	_G.UIFONTSIZE = 24 * _G.UI_SCALE
-	_G.UIFONTSIZE_SMALL = 14 * _G.UI_SCALE
+	_G.UIFONTSIZE_SMALL = 14  * _G.UI_SCALE
 
 	love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
 
@@ -306,7 +309,7 @@ There may be a small performance penalty as the output will be flushed after eac
 			-- don't reset
 			-- don't startGame
 			_G.BAIZE.ui:toast('Resuming a saved game of ' .. _G.BAIZE.settings.variantName, 'load')
-			_G.BAIZE:undo()	-- pop extra state written when saved
+			_G.BAIZE:undo()	-- pop extra state written when saved, will updateUI
 		else
 			os.exit()
 		end
@@ -327,10 +330,12 @@ There may be a small performance penalty as the output will be flushed after eac
 			_G.BAIZE.ui:toast('Starting a new game of ' .. _G.BAIZE.settings.variantName, 'deal')
 			_G.BAIZE.script:startGame()
 			_G.BAIZE:undoPush()
+			_G.BAIZE:updateUI()
 		else
 			os.exit()
 		end
 	end
+
 	love.graphics.setBackgroundColor(Util.colorBytes('baizeColor'))
 	_G.BAIZE.ui:updateWidget('title', _G.BAIZE.settings.variantName)
 

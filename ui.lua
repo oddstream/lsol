@@ -303,21 +303,21 @@ function UI:draw()
 		-- Single-line snackbar height: 48dp
 		-- Text: Roboto Regular 14sp
 		-- Default background fill: #323232 100%
-		local sw, sh, _ = love.window.getMode()
 		love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 255))
 		love.graphics.setFont(self.toastFont)
 		local mw = self.toastFont:getWidth(message)
 		local mh = self.toastFont:getHeight(message)
 		local rw = mw + self.toastFont:getWidth('M') * 2
 		local rh = mh + self.toastFont:getHeight('M') * 2
-		love.graphics.rectangle('fill', (sw - rw) / 2, ((sh - rh) / 2) + y, rw, rh)
+		love.graphics.rectangle('fill', _G.UI_SAFEX + (_G.UI_SAFEW - rw) / 2, _G.UI_SAFEY + ((_G.UI_SAFEH - rh) / 2) + y, rw, rh, _G.BAIZE.cardRadius, _G.BAIZE.cardRadius)
 		love.graphics.setColor(1, 1, 1, 1)
-		love.graphics.print(message, (sw - mw) / 2, ((sh - mh) / 2) + y)
+		love.graphics.print(message, _G.UI_SAFEX + (_G.UI_SAFEW - mw) / 2, _G.UI_SAFEY + ((_G.UI_SAFEH - mh) / 2) + y)
 	end
 
 	if #self.toasts > 0 then
 		for i = 1, #self.toasts do
-			drawToast(self.toasts[i].message, i * (48 + 12))
+			-- (i + 2) to nudge to toasts down the screen a little
+			drawToast(self.toasts[i].message, (i + 2) * (_G.TITLEBARHEIGHT + self.toastFont:getHeight('M')))
 			-- drawToast(string.format('%d %s', self.toasts[i].secondsLeft, self.toasts[i].message), i * (48 + 12))
 		end
 	end

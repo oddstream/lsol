@@ -27,11 +27,21 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Moto G4
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ Android 4
+	portrait MotoG4
+		STOCK: WASTE: too big
+		menu too big
+		collect button overlapping title
+
+		collect button gap to undo button still too big
+	lenovo
+		perfect
+
 + UI scaling when dpi is high?
 
 	getSafeArea() - values returned are in DPI-scaled units (the same coordinate system as most other window-related APIs), not in pixels.
-	The units of love.graphics.getWidth, love.graphics.getHeight, love.mouse.getPosition, mouse events, love.touch.getPosition, and touch events are always in terms of pixels.
-	love.graphics.getMode() returns pixels
+	The units of love.graphics.getWidth, love.graphics.getHeight, love.mouse.getPosition, mouse events, love.touch.getPosition, and touch events are always in DPI-scaled units rather than pixels.
+	In LÖVE 0.10 and older they were in pixels.
 
 + Add all the Opsole variants
 	+ https://www.solitairelaboratory.com/virtuoso.html
