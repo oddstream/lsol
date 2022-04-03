@@ -201,13 +201,13 @@ function Baize:createSimpleFace(ord, suit)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 	love.graphics.setLineWidth(1)
 
-	love.graphics.setColor(Util.colorBytes('cardFaceColor'))
+	love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
 	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
-	love.graphics.setColor(Util.colorBytes(self:getSuitColor(suit)))
+	love.graphics.setColor(Util.getColorFromSetting(self:getSuitColor(suit)))
 
 	local ords = _G.ORD2STRING[ord]
 	-- local ordw, ordh = self.ordFont:getWidth(ords), self.ordFont:getHeight(ords)
@@ -241,7 +241,7 @@ function Baize:createRegularFace(ord, suit)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 	love.graphics.setLineWidth(1)
 
-	love.graphics.setColor(Util.colorBytes('cardFaceColor'))
+	love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
 	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
@@ -250,13 +250,13 @@ function Baize:createRegularFace(ord, suit)
 	local suitColor = self:getSuitColor(suit)
 
 	-- every card gets an ord top left and bottom right (inverted)
-	love.graphics.setColor(Util.colorBytes(suitColor))
+	love.graphics.setColor(Util.getColorFromSetting(suitColor))
 	love.graphics.setFont(self.ordFont)
 	printAt(_G.ORD2STRING[ord], 0.15, 0.15, self.ordFont)
 	printAt(_G.ORD2STRING[ord], 0.85, 0.85, self.ordFont, 1.0, math.pi)
 
 	if ord > 1 and ord < 11 then
-		love.graphics.setColor(Util.colorBytes(suitColor))
+		love.graphics.setColor(Util.getColorFromSetting(suitColor))
 		love.graphics.setFont(self.suitFont)
 		local pips = pipInfo[ord]
 		for _, pip in ipairs(pips) do
@@ -275,7 +275,7 @@ function Baize:createRegularFace(ord, suit)
 		love.graphics.setColor(0,0,0,0.05)
 		love.graphics.rectangle('fill', self.cardWidth * 0.25, self.cardHeight * 0.25, self.cardWidth * 0.5, self.cardHeight * 0.5)
 
-		love.graphics.setColor(Util.colorBytes(suitColor))
+		love.graphics.setColor(Util.getColorFromSetting(suitColor))
 		love.graphics.setFont(self.suitFontLarge)
 		printAt(suit, 0.5, 0.5, self.suitFontLarge)
 
@@ -331,7 +331,7 @@ function Baize:createCardTextures()
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 	love.graphics.setLineWidth(1)
 
-	love.graphics.setColor(Util.colorBytes('cardBackColor'))
+	love.graphics.setColor(Util.getColorFromSetting('cardBackColor'))
 	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 	love.graphics.setColor(1, 1, 1, 0.1)
@@ -782,8 +782,11 @@ function Baize:showSettingsDrawer()
 end
 
 function Baize:resetStats()
-	self.stats:reset(self.settings.variantName)
-	self.ui:toast(string.format('Statistics for %s have been reset', self.settings.variantName))
+	local pressedButton = love.window.showMessageBox('Reset statistics', 'Are you sure?', {'No', 'Yes', escapebutton = 1})
+	if pressedButton == 2 then
+		self.stats:reset(self.settings.variantName)
+		self.ui:toast(string.format('Statistics for %s have been reset', self.settings.variantName))
+	end
 end
 
 function Baize:toggleCheckbox(var)

@@ -60,16 +60,16 @@ function Radio:draw()
 	if self.enabled then
 		local mx, my = love.mouse.getPosition()
 		if self.baizeCmd and Util.inRect(mx, my, self:screenRect()) then
-			love.graphics.setColor(1,1,1,1)
+			Util.setColorFromName('UiForeground')
 			if love.mouse.isDown(1) then
 				wx = wx + 2
 				wy = wy + 2
 			end
 		else
-			love.graphics.setColor(1,1,1,1)
+			Util.setColorFromName('UiForeground')
 		end
 	else
-		love.graphics.setColor(0.5,0.5,0.5,1)
+		Util.setColorFromName('UiGrayedOut')
 	end
 
 	love.graphics.draw(self.img, wx, wy, 0, _G.UI_SCALE, _G.UI_SCALE)
@@ -79,7 +79,7 @@ function Radio:draw()
 	end
 
 	if _G.BAIZE.settings.debug then
-		love.graphics.setColor(0.5,0.5,0.5,1)
+		Util.setColorFromName('UiGrayedOut')
 		love.graphics.rectangle('line', wx, wy, ww, wh)
 	end
 

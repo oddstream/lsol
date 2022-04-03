@@ -84,17 +84,35 @@ function Util.baizeChanged(old, new)
 	return false
 end
 
-function Util.colorBytes(s)
+function Util.getColorFromSetting(s)
 	local setting = _G.BAIZE.settings[s]
 	if not setting then
-		log.error('No setting for', s)
+		log.error('No setting called', s)
 		return 0.5, 0.5, 0.5
 	end
-	if not _G.LSOL_COLORS[setting] then
-		log.error('No color for', s)
+	local col = _G.LSOL_COLORS[setting]
+	if not col then
+		log.error('No color for setting', s)
 		return 0.5, 0.5, 0.5
 	end
-	return love.math.colorFromBytes(unpack(_G.LSOL_COLORS[setting]))
+	return love.math.colorFromBytes(unpack(col))
+end
+
+function Util.setColorFromSetting(s)
+	love.graphics.setColor(Util.getColorFromSetting(s))
+end
+
+function Util.getColorFromName(nam)
+	local col = _G.LSOL_COLORS[nam]
+	if not col then
+		log.error('No color named', nam)
+		return 0.5, 0.5, 0.5
+	end
+	return love.math.colorFromBytes(unpack(col))
+end
+
+function Util.setColorFromName(nam)
+	return love.graphics.setColor(Util.getColorFromName(nam))
 end
 
 function Util.makeCardPairs(tail)

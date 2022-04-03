@@ -25,9 +25,9 @@ function FAB.new(o)
 
 	local canvas = love.graphics.newCanvas(o.width, o.height)
 	love.graphics.setCanvas(canvas)
-	love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 128))
+	Util.setColorFromName('UiBackground')
 	love.graphics.circle('fill', o.width/2, o.height/2, o.width/2)
-	love.graphics.setColor(1,1,1,1)
+	Util.setColorFromName('UiForeground')
 	love.graphics.draw(imgIcon, o.width / 4, o.height / 4) --, 0, _G.UI_SCALE, _G.UI_SCALE)
 	love.graphics.setCanvas()
 

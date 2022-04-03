@@ -1,8 +1,9 @@
-is this the one you like playing The Most?
+LÖVE Solitaire
+	is this the one you like playing The Most?
 
-could use point {x,y} and rectangle {x, y, width, height}
-but that would be inefficient
-just stick to the same as LÖVE (and raylib) and use x,y,width,height
+	could use point {x,y} and rectangle {x, y, width, height}
+	but that would be inefficient
+	just stick to the same as LÖVE (and raylib) and use x,y,width,height
 
 REGRESSION TESTS
 	collect on an virgin Duchess
@@ -11,37 +12,13 @@ REGRESSION TESTS
 	exit when game is complete - restart - is another win recorded?
 
 ANDROID
-	alias adb=$HOME/Android/Sdk/platform-tools/adb
-	adb devices
-		List of devices attached
-		ZY223Z8MVL	device
-	zip -9 -r lsol.love .
-	adb push lsol.love sdcard/Download
-		... appears in X-plore Download folder (not SDCARD, oddly)
-		... Android LÖVE app runs 11.3, so doesn't handle orientation, need to build APK/AAB
-
-	Android ww=1176 wh=1008
+	Android LÖVE app runs 11.3, so doesn't handle orientation, need to build APK/AAB
 	"if you just distribute .love files for android, where the game always starts in landscape mode. "
+	Android ww=1176 wh=1008
 	https://love2d.org/wiki/love.graphics.rotate
 	scale
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Moto G4
 	https://love2d.org/wiki/love.window.getDPIScale
-
-+ Android 4
-	portrait MotoG4
-		STOCK: WASTE: too big
-		menu too big
-		collect button overlapping title
-
-		collect button gap to undo button still too big
-	lenovo
-		perfect
-
-+ UI scaling when dpi is high?
-
-	getSafeArea() - values returned are in DPI-scaled units (the same coordinate system as most other window-related APIs), not in pixels.
-	The units of love.graphics.getWidth, love.graphics.getHeight, love.mouse.getPosition, mouse events, love.touch.getPosition, and touch events are always in DPI-scaled units rather than pixels.
-	In LÖVE 0.10 and older they were in pixels.
 
 + Add all the Opsole variants
 	+ https://www.solitairelaboratory.com/virtuoso.html
@@ -79,6 +56,8 @@ https://www.politaire.com/rougeetnoir
 https://www.politaire.com/help/rougeetnoir
 
 https://wiki.gnome.org/Apps/Aisleriot/Games
+Agnes Athena Auld Lang Syne Aunt Mary Backbone Bakers Dozen Bakers Game Beleaguered Castle Block Ten Bristol Camelot Canfield Carpet Chessboard Clock Cover Cruel Diamond Mine Doublets Eagle Wing Easthaven Eight Off Elevator Escalator First Law Fortress Fortunes Fourteen Freecell Gaps Gay Gordons Glenwood Golf Gypsy Helsinki Hopscotch Isabel Jamestown Jumbo Kansas King Albert Kings Audience Klondike Labyrinth Lady Jane Maze Monte Carlo Napoleon's Tomb Neighbor Odessa Osmosis Peek Pileon Plait Poker Quatorze Royal East Saratoga Scorpion Scuffle Seahaven Sir Tommy Spiderette Spider Spider Three Decks Straight Up Streets And Alleys Ten Across Thieves Thirteen Thumb And Pouch Treize Triple Peaks Union Square Valentine Westhaven Whitehead Will O The Wisp Yield Yukon Zebra
+
 
 https://en.wikipedia.org/wiki/Gamification
 
@@ -93,10 +72,6 @@ BUG jammed American Toad; just because a pile is conformant doesn't mean it's co
 	it doesn't for spider anyway
 	retire Baize:conformant and script:conformant
 	leave Pile:conformant (only used when there are discard piles) - find another way
-
-Are you sure? dialog
-	for reset stats
-	resign game
 
 pile:moveTailError AND script:moveTailError
 	couldn't pile call script?
@@ -149,9 +124,14 @@ scrunching (from gosol)
 		_G.BAIZE.lastInput (mouse/touch/key)
 settings UI
 	tidy up radio, checkbox widget
-	baize color >
-	card face color >
-	card back color >
-color picker drawer
+	Colors... (with palette for each) (specify text widget foreground/background color)
+		baize 		(green/blue/black)
+		card face	(white/ivory/gray)
+		card back
+		club		(black/indigo/green)
+		diamond		(red/crimson/orange)
+		heart		(red/crimson/orange) (used as diamond color if 2-color cards)
+		spade		(black/indigo/green) (used as club color if 2-color cards)
+
 https://love2d.org/wiki/love.displayrotated
 

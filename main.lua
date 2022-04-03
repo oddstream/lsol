@@ -34,8 +34,8 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardBackColor = 'CornflowerBlue',
 	cardFaceColor = 'Ivory',
 	cardFaceHighlightColor = 'Gold',
-	clubColor = 'DarkGreen',
-	diamondColor = 'Indigo',
+	clubColor = 'Indigo',
+	diamondColor = 'OrangeRed',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
 	oneColorCards = false,
@@ -80,6 +80,7 @@ _G.LSOL_VARIANTS = {
 	Limited = {file='forty.lua', cc=4, tabs=12, cardsPerTab=3},
 	Lucas = {file='forty.lua', cc=4, tabs=13, cardsPerTab=3, dealAces=true},
 	Penguin = {file='penguin.lua', cc=4},
+	['Red and Black'] = {file='redandblack.lua', cc=2},
 	['Simple Simon'] = {file='simplesimon.lua', cc=4},
 	Spider = {file='spider.lua', packs=2, cc=4, suitFilter={'♣','♦','♥','♠'}},
 	['Spider One Suit'] = {file='spider.lua', cc=1, packs=8, suitFilter={'♠'}},
@@ -100,7 +101,7 @@ _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
-	['> Easier'] = {'Accordian','American Toad','Blockade','Lucas','Spider One Suit'},
+	['> Easier'] = {'Accordian','American Toad','Blockade','Lucas','Spider One Suit','Red and Black'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas'},
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed'},
 	['> Klondikes'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
@@ -162,26 +163,71 @@ do
 end
 
 _G.LSOL_COLORS = {
-	Black = {0,0,0},
+	-- Basic colors
 	White = {1,1,1},
-	Red = {255,0,0},
-	Teal = {0,128,128},
-	OrangeRed = {255,69,0},
-	DarkGreen = {0,100,0},
-	Ivory = {255,255,240},
-	Crimson = {220,20,60},
-	Salmon = {250,128,114},
-	DarkBlue = {0,0,139},
 	Silver = {192,192,192},
-	Indigo = {75,0,130},
+	Gray = {128,128,128},
+	Black = {0,0,0},
+	-- Red colors
+	Maroon = {128,0,0},
+	Yellow = {255,255,0},
+	Olive = {128,128,0},
+	Lime = {0,255,0},
+	Green = {0,128,0},
+	Aqua = {0,255,255},
+	Teal = {0,128,128},
+	Blue = {0,0,255},
+	Navy = {0,0,128},
+	Fushsia = {255,0,255},
+	Purple = {128,0,128},
+
+	-- Pink colors
+
+	-- Red colors
+	DarkRed = {139,0,0},
+	Red = {255,0,0},
+	Firebrick = {178,34,34},
+	Crimson = {220,20,60},
+	IndianRed = {205,92,92},
+	LightCoral = {240,128,128},
+	Salmon = {250,128,114},
+	DarkSalmon = {233,150,122},
+	LightSalmon = {255,160,122},
+
+	-- Orange colors
+	OrangeRed = {255,69,0},
+
+	-- Yellow colors
 	Gold = {255,215,0},
+
+	-- Brown colors
+
+	-- Green colors
+	DarkGreen = {0,100,0},
+
+	-- Cyan colors
+
+	-- Blue colors
+	DarkBlue = {0,0,139},
 	CornflowerBlue = {100,149,237},
 	LightSkyBlue = {135, 206, 250},
-	DarkSlateGray = {47,79,79},
 
-	UiBackground = {0x32,0x32,0x32,0xff},
-	UiForeground = {1,1,1,1},
-	UiHover = {255,215,0},	-- Gold
+	-- Purple, violet, and magenta colors
+	Indigo = {75,0,130},
+
+	-- White colors
+	Ivory = {255,255,240},
+
+	-- Gray and black colors
+	-- Black
+	DarkSlateGray = {47,79,79},
+	DimGray = {105,105,105},
+	-- Gray
+	-- Silver
+
+	UiBackground = {0x32,0x32,0x32},
+	UiForeground = {0xff,0xff,0xff},
+	UiGrayedOut = {0x80,0x80,0x80},
 }
 
 _G.ORD_FONT = 'assets/fonts/Acme-Regular.ttf'
@@ -336,7 +382,7 @@ There may be a small performance penalty as the output will be flushed after eac
 		end
 	end
 
-	love.graphics.setBackgroundColor(Util.colorBytes('baizeColor'))
+	love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
 	_G.BAIZE.ui:updateWidget('title', _G.BAIZE.settings.variantName)
 
 	-- _G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))

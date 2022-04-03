@@ -12,6 +12,8 @@ setmetatable(TextWidget, {__index = Widget})
 
 function TextWidget.new(o)
 	o.enabled = true
+	-- o.foregroundColor = o.foreGroundColor or _G.LSOL_COLORS.UiForeground
+	-- o.backgroundColor = o.backGroundColor or _G.LSOL_COLORS.UiBackground
 	return setmetatable(o, TextWidget)
 end
 
@@ -30,20 +32,21 @@ function TextWidget:draw()
 	if self.enabled then
 		local mx, my = love.mouse.getPosition()
 		if self.baizeCmd and Util.inRect(mx, my, self:screenRect()) then
-			love.graphics.setColor(1,1,1,1)
+			Util.setColorFromName('UiForeground')
 			if love.mouse.isDown(1) then
 				wx = wx + 2
 				wy = wy + 2
 			end
 		else
-			love.graphics.setColor(1,1,1,1)
+			Util.setColorFromName('UiForeground')
 		end
 	else
-		love.graphics.setColor(0.5,0.5,0.5,1)
+		Util.setColorFromName('UiGrayedOut')
 	end
 	love.graphics.print(self.text, wx, wy)
 
 	if _G.BAIZE.settings.debug then
+		Util.setColorFromName('UiGrayedOut')
 		love.graphics.rectangle('line', wx, wy, ww, wh)
 	end
 

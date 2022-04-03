@@ -1,5 +1,7 @@
 -- ui_container
 
+local Util = require('util')
+
 local Container = {}
 Container.__index = Container
 
@@ -41,7 +43,7 @@ end
 
 function Container:draw()
 	if not self:hidden() then
-		love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 255))
+		Util.setColorFromName('UiBackground')
 		love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 		for _, w in ipairs(self.widgets) do
 			w:draw()

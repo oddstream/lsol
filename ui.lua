@@ -303,14 +303,14 @@ function UI:draw()
 		-- Single-line snackbar height: 48dp
 		-- Text: Roboto Regular 14sp
 		-- Default background fill: #323232 100%
-		love.graphics.setColor(love.math.colorFromBytes(0x32, 0x32, 0x32, 255))
+		Util.setColorFromName('UiBackground')
 		love.graphics.setFont(self.toastFont)
 		local mw = self.toastFont:getWidth(message)
 		local mh = self.toastFont:getHeight(message)
 		local rw = mw + self.toastFont:getWidth('M') * 2
 		local rh = mh + self.toastFont:getHeight('M') * 2
 		love.graphics.rectangle('fill', _G.UI_SAFEX + (_G.UI_SAFEW - rw) / 2, _G.UI_SAFEY + ((_G.UI_SAFEH - rh) / 2) + y, rw, rh, _G.BAIZE.cardRadius, _G.BAIZE.cardRadius)
-		love.graphics.setColor(1, 1, 1, 1)
+		Util.setColorFromName('UiForeground')
 		love.graphics.print(message, _G.UI_SAFEX + (_G.UI_SAFEW - mw) / 2, _G.UI_SAFEY + ((_G.UI_SAFEH - mh) / 2) + y)
 	end
 

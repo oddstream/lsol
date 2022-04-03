@@ -109,6 +109,13 @@ function CC.DownColorWrap(cpair)
 	return nil
 end
 
+function CC.UpAltColor(cpair)
+	if cpair[1].black == cpair[2].black then
+		return 'Cards must be in alternating colors'
+	end
+	return CC.Up(cpair)
+end
+
 function CC.DownAltColor(cpair)
 	if cpair[1].black == cpair[2].black then
 		return 'Cards must be in alternating colors'
