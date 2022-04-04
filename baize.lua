@@ -949,11 +949,12 @@ function Baize:layout()
 	-- safey = love.window.toPixels(safey)
 	-- safew = love.window.toPixels(safew)
 	-- safeh = love.window.toPixels(safeh)
-	if self.settings.debug then
-		local ww, wh, _ = love.window.getMode()
-		safex, safey, safew, safeh = 50, 50, ww - (50*2), wh - (50*2)
-		log.info(ww, wh, ':=', safex, safey, safew, safeh)
-	end
+	-- if self.settings.debug then
+	-- 	local amt = 50
+	-- 	local ww, wh, _ = love.window.getMode()
+	-- 	safex, safey, safew, safeh = amt, amt, ww - (amt*2), wh - (amt*2)
+	-- 	log.info(ww, wh, ':=', safex, safey, safew, safeh)
+	-- end
 	_G.UI_SAFEX = safex
 	_G.UI_SAFEY = safey
 	_G.UI_SAFEW = safew
@@ -1578,10 +1579,15 @@ function Baize:draw()
 	self.ui:draw()
 
 	if self.settings.debug then
-		love.graphics.print(string.format('%s sc=%d ww=%d, wh=%d', love.system.getOS(), love.window.getDPIScale(), love.graphics.getWidth(), love.graphics.getHeight()), 56, 16)
+		love.graphics.setColor(0,1,0)
+		love.graphics.print(string.format('%s sc=%d ww=%d, wh=%d sx=%d sy=%d sw=%d sh=%d',
+			love.system.getOS(),
+			love.window.getDPIScale(),
+			love.graphics.getWidth(), love.graphics.getHeight(),
+			_G.UI_SAFEX, _G.UI_SAFEY, _G.UI_SAFEW, _G.UI_SAFEH),
+			56, 16)
 	end
 	-- love.graphics.setFont(self.suitFont)
-	-- love.graphics.setColor(love.math.colorFromBytes(255, 255, 240))	-- Ivory
 	-- love.graphics.print(string.format('#undoStack %d', #_G.BAIZE.undoStack, 10, 10))
 	-- love.graphics.print(string.format('%f', love.timer.getTime() - self.lastInput), 56, 2)
 end

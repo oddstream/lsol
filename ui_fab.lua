@@ -71,6 +71,9 @@ function FAB:draw()
 				y = y + 2
 			end
 		end
+		-- very important!: reset color before drawing to canvas to have colors properly displayed
+		-- see discussion here: https://love2d.org/forums/viewtopic.php?f=4&p=211418#p211418
+		Util.setColorFromName('UiForeground')
 		love.graphics.draw(self.texture, x, y) --, 0, _G.UI_SCALE, _G.UI_SCALE)
 	end
 end

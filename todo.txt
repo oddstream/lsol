@@ -25,7 +25,6 @@ ANDROID
 	Creepy Crawly
 	Cruel
 	Good Measure
-	Forty and Eight
 	Number Ten
 	Busy Aces
 	Martha
@@ -56,7 +55,70 @@ https://www.politaire.com/rougeetnoir
 https://www.politaire.com/help/rougeetnoir
 
 https://wiki.gnome.org/Apps/Aisleriot/Games
-Agnes Athena Auld Lang Syne Aunt Mary Backbone Bakers Dozen Bakers Game Beleaguered Castle Block Ten Bristol Camelot Canfield Carpet Chessboard Clock Cover Cruel Diamond Mine Doublets Eagle Wing Easthaven Eight Off Elevator Escalator First Law Fortress Fortunes Fourteen Freecell Gaps Gay Gordons Glenwood Golf Gypsy Helsinki Hopscotch Isabel Jamestown Jumbo Kansas King Albert Kings Audience Klondike Labyrinth Lady Jane Maze Monte Carlo Napoleon's Tomb Neighbor Odessa Osmosis Peek Pileon Plait Poker Quatorze Royal East Saratoga Scorpion Scuffle Seahaven Sir Tommy Spiderette Spider Spider Three Decks Straight Up Streets And Alleys Ten Across Thieves Thirteen Thumb And Pouch Treize Triple Peaks Union Square Valentine Westhaven Whitehead Will O The Wisp Yield Yukon Zebra
+Auld Lang Syne
+Aunt Mary
+Backbone
+Block Ten
+Bristol
+Camelot
+Carpet
+Chessboard
+Clock
+Cover
+Cruel
+Diamond Mine
+Doublets
+Eagle Wing
+Easthaven
+Elevator
+Escalator
+First Law
+Fortress
+Fortunes
+Fourteen
+Gaps
+Gay Gordons
+Glenwood
+Golf
+Gypsy
+Helsinki
+Hopscotch
+Isabel
+Jamestown
+Jumbo
+Kansas
+King Albert
+Kings Audience
+Labyrinth
+Lady Jane
+Maze
+Monte Carlo
+Napoleon's Tomb
+Neighbor
+Odessa
+Osmosis/Peek
+Pileon Plait Poker Quatorze Royal East
+Saratoga
+Scorpion
+Scuffle
+Seahaven
+Sir Tommy
+Spiderette
+Spider Three Decks
+Straight Up
+Streets And Alleys
+Ten Across
+Thieves
+Thirteen
+Thumb And Pouch
+Treize
+Triple Peaks
+Union Square
+Valentine
+Westhaven
+Whitehead
+Will O The Wisp
+Yield
 
 
 https://en.wikipedia.org/wiki/Gamification

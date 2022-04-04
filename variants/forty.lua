@@ -22,6 +22,7 @@ function Forty.new(o)
 	o.wikipedia = 'https://en.wikipedia.org/wiki/Forty_Thieves_(solitaire)'
 	o.packs = o.packs or 2
 	o.suitFilter = o.suitFilter or {'♣','♦','♥','♠'}
+	o.recycles = o.recycles or 0
 	return setmetatable(o, Forty)
 end
 
@@ -48,7 +49,7 @@ function Forty:buildPiles()
 end
 
 function Forty:startGame()
-	_G.BAIZE:setRecycles(0)
+	_G.BAIZE:setRecycles(self.recycles)
 	if self.dealAces then
 		for _, pile in ipairs(_G.BAIZE.foundations) do
 			Util.moveCardByOrd(_G.BAIZE.stock, pile, 1)
@@ -59,10 +60,14 @@ function Forty:startGame()
 			Util.moveCard(_G.BAIZE.stock, pile)
 		end
 	end
+	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
 end
 
--- function Forty:afterMove()
--- end
+function Forty:afterMove()
+	if #_G.BAIZE.waste.cards == 0 then
+		Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
+	end
+end
 
 function Forty:moveTailError(tail)
 	local card = tail[1]
@@ -97,8 +102,11 @@ function Forty:tailAppendError(dst, tail)
 	return nil
 end
 
--- function Forty:pileTapped(pile)
--- end
+function Forty:pileTapped(pile)
+	if pile.category == 'Stock' then
+		_G.BAIZE:recycleWasteToStock()
+	end
+end
 
 function Forty:tailTapped(tail)
 	local card = tail[1]

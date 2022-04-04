@@ -33,9 +33,8 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	baizeColor = 'DarkGreen',
 	cardBackColor = 'CornflowerBlue',
 	cardFaceColor = 'Ivory',
-	cardFaceHighlightColor = 'Gold',
-	clubColor = 'Indigo',
-	diamondColor = 'OrangeRed',
+	clubColor = 'DarkGreen',
+	diamondColor = 'MediumBlue',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
 	oneColorCards = false,
@@ -76,6 +75,7 @@ _G.LSOL_VARIANTS = {
 	Thoughtful = {file='klondike.lua', cc=2, thoughtful=true},
 	['Klondike (Turn Three)']  = {file='klondike.lua', cc=2, turn=3},
 	['Forty Thieves'] = {file='forty.lua', cc=4, tabs=10, cardsPerTab=4},
+	['Forty and Eight'] = {file='forty.lua', cc=4, tabs=10, cardsPerTab=5, recycles=1},
 	Josephine = {file='forty.lua', cc=4, tabs=10, cardsPerTab=4, josephine=true},
 	Limited = {file='forty.lua', cc=4, tabs=12, cardsPerTab=3},
 	Lucas = {file='forty.lua', cc=4, tabs=13, cardsPerTab=3, dealAces=true},
@@ -102,7 +102,7 @@ _G.VARIANT_TYPES = {
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
 	['> Easier'] = {'Accordian','American Toad','Blockade','Lucas','Spider One Suit','Red and Black'},
-	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas'},
+	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight'},
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed'},
 	['> Klondikes'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine'},
@@ -209,6 +209,7 @@ _G.LSOL_COLORS = {
 
 	-- Blue colors
 	DarkBlue = {0,0,139},
+	MediumBlue = {0,0,205},
 	CornflowerBlue = {100,149,237},
 	LightSkyBlue = {135, 206, 250},
 
