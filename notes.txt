@@ -17,10 +17,6 @@ https://github.com/rxi/json.lua
 https://github.com/gvx/bitser
 	bitser library
 
-
-https://play.google.com/apps/test/com.oddstream.lovesolitaire/1
-https://play.google.com/apps/test/com.oddstream.lovesolitaire/2
-
 # adb
 https://developer.android.com/studio/command-line/adb
 

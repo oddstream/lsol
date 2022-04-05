@@ -21,6 +21,10 @@ function CC.Empty(pile, card)
 	return nil
 end
 
+function CC.None(cpair)
+	return 'No'
+end
+
 function CC.Up(cpair)
 	if cpair[1].ord + 1 ~= cpair[2].ord then
 		return 'Cards must be in ascending sequence'
@@ -35,10 +39,21 @@ function CC.Down(cpair)
 	return nil
 end
 
-function CC.UpOrDownSuit(cpair)
-	if cpair[1].suit ~= cpair[2].suit then
-		return 'Cards must be the same suit'
+function CC.UpOrDownWrap(cpair)
+	if cpair[1].ord == 13 and cpair[2].ord == 1 then
+		return nil
+	elseif cpair[1].ord == 1 and cpair[2].ord == 13 then
+		return nil
+	elseif cpair[1].ord == cpair[2].ord + 1 then
+		return nil	-- eg 4 on 3
+	elseif cpair[1].ord + 1 == cpair[2].ord then
+		return nil	-- eg 3 on 4
+	else
+		return 'Cards must be up or down (Aces on Kings allowed)'
 	end
+end
+
+function CC.UpOrDown(cpair)
 	if cpair[1].ord == cpair[2].ord + 1 then
 		return nil	-- eg 4 on 3
 	elseif cpair[1].ord + 1 == cpair[2].ord then
@@ -46,6 +61,13 @@ function CC.UpOrDownSuit(cpair)
 	else
 		return 'Cards must be up or down'
 	end
+end
+
+function CC.UpOrDownSuit(cpair)
+	if cpair[1].suit ~= cpair[2].suit then
+		return 'Cards must be the same suit'
+	end
+	return CC.UpOrDown(cpair)
 end
 
 function CC.UpSuit(cpair)

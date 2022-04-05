@@ -210,6 +210,11 @@ function UI:showVariantsDrawer(vtype)
 			table.insert(self.variantsdrawer.widgets, wgt)
 		end
 		table.sort(self.variantsdrawer.widgets, function(a, b) return a.text < b.text end)
+		if _G.BAIZE.settings.debug then
+			for k, v in ipairs(self.variantsdrawer.widgets) do
+				print(k, v.text)
+			end
+		end
 		self.variantsdrawer:layout()
 		self.variantsdrawer:show()
 	else
