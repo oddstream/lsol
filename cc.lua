@@ -53,6 +53,18 @@ function CC.UpOrDownWrap(cpair)
 	end
 end
 
+function CC.UpOrDownSuitWrap(cpair)
+	assert(cpair)
+	assert(cpair[1])
+	assert(cpair[2])
+	assert(cpair[1].suit)
+	assert(cpair[2].suit)
+	if cpair[1].suit ~= cpair[2].suit then
+		return 'Must be the same suit'
+	end
+	return CC.UpOrDownWrap(cpair)
+end
+
 function CC.UpOrDown(cpair)
 	if cpair[1].ord == cpair[2].ord + 1 then
 		return nil	-- eg 4 on 3

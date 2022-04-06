@@ -504,6 +504,8 @@ function Baize:countMoves()
 
 	if #self.stock.cards > 0 then
 		moves = moves + 1
+	elseif #self.stock.cards == 0 and self.recycles > 0 then
+		moves = moves + 1
 	end
 
 	if self.waste and #self.waste.cards > 0 then
@@ -517,9 +519,6 @@ function Baize:countMoves()
 				end
 				if self.settings.debug then tail[1].movable = true end
 			end
-		end
-		if #self.stock.cards == 0 and self.recycles > 0 then
-			moves = moves + 1
 		end
 	end
 

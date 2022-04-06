@@ -285,7 +285,17 @@ function Pile:buryCards(ord)
 	end
 end
 
-function Pile:disinterOneCard(ord)
+function Pile:disinterOneCard(ord, suit)
+	for i, c in ipairs(self.cards) do
+		if c.ord == ord and c.suit == suit then
+			self.cards[i], self.cards[#self.cards] = self.cards[#self.cards], self.cards[i]
+			return c
+		end
+	end
+	return nil
+end
+
+function Pile:disinterOneCardByOrd(ord)
 	-- TODO used by Penguin but this don't look right
 	for i, c in ipairs(self.cards) do
 		if c.ord == ord then

@@ -144,7 +144,15 @@ function Util.moveCard(src, dst)
 end
 
 function Util.moveCardByOrd(src, dst, ord)
-	local c = src:disinterOneCard(ord)
+	local c = src:disinterOneCardByOrd(ord)
+	if c then
+		return Util.moveCard(src, dst)
+	end
+	return nil
+end
+
+function Util.moveCardByOrdAndSuit(src, dst, ord, suit)
+	local c = src:disinterOneCard(ord, suit)
 	if c then
 		return Util.moveCard(src, dst)
 	end

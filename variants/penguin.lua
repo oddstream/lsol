@@ -47,11 +47,11 @@ function Penguin:startGame()
 	end
 	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.tableaux[1])
 
-	_G.BAIZE.stock:disinterOneCard(faccept)
+	_G.BAIZE.stock:disinterOneCardByOrd(faccept)
 	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.foundations[1])
-	_G.BAIZE.stock:disinterOneCard(faccept)
+	_G.BAIZE.stock:disinterOneCardByOrd(faccept)
 	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.foundations[2])
-	_G.BAIZE.stock:disinterOneCard(faccept)
+	_G.BAIZE.stock:disinterOneCardByOrd(faccept)
 	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.foundations[3])
 
 	-- 49-card layout consisting of seven rows and seven columns

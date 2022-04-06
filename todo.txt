@@ -31,7 +31,6 @@ ANDROID
 	Scorpion, Wasp
 	Single Rail
 	Sir Tommy
-	https://en.wikipedia.org/wiki/Little_Spider
 	Spiderette (One Suit)
 	Spiderette (Two Suits)
 	Will o' the Wisp
