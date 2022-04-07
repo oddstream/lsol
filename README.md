@@ -10,26 +10,12 @@ PLay it by downlaoding/installing the LÖVE runtime and typing 'love lsol.love'.
 
 It currently knows how to play:
 
-* Accordian
-* Australian
-* Bisley
-* Baker's Dozen
-* Beleaguered Castle
-* Canfield (American Toad, Duchess)
-* Forty Thieves (also Sixty Thieves, Busy Aces, Forty and Eight, Josephine, Maria, Limited, Lucas, Red and Black, Rank and File, Number Ten)
-* Freecell (also Eight Off)
-* Klondike (also Klondike Draw Three, Thoughtful)
-* Penguin
-* Simple Simon
-* Spider (also Spider One Suit, Spider Two Suits)
-* Whitehead
-* Yukon (also Yukon Cells, Yukon Relaxed)
+♥ Accordian ♥ Agnes Bernauer ♥ Agnes Sorel ♥ Alhambra ♥ American Toad ♥ American Westcliff ♥ Assembly ♥ Athena ♥ Australian ♥ Baker's Dozen ♥ Baker's Dozen (Wide) ♥ Baker's Game ♥ Baker's Game Relaxed ♥ Beleaguered Castle ♥ Bisley ♥ Blockade ♥ Canfield ♥ Classic Westcliff ♥ Crimean ♥ Duchess ♥ Easthaven ♥ Eight Off ♥ Eight Off Relaxed ♥ Flat Castle ♥ Forty Thieves ♥ Forty and Eight ♥ Freecell ♥ Gate ♥ Josephine ♥ Klondike ♥ Klondike (Turn Three) ♥ Limited ♥ Little Spider ♥ Lucas ♥ Martha ♥ Penguin ♥ Rainbow Canfield ♥ Red and Black ♥ Russian ♥ Scorpion ♥ Sea Haven Towers ♥ Simple Simon ♥ Spider ♥ Spider One Suit ♥ Spider Two Suits ♥ Storehouse Canfield ♥ Thirteens ♥ Thoughtful ♥ Ukrainian ♥ Wasp ♥ Yukon ♥ Yukon Cells ♥ Yukon Relaxed
 
 Variants are added when the whim takes me, or when some aspect of the engine needs testing/extending, or when someone asks.
 
 Some variants have been tried and discarded as being a bit silly, or just too hard:
 
-* Agnes Sorel
 * Giant
 * King Albert
 * Raglan
@@ -37,7 +23,7 @@ Some variants have been tried and discarded as being a bit silly, or just too ha
 Some will never make it here because they are just poor games:
 
 * Golf
-* Pyramid (or any card matching variant)
+* Pyramid (or most other card matching variants)
 
 ![Screenshot](https://github.com/oddstream/gosol/blob/7152668f4b5053a1d438981e9d4564624616da6a/screenshots/Australian.png)
 
@@ -195,7 +181,6 @@ that anyone else ever has, or ever will.
 
 ## TODO
 
-* Get it working on Android (agggh! help!).
 * Get it working on iOS. But, I don't have a Macintosh and am reluctant to pay Apple the annual App Store fee, and jump through their hoops. If you want to do this, let me know and we'll collaborate.
 * I'd like it to have an inter-user high scores table, but the Google Play games services interface and setup is inpenetrable to me at the moment.
 * Give up and rewrite the whole thing in [Defold](https://www.defold.com), or Dart+Flutter, or Kotlin+Korge, or something else.
