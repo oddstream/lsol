@@ -36,7 +36,7 @@ function Forty:buildPiles()
 	end
 	for x = 1, 8 do
 		local pile = Foundation.new{x=firstFound+x, y=1}
-		pile.label =  _G.ORD2STRING[1]
+		pile.label = 'A'
 	end
 	local firstTab = firstFound + 8 - self.tabs
 	for x = 1, self.tabs do

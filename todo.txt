@@ -20,6 +20,37 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Moto G4
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ https://en.wikipedia.org/wiki/Crazy_Quilt_(solitaire)
+	requires rotating a pile (Reserve) by 90 degrees
+
++ card rotating
+	angle set by owning pile
+	love.graphics.rectangle does not have an angle parameter
+		so will have to create canvas graphic for piles
+		which updates when label/symbol is set
+		and use love.graphics.draw
+		"t's possible to rotate an object about its center by offsetting the origin to the center. Angles must be given in radians for rotation."
+	card needs to transition/animate when popping and pushing
+	hit testing changes, geometry needed
+	fanning changes
+
++ dynamically create pile img
+	+ set font when creating pile (ord font for labels, rune font for runes)
+	+ test for nil and create
+	+ set to nil when updating label or rune; need a setLabel() function
+
+function Baize:createPileTextures()
+	-- normal pile
+	-- normal pile + label (one for each label)
+	-- discard pile
+	-- normal pile + recycle rune
+	-- normal pile + no recycle rune
+	-- label font (== ord font) and rune font are different
+end
+
+
++ https://playingcarddecks.com/blogs/all-in/10-builder-solitaire-card-games-with-unusual-layouts
+
 + Add all the Opsole variants
 	+ https://www.solitairelaboratory.com/virtuoso.html
 	Creepy Crawly

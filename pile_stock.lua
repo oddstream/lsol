@@ -109,8 +109,8 @@ function Stock:draw()
 			0,	-- orientation
 			1,	-- x scale
 			1,	-- y scale
-			b.runeFont:getWidth(self.rune) / 2,
-			b.runeFont:getHeight(self.rune) / 2)
+			b.runeFont:getWidth(self.rune) / 2,		-- origin offset
+			b.runeFont:getHeight(self.rune) / 2)	-- origin offset
 	end
 end
 

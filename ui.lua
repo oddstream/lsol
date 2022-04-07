@@ -211,8 +211,8 @@ function UI:showVariantsDrawer(vtype)
 		end
 		table.sort(self.variantsdrawer.widgets, function(a, b) return a.text < b.text end)
 		if _G.BAIZE.settings.debug then
-			for k, v in ipairs(self.variantsdrawer.widgets) do
-				print(k, v.text)
+			for _, v in ipairs(self.variantsdrawer.widgets) do
+				print('♥ ' .. v.text)
 			end
 		end
 		self.variantsdrawer:layout()

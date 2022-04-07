@@ -85,6 +85,8 @@ _G.LSOL_VARIANTS = {
 	Martha = {file='martha.lua', cc=2},
 	Penguin = {file='penguin.lua', cc=4},
 	['Red and Black'] = {file='redandblack.lua', cc=2},
+	Scorpion = {file='scorpion.lua', cc=4},
+	Wasp = {file='scorpion.lua', cc=4, relaxed=true},
 	['Simple Simon'] = {file='simplesimon.lua', cc=4},
 	Spider = {file='spider.lua', packs=2, cc=4, suitFilter={'♣','♦','♥','♠'}},
 	['Spider One Suit'] = {file='spider.lua', cc=1, packs=8, suitFilter={'♠'}},

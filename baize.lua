@@ -625,7 +625,7 @@ function Baize:updateStatus()
 		elseif fmoves > 0 then
 			self.status = 'collect'
 		else
-			self.status = string.format('afoot %d %d', moves, fmoves)
+			self.status = string.format('afoot moves=%d fmoves=%d', moves, fmoves)
 		end
 	end
 

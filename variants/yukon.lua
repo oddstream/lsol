@@ -35,7 +35,7 @@ function Yukon:buildPiles()
 	-- the flipper, seven cells
 	for y = 1, 4 do
 		local pile = Foundation.new{x=8.5, y=y}
-		pile.label =  _G.ORD2STRING[1]
+		pile.label = 'A'
 	end
 	if self.cells then
 		for y = 5, 7 do
@@ -45,7 +45,7 @@ function Yukon:buildPiles()
 	for x = 1, 7 do
 		local pile = Tableau.new{x=x, y=1, fanType='FAN_DOWN', moveType='MOVE_ANY'}
 		if not self.relaxed then
-			pile.label = _G.ORD2STRING[13]
+			pile.label = 'K'
 		end
 	end
 end
