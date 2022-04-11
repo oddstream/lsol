@@ -12,6 +12,7 @@ local DivWidget = require 'ui_divwidget'
 local Checkbox = require 'ui_checkbox'
 local Radio = require 'ui_radio'
 local FAB = require 'ui_fab'
+local ModalDialog = require 'ui_modaldialog'
 
 local Util = require 'util'
 
@@ -248,6 +249,21 @@ function UI:hideFAB()
 	self.fab = nil
 end
 
+function UI:showModalDialog(obj)
+	if self.modalDialog then
+		log.error('There is already a modal dialog')
+		return
+	end
+	obj.font = self.toastFont
+	self.modalDialog = ModalDialog.new(obj)
+end
+
+function UI:cancelModalDialog()
+	if self.modalDialog then
+		self.modalDialog = nil
+	end
+end
+
 function UI:toast(message, soundName)
 
 	-- if we are already displaying this message, reset secondsLeft and quit
@@ -259,6 +275,26 @@ function UI:toast(message, soundName)
 		end
 	end
 	local t = {message=message, secondsLeft=4 + #self.toasts}
+	t.mw = self.toastFont:getWidth(message)
+	t.mh = self.toastFont:getHeight(message)
+	t.rw = t.mw + self.toastFont:getWidth('M') * 2
+	t.rh = t.mh + self.toastFont:getHeight('M') * 2
+
+	-- create a texture to avoid calling rectangle, print every frame
+	-- https://material.io/archive/guidelines/components/snackbars-toasts.html#snackbars-toasts-specs
+	-- Single-line snackbar height: 48dp
+	-- Text: Roboto Regular 14sp
+	-- Default background fill: #323232 100%
+	local canvas = love.graphics.newCanvas(t.rw, t.rh)
+	love.graphics.setCanvas(canvas)
+	Util.setColorFromName('UiBackground')
+	love.graphics.rectangle('fill', 0, 0, t.rw, t.rh)
+	Util.setColorFromName('UiForeground')
+	love.graphics.setFont(self.toastFont)
+	love.graphics.print(t.message, (t.rw / 2) - (t.mw / 2), (t.rh / 2) - (t.mh / 2))
+	love.graphics.setCanvas()
+	t.texture = canvas
+
 	table.insert(self.toasts, 1, t)
 
 	if soundName then
@@ -270,8 +306,13 @@ function UI:layout()
 	for _, con in ipairs(self.containers) do
 		con:layout()
 	end
+	-- TODO why not layout toast here?
 	if self.fab then
+		-- TODO why is FAB not a container?
 		self.fab:layout()
+	end
+	if self.modalDialog then
+		self.modalDialog:layout()
 	end
 end
 
@@ -303,27 +344,19 @@ function UI:draw()
 		self.fab:draw()
 	end
 
-	local function drawToast(message, y)
-		-- https://material.io/archive/guidelines/components/snackbars-toasts.html#snackbars-toasts-specs
-		-- Single-line snackbar height: 48dp
-		-- Text: Roboto Regular 14sp
-		-- Default background fill: #323232 100%
-		Util.setColorFromName('UiBackground')
-		love.graphics.setFont(self.toastFont)
-		local mw = self.toastFont:getWidth(message)
-		local mh = self.toastFont:getHeight(message)
-		local rw = mw + self.toastFont:getWidth('M') * 2
-		local rh = mh + self.toastFont:getHeight('M') * 2
-		love.graphics.rectangle('fill', _G.UI_SAFEX + (_G.UI_SAFEW - rw) / 2, _G.UI_SAFEY + ((_G.UI_SAFEH - rh) / 2) + y, rw, rh, _G.BAIZE.cardRadius, _G.BAIZE.cardRadius)
+	if self.modalDialog then
+		self.modalDialog:draw()
+	end
+
+	local function drawToast(t, y)
 		Util.setColorFromName('UiForeground')
-		love.graphics.print(message, _G.UI_SAFEX + (_G.UI_SAFEW - mw) / 2, _G.UI_SAFEY + ((_G.UI_SAFEH - mh) / 2) + y)
+		love.graphics.draw(t.texture, _G.UI_SAFEX + (_G.UI_SAFEW - t.mw) / 2, _G.UI_SAFEY + ((_G.UI_SAFEH - t.mh) / 2) + y)
 	end
 
 	if #self.toasts > 0 then
 		for i = 1, #self.toasts do
 			-- (i + 2) to nudge to toasts down the screen a little
-			drawToast(self.toasts[i].message, (i + 2) * (_G.TITLEBARHEIGHT + self.toastFont:getHeight('M')))
-			-- drawToast(string.format('%d %s', self.toasts[i].secondsLeft, self.toasts[i].message), i * (48 + 12))
+			drawToast(self.toasts[i], (i + 2) * (_G.TITLEBARHEIGHT + self.toastFont:getHeight('M')))
 		end
 	end
 

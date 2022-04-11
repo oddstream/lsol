@@ -824,6 +824,11 @@ function Baize:toggleRadio(radio)
 	self:createCardTextures()
 end
 
+local function resignGameAreYouSure()
+	local pressedButton = love.window.showMessageBox('Resign this game', 'Are you sure?', {'No', 'Yes', escapebutton = 1})
+	return pressedButton == 2
+end
+
 function Baize:changeVariant(vname)
 	log.trace('changing variant from', self.settings.variantName, 'to', vname)
 	if vname == self.settings.variantName then
@@ -833,6 +838,9 @@ function Baize:changeVariant(vname)
 	if newScript then
 		if #self.undoStack > 1 then
 			if self.percent < 100 then
+				if not resignGameAreYouSure() then
+					return
+				end
 				self.stats:recordLostGame(self.settings.variantName, self.percent)
 			end
 		end
@@ -863,6 +871,9 @@ end
 function Baize:newDeal()
 	if #self.undoStack > 1 then
 		if self.percent < 100 then
+			if not resignGameAreYouSure() then
+				return
+			end
 			self.stats:recordLostGame(self.settings.variantName, self.percent)
 		end
 	end

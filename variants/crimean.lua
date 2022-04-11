@@ -65,6 +65,7 @@ function Crimean:startGame()
 	if #_G.BAIZE.stock.cards > 0 then
 		log.error('Oops - there are still', #_G.BAIZE.stock.cards, 'cards in the Stock')
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 -- function Crimean:afterMove()

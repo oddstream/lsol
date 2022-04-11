@@ -20,6 +20,16 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Moto G4
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ 'Moved' 'cards must be the same suit'
+	error messages returned as all lower case,
+	so prefix and caps can be applied before toasting
+
++ AreYouSure message box UI object
+	start by converting toast to container
+	then FAB to (round) container?
+	then dialog as a container
+		with title, text, button strip (or generalised alignment horz/vert strip), button widgets
+
 + https://en.wikipedia.org/wiki/Crazy_Quilt_(solitaire)
 	requires rotating a pile (Reserve) by 90 degrees
 

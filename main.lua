@@ -160,7 +160,7 @@ do
 		-- end
 
 		local lst = {}
-		for i=1, 3 do
+		for i= 1, 5 do
 			table.insert(lst, tab[i].vname)
 		end
 		_G.VARIANT_TYPES['> Favorites'] = lst
@@ -468,6 +468,11 @@ function love.keyreleased(key)
 		elseif key == 'search' then
 			_G.BAIZE.ui:showVariantTypesDrawer()
 		end
+	else
+		if key == 'escape' then
+			_G.BAIZE.ui:hideDrawers()
+			_G.BAIZE.ui:cancelModalDialog()
+		end
 	end
 
 	if _G.BAIZE.settings.debug then
@@ -482,6 +487,8 @@ function love.keyreleased(key)
 			_G.BAIZE:stopSpinning()
 		elseif key == 'f' then
 			_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
+		elseif key == 'm' then
+			_G.BAIZE.ui:showModalDialog{title='Are you sure?', text='Shall I do a thing?', buttons={'Yes', 'No'}}
 		end
 	end
 
