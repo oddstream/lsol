@@ -15,7 +15,6 @@ Australian.__index = Australian
 setmetatable(Australian, {__index = Variant})
 
 function Australian.new(o)
-	o = o or {}
 	o.tabCompareFn = CC.DownSuit
 	o.wikipedia='https://en.wikipedia.org/wiki/Australian_Patience'
 	return setmetatable(o, Australian)
@@ -36,19 +35,19 @@ function Australian:buildPiles()
 end
 
 function Australian:startGame()
-	-- log.trace('Australian.startGame')
-	local src = _G.BAIZE.stock
+	local stock = _G.BAIZE.stock
 	for _, dst in ipairs(_G.BAIZE.tableaux) do
 		for _ = 1, 4 do
-			Util.moveCard(src, dst)
+			Util.moveCard(stock, dst)
 		end
 	end
+
+	Util.moveCard(stock, _G.BAIZE.waste)
+
 	_G.BAIZE:setRecycles(0)
-	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
 end
 
 function Australian:afterMove()
-	-- log.trace('Australian.afterMove')
 	if #_G.BAIZE.waste.cards == 0 and #_G.BAIZE.stock.cards > 0 then
 		Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
 	end

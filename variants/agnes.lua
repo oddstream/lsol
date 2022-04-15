@@ -15,7 +15,6 @@ Agnes.__index = Agnes
 setmetatable(Agnes, {__index = Variant})
 
 function Agnes.new(o)
-	o = o or {}
 	if o.sorel then
 		o.tabCompareFn = CC.DownSuitWrap
 	elseif o.bernauer then

@@ -20,6 +20,10 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Moto G4
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ http://www.allgoodsw.com/allgood-solitaire-for-ipad-coming-soon/
+	Ascension
+	stats on a yellow lined pad
+
 + 'Moved' 'cards must be the same suit'
 	error messages returned as all lower case,
 	so prefix and caps can be applied before toasting

@@ -26,7 +26,7 @@ function Crimean:buildPiles()
 	Stock.new({x=-5, y=-5})
 	if self.crimean then
 		for x = 1, 3 do
-			Reserve.new({x=x, y=1})
+			Reserve.new({x=x, y=1, fanType='FAN_NONE'})
 		end
 	end
 	for x = 4, 7 do

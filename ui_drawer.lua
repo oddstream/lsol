@@ -10,6 +10,17 @@ setmetatable(Drawer, {__index = Container})
 
 function Drawer.new(o)
 	o = Container.new(o)
+
+	o.width = o.width or 256
+	o.aniState = 'stop'
+	o.x = -(o.width + _G.UI_SAFEX) -- starts hidden
+	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE)
+	o.spacex = o.font:getWidth('M')
+	o.spacey = o.font:getHeight('M')
+	o.widgets = {}
+
+	Drawer.layout(o)	-- instantiates .y, .height
+
 	return setmetatable(o, Drawer)
 end
 

@@ -85,6 +85,7 @@ _G.LSOL_VARIANTS = {
 	Martha = {file='martha.lua', cc=2},
 	Penguin = {file='penguin.lua', cc=4},
 	['Red and Black'] = {file='redandblack.lua', cc=2},
+	Rosamund = {file='rosamund.lua', cc=2},
 	Scorpion = {file='scorpion.lua', cc=4},
 	Wasp = {file='scorpion.lua', cc=4, relaxed=true},
 	['Simple Simon'] = {file='simplesimon.lua', cc=4},
@@ -111,7 +112,7 @@ _G.VARIANT_TYPES = {
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight'},
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
-	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha'},
+	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Rosamund'},
 	['> Places'] = {'Alhambra','Australian', 'Yukon', 'Yukon Relaxed','Russian','Crimean','Ukrainian'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
@@ -329,8 +330,8 @@ There may be a small performance penalty as the output will be flushed after eac
 	else
 		love.window.setIcon(createWindowIcon())
 		-- love.window.setMode(1024, 500, {resizable=true, minwidth=640, minheight=500})
-		-- love.window.setMode(1080/2, 1920/2, {resizable=true, minwidth=640, minheight=500})
-		love.window.setMode(1024, 1024, {resizable=true, msaa=limits.canvasmsaa, minwidth=640, minheight=500})
+		love.window.setMode(1080/2, 1920/2, {resizable=true,  msaa=limits.canvasmsaa, minwidth=640, minheight=500})
+		-- love.window.setMode(1024, 1024, {resizable=true, msaa=limits.canvasmsaa, minwidth=640, minheight=500})
 	end
 
 	_G.TITLEBARHEIGHT = 48 * _G.UI_SCALE
@@ -488,7 +489,7 @@ function love.keyreleased(key)
 		elseif key == 'f' then
 			_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
 		elseif key == 'm' then
-			_G.BAIZE.ui:showModalDialog{title='Are you sure?', text='Shall I do a thing?', buttons={'Yes', 'No'}}
+			_G.BAIZE.ui:showModalDialog{text='This game will count as a loss. Continue?', buttons={'Yes', 'No'}}
 		end
 	end
 

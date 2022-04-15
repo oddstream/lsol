@@ -9,6 +9,7 @@ setmetatable(Waste, {__index = Pile})
 function Waste.new(o)
 	o = Pile.new(o)
 	o.category = 'Waste'
+	assert(o.fanType)
 	o.moveType = 'MOVE_ONE'
 	table.insert(_G.BAIZE.piles, o)
 	_G.BAIZE.waste = o

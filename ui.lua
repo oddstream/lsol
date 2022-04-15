@@ -3,8 +3,7 @@
 local log = require 'log'
 
 local Titlebar = require 'ui_titlebar'
-local MenuDrawer = require 'ui_menudrawer'
-local TextDrawer = require 'ui_textdrawer'
+local Drawer = require 'ui_drawer'
 local Statusbar = require 'ui_statusbar'
 local IconWidget = require 'ui_iconwidget'
 local TextWidget = require 'ui_textwidget'
@@ -67,7 +66,7 @@ function UI.new()
 		wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
 		table.insert(o.titlebar.widgets, wgt)
 
-	o.menudrawer = MenuDrawer.new({width=320 * _G.UI_SCALE})
+	o.menudrawer = Drawer.new({width=320 * _G.UI_SCALE})
 	for _, winfo in ipairs(menuWidgets) do
 		winfo.parent = o.menudrawer
 		if winfo.text then
@@ -77,18 +76,18 @@ function UI.new()
 		end
 	end
 
-	o.typesdrawer = MenuDrawer.new({width=320 * _G.UI_SCALE})
+	o.typesdrawer = Drawer.new({width=320 * _G.UI_SCALE})
 	for k, _ in pairs(_G.VARIANT_TYPES) do
 		wgt = TextWidget.new({parent=o.typesdrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
 		table.insert(o.typesdrawer.widgets, wgt)
 	end
 	table.sort(o.typesdrawer.widgets, function(a, b) return a.text < b.text end)
 
-	o.variantsdrawer = MenuDrawer.new({width=320 * _G.UI_SCALE})
+	o.variantsdrawer = Drawer.new({width=320 * _G.UI_SCALE})
 
-	o.statsdrawer = TextDrawer.new({width=420 * _G.UI_SCALE})
+	o.statsdrawer = Drawer.new({width=420 * _G.UI_SCALE})
 
-	o.settingsdrawer = MenuDrawer.new({width=320 * _G.UI_SCALE})
+	o.settingsdrawer = Drawer.new({width=320 * _G.UI_SCALE})
 	for _, winfo in ipairs(settingsWidgets) do
 		winfo.parent = o.settingsdrawer
 		if winfo.grp then
@@ -128,6 +127,15 @@ function UI:findWidgetAt(x, y)
 		for _, w in ipairs(con.widgets) do
 			if Util.inRect(x, y, w:screenRect()) then
 				return w
+			end
+		end
+	end
+	if self.modalDialog then
+		if Util.inRect(x, y, self.modalDialog:screenRect()) then
+			for _, w in ipairs(self.modalDialog.widgets) do
+				if Util.inRect(x, y, w:screenRect()) then
+					return w
+				end
 			end
 		end
 	end
@@ -256,6 +264,7 @@ function UI:showModalDialog(obj)
 	end
 	obj.font = self.toastFont
 	self.modalDialog = ModalDialog.new(obj)
+	self.modalDialog:layout()
 end
 
 function UI:cancelModalDialog()
@@ -307,6 +316,7 @@ function UI:layout()
 		con:layout()
 	end
 	-- TODO why not layout toast here?
+	-- TODO why are toasts not containers?
 	if self.fab then
 		-- TODO why is FAB not a container?
 		self.fab:layout()

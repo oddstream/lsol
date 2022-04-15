@@ -256,6 +256,7 @@ function Pile:pop()
 	if self.fanType == 'FAN_RIGHT3' or self.fanType == 'FAN_DOWN3' then
 		self:refan(Card.transitionTo)
 	end
+	c:flipUp()
 	return c
 end
 
@@ -286,6 +287,7 @@ function Pile:buryCards(ord)
 end
 
 function Pile:disinterOneCard(ord, suit)
+	-- just move card to top of card stack, ready for popping
 	for i, c in ipairs(self.cards) do
 		if c.ord == ord and c.suit == suit then
 			self.cards[i], self.cards[#self.cards] = self.cards[#self.cards], self.cards[i]
@@ -296,7 +298,7 @@ function Pile:disinterOneCard(ord, suit)
 end
 
 function Pile:disinterOneCardByOrd(ord)
-	-- TODO used by Penguin but this don't look right
+	-- just move card to top of card stack, ready for popping
 	for i, c in ipairs(self.cards) do
 		if c.ord == ord then
 			self.cards[i], self.cards[#self.cards] = self.cards[#self.cards], self.cards[i]

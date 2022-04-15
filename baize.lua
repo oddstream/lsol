@@ -1189,6 +1189,7 @@ function Baize:mousePressed(x, y, button)
 		end
 		-- log.info('strokeStart on widget', w.text or w.icon)
 	else
+		-- we drag the menu drawer containers up/down
 		local con = self.ui:findContainerAt(x, y)
 		if con then
 			-- log.info('strokeStart on container')
@@ -1305,11 +1306,11 @@ function Baize:mouseReleased(x, y, button)
 			local src = tail[1].parent
 			local dst = self:largestIntersection(tail[1])
 			if not dst then
-				log.trace('no intersection')
+				-- log.trace('no intersection')
 				for _, c in ipairs(tail) do c:cancelDrag() end
 			else
 				if src == dst then
-					log.trace('src == dst')
+					-- log.trace('src == dst')
 					for _, c in ipairs(tail) do c:cancelDrag() end
 				else
 					-- can the tail be moved in general?

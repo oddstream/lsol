@@ -14,7 +14,6 @@ Accordian.__index = Accordian
 setmetatable(Accordian, {__index = Variant})
 
 function Accordian.new(o)
-	o = o or {}
 	o.tabCompareFn = CC.Accordian
 	o.wikipedia='https://en.wikipedia.org/wiki/Accordion_(card_game)'
 	return setmetatable(o, Accordian)

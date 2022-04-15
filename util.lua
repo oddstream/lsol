@@ -147,6 +147,8 @@ function Util.moveCardByOrd(src, dst, ord)
 	local c = src:disinterOneCardByOrd(ord)
 	if c then
 		return Util.moveCard(src, dst)
+	else
+		log.error('Cannot find card', ord)
 	end
 	return nil
 end
@@ -155,6 +157,8 @@ function Util.moveCardByOrdAndSuit(src, dst, ord, suit)
 	local c = src:disinterOneCard(ord, suit)
 	if c then
 		return Util.moveCard(src, dst)
+	else
+		log.error('Cannot find card', ord, suit)
 	end
 	return nil
 end

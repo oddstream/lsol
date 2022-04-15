@@ -9,6 +9,7 @@ setmetatable(Reserve, {__index = Pile})
 function Reserve.new(o)
 	o = Pile.new(o)
 	o.category = 'Reserve'
+	assert(o.fanType)
 	o.moveType = 'MOVE_ONE'
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.reserves, o)

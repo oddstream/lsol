@@ -32,10 +32,7 @@ function Bar:layout()
 	local nextLeft = self.spacex
 	local nextRight = self.width - self.spacex
 
-	for i, wgt in ipairs(self.widgets) do
-		-- icon
-		-- text
-		-- icon text
+	for _, wgt in ipairs(self.widgets) do
 		if wgt.img then
 			wgt.width = wgt.imgWidth
 			wgt.height = wgt.imgHeight
@@ -53,7 +50,6 @@ function Bar:layout()
 			nextRight = wgt.x - self.spacex
 		end
 		wgt.y = (self.height - wgt.height) / 2
-		-- log.trace(i, wgt.text or wgt.icon, wgt.align, wgt.x, wgt.y, wgt.width, wgt.height)
 	end
 end
 

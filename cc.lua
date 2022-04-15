@@ -25,6 +25,10 @@ function CC.None(cpair)
 	return 'No'
 end
 
+function CC.Any(cpair)
+	return nil
+end
+
 function CC.Up(cpair)
 	if cpair[1].ord + 1 ~= cpair[2].ord then
 		return 'Cards must be in ascending sequence'
