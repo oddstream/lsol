@@ -252,11 +252,13 @@ end
 
 function Pile:pop()
 	local c = table.remove(self.cards)
-	if c then c.parent = nil end
-	if self.fanType == 'FAN_RIGHT3' or self.fanType == 'FAN_DOWN3' then
-		self:refan(Card.transitionTo)
+	if c then
+		c.parent = nil
+		if self.fanType == 'FAN_RIGHT3' or self.fanType == 'FAN_DOWN3' then
+			self:refan(Card.transitionTo)
+		end
+		c:flipUp()
 	end
-	c:flipUp()
 	return c
 end
 
