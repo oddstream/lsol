@@ -45,7 +45,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 }
 
 _G.LSOL_VARIANTS = {
-	Accordian = {file='accordian.lua', cc=1},
+	Accordian = {file='accordian.lua', cc=4},
 	['Agnes Bernauer'] = {file='agnes.lua', cc=2, bernauer=true},
 	['Agnes Sorel'] = {file='agnes.lua', cc=4, sorel=true},
 	Alhambra = {file='alhambra.lua', cc=2},
@@ -189,6 +189,10 @@ _G.LSOL_COLORS = {
 	Purple = {128,0,128},
 
 	-- Pink colors
+	DeepPink = {255,20,147},
+	HotPink = {255,105,180},
+	LightPink = {255,182,203},
+	Pink = {255,192,203},
 
 	-- Red colors
 	DarkRed = {139,0,0},
@@ -267,7 +271,7 @@ local function createWindowIcon()
 	local canvas = love.graphics.newCanvas(size, size)
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 
-	love.graphics.setColor(love.math.colorFromBytes(unpack(_G.LSOL_COLORS['Crimson'])))
+	love.graphics.setColor(love.math.colorFromBytes(unpack(_G.LSOL_COLORS['HotPink'])))
 	local fnt = love.graphics.newFont(_G.SUIT_FONT, size)
 	love.graphics.setFont(fnt)
 	local w = fnt:getWidth(heart)
@@ -347,6 +351,10 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.UI_SAFEH = love.window.getSafeArea()
 
 	_G.BAIZE = Baize.new()
+
+	-- love.handlers['permissionButton'] = function(text)
+	-- 	log.trace('event handler', text)
+	-- end
 
 	_G.BAIZE.stats = Stats.new()
 	_G.BAIZE:loadSettings()
@@ -488,8 +496,9 @@ function love.keyreleased(key)
 			_G.BAIZE:stopSpinning()
 		elseif key == 'f' then
 			_G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
-		elseif key == 'm' then
-			_G.BAIZE.ui:showModalDialog{text='This game will count as a loss. Continue?', buttons={'Yes', 'No'}}
+		-- elseif key == 'm' then
+		-- 	local result = _G.BAIZE:getPermission('This game will count as a loss. Continue?')
+		-- 	log.trace(result)
 		end
 	end
 

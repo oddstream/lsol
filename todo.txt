@@ -20,6 +20,14 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Moto G4
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ BUG false collect all FAB on American Toad when foundation accept card was at bottom of tableau
++ BUG the menu hamburger disappeared (again)
++ BUG sometimes not descrunching when pile left with two cards
+
++ Fennel
+	https://gitlab.com/alexjgriffith/min-love2d-fennel
+	https://technomancy.us/187
+
 + http://www.allgoodsw.com/allgood-solitaire-for-ipad-coming-soon/
 	Ascension
 	stats on a yellow lined pad
@@ -62,7 +70,6 @@ function Baize:createPileTextures()
 	-- label font (== ord font) and rune font are different
 end
 
-
 + https://playingcarddecks.com/blogs/all-in/10-builder-solitaire-card-games-with-unusual-layouts
 
 + Add all the Opsole variants
@@ -73,15 +80,12 @@ end
 	Busy Aces
 	Osmosis + Peek
 	Cruel + Perseverance
-	Scorpion, Wasp
 	Single Rail
 	Sir Tommy
 	Spiderette (One Suit)
 	Spiderette (Two Suits)
 	Will o' the Wisp
 	Romanian
-
-+ function to list all variants to text
 
 + Your feature graphic must be a PNG or JPEG, up to 1MB, and 1,024 px by 500 px
 	https://www.norio.be/graphic-generator/
@@ -90,7 +94,6 @@ end
 	https://youtu.be/O3tIxkjc5Qg
 + 'creating a variant' document
 + remove dragStart, dx2, dy2, but dragStart is used for other things eg is a card being dragged
-+ BUG sometimes not descrunching (may be fixed)
 + prettify stats
 + toast some stats when starting a game?
 

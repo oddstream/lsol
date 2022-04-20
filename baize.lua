@@ -781,8 +781,8 @@ function Baize:showSettingsDrawer()
 end
 
 function Baize:resetStats()
-	local pressedButton = love.window.showMessageBox('Reset statistics', 'Are you sure?', {'No', 'Yes', escapebutton = 1})
-	if pressedButton == 2 then
+	local pressedButton = love.window.showMessageBox('Are you sure?', 'Reset statistics for ' .. self.settings.variantName .. '?', {'Yes', 'No', escapebutton = 2}, 'warning')
+	if pressedButton == 1 then
 		self.stats:reset(self.settings.variantName)
 		self.ui:toast(string.format('Statistics for %s have been reset', self.settings.variantName))
 	end
@@ -824,9 +824,31 @@ function Baize:toggleRadio(radio)
 	self:createCardTextures()
 end
 
+--[[
+function Baize:buttonPressed(text)
+	-- for k,v in pairs(love.handlers) do
+	-- 	print(k, v)
+	-- end
+	log.trace('Baize:buttonPressed(', text, ')')
+	love.event.push('permissionButton', text)
+end
+
+function Baize:getPermission(text)
+	_G.BAIZE.ui:showModalDialog({
+		text=text,
+		buttons={'Yes','No'}
+	})
+	local eventName, result
+	repeat
+		eventName, result = love.event.wait()
+	until eventName == 'permissionButton'
+	return result == 'Yes'
+end
+]]
+
 local function resignGameAreYouSure()
-	local pressedButton = love.window.showMessageBox('Resign this game', 'Are you sure?', {'No', 'Yes', escapebutton = 1})
-	return pressedButton == 2
+	local pressedButton = love.window.showMessageBox('Are you sure?', 'The current game will count as a loss. Continue?', {'Yes', 'No', escapebutton = 2}, 'warning')
+	return pressedButton == 1
 end
 
 function Baize:changeVariant(vname)
@@ -837,7 +859,7 @@ function Baize:changeVariant(vname)
 	local newScript = _G.BAIZE:loadScript(vname)
 	if newScript then
 		if #self.undoStack > 1 then
-			if self.percent < 100 then
+			if self.status ~= 'complete' then
 				if not resignGameAreYouSure() then
 					return
 				end
@@ -870,7 +892,7 @@ end
 
 function Baize:newDeal()
 	if #self.undoStack > 1 then
-		if self.percent < 100 then
+		if self.status ~= 'complete' then
 			if not resignGameAreYouSure() then
 				return
 			end
@@ -1207,7 +1229,7 @@ function Baize:mousePressed(x, y, button)
 					for _, c in ipairs(tail) do
 						c:startDrag()
 					end
-					-- hide the cursor
+					love.mouse.setVisible(false)
 					self.stroke.object = tail
 					self.stroke.objectType = 'tail'
 					-- print(tostring(card), 'tail len', #tail)
@@ -1253,9 +1275,11 @@ end
 
 function Baize:mouseTapped(x, y, button)
 	if self.stroke.objectType == 'widget' then
+		self.ui:hideDrawers()
+		self.ui:cancelModalDialog()	-- do this before running baizeCmd
 		local wgt = self.stroke.object
+		-- log.trace('widget baizeCmd', wgt.baizeCmd)
 		if type(wgt.baizeCmd) == 'string' and type(_G.BAIZE[wgt.baizeCmd]) == 'function' then
-			self.ui:hideDrawers()
 			if wgt.enabled then
 				self[wgt.baizeCmd](self, wgt.param)	-- w.param may be nil
 			end
@@ -1298,6 +1322,7 @@ function Baize:mouseReleased(x, y, button)
 	if not self.stroke then
 		return
 	end
+	love.mouse.setVisible(true)
 	if math.abs(self.stroke.init.x - x) < 3 and math.abs(self.stroke.init.y - y) < 3 then
 		self:mouseTapped(x, y, button)
 	else

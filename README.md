@@ -144,6 +144,12 @@ There are 80658175170943878571660636856403766975289505440883277824000000000000
 possible deals of a pack of 52 playing cards; you're never going to play the same game twice, nor indeed play the same game
 that anyone else ever has, or ever will.
 
+## What's with the discard piles?
+
+Some games, like Spider or Simple Simon, have discard piles instead of foundations. These are optional piles for you to place completed sets of cards into, if you wish to clear some space in the tableaux.
+
+Most other solitaire implementations just have foundation piles too fulfill this role.
+
 ### Any hints and tips?
 
 * For games that start with face down cards (like Klondike or Yukon) the priority is to get the face down cards turned over.

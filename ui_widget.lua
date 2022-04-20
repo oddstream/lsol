@@ -13,6 +13,12 @@ function Widget.new(o)
 end
 
 function Widget:screenRect()
+	assert(self.x and self.y)
+	assert(self.parent)
+	assert(self.parent.x and self.parent.y)
+	assert(self.parent.dragOffset)
+	assert(self.parent.dragOffset.x and self.parent.dragOffset.y)
+	assert(self.width and self.height)
 	local x = self.parent.x + self.parent.dragOffset.x + self.x
 	local y = self.parent.y + self.parent.dragOffset.y + self.y
 	return x, y, self.width, self.height

@@ -24,6 +24,8 @@ alias adb=$HOME/Android/Sdk/platform-tools/adb
 
 adb devices -l
 
+adb -s ZY223Z8MVL push lsola.love sdcard
+
 adb -s ZY223Z8MVL push lsola.apk sdcard
 adb -s HVA2JH79 push lsola.apk sdcard
 adb -s emulator-5554 push lsola.apk sdcard

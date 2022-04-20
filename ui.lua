@@ -122,20 +122,23 @@ function UI:findContainerAt(x, y)
 end
 
 function UI:findWidgetAt(x, y)
-	local con = self:findContainerAt(x, y)
-	if con then
-		for _, w in ipairs(con.widgets) do
-			if Util.inRect(x, y, w:screenRect()) then
-				return w
-			end
-		end
-	end
 	if self.modalDialog then
 		if Util.inRect(x, y, self.modalDialog:screenRect()) then
 			for _, w in ipairs(self.modalDialog.widgets) do
 				if Util.inRect(x, y, w:screenRect()) then
 					return w
 				end
+			end
+		end
+		log.trace('dialog widget not found')
+		return nil	-- if a dialog is open, no other widget should work
+	end
+
+	local con = self:findContainerAt(x, y)
+	if con then
+		for _, w in ipairs(con.widgets) do
+			if Util.inRect(x, y, w:screenRect()) then
+				return w
 			end
 		end
 	end

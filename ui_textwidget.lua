@@ -12,8 +12,8 @@ setmetatable(TextWidget, {__index = Widget})
 
 function TextWidget.new(o)
 	o.enabled = true
-	-- o.foregroundColor = o.foreGroundColor or _G.LSOL_COLORS.UiForeground
-	-- o.backgroundColor = o.backGroundColor or _G.LSOL_COLORS.UiBackground
+	-- TODO could set width, height here
+	-- rather than in parent:layout
 	return setmetatable(o, TextWidget)
 end
 
