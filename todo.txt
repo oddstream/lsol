@@ -20,6 +20,18 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Moto G4
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ landscape and portrait layouts
+	Accordian
+	Penguin
+	Yukon
++ rename Flat Castle
+
++ stats icon with three vertical bars https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
++ gradient on baize https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
+	https://angrytools.com/gradient/
+
++ penguin foundation at top https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
+
 + BUG false collect all FAB on American Toad when foundation accept card was at bottom of tableau
 + BUG the menu hamburger disappeared (again)
 + BUG sometimes not descrunching when pile left with two cards

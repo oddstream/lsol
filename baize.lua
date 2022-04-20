@@ -1597,6 +1597,13 @@ function Baize:draw()
 	-- love.graphics.translate(0, screenHeight)
 	-- love.graphics.rotate(-math.pi/2)
 
+	do
+		local ww, wh, _ = love.window.getMode()
+		local sx = ww / _G.BACKGROUND_X
+		local sy = wh / _G.BACKGROUND_Y
+		love.graphics.draw(_G.BACKGROUND, 0, 0, 0, sx, sy)
+	end
+
 	for _, pile in ipairs(self.piles) do
 		pile:draw()
 	end

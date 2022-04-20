@@ -321,6 +321,13 @@ There may be a small performance penalty as the output will be flushed after eac
 		_G.UI_SCALE = 1 - (DPIScale/10)	-- so a DPIScale of 3 would scale the UI from 1.0 to 0.7
 	end
 
+	do
+		local imageData = love.image.newImageData('assets/gradient_img.png')
+		_G.BACKGROUND_X = imageData:getWidth()
+		_G.BACKGROUND_Y = imageData:getHeight()
+		_G.BACKGROUND = love.graphics.newImage(imageData)
+	end
+
 	-- https://love2d.org/forums/viewtopic.php?f=3&t=84348&p=215242&hilit=rounded+rectangle#p215242
 	local limits = love.graphics.getSystemLimits( )
 	-- log.info(limits.canvasmsaa)	-- 16
