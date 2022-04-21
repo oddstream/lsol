@@ -499,6 +499,8 @@ function Pile:drawDraggingCards()
 end
 
 function Pile:draw()
+	if self.hidden then return end
+
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
 

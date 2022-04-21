@@ -20,6 +20,15 @@ ANDROID
 	love.window.getDPIScale( ) returns 1 on Linux, 3 on Moto G4
 	https://love2d.org/wiki/love.window.getDPIScale
 
++ https://apps.apple.com/app/apple-store/id287197884
++ https://www.solebon.com/
+
++ TriPeaks
+	when is it complete?
+		script.complete
+	how is percentage calculated? number of cards left in tableaux?
+	function to detect if card is overlapped by any cards below (y axis)
+
 + landscape and portrait layouts
 	Accordian
 	Penguin
