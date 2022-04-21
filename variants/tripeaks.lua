@@ -50,11 +50,11 @@ function TriPeaks:buildPiles()
 
 	self.stock = Stock.new({x=5, y=5})
 	self.foundation = Foundation.new({x=6, y=5, fanType='FAN_NONE'})
-
+	self.tableaux = _G.BAIZE.tableaux
 end
 
 function TriPeaks:startGame()
-	for _, dst in ipairs(_G.BAIZE.tableaux) do
+	for _, dst in ipairs(self.tableaux) do
 		local card = Util.moveCard(self.stock, dst)
 		if (not self.open) and (dst.slot.y < 3) then
 			card.prone = true
@@ -69,10 +69,10 @@ function TriPeaks:afterMove()
 	if self.open then return end
 
 	-- record which piles overlap each pile
-	for _, tab1 in ipairs(_G.BAIZE.tableaux) do
+	for _, tab1 in ipairs(self.tableaux) do
 		tab1.overlapPiles = {}
 		local ax, ay, aw, ah = tab1:baizeRect()
-		for _, tab2 in ipairs(_G.BAIZE.tableaux) do
+		for _, tab2 in ipairs(self.tableaux) do
 			if tab2.slot.y > tab1.slot.y then
 				local bx, by, bw, bh = tab2:baizeRect()
 				local area = Util.overlapArea(ax, ay, aw, ah, bx, by, bw, bh)
@@ -83,7 +83,7 @@ function TriPeaks:afterMove()
 		end
 	end
 
-	for _, tab1 in ipairs(_G.BAIZE.tableaux) do
+	for _, tab1 in ipairs(self.tableaux) do
 		if #tab1.cards > 0 and tab1.cards[1].prone then
 			local overlappingCards = 0
 			for _, tab2 in ipairs(tab1.overlapPiles) do
@@ -103,12 +103,35 @@ function TriPeaks:moveTailError(tail)
 end
 
 function TriPeaks:tailAppendError(dst, tail)
+
+	local function isCardOverlapped(card)
+		local src = card.parent
+		local ax, ay, aw, ah = src:baizeRect()
+		for _, pile in ipairs(self.tableaux) do
+			if (src ~= pile) and (#pile.cards > 0) and (pile.slot.y > src.slot.y) then
+				local bx, by, bw, bh = pile:baizeRect()
+				local area = Util.overlapArea(ax, ay, aw, ah, bx, by, bw, bh)
+				if area > 0 then
+					-- log.info('Card', tostring(card), 'is overlapped by', tostring(pile.cards[1]))
+					return true
+				end
+			end
+		end
+		return false
+	end
+
 	if #tail > 1 then
 		return 'Cannot move more than one card'
+	end
+	if tail[1].prone then
+		return 'Cannot move a face down card'
 	end
 	if dst.category == 'Tableau' then
 		return 'Cannot move cards to the tableaux'
 	elseif dst.category == 'Foundation' then
+		if isCardOverlapped(tail[1]) then
+			return 'Cannot move an overlapped card'
+		end
 		return CC.UpOrDownWrap({dst:peek(), tail[1]})
 	end
 	log.error('What are we doing here?')
