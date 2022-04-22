@@ -3,6 +3,7 @@ REGRESSION TESTS
 	collect on a completed game
 	undo Duchess after first move
 	exit when game is complete - restart - is another win recorded?
+	check setRecycles is called in startGame
 
 ANDROID
 	Android LÖVE app runs 11.3, so doesn't handle orientation, need to build APK/AAB
@@ -21,7 +22,7 @@ ANDROID
 	Penguin
 	Yukon
 + rename Flat Castle
-	have aliases for stats so Bealeagured Castle and Flat Castle share the same stats
+	have aliases for stats so Beleagured Castle and Flat Castle share the same stats
 
 + stats icon with three vertical bars https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
 + gradient on baize https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
@@ -29,6 +30,7 @@ ANDROID
 
 + penguin foundation at top https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
 
++ BUG Thirteens doesn't complain when stuck
 + BUG false collect all FAB on American Toad when foundation accept card was at bottom of tableau
 + BUG the menu hamburger disappeared (again)
 + BUG sometimes not descrunching when pile left with two cards

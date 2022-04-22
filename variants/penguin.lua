@@ -77,6 +77,7 @@ function Penguin:startGame()
 	for _, pile in ipairs(_G.BAIZE.tableaux) do
 		pile.label = _G.ORD2STRING[taccept]
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 -- function Penguin:afterMove()

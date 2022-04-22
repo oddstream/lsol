@@ -34,7 +34,6 @@ function RedAndBlack:buildPiles()
 end
 
 function RedAndBlack:startGame()
-	_G.BAIZE:setRecycles(0)
 	for _, pile in ipairs(_G.BAIZE.foundations) do
 		Util.moveCardByOrd(_G.BAIZE.stock, pile, 1)
 	end
@@ -42,6 +41,7 @@ function RedAndBlack:startGame()
 		Util.moveCard(_G.BAIZE.stock, pile)
 	end
 	Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
+	_G.BAIZE:setRecycles(0)
 end
 
 function RedAndBlack:afterMove()

@@ -57,6 +57,12 @@ function BlackHole:startGame()
 		end
 	end
 
+	if #_G.BAIZE.stock.cards ~= 0 then
+		log.error('Cards remaining in Stock', #_G.BAIZE.stock.cards)
+	end
+
+	_G.BAIZE:setRecycles(0)
+
 end
 
 function BlackHole:tailAppendError(dst, tail)

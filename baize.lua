@@ -508,6 +508,8 @@ function Baize:countMoves()
 		moves = moves + 1
 	end
 
+	-- log.info('moves', moves, 'stock', #self.stock.cards, 'recycles', self.recycles)
+
 	if self.waste and #self.waste.cards > 0 then
 		local tail = {self.waste:peek()}
 		if not self.waste:moveTailError(tail) then

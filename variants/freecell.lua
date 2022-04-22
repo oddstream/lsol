@@ -63,6 +63,7 @@ function Freecell:startGame()
 	if #src.cards > 0 then
 		log.error('still', #src.cards, 'cards in Stock')
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 -- function Freecell:afterMove()

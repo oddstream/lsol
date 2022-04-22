@@ -47,6 +47,7 @@ function Martha:startGame()
 
 		Util.moveCard(src, t)
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 -- function Martha:afterMove()

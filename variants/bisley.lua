@@ -37,8 +37,8 @@ function Bisley:buildPiles()
 		table.insert(self.upFoundations, pile)
 	end
 
-	assert(#self.upFoundations==4)
-	assert(#self.downFoundations==4)
+	-- assert(#self.upFoundations==4)
+	-- assert(#self.downFoundations==4)
 
 	for x = 1, 13 do
 		local pile = Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ONE'})
@@ -49,8 +49,8 @@ function Bisley:buildPiles()
 end
 
 function Bisley:startGame()
-	assert(#self.upFoundations==4)
-	assert(#self.downFoundations==4)
+	-- assert(#self.upFoundations==4)
+	-- assert(#self.downFoundations==4)
 
 	local src = _G.BAIZE.stock
 
@@ -69,9 +69,7 @@ function Bisley:startGame()
 			Util.moveCard(src, dst)
 		end
 	end
-	if #src.cards ~= 0 then
-		log.error('Still', #src.cards, 'in stock')
-	end
+	-- assert(#src.cards ~= 0)
 end
 
 -- function Bisley:afterMove()

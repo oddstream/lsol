@@ -51,6 +51,7 @@ function SeaHaven:startGame()
 	if #stock.cards > 0 then
 		log.error('still', #stock.cards, 'cards in Stock')
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 -- function SeaHaven:afterMove()

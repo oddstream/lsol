@@ -33,6 +33,7 @@ function Thirteens:startGame()
 	for _, pile in ipairs(_G.BAIZE.tableaux) do
 		Util.moveCard(_G.BAIZE.stock, pile)
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 function Thirteens:afterMove()

@@ -52,6 +52,7 @@ function Castle:startGame()
 			Util.moveCard(src, dst)
 		end
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 -- function Castle:afterMove()

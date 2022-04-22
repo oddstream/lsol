@@ -73,6 +73,7 @@ function Yukon:startGame()
 	if self.relaxed then
 		_G.BAIZE.ui:toast('Relaxed version - any card may be placed in an empty pile')
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 -- function Yukon:afterMove()
