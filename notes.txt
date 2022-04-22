@@ -1,3 +1,12 @@
+LÖVE Solitaire
+	is this the one you like playing The Most?
+
+	could use point {x,y} and rectangle {x, y, width, height}
+	but that would be inefficient
+	just stick to the same as LÖVE (and raylib) and use x,y,width,height
+
+
+
 https://github.com/love2d/love-android
 	clone this to love-android
 

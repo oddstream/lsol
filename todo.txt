@@ -1,10 +1,3 @@
-LÖVE Solitaire
-	is this the one you like playing The Most?
-
-	could use point {x,y} and rectangle {x, y, width, height}
-	but that would be inefficient
-	just stick to the same as LÖVE (and raylib) and use x,y,width,height
-
 REGRESSION TESTS
 	collect on an virgin Duchess
 	collect on a completed game
@@ -28,6 +21,7 @@ ANDROID
 	Penguin
 	Yukon
 + rename Flat Castle
+	have aliases for stats so Bealeagured Castle and Flat Castle share the same stats
 
 + stats icon with three vertical bars https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
 + gradient on baize https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/

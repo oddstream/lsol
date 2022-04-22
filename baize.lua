@@ -1150,6 +1150,20 @@ function Baize:findPileAt(x, y)
 	return nil
 end
 
+function Baize:isPileOverlapped(p1)
+	local ax, ay, aw, ah = p1:baizeRect()
+	for _, p2 in ipairs(self.piles) do
+		if p1 ~= p2 then
+			local bx, by, bw, bh = p2:baizeRect()
+			local area = Util.overlapArea(ax, ay, aw, ah, bx, by, bw, bh)
+			if area > 0 then
+				return p2
+			end
+		end
+	end
+	return nil
+end
+
 function Baize:largestIntersection(card)
 	-- largest intersection can be source pile,
 	-- when user is putting a dragged tail back

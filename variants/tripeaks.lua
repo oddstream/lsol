@@ -6,8 +6,8 @@ local Variant = require 'variant'
 local CC = require 'cc'
 
 local Foundation = require 'pile_foundation'
+local Reserve = require 'pile_reserve'
 local Stock = require 'pile_stock'
-local Tableau = require 'pile_tableau'
 
 local Util = require 'util'
 
@@ -17,7 +17,7 @@ setmetatable(TriPeaks, {__index = Variant})
 
 local function tableauxCards()
 	local cards = 0
-	for _, pile in ipairs(_G.BAIZE.tableaux) do
+	for _, pile in ipairs(_G.BAIZE.reserves) do
 		cards = cards + #pile.cards
 	end
 	return cards
@@ -25,7 +25,7 @@ end
 
 function TriPeaks.new(o)
 	o.tabCompareFn = CC.UpOrDownWrap
-	o.wikipedia='https://en.wikipedia.org/wiki/Tri_Peaks_(game)'
+	o.wikipedia = 'https://en.wikipedia.org/wiki/Tri_Peaks_(game)'
 	return setmetatable(o, TriPeaks)
 end
 
@@ -33,24 +33,24 @@ function TriPeaks:buildPiles()
 
 	-- TODO these piles should have no outline
 	for _, x in ipairs({2.5, 5.5, 8.5}) do
-		Tableau.new({x=x, y=1.5, fanType='FAN_NONE', moveType='MOVE_ONE', hidden=true})
+		Reserve.new({x=x, y=1.5, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
 	end
 
 	for _, x in ipairs({2, 3, 5, 6, 8, 9}) do
-		Tableau.new({x=x, y=2, fanType='FAN_NONE', moveType='MOVE_ONE', hidden=true})
+		Reserve.new({x=x, y=2, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
 	end
 
 	for x = 1.5, 9.5 do
-		Tableau.new({x=x, y=2.5, fanType='FAN_NONE', moveType='MOVE_ONE', hidden=true})
+		Reserve.new({x=x, y=2.5, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
 	end
 
 	for x = 1, 10 do
-		Tableau.new({x=x, y=3, fanType='FAN_NONE', moveType='MOVE_ONE', hidden=true})
+		Reserve.new({x=x, y=3, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
 	end
 
 	self.stock = Stock.new({x=5, y=5})
 	self.foundation = Foundation.new({x=6, y=5, fanType='FAN_NONE'})
-	self.tableaux = _G.BAIZE.tableaux
+	self.tableaux = _G.BAIZE.reserves
 end
 
 function TriPeaks:startGame()
@@ -126,9 +126,8 @@ function TriPeaks:tailAppendError(dst, tail)
 	if tail[1].prone then
 		return 'Cannot move a face down card'
 	end
-	if dst.category == 'Tableau' then
-		return 'Cannot move cards to the tableaux'
-	elseif dst.category == 'Foundation' then
+
+	if dst.category == 'Foundation' then
 		if isCardOverlapped(tail[1]) then
 			return 'Cannot move an overlapped card'
 		end
