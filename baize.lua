@@ -37,7 +37,6 @@ Baize.__index = Baize
 
 function Baize.new()
 	local o = {}
-	setmetatable(o, Baize)
 	o.dragOffset = {x=0, y=0}
 	o.dragStart = {x=0, y=0}
 	o.undoStack = {}
@@ -45,9 +44,8 @@ function Baize.new()
 	o.bookmark = 0
 	o.status = 'virgin'	-- afoot, stuck, collect, complete
 	o.percent = 0
-	o.ui = UI.new()
 	o.lastInput = love.timer.getTime()
-	return o
+	return setmetatable(o, Baize)
 end
 
 local settingsFname = 'settings.json'
@@ -61,7 +59,12 @@ function Baize:loadSettings()
 			log.error(size)
 		else
 			log.info('loaded', size, 'bytes from', settingsFname)
-			settings = json.decode(contents)
+			local ok
+			ok, settings = pcall(json.decode, contents)
+			if not ok then
+				log.error('error decoding', settingsFname, settings)
+				settings = nil
+			end
 		end
 	else
 		log.info('not loading', settingsFname)

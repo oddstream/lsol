@@ -1,13 +1,14 @@
 -- main.lua
 
-local log = require 'log'
+-- local log = require 'log'
 
 local Card = require 'card'
 local Baize = require 'baize'
 local Stats = require 'stats'
+local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '1'
+_G.LSOL_VERSION = '6'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -56,6 +57,7 @@ _G.LSOL_VARIANTS = {
 	['Baker\'s Dozen'] = {file='bakers.lua', cc=1},
 	['Baker\'s Dozen (Wide)'] = {file='bakers.lua', wide=true, cc=1},
 	['Beleaguered Castle'] = {file='castle.lua', cc=1},
+	['Flat Castle'] = {file='castle.lua', cc=1, flat=true},
 	Bisley = {file='bisley.lua', cc=4},
 	['Black Hole'] = {file='blackhole.lua', cc=1},
 	Blockade = {file='blockade.lua', cc=4},
@@ -63,7 +65,6 @@ _G.LSOL_VARIANTS = {
 	Canfield = {file='canfield.lua', cc=2},
 	['Rainbow Canfield'] = {file='canfield.lua', cc=1, rainbow=true},
 	['Storehouse Canfield'] = {file='canfield.lua', cc=4, storehouse=true},
-	['Flat Castle'] = {file='castle.lua', cc=1, flat=true},
 	Duchess = {file='duchess.lua', cc=2},
 	-- ['Debug Klon'] = {file='debug.lua', cc=4, spiderLike=false},
 	-- ['Debug Spid'] = {file='debug.lua', cc=4, spiderLike=true},
@@ -93,7 +94,7 @@ _G.LSOL_VARIANTS = {
 	Spider = {file='spider.lua', packs=2, cc=4, suitFilter={'♣','♦','♥','♠'}},
 	['Spider One Suit'] = {file='spider.lua', cc=1, packs=8, suitFilter={'♠'}},
 	['Spider Two Suits'] = {file='spider.lua', cc=2, packs=4, suitFilter={'♥', '♠'}},
-	Thirteens = {file='thirteens.lua', cc=1},
+	['Good Thirteen'] = {file='thirteens.lua', cc=1},
 	['Classic Westcliff'] = {file='westcliff.lua', cc=2, classic=true},
 	['American Westcliff'] = {file='westcliff.lua', cc=2, american=true},
 	Easthaven = {file='westcliff.lua', cc=2, easthaven=true},
@@ -117,11 +118,13 @@ _G.VARIANT_TYPES = {
 	['> Klondikes'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Rosamund'},
 	['> Places'] = {'Alhambra','Australian', 'Yukon', 'Yukon Relaxed','Russian','Crimean','Ukrainian'},
+	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
 }
 
-do
+local function createAllVariants()
+
 	local lst = {}
 	for k,_ in pairs(_G.LSOL_VARIANTS) do
 		table.insert(lst, k)
@@ -136,8 +139,8 @@ do
 	-- end
 end
 
-do
-	local stats = Stats.new()
+local function createFavoriteVariants(stats)
+
 	local function played(v)
 		return stats[v].won + stats[v].lost
 	end
@@ -367,6 +370,10 @@ There may be a small performance penalty as the output will be flushed after eac
 	-- end
 
 	_G.BAIZE.stats = Stats.new()
+	createAllVariants()
+	createFavoriteVariants(_G.BAIZE.stats)
+	_G.BAIZE.ui = UI.new()
+
 	_G.BAIZE:loadSettings()
 	_G.BAIZE:loadUndoStack()
 	if _G.BAIZE.undoStack then
@@ -559,4 +566,5 @@ function love.quit()
 	if _G.BAIZE.status ~= 'complete' then
 		_G.BAIZE:saveUndoStack()
 	end
+	return false	-- allow app to quit
 end

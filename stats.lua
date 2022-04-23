@@ -11,7 +11,6 @@ local fname = 'statistics.json'
 
 function Stats.new()
 	local o = {}
-	setmetatable(o, Stats)
 
 	local info = love.filesystem.getInfo(fname)
 	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
@@ -20,13 +19,17 @@ function Stats.new()
 			log.error(size)
 		else
 			log.info('loaded', size, 'bytes from', fname)
-			o = json.decode(contents)
-			return setmetatable(o, Stats)
+			local ok
+			ok, o = pcall(json.decode, contents)
+			if not ok then
+				log.error('error decoding', fname, o)
+				o = {}
+			end
 		end
 	else
 		log.info('not loading', fname)
 	end
-	return o
+	return setmetatable(o, Stats)
 end
 
 function Stats:save()
