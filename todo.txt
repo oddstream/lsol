@@ -17,6 +17,9 @@ ANDROID
 + https://apps.apple.com/app/apple-store/id287197884
 + https://www.solebon.com/
 
+
++ What's new in version <32>
+
 + landscape and portrait layouts
 	Accordian
 	Penguin

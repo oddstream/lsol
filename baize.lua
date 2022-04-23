@@ -58,7 +58,7 @@ function Baize:loadSettings()
 		if not contents then
 			log.error(size)
 		else
-			log.info('loaded', size, 'bytes from', settingsFname)
+			-- log.info('loaded', size, 'bytes from', settingsFname)
 			local ok
 			ok, settings = pcall(json.decode, contents)
 			if not ok then
@@ -76,7 +76,7 @@ function Baize:saveSettings()
 	self.settings.lastVersion = _G.LSOL_VERSION
 	local success, message = love.filesystem.write(settingsFname, json.encode(self.settings))
 	if success then
-		log.info('wrote to', settingsFname)
+		-- log.info('wrote to', settingsFname)
 	else
 		log.error(message)
 	end
@@ -749,7 +749,7 @@ function Baize:loadUndoStack()
 	local info = love.filesystem.getInfo(savedUndoStackFname)
 	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
 		undoStack = bitser.loadLoveFile(savedUndoStackFname)
-		log.info('loaded', savedUndoStackFname)
+		-- log.info('loaded', savedUndoStackFname)
 	else
 		log.info('not loading', savedUndoStackFname)
 	end
@@ -761,7 +761,7 @@ function Baize:saveUndoStack()
 	if not self.status ~= 'complete' then
 		self:undoPush()
 		bitser.dumpLoveFile(savedUndoStackFname, self.undoStack)
-		log.info('saved', savedUndoStackFname)
+		-- log.info('saved', savedUndoStackFname)
 	end
 end
 
@@ -857,7 +857,7 @@ local function resignGameAreYouSure()
 end
 
 function Baize:changeVariant(vname)
-	log.trace('changing variant from', self.settings.variantName, 'to', vname)
+	-- log.trace('changing variant from', self.settings.variantName, 'to', vname)
 	if vname == self.settings.variantName then
 		return
 	end

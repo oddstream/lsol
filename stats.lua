@@ -18,7 +18,7 @@ function Stats.new()
 		if not contents then
 			log.error(size)
 		else
-			log.info('loaded', size, 'bytes from', fname)
+			-- log.info('loaded', size, 'bytes from', fname)
 			local ok
 			ok, o = pcall(json.decode, contents)
 			if not ok then
@@ -35,7 +35,7 @@ end
 function Stats:save()
 	local success, message = love.filesystem.write(fname, json.encode(self))
 	if success then
-		log.info('wrote to', fname)
+		-- log.info('wrote to', fname)
 	else
 		log.error(message)
 	end
@@ -99,7 +99,7 @@ function Stats:recordWonGame(v, moves)
 	end
 	s.sumMoves = s.sumMoves + moves
 
-	log.info('recorded a won game of', v)
+	-- log.info('recorded a won game of', v)
 end
 
 function Stats:recordLostGame(v, percent)
@@ -121,7 +121,7 @@ function Stats:recordLostGame(v, percent)
 	end
 	s.sumPercents = s.sumPercents + percent
 
-	log.info('recorded a lost game of', v)
+	-- log.info('recorded a lost game of', v)
 end
 
 --[[

@@ -198,7 +198,7 @@ function CC.Accordian(cpair)
 	end
 	local p1x = getPileIdx(cpair[1].parent)
 	local p2x = getPileIdx(cpair[2].parent)
-	log.trace(p1x, p2x)
+	-- log.trace(p1x, p2x)
 	if (p1x + 1 == p2x) or (p1x + 3 == p2x) then
 		return nil
 	end
