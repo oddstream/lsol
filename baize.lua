@@ -852,8 +852,9 @@ end
 ]]
 
 local function resignGameAreYouSure()
-	local pressedButton = love.window.showMessageBox('Are you sure?', 'The current game will count as a loss. Continue?', {'Yes', 'No', escapebutton = 2}, 'warning')
-	return pressedButton == 1
+	-- local pressedButton = love.window.showMessageBox('Are you sure?', 'The current game will count as a loss. Continue?', {'Yes', 'No', escapebutton = 2}, 'warning')
+	-- return pressedButton == 1
+	return true
 end
 
 function Baize:changeVariant(vname)

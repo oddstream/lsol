@@ -1,4 +1,6 @@
 
+_G.LSOL_VERSION history
+
 1 - released to Play Store 28 Mar 2022 internal test
 
 2 - released to Play Store 28 Mar 2022 closed test
@@ -8,3 +10,10 @@
 	Assembly
 	Russian (Yukon)
 	Ukrainian/Crimean
+
+6 - released to Play Store 22 Apr 2022 beta
+
+7 -
+	removed are you sure message box when recording lost game
+	pcall around json.decode
+	toast displayed when version updates

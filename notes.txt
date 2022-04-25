@@ -5,7 +5,8 @@ LÖVE Solitaire
 	but that would be inefficient
 	just stick to the same as LÖVE (and raylib) and use x,y,width,height
 
-
++ gradient on baize https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
+	https://angrytools.com/gradient/
 
 https://github.com/love2d/love-android
 	clone this to love-android

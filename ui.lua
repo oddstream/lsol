@@ -43,7 +43,6 @@ local settingsWidgets = {
 	{text='Power moves', var='powerMoves'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
-	{text='Debug', var='debug'},
 }
 
 function UI.new()
@@ -281,7 +280,7 @@ function UI:toast(message, soundName)
 	-- if we are already displaying this message, reset secondsLeft and quit
 	for _, t in ipairs(self.toasts) do
 		if t.message == message then
-			t.secondsLeft = 4
+			t.secondsLeft = 5
 			table.sort(self.toasts, function(a, b) return a.secondsLeft > b.secondsLeft end)
 			return
 		end

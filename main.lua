@@ -8,7 +8,7 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '6'
+_G.LSOL_VERSION = '7'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -302,6 +302,8 @@ which will turn the buffering off.
 There may be a small performance penalty as the output will be flushed after each print.
 ]]
 
+	-- required for ZeroBrane
+	--[[
 	io.stdout:setvbuf('no')	-- 'no', 'full' or 'line'
 
 	if args then
@@ -310,6 +312,7 @@ There may be a small performance penalty as the output will be flushed after eac
 		end
 		if arg[#arg] == "-debug" then require("mobdebug").start() end
 	end
+	]]
 
 	math.randomseed(os.time())
 
@@ -375,6 +378,10 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.BAIZE.ui = UI.new()
 
 	_G.BAIZE:loadSettings()
+
+	love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
+	_G.BAIZE.ui:updateWidget('title', _G.BAIZE.settings.variantName)
+
 	_G.BAIZE:loadUndoStack()
 	if _G.BAIZE.undoStack then
 		_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
@@ -415,8 +422,9 @@ There may be a small performance penalty as the output will be flushed after eac
 		end
 	end
 
-	love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
-	_G.BAIZE.ui:updateWidget('title', _G.BAIZE.settings.variantName)
+	if _G.BAIZE.settings.lastVersion ~= _G.LSOL_VERSION then
+		_G.BAIZE.ui:toast(string.format('%s version updated from %d to %d', love.filesystem.getIdentity(), _G.BAIZE.settings.lastVersion, _G.LSOL_VERSION))
+	end
 
 	-- _G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
 	--[[
@@ -482,6 +490,12 @@ function love.keyreleased(key)
 		_G.BAIZE.settings.fourColorCards = true
 		_G.BAIZE.settings.autoColorCards = false
 		_G.BAIZE:createCardTextures()
+	elseif key == 'd' and love.keyboard.isDown('lctrl') then
+		_G.BAIZE.settings.debug = not _G.BAIZE.settings.debug
+		for _, c in ipairs(_G.BAIZE.deck) do
+			c.movable = false
+		end
+		_G.BAIZE:countMoves()	-- mark/unmark movable cards
 	end
 
 	if love.system.getOS() == 'Android' then
@@ -502,10 +516,7 @@ function love.keyreleased(key)
 	end
 
 	if _G.BAIZE.settings.debug then
-		if key == 'd' then
-			_G.BAIZE:resetSettings()
-			_G.BAIZE.ui:toast('Settings reset to defaults')
-		elseif key == 't' then
+		if key == 't' then
 			_G.BAIZE.ui:toast(string.format('Toast %f', math.random()))
 		elseif key == 'up' then
 			_G.BAIZE:startSpinning()
