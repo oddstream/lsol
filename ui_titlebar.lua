@@ -15,7 +15,7 @@ function Titlebar.new(o)
 	o.align = 'top'
 	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE)
 	o.spacex = o.font:getWidth('M')
-	o.spacey = o.font:getHeight('M')
+	o.spacey = o.font:getHeight()
 
 	return setmetatable(o, Titlebar)
 end

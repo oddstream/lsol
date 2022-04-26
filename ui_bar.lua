@@ -38,7 +38,7 @@ function Bar:layout()
 			wgt.height = wgt.imgHeight
 		elseif wgt.text then
 			wgt.width = self.font:getWidth(wgt.text)
-			wgt.height = self.font:getHeight(wgt.text)
+			wgt.height = self.font:getHeight()
 		end
 		if wgt.align == 'left' then
 			wgt.x = nextLeft

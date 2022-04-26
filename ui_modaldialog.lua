@@ -15,7 +15,7 @@ function ModalDialog.new(o)
 	-- work out width and height from text
 
 	o.tw = o.font:getWidth(o.text)
-	o.th = o.font:getHeight(o.text)
+	o.th = o.font:getHeight()
 	o.width = o.tw + (o.font:getWidth('M') * 4)
 	o.height = o.th * 6	-- two lines (space line, text, space line, space line, buttons, space line = 6 lines high)
 
@@ -23,7 +23,7 @@ function ModalDialog.new(o)
 	for _, btn in ipairs(o.buttons) do
 		local wgt = TextWidget.new({parent=o, text=btn, baizeCmd='buttonPressed', param=btn})
 		wgt.width = o.font:getWidth(btn)
-		wgt.height = o.font:getHeight(btn)
+		wgt.height = o.font:getHeight()
 		table.insert(o.widgets, wgt)
 	end
 

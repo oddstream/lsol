@@ -18,6 +18,8 @@ ANDROID
 + https://www.solebon.com/
 
 
++ % win rate "Win rate: 67%"
+
 + Update Play Store text
 	store listing.md
 + Update Play Store screenshots (power + volume down), phone and tablet

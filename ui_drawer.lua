@@ -16,7 +16,7 @@ function Drawer.new(o)
 	o.x = -(o.width + _G.UI_SAFEX) -- starts hidden
 	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE)
 	o.spacex = o.font:getWidth('M')
-	o.spacey = o.font:getHeight('M')
+	o.spacey = o.font:getHeight()
 	o.widgets = {}
 
 	Drawer.layout(o)	-- instantiates .y, .height
@@ -85,7 +85,7 @@ function Drawer:layout()
 			wgt.height = iconSize
 		elseif wgt.text then
 			wgt.width = self.font:getWidth(wgt.text)
-			wgt.height = self.font:getHeight(wgt.text)
+			wgt.height = self.font:getHeight()
 		end
 
 		if (not wgt.img) and (not wgt.text) then

@@ -522,7 +522,7 @@ function Pile:draw()
 			scale,	-- x scale
 			scale,	-- y scale
 			b.labelFont:getWidth(self.label) / 2,
-			b.labelFont:getHeight(self.label) / 2)
+			b.labelFont:getHeight() / 2)
 	end
 --[[
 	local ssr = self:screenBox()

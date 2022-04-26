@@ -35,8 +35,8 @@ function Alhambra:buildPiles()
 		Reserve.new({x=x, y=2, fanType='FAN_DOWN'})
 	end
 
-	Stock.new({x=1, y=4, packs=2})
-	Tableau.new({x=2, y=4, fanType='FAN_RIGHT3', moveType='MOVE_ONE'})
+	Stock.new({x=3.75, y=4, packs=2})
+	Tableau.new({x=4.75, y=4, fanType='FAN_RIGHT3', moveType='MOVE_ONE'})
 end
 
 function Alhambra:startGame()

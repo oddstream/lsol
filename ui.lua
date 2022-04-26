@@ -287,9 +287,9 @@ function UI:toast(message, soundName)
 	end
 	local t = {message=message, secondsLeft=4 + #self.toasts}
 	t.mw = self.toastFont:getWidth(message)
-	t.mh = self.toastFont:getHeight(message)
+	t.mh = self.toastFont:getHeight()
 	t.rw = t.mw + self.toastFont:getWidth('M') * 2
-	t.rh = t.mh + self.toastFont:getHeight('M') * 2
+	t.rh = t.mh + self.toastFont:getHeight() * 2
 
 	-- create a texture to avoid calling rectangle, print every frame
 	-- https://material.io/archive/guidelines/components/snackbars-toasts.html#snackbars-toasts-specs
@@ -368,7 +368,7 @@ function UI:draw()
 	if #self.toasts > 0 then
 		for i = 1, #self.toasts do
 			-- (i + 2) to nudge to toasts down the screen a little
-			drawToast(self.toasts[i], (i + 2) * (_G.TITLEBARHEIGHT + self.toastFont:getHeight('M')))
+			drawToast(self.toasts[i], (i + 2) * (_G.TITLEBARHEIGHT + self.toastFont:getHeight()))
 		end
 	end
 

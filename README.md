@@ -100,8 +100,7 @@ So, rather than just making this stuff up, I've tried to find a well researched 
 
 ### What about scores?
 
-Nope, the software doesn't keep an arbitary score. Too confusing.
-Just the number of wins, number of moves, the average 'completeness percentage' and your winning streak (streaks are great).
+Nope, the software doesn't keep an arbitary score. Too confusing. Just the number of wins, number of moves, the average 'completeness percentage' and your winning streak (streaks are great).
 A game isn't counted until you move a card.
 Thereafter, if you ask for a new deal or switch to a different variant, that counts as a loss.
 
@@ -109,9 +108,21 @@ You can cheat the score system by restarting a deal and then asking for a new de
 
 'Completeness percentage' is calculated from the number of unsorted pairs of cards in all the piles.
 
-### But you can cheat
+### Odd features
 
-You can when playing with actual cards, too. Cheat if you like; I'm not your mother.
+You can restart a deal without penalty; it's not cheating, because you could just set a bookmark at the start of a game and return to that position.
+
+You cannot move cards from a foundation pile. Most sources I've read explicity ban moves from the foundations, so I've implemented a blanket ban. There's always undo, if you've got into a bad situation.
+
+Single-tapping a card will not send that card to an empty tableau pile. Empty piles are too precious to be so casually used up.
+
+Movable cards are not highlighted. For the longest time, I thought that highlighting movable cards was a neat feature, but I now realize that this feature ruins the essence of most games. In trying to replicate and assist the feeling of playing with real cards, this feature is a step too far.
+
+## What's with the discard piles?
+
+Some games, like Spider or Simple Simon, have discard piles instead of foundations. These are optional piles for you to place completed sets of cards into, if you wish to clear some space in the tableaux.
+
+Most other solitaire implementations just have foundation piles that fulfill this role.
 
 ### What about a timer?
 
@@ -122,9 +133,7 @@ Solitaire is also called *patience*; it's hard to feel patient when you're press
 
 #### Power moves
 
-Some variants (eg Freecell or Forty Thieves) only allow you to move one card at a time. Moving several cards between piles requires
-you to move them, one at a time, via an empty pile or cell. Enabling power moves automates this, allowing multi-card moves between piles.
-The number of cards you can move is calculated from the number of empty piles and cells (if any).
+Some variants (eg Freecell or Forty Thieves) only allow you to move one card at a time. Moving several cards between piles requires you to move them, one at a time, via an empty pile or cell. Enabling power moves automates this, allowing multi-card moves between piles. The number of cards you can move is calculated from the number of empty piles and cells (if any).
 
 #### Mirror baize
 
@@ -143,12 +152,6 @@ which is in itself seeded by a random number. This mechanism was tested and anal
 There are 80658175170943878571660636856403766975289505440883277824000000000000
 possible deals of a pack of 52 playing cards; you're never going to play the same game twice, nor indeed play the same game
 that anyone else ever has, or ever will.
-
-## What's with the discard piles?
-
-Some games, like Spider or Simple Simon, have discard piles instead of foundations. These are optional piles for you to place completed sets of cards into, if you wish to clear some space in the tableaux.
-
-Most other solitaire implementations just have foundation piles too fulfill this role.
 
 ### Any hints and tips?
 

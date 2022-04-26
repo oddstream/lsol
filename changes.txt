@@ -14,6 +14,9 @@ _G.LSOL_VERSION history
 6 - released to Play Store 22 Apr 2022 beta
 
 7 -
-	removed are you sure message box when recording lost game
+	removed are you sure message box when recording lost game (toast instead)
 	pcall around json.decode
 	toast displayed when version updates
+	removed font:getHeight() argument
+	removed several log messages
+	added more stats

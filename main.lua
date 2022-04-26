@@ -281,7 +281,7 @@ local function createWindowIcon()
 	local fnt = love.graphics.newFont(_G.SUIT_FONT, size)
 	love.graphics.setFont(fnt)
 	local w = fnt:getWidth(heart)
-	local h = fnt:getHeight(heart)
+	local h = fnt:getHeight()
 
 	love.graphics.print(heart, size/2 - w/2, size/2 - h/2)
 
@@ -422,7 +422,9 @@ There may be a small performance penalty as the output will be flushed after eac
 		end
 	end
 
-	if _G.BAIZE.settings.lastVersion ~= _G.LSOL_VERSION then
+	if _G.BAIZE.settings.lastVersion == 0 then
+		_G.BAIZE.ui:toast(string.format('Welcome to %s', love.filesystem.getIdentity()))
+	elseif _G.BAIZE.settings.lastVersion ~= _G.LSOL_VERSION then
 		_G.BAIZE.ui:toast(string.format('%s version updated from %d to %d', love.filesystem.getIdentity(), _G.BAIZE.settings.lastVersion, _G.LSOL_VERSION))
 	end
 

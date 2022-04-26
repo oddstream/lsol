@@ -13,7 +13,7 @@ function Statusbar.new(o)
 	o.align = 'bottom'
 	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE_SMALL)
 	o.spacex = o.font:getWidth('M')
-	o.spacey = o.font:getHeight('M')
+	o.spacey = o.font:getHeight()
 
 	return setmetatable(o, Statusbar)
 end

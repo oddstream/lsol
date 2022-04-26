@@ -1,6 +1,6 @@
 -- Card
 
-local log = require 'log'
+-- local log = require 'log'
 
 local Util = require 'util'
 

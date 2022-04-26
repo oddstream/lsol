@@ -7,7 +7,7 @@ local log = require 'log'
 local Card = require 'card'
 local Util = require 'util'
 
-local UI = require 'ui'
+-- local UI = require 'ui'
 
 local Baize = {
 	-- script
@@ -342,7 +342,7 @@ function Baize:createCardTextures()
 
 	if not self.settings.simpleCards then
 		local pipWidth = self.suitFont:getWidth('♠')
-		local pipHeight = self.suitFont:getHeight('♠')
+		local pipHeight = self.suitFont:getHeight()	--('♠')
 		love.graphics.setFont(self.suitFont)
 		love.graphics.setColor(0,0,0, 0.2)
 		love.graphics.print('♦', self.cardWidth / 2, self.cardHeight / 2 - pipHeight)	-- top right
@@ -1140,11 +1140,11 @@ function Baize:findCardAt(x, y)
 		for i = #pile.cards, 1, -1 do
 			local card = pile.cards[i]
 			if Util.inRect(x, y, card:screenRect()) then
-				return card, pile
+				return card
 			end
 		end
 	end
-	return nil, nil
+	return nil
 end
 
 function Baize:findPileAt(x, y)
@@ -1242,10 +1242,10 @@ function Baize:mousePressed(x, y, button)
 			-- we didn't touch a widget, or container, so there's no need for a drawer to be open?
 			self.ui:hideDrawers()
 
-			local card, pile = self:findCardAt(x, y)
+			local card = self:findCardAt(x, y)
 			if card then
 				if card.spinDegrees == 0 then
-					local tail = pile:makeTail(card)
+					local tail = card.parent:makeTail(card)
 					for _, c in ipairs(tail) do
 						c:startDrag()
 					end
@@ -1255,7 +1255,7 @@ function Baize:mousePressed(x, y, button)
 					-- print(tostring(card), 'tail len', #tail)
 				end
 			else
-				pile = self:findPileAt(x, y)
+				local pile = self:findPileAt(x, y)
 				if pile then
 					self.stroke.object = pile
 					self.stroke.objectType = 'pile'
