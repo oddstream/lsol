@@ -17,19 +17,9 @@ ANDROID
 + https://apps.apple.com/app/apple-store/id287197884
 + https://www.solebon.com/
 
++ Count the blips and warnings
 
-+ % win rate "Win rate: 67%"
-
-+ Update Play Store text
-	store listing.md
-+ Update Play Store screenshots (power + volume down), phone and tablet
-	phone klondike (full cards)
-	phone menu open over freecell (simple cards)
-	phone stats open over penguin (four colors)
-	phone gate
-	tablet settings open over spider (remove debug first!) landscape
-	tablet > All finder open over tri peaks landscape
-	tablet > All finder open over in-progress yukon portrait
++ About and FAQ ...
 
 + What's new in version <32>
 
@@ -55,7 +45,7 @@ ANDROID
 
 + http://www.allgoodsw.com/allgood-solitaire-for-ipad-coming-soon/
 	Ascension
-	stats on a yellow lined pad
+	stats on a yellow lined pad?
 
 + 'Moved' 'cards must be the same suit'
 	error messages returned as all lower case,

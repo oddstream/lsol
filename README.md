@@ -118,7 +118,7 @@ Single-tapping a card will not send that card to an empty tableau pile. Empty pi
 
 Movable cards are not highlighted. For the longest time, I thought that highlighting movable cards was a neat feature, but I now realize that this feature ruins the essence of most games. In trying to replicate and assist the feeling of playing with real cards, this feature is a step too far.
 
-## What's with the discard piles?
+### What's with the discard piles?
 
 Some games, like Spider or Simple Simon, have discard piles instead of foundations. These are optional piles for you to place completed sets of cards into, if you wish to clear some space in the tableaux.
 
