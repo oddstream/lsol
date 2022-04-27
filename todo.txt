@@ -20,6 +20,7 @@ ANDROID
 + Count the blips and warnings
 
 + About and FAQ ...
+	static Hugo site hosted @ oddstream.games/lsol/FAQ.html
 
 + What's new in version <32>
 
@@ -31,6 +32,8 @@ ANDROID
 	have aliases for stats so Beleagured Castle and Flat Castle share the same stats
 
 + stats icon with three vertical bars https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
+	https://fonts.google.com/icons "Bar Chart"
+	need 36x36 white png
 
 + penguin foundation at top https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
 

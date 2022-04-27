@@ -256,8 +256,8 @@ function Baize:createRegularFace(ord, suit)
 	love.graphics.setColor(Util.getColorFromSetting(suitColor))
 	love.graphics.setFont(self.ordFont)
 	if ord == 10 then
-		printAt(_G.ORD2STRING[ord], 0.15, 0.15, self.ordFont, 0.8)
-		printAt(_G.ORD2STRING[ord], 0.85, 0.85, self.ordFont, 0.8, math.pi)
+		printAt(_G.ORD2STRING[ord], 0.15, 0.15, self.ordFont, 0.9)
+		printAt(_G.ORD2STRING[ord], 0.85, 0.85, self.ordFont, 0.9, math.pi)
 	else
 		printAt(_G.ORD2STRING[ord], 0.15, 0.15, self.ordFont)
 		printAt(_G.ORD2STRING[ord], 0.85, 0.85, self.ordFont, 1.0, math.pi)
