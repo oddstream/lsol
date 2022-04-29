@@ -18,25 +18,31 @@ setmetatable(LittleSpider, {__index = Variant})
 function LittleSpider.new(o)
 	o.wikipedia = 'https://en.wikipedia.org/wiki/Little_Spider'
 	o.tabCompareFn = CC.None
+	o.aceColor = 'unknown'
+	o.kingColor = 'unknown'
 	return setmetatable(o, LittleSpider)
 end
 
 function LittleSpider:buildPiles()
 	Stock.new({x=1, y=1})
-	for x = 3, 6 do
+	for x = 2, 5 do
 		Tableau.new({x=x, y=1, fanType='FAN_NONE', moveType='MOVE_ONE'})
 	end
-	for x = 3, 4 do
+	for x = 2, 3 do
 		local f = Foundation.new({x=x, y=2})
 		f.label = 'A'
 	end
-	for x = 5, 6 do
+	for x = 4, 5 do
 		local f = Foundation.new({x=x, y=2})
 		f.label = 'K'
 	end
-	for x = 3, 6 do
+	for x = 2, 5 do
 		Tableau.new({x=x, y=3, fanType='FAN_NONE', moveType='MOVE_ONE'})
 	end
+
+	-- for i = 1, 4 do
+	-- 	_G.BAIZE.tableaux[i].boundaryPile = _G.BAIZE.foundations[i]
+	-- end
 end
 
 function LittleSpider:startGame()
@@ -65,6 +71,14 @@ end
 
 local function IsFoundationAbove(f, t)
 	return f.slot.x == t.slot.x
+end
+
+local function isRedAce(card)
+	return card.ord == 1 and card.black == false
+end
+
+local function isBlackKing(card)
+	return card.ord == 13 and card.black == true
 end
 
 function LittleSpider:afterMove()
@@ -99,14 +113,33 @@ function LittleSpider:tailAppendError(dst, tail)
 		end
 
 		if #dst.cards == 0 then
-			-- be lazy for the moment, and only allow red aces and black kings
 			local card = tail[1]
-			if card.ord == 1 and card.black == true then
-				return 'Expecting a red A'
-			elseif card.ord == 13 and card.black ~= true then
-				return 'Expecting a black K'
+			if dst.label == 'A' and card.ord == 1 then
+				if self.aceColor == 'unknown' then
+					if card.black == true then
+						self.aceColor = 'black'
+					else
+						self.aceColor = 'red'
+					end
+				elseif self.aceColor == 'red' and card.black == true then
+					return 'Expecting a red ace'
+				elseif self.aceColor == 'black' and card.black == false then
+					return 'Expecting a black ace'
+				end
+			elseif dst.label == 'K' and card.ord == 13 then
+				if self.kingColor == 'unknown' then
+					if card.black == true then
+						self.kingColor = 'black'
+					else
+						self.kingColor = 'red'
+					end
+				elseif self.kingColor == 'red' and card.black == true then
+					return 'Expecting a red king'
+				elseif self.kingColor == 'black' and card.black == false then
+					return 'Expecting a black king'
+				end
 			end
-			return CC.Empty(dst, tail[1])
+			return CC.Empty(dst, card)
 		else
 			if dst == _G.BAIZE.foundations[1] or dst == _G.BAIZE.foundations[2] then
 				return CC.UpSuit({dst:peek(), tail[1]})
@@ -116,9 +149,13 @@ function LittleSpider:tailAppendError(dst, tail)
 		end
 	elseif dst.category == 'Tableau' then
 		if #_G.BAIZE.stock.cards > 0 then
-			return 'Cannot move cards there'
+			return 'Cannot move cards there until stock is dealt'
 		end
-		return CC.UpOrDownWrap({dst:peek(), tail[1]})
+		if #dst.cards == 0 then
+			return CC.Empty(dst, tail[1])
+		else
+			return CC.UpOrDownWrap({dst:peek(), tail[1]})
+		end
 	end
 	return nil
 end

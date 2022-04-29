@@ -17,6 +17,12 @@ ANDROID
 + https://apps.apple.com/app/apple-store/id287197884
 + https://www.solebon.com/
 
++ No variants beginning with H, I, N, O, Q, V, Z
+
++ Daily stats
+	games played today
+	games won/lost today (%)
+
 + Count the blips and warnings
 
 + About and FAQ ...

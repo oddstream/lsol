@@ -13,10 +13,13 @@ _G.LSOL_VERSION history
 
 6 - released to Play Store 22 Apr 2022 beta
 
-7 -
+7 - released to Play Store 27 Apr 2022 production
 	removed are you sure message box when recording lost game (toast instead)
 	pcall around json.decode
 	toast displayed when version updates
 	removed font:getHeight() argument
 	removed several log messages
 	added more stats
+
+8 -
+	bug fixes to Little Spider
