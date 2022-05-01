@@ -790,6 +790,19 @@ function Baize:showSettingsDrawer()
 	self.ui:showSettingsDrawer()
 end
 
+function Baize:showAboutDrawer()
+	local strs = {
+		string.format('%s %d', love.filesystem.getIdentity(), _G.LSOL_VERSION),
+		'',
+		'https://oddstream.games',
+		'https://love2d.org',
+		'',
+		'This program comes with',
+		'absolutely no warranty',
+	}
+	self.ui:showAboutDrawer(strs)
+end
+
 function Baize:resetStats()
 	local pressedButton = love.window.showMessageBox('Are you sure?', 'Reset statistics for ' .. self.settings.variantName .. '?', {'Yes', 'No', escapebutton = 2}, 'warning')
 	if pressedButton == 1 then
@@ -1563,6 +1576,10 @@ function Baize:wikipedia()
 	else
 		love.system.openURL(url)
 	end
+end
+
+function Baize:openURL(url)
+	love.system.openURL(url)
 end
 
 function Baize:j_adoube()

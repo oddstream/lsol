@@ -28,17 +28,19 @@ function TextWidget:draw()
 		return
 	end
 
+	local textColor = self.textColor or 'UiForeground'
+
 	love.graphics.setFont(self.parent.font)
 	if self.enabled then
 		local mx, my = love.mouse.getPosition()
 		if self.baizeCmd and Util.inRect(mx, my, self:screenRect()) then
-			Util.setColorFromName('UiForeground')
+			Util.setColorFromName(textColor)
 			if love.mouse.isDown(1) then
 				wx = wx + 2
 				wy = wy + 2
 			end
 		else
-			Util.setColorFromName('UiForeground')
+			Util.setColorFromName(textColor)
 		end
 	else
 		Util.setColorFromName('UiGrayedOut')

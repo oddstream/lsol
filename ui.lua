@@ -30,6 +30,7 @@ local menuWidgets = {
 	{text='Settings...', icon='settings', baizeCmd='showSettingsDrawer'},
 	{text='Wikipedia...', icon='info', baizeCmd='wikipedia'},
 	{},
+	{text='About...', icon='info', baizeCmd='showAboutDrawer'},
 	{text='Save and quit', icon='close', baizeCmd='quit'},
 }
 
@@ -96,6 +97,8 @@ function UI.new()
 		end
 	end
 
+	o.aboutdrawer = Drawer.new({width=256 * _G.UI_SCALE, font=o.toastFont})
+
 	o.statusbar = Statusbar.new({})
 		wgt = TextWidget.new({parent=o.statusbar, name='stock', text='', align='left'})
 		table.insert(o.statusbar.widgets, wgt)
@@ -104,9 +107,9 @@ function UI.new()
 		wgt = TextWidget.new({parent=o.statusbar, name='progress', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
-	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.statusbar}
+	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.aboutdrawer, o.statusbar}
 
-	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer}
+	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.aboutdrawer}
 
 	return o
 end
@@ -211,6 +214,21 @@ function UI:showSettingsDrawer()
 		end
 	end
 	self.settingsdrawer:show()
+end
+
+function UI:showAboutDrawer(strs)
+	self.aboutdrawer.widgets = {}
+	for _, str in ipairs(strs) do
+		local wgt = TextWidget.new({parent=self.aboutdrawer, text=str})
+		if str:find('https://', 1, true) then -- (string, pattern, init, plain)
+			wgt.baizeCmd = 'openURL'
+			wgt.param = str
+			wgt.textColor = 'LightSkyBlue'
+		end
+		table.insert(self.aboutdrawer.widgets, wgt)
+	end
+	self.aboutdrawer:layout()
+	self.aboutdrawer:show()
 end
 
 function UI:showVariantsDrawer(vtype)

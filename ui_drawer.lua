@@ -14,7 +14,7 @@ function Drawer.new(o)
 	o.width = o.width or 256
 	o.aniState = 'stop'
 	o.x = -(o.width + _G.UI_SAFEX) -- starts hidden
-	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE)
+	if not o.font then o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE) end
 	o.spacex = o.font:getWidth('M')
 	o.spacey = o.font:getHeight()
 	o.widgets = {}

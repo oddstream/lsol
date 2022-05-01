@@ -53,32 +53,8 @@ function LittleSpider:startGame()
 	_G.BAIZE:setRecycles(0)
 end
 
-local function IsAceFoundation(f)
-	return f.label == 'A'
-end
-
-local function IsKingFoundation(f)
-	return f.label == 'K'
-end
-
-local function IsTopTableau(t)
-	return t.category == 'Tableau' and t.slot.y == 1
-end
-
 local function IsBottomTableau(t)
 	return t.category == 'Tableau' and t.slot.y == 3
-end
-
-local function IsFoundationAbove(f, t)
-	return f.slot.x == t.slot.x
-end
-
-local function isRedAce(card)
-	return card.ord == 1 and card.black == false
-end
-
-local function isBlackKing(card)
-	return card.ord == 13 and card.black == true
 end
 
 function LittleSpider:afterMove()
