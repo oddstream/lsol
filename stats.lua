@@ -75,7 +75,16 @@ function Stats:findVariant(v)
 	return self[v]
 end
 
+local function statsName(v)
+	if _G.LSOL_VARIANTS[v].statsName then
+		log.info('recording', v, 'as', _G.LSOL_VARIANTS[v].statsName)
+		v = _G.LSOL_VARIANTS[v].statsName
+	end
+	return v
+end
+
 function Stats:recordWonGame(v, moves)
+	v = statsName(v)
 	local s = self:findVariant(v)
 
 	s.won = s.won + 1
@@ -103,6 +112,7 @@ function Stats:recordWonGame(v, moves)
 end
 
 function Stats:recordLostGame(v, percent)
+	v = statsName(v)
 	local s = self:findVariant(v)
 
 	s.lost = s.lost + 1
@@ -126,6 +136,7 @@ end
 
 --[[
 function Stats:log(v)
+	v = statsName(v)
 	local s = self:findVariant(v)
 	log.info('played', s.won + s.lost, 'won', s.won, 'lost', s.lost)
 	log.info('average percent', averagePercent(s), 'best percent', s.bestPercent)
@@ -138,6 +149,7 @@ end
 ]]
 
 function Stats:strings(v)
+	v = statsName(v)
 	local s = self:findVariant(v)
 	local strs = {}
 	if s.won + s.lost == 0 then
@@ -159,7 +171,7 @@ function Stats:strings(v)
 			table.insert(strs, 'You have yet to win a game')
 			table.insert(strs, string.format('Best percent: %d', s.bestPercent))
 		else
-			-- won at leat one game
+			-- won at least one game
 			table.insert(strs, string.format('Best number of moves: %d', s.bestMoves))
 			table.insert(strs, string.format('Worst number of moves: %d', s.worstMoves))
 			table.insert(strs, string.format('Average number of moves: %d', s.sumMoves / s.won))
@@ -174,11 +186,8 @@ function Stats:strings(v)
 end
 
 function Stats:reset(v)
+	v = statsName(v)
 	self[v] = nil
-	-- local s = self:findVariant(v)
-	-- for k, _ in pairs(s) do
-	-- 	s[k] = 0
-	-- end
 end
 
 return Stats

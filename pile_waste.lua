@@ -37,6 +37,7 @@ end
 -- use Pile.collect
 
 function Waste:unsortedPairs()
+	-- they're all unsorted, even if they aren't
 	if #self.cards == 0 then
 		return 0
 	end

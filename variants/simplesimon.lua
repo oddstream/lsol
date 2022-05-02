@@ -28,7 +28,6 @@ function SimpleSimon:buildPiles()
 		Discard.new({x=x, y=1})
 	end
 	for x = 1, 10 do
-	-- for x = 1, 13 do
 		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
 	end
 end

@@ -25,4 +25,6 @@ _G.LSOL_VERSION history
 	bug fixes to Little Spider
 	Assembly waste pile changed from FAN_RIGHT to FAN_RIGHT3
 	About...
+	layout variants stats stored under original variant stats
+
 

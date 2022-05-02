@@ -18,6 +18,13 @@ ANDROID
 + https://www.solebon.com/
 
 
++ BUG showing done_all FAB when unsorted cards in waste?
+
++ v alignment of titlebar widgets, occasionally
+	maybe linked to hamburger disappearing, occasionally
+
++ is tabCompareFn for moving or appending? appending.
+
 + No variants beginning with H, I, N, O, Q, V, Z
 
 + Daily stats
@@ -37,7 +44,7 @@ ANDROID
 	Yukon
 + rename Flat Castle
 	have aliases for stats so Beleagured Castle and Flat Castle share the same stats
-
+	Baker's Dozen (Wide)
 + stats icon with three vertical bars https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
 	https://fonts.google.com/icons "Bar Chart"
 	need 36x36 white png
@@ -46,7 +53,6 @@ ANDROID
 
 + BUG Thirteens doesn't complain when stuck
 + BUG false collect all FAB on American Toad when foundation accept card was at bottom of tableau
-+ BUG the menu hamburger disappeared (again)
 + BUG sometimes not descrunching when pile left with two cards
 
 + Fennel
@@ -127,7 +133,7 @@ https://www.politaire.com/rougeetnoir
 https://www.politaire.com/help/rougeetnoir
 
 https://wiki.gnome.org/Apps/Aisleriot/Games
-Auld Lang Syne
+Auld Lang Syne (hard to win, no skill)
 Aunt Mary
 Backbone
 Block Ten

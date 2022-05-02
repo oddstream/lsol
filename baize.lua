@@ -497,8 +497,25 @@ function Baize:countMoves()
 				end
 			end
 		end
-		-- TODO disregard if tail is already in middle of a conformant pile
-		-- i.e. not the first card in a conformant run
+
+		if #dst.cards > 0 and #src.cards > #tail then
+			-- disregard if card before tail is same as dst:peek()
+			local cdst = dst:peek()
+			-- src  = 1 2 3 4 5
+			-- tail = 3 4 5
+			-- 5 - 3 = 2
+			-- csrc = 2
+			local csrc = src.cards[#src.cards - #tail]
+			if cdst.ord == csrc.ord and cdst.suit == csrc.suit then
+				return true
+			end
+			-- local err = self.script.tabCompareFn({cdst, tail[1]})
+			-- log.info('meaningless?', tostring(cdst), tostring(tail[1]), err)
+			-- if not err then
+			-- 	return true
+			-- end
+		end
+
 		return false
 	end
 
@@ -571,7 +588,7 @@ function Baize:countMoves()
 				if not pile:moveTailError(tail) then
 					if not self.script:moveTailError(tail) then
 						local dst = findHomeForTail(pile, tail)
-						if dst --[[and not meaninglessMove(pile, dst, tail)]] then
+						if dst and not meaninglessMove(pile, dst, tail) then
 							moves = moves + 1
 							if dst.category == 'Foundation' then
 								fmoves = fmoves + 1

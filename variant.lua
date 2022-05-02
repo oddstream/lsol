@@ -47,8 +47,8 @@ function Variant:percentComplete()
 	for _, p in ipairs(_G.BAIZE.piles) do
 		if #p.cards > 1 then
 			pairs = pairs + (#p.cards - 1)
+			unsorted = unsorted + p:unsortedPairs()
 		end
-		unsorted = unsorted + p:unsortedPairs()
 	end
 	return 100 - Util.mapValue(unsorted, 0, pairs, 0, 100)
 end

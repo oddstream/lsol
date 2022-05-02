@@ -89,6 +89,7 @@ function Stock:tailTapped(tail)
 end
 
 function Stock:unsortedPairs()
+	-- they're all unsorted, even if they aren't
 	if #self.cards == 0 then
 		return 0
 	end
