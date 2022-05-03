@@ -17,6 +17,7 @@ function Drawer.new(o)
 	if not o.font then o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE) end
 	o.spacex = o.font:getWidth('M')
 	o.spacey = o.font:getHeight()
+	o.vscroll = true
 	o.widgets = {}
 
 	Drawer.layout(o)	-- instantiates .y, .height

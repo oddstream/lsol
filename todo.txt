@@ -20,9 +20,6 @@ ANDROID
 
 + BUG showing done_all FAB when unsorted cards in waste?
 
-+ v alignment of titlebar widgets, occasionally
-	maybe linked to hamburger disappearing, occasionally
-
 + is tabCompareFn for moving or appending? appending.
 
 + No variants beginning with H, I, N, O, Q, V, Z

@@ -26,5 +26,5 @@ _G.LSOL_VERSION history
 	Assembly waste pile changed from FAN_RIGHT to FAN_RIGHT3
 	About...
 	layout variants stats stored under original variant stats
-
+	bug fix: title and status bars could be vscrolled
 

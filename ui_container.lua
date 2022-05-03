@@ -23,15 +23,17 @@ function Container:startDrag(x, y)
 end
 
 function Container:dragBy(dx, dy)
---[[
-	self.dragOffset.x = self.dragStart.x + dx
-	if self.dragOffset.x > 0 then
-		self.dragOffset.x = 0	-- DragOffset should only ever be 0 or -ve
+	if self.hscroll then
+		self.dragOffset.x = self.dragStart.x + dx
+		if self.dragOffset.x > 0 then
+			self.dragOffset.x = 0	-- DragOffset should only ever be 0 or -ve
+		end
 	end
-]]
-	self.dragOffset.y = self.dragStart.y + dy
-	if self.dragOffset.y > 0 then
-		self.dragOffset.y = 0	-- DragOffset should only ever be 0 or -ve
+	if self.vscroll then
+		self.dragOffset.y = self.dragStart.y + dy
+		if self.dragOffset.y > 0 then
+			self.dragOffset.y = 0	-- DragOffset should only ever be 0 or -ve
+		end
 	end
 end
 
