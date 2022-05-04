@@ -99,7 +99,7 @@ function Rosamund:tailAppendError(dst, tail)
 		if src.category == 'Reserve' then
 			local contains, index = _G.table.contains(self.innerGuards, src)
 			if contains then
-				if self.outerGuards[index].cards ~= 0 then
+				if #self.outerGuards[index].cards ~= 0 then
 					return 'Must use an outer guard before an inner guard'
 				end
 			end

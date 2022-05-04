@@ -85,6 +85,16 @@ function Pyramid:afterMove()
 			end
 		end
 	end
+
+		-- The top card of the waste pile can be matched at any time with the next card drawn from the stock
+	if #self.waste.cards > 1 then
+		if CC.Thirteen({self.waste.cards[#self.waste.cards], self.waste.cards[#self.waste.cards - 1]}) == nil then
+			local c = self.waste:pop()
+			self.foundation:push(c)
+			c = self.waste:pop()
+			self.foundation:push(c)
+		end
+	end
 end
 
 function Pyramid:moveTailError(tail)
