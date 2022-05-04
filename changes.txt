@@ -21,10 +21,12 @@ _G.LSOL_VERSION history
 	removed several log messages
 	added more stats
 
-8 -
+8 - released to Play Store 2022-05-03 production
 	bug fixes to Little Spider
 	Assembly waste pile changed from FAN_RIGHT to FAN_RIGHT3
 	About...
 	layout variants stats stored under original variant stats
 	bug fix: title and status bars could be vscrolled
 
+9 -
+	Pyramid/Pyramid Relaxed

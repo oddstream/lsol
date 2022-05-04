@@ -31,7 +31,6 @@ end
 
 function TriPeaks:buildPiles()
 
-	-- TODO these piles should have no outline
 	for _, x in ipairs({2.5, 5.5, 8.5}) do
 		Reserve.new({x=x, y=1.5, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
 	end

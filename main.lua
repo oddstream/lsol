@@ -87,6 +87,8 @@ _G.LSOL_VARIANTS = {
 	Martha = {file='martha.lua', cc=2},
 	Penguin = {file='penguin.lua', cc=4},
 	['Red and Black'] = {file='redandblack.lua', cc=2},
+	Pyramid = {file='pyramid.lua', relaxed=false, cc=2},
+	['Pyramid Relaxed'] = {file='pyramid.lua', relaxed=true, cc=2},
 	Rosamund = {file='rosamund.lua', cc=2},
 	Scorpion = {file='scorpion.lua', cc=4},
 	Wasp = {file='scorpion.lua', cc=4, relaxed=true},
