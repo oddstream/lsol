@@ -346,19 +346,15 @@ function Baize:createCardTextures()
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
 	if not self.settings.simpleCards then
-		local pipWidth = self.suitFont:getWidth('♠')
-		local pipHeight = self.suitFont:getHeight()	--('♠')
+		local pipWidth = self.suitFont:getWidth('♠') * 0.8
+		local pipHeight = self.suitFont:getHeight() * 0.8
 		love.graphics.setFont(self.suitFont)
-		love.graphics.setColor(0,0,0, 0.2)
+		love.graphics.setColor(0,0,0, 0.1)
 		love.graphics.print('♦', self.cardWidth / 2, self.cardHeight / 2 - pipHeight)	-- top right
 		love.graphics.print('♥', self.cardWidth / 2 - pipWidth, self.cardHeight / 2)	-- bottom left
-		love.graphics.setColor(0,0,0, 0.1)
+		love.graphics.setColor(0,0,0, 0.2)
 		love.graphics.print('♣', self.cardWidth / 2 - pipWidth, self.cardHeight / 2 - pipHeight)	-- top left
 		love.graphics.print('♠', self.cardWidth / 2, self.cardHeight / 2)	-- bottom right
-		local ox = self.cardWidth / 8
-		local oy = self.cardHeight / 8
-		love.graphics.setLineWidth(2)
-		love.graphics.rectangle('line', ox, oy, self.cardWidth-(ox*2), self.cardHeight-(oy*2))
 	end
 
 	love.graphics.setCanvas()	-- reset render target to the screen
@@ -809,7 +805,8 @@ end
 
 function Baize:showAboutDrawer()
 	local strs = {
-		string.format('%s %d', love.filesystem.getIdentity(), _G.LSOL_VERSION),
+		love.filesystem.getIdentity(),
+		string.format('Version %d %s', _G.LSOL_VERSION, _G.LSOL_VERSION_DATE),
 		'',
 		'https://oddstream.games',
 		'https://love2d.org',

@@ -1,6 +1,6 @@
 A collection of solitaire games, with clear graphics, a simple interface, no fees, and no adverts.
 
-This new app is intended to replace the older solitaire app.
+This new app replaces the older solitaire app.
 
 = Why create yet another solitaire app? =
 
@@ -12,7 +12,7 @@ Most people know Klondike, and a few more know Spider or Freecell or Pyramid, bu
 
 This contains around fifty hand-picked collection of solitaire variations, including:
 
-♥ Accordian ♥ Agnes Bernauer ♥ Agnes Sorel ♥ Alhambra ♥ American Toad ♥ American Westcliff ♥ Assembly ♥ Athena ♥ Australian ♥ Baker's Dozen ♥ Baker's Dozen (Wide) ♥ Baker's Game ♥ Baker's Game Relaxed ♥ Beleaguered Castle ♥ Bisley ♥ Black Hole ♥ Blockade ♥ Canfield ♥ Classic Westcliff ♥ Crimean ♥ Duchess ♥ Easthaven ♥ Eight Off ♥ Eight Off Relaxed ♥ Flat Castle ♥ Forty Thieves ♥ Forty and Eight ♥ Freecell ♥ Gate ♥ Josephine ♥ Klondike ♥ Klondike (Turn Three) ♥ Limited ♥ Little Spider ♥ Lucas ♥ Martha ♥ Penguin ♥ Rainbow Canfield ♥ Red and Black ♥ Rosamund's Bower ♥ Russian ♥ Scorpion ♥ Sea Haven Towers ♥ Simple Simon ♥ Spider ♥ Spider One Suit ♥ Spider Two Suits ♥ Storehouse Canfield ♥ Thirteens ♥ Thoughtful ♥ Tri Peaks ♥ Ukrainian ♥ Wasp ♥ Yukon ♥ Yukon Cells ♥ Yukon Relaxed
+♥ Accordian ♥ Agnes Bernauer ♥ Agnes Sorel ♥ Alhambra ♥ American Toad ♥ American Westcliff ♥ Assembly ♥ Athena ♥ Australian ♥ Baker's Dozen ♥ Baker's Dozen (Wide) ♥ Baker's Game ♥ Baker's Game Relaxed ♥ Beleaguered Castle ♥ Bisley ♥ Black Hole ♥ Blockade ♥ Canfield ♥ Classic Westcliff ♥ Crimean ♥ Duchess ♥ Easthaven ♥ Eight Off ♥ Eight Off Relaxed ♥ Flat Castle ♥ Forty Thieves ♥ Forty and Eight ♥ Freecell ♥ Gate ♥ Josephine ♥ Klondike ♥ Klondike (Turn Three) ♥ Limited ♥ Little Spider ♥ Lucas ♥ Martha ♥ Penguin ♥ Pyramid ♥ Rainbow Canfield ♥ Red and Black ♥ Rosamund's Bower ♥ Russian ♥ Scorpion ♥ Sea Haven Towers ♥ Simple Simon ♥ Spider ♥ Spider One Suit ♥ Spider Two Suits ♥ Storehouse Canfield ♥ Thirteens ♥ Thoughtful ♥ Tri Peaks ♥ Ukrainian ♥ Wasp ♥ Yukon ♥ Yukon Cells ♥ Yukon Relaxed
 
 Games like Penguin and Simple Simon are really satisfying to win. Give them a go!
 

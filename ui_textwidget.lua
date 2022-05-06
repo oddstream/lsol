@@ -30,7 +30,7 @@ function TextWidget:draw()
 
 	local textColor = self.textColor or 'UiForeground'
 
-	love.graphics.setFont(self.parent.font)
+	love.graphics.setFont(self.font or self.parent.font)
 	if self.enabled then
 		local mx, my = love.mouse.getPosition()
 		if self.baizeCmd and Util.inRect(mx, my, self:screenRect()) then

@@ -31,3 +31,5 @@ _G.LSOL_VERSION history
 9 -
 	Pyramid/Pyramid Relaxed
 	bug fix to Rosamund
+	unsimple card back simplified
+	tweaks to About...

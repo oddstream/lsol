@@ -227,6 +227,7 @@ function UI:showAboutDrawer(strs)
 		end
 		table.insert(self.aboutdrawer.widgets, wgt)
 	end
+	self.aboutdrawer.widgets[1].font = love.graphics.newFont(_G.ORD_FONT, _G.UIFONTSIZE)
 	self.aboutdrawer:layout()
 	self.aboutdrawer:show()
 end
