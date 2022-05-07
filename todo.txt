@@ -20,9 +20,13 @@ ANDROID
 
 + BUG showing done_all FAB when unsorted cards in waste?
 
+https://www.broadsheet.ie/2015/02/05/old-suits-barely-worn/
+https://www.metmuseum.org/art/collection/search/475513
+
 + is tabCompareFn for moving or appending? appending.
 
 + No variants beginning with H, I, N, O, Q, V, Z
+	https://en.wikipedia.org/wiki/List_of_patience_games
 
 + Daily stats
 	games played today

@@ -28,8 +28,13 @@ _G.LSOL_VERSION history
 	layout variants stats stored under original variant stats
 	bug fix: title and status bars could be vscrolled
 
-9 -
+9 - released to Play Store 2022-05-06 production
 	Pyramid/Pyramid Relaxed
 	bug fix to Rosamund
 	unsimple card back simplified
 	tweaks to About...
+
+10 -
+	Gargantua
+	BUG FIX - Klondike had 8 piles, should have been 7!
+	(saved game of Klondike will not load, just restart deal)

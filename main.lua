@@ -8,8 +8,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '9'
-_G.LSOL_VERSION_DATE = '2022-05-06'
+_G.LSOL_VERSION = '10'
+_G.LSOL_VERSION_DATE = '2022-05-07'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -78,6 +78,7 @@ _G.LSOL_VARIANTS = {
 	Gate = {file='gate.lua', cc=2},
 	Klondike = {file='klondike.lua', cc=2},
 	Thoughtful = {file='klondike.lua', cc=2, thoughtful=true},
+	Gargantua = {file='klondike.lua', cc=2, gargantua=true},
 	['Klondike (Turn Three)']  = {file='klondike.lua', cc=2, turn=3},
 	['Forty Thieves'] = {file='forty.lua', cc=4, tabs=10, cardsPerTab=4},
 	['Forty and Eight'] = {file='forty.lua', cc=4, tabs=10, cardsPerTab=5, recycles=1},
@@ -118,7 +119,7 @@ _G.VARIANT_TYPES = {
 	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight'},
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
-	['> Klondikes'] = {'Athena', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
+	['> Klondikes'] = {'Athena', 'Gargantua', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Rosamund'},
 	['> Places'] = {'Alhambra','Australian', 'Yukon', 'Yukon Relaxed','Russian','Crimean','Ukrainian'},
 	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},

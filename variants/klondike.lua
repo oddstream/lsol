@@ -17,13 +17,19 @@ setmetatable(Klondike, {__index = Variant})
 function Klondike.new(o)
 	o = o or {}
 	o.tabCompareFn = CC.DownAltColor
-	o.wikipedia = 'https://en.wikipedia.org/wiki/Klondike_(solitaire)'
+	if o.gargantua then
+		o.packs = 2
+		o.wikipedia = 'https://en.wikipedia.org/wiki/Gargantua_(card_game)'
+	else
+		o.packs = 1
+		o.wikipedia = 'https://en.wikipedia.org/wiki/Klondike_(solitaire)'
+	end
 	o.turn = o.turn or 1
 	return setmetatable(o, Klondike)
 end
 
 function Klondike:buildPiles()
-	Stock.new({x=1, y=1})
+	Stock.new({x=1, y=1, packs=self.packs})
 	Waste.new({x=2, y=1, fanType='FAN_RIGHT3'})
 	if self.athena then
 		for x = 4, 7 do
@@ -34,12 +40,21 @@ function Klondike:buildPiles()
 			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
 			pile.label = 'K'
 		end
-	else
-		for x = 5, 8 do
+	elseif self.gargantua then
+		for x = 4, 11 do
 			local pile = Foundation.new({x=x, y=1})
 			pile.label = 'A'
 		end
-		for x = 1, 8 do
+		for x = 3, 11 do
+			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			pile.label = 'K'
+		end
+	else
+		for x = 4, 7 do
+			local pile = Foundation.new({x=x, y=1})
+			pile.label = 'A'
+		end
+		for x = 1, 7 do
 			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
 			pile.label = 'K'
 		end
@@ -95,18 +110,6 @@ function Klondike:moveTailError(tail)
 	end
 	return nil
 end
---[[
-function Klondike.Tableau.moveTailError(tail)
-	local cpairs = Util.makeCardPairs(tail)
-	for _, cpair in ipairs(cpairs) do
-		local err = CC.DownAltColor(cpair)
-		if err then
-			return err
-		end
-	end
-	return nil
-end
-]]
 
 function Klondike:tailAppendError(dst, tail)
 	if dst.category == 'Foundation' then
