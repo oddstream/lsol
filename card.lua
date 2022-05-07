@@ -159,7 +159,7 @@ function Card:transitionTo(x, y)
 	self.src = {x = self.x, y = self.y}
 	self.dst = {x = x, y = y}
 	self.lerpStep = 0.2	-- starting from 0.0 feels a little laggy
-	self.lerpStepAmount = _G.BAIZE.settings.cardTransitionStep
+	self.lerpStepAmount = _G.SETTINGS.cardTransitionStep
 	self.lerping = true
 end
 

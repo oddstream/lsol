@@ -1,7 +1,6 @@
 -- baize
 
 local bitser = require 'bitser'
-local json = require 'json'
 local log = require 'log'
 
 local Card = require 'card'
@@ -46,40 +45,6 @@ function Baize.new()
 	o.percent = 0
 	o.lastInput = love.timer.getTime()
 	return setmetatable(o, Baize)
-end
-
-local settingsFname = 'settings.json'
-
-function Baize:loadSettings()
-	local settings
-	local info = love.filesystem.getInfo(settingsFname)
-	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
-		local contents, size = love.filesystem.read(settingsFname)
-		if not contents then
-			log.error(size)
-		else
-			-- log.info('loaded', size, 'bytes from', settingsFname)
-			local ok
-			ok, settings = pcall(json.decode, contents)
-			if not ok then
-				log.error('error decoding', settingsFname, settings)
-				settings = nil
-			end
-		end
-	else
-		log.info('not loading', settingsFname)
-	end
-	self.settings = settings or _G.LSOL_DEFAULT_SETTINGS
-end
-
-function Baize:saveSettings()
-	self.settings.lastVersion = _G.LSOL_VERSION
-	local success, message = love.filesystem.write(settingsFname, json.encode(self.settings))
-	if success then
-		-- log.info('wrote to', settingsFname)
-	else
-		log.error(message)
-	end
 end
 
 function Baize:getSavable()
@@ -153,7 +118,7 @@ local pipInfo = {
 
 function Baize:getSuitColor(suit)
 	local suitColor
-	if self.settings.fourColorCards then
+	if _G.SETTINGS.fourColorCards then
 		if suit == '♣' then
 			suitColor = 'clubColor'
 		elseif suit == '♦' then
@@ -163,15 +128,15 @@ function Baize:getSuitColor(suit)
 		elseif suit == '♠' then
 			suitColor = 'spadeColor'
 		end
-	elseif self.settings.twoColorCards then
+	elseif _G.SETTINGS.twoColorCards then
 		if suit == '♦' or suit == '♥' then
 			suitColor = 'heartColor'
 		else
 			suitColor = 'spadeColor'
 		end
-	elseif self.settings.oneColorCards then
+	elseif _G.SETTINGS.oneColorCards then
 		suitColor = 'spadeColor'
-	elseif self.settings.autoColorCards then
+	elseif _G.SETTINGS.autoColorCards then
 		if self.script.cc == 4 then
 			if suit == '♣' then
 				suitColor = 'clubColor'
@@ -305,14 +270,14 @@ function Baize:createCardTextures()
 	assert(self.cardWidth and self.cardWidth ~= 0)
 	assert(self.cardHeight and self.cardHeight ~= 0)
 
-	if self.settings.simpleCards then
+	if _G.SETTINGS.simpleCards then
 		self.ordFontSize = self.cardWidth / 3
 	else
 		self.ordFontSize = self.cardWidth / 3.75
 	end
 	self.ordFont = love.graphics.newFont(_G.ORD_FONT, self.ordFontSize)
 
-	if self.settings.simpleCards then
+	if _G.SETTINGS.simpleCards then
 		self.suitFontSize = self.cardWidth / 3
 	else
 		self.suitFontSize = self.cardWidth / 3.75
@@ -326,7 +291,7 @@ function Baize:createCardTextures()
 	self.cardTextureLibrary = {}
 	for _, ord in ipairs{1,2,3,4,5,6,7,8,9,10,11,12,13} do
 		for _, suit in ipairs{'♣','♦','♥','♠'} do
-			if self.settings.simpleCards then
+			if _G.SETTINGS.simpleCards then
 				self.cardTextureLibrary[string.format('%02u%s', ord, suit)] = self:createSimpleFace(ord, suit)
 			else
 				self.cardTextureLibrary[string.format('%02u%s', ord, suit)] = self:createRegularFace(ord, suit)
@@ -345,7 +310,7 @@ function Baize:createCardTextures()
 	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
-	if not self.settings.simpleCards then
+	if not _G.SETTINGS.simpleCards then
 		local pipWidth = self.suitFont:getWidth('♠') * 0.8
 		local pipHeight = self.suitFont:getHeight() * 0.8
 		love.graphics.setFont(self.suitFont)
@@ -515,7 +480,7 @@ function Baize:countMoves()
 		return false
 	end
 
-	if self.settings.debug then
+	if _G.SETTINGS.debug then
 		for _, c in ipairs(self.deck) do
 			c.movable = false
 		end
@@ -540,7 +505,7 @@ function Baize:countMoves()
 				if dst.category == 'Foundation' then
 					fmoves = fmoves + 1
 				end
-				if self.settings.debug then tail[1].movable = true end
+				if _G.SETTINGS.debug then tail[1].movable = true end
 			end
 		end
 	end
@@ -555,7 +520,7 @@ function Baize:countMoves()
 					if dst.category == 'Foundation' then
 						fmoves = fmoves + 1
 					end
-					if self.settings.debug then tail[1].movable = true end
+					if _G.SETTINGS.debug then tail[1].movable = true end
 				end
 			end
 		end
@@ -571,7 +536,7 @@ function Baize:countMoves()
 					if dst.category == 'Foundation' then
 						fmoves = fmoves + 1
 					end
-					if self.settings.debug then tail[1].movable = true end
+					if _G.SETTINGS.debug then tail[1].movable = true end
 				end
 			end
 		end
@@ -589,7 +554,7 @@ function Baize:countMoves()
 							if dst.category == 'Foundation' then
 								fmoves = fmoves + 1
 							end
-							if self.settings.debug then tail[1].movable = true end
+							if _G.SETTINGS.debug then tail[1].movable = true end
 						end
 					end
 				end
@@ -695,7 +660,7 @@ function Baize:updateUI()
 		end
 	end
 
-	if self.settings.debug then
+	if _G.SETTINGS.debug then
 		-- self.ui:updateWidget('status', string.format('%s(%d)', self.status, #self.undoStack))
 		self.ui:updateWidget('status', self.status)
 	else
@@ -709,12 +674,12 @@ function Baize:updateUI()
 	end
 
 	if self.status == 'complete' then
-		self.ui:toast(self.settings.variantName .. ' complete', 'complete')
+		self.ui:toast(_G.SETTINGS.variantName .. ' complete', 'complete')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 		self:startSpinning()
-		self.stats:recordWonGame(self.settings.variantName, #self.undoStack - 1)
+		self.stats:recordWonGame(_G.SETTINGS.variantName, #self.undoStack - 1)
 	elseif self.status == 'stuck' then
-		self.ui:toast(self.settings.variantName .. ' stuck', 'blip')
+		self.ui:toast(_G.SETTINGS.variantName .. ' stuck', 'blip')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 	elseif (self.status == 'collect') and (self.percent == 100) and (not anyProneCards()) then
 		self.ui:showFAB{icon='done_all', baizeCmd='collect'}
@@ -796,7 +761,7 @@ function Baize:showVariantsDrawer(vtype)
 end
 
 function Baize:showStatsDrawer()
-	self.ui:showStatsDrawer(self.stats:strings(self.settings.variantName))
+	self.ui:showStatsDrawer(self.stats:strings(_G.SETTINGS.variantName))
 end
 
 function Baize:showSettingsDrawer()
@@ -818,15 +783,15 @@ function Baize:showAboutDrawer()
 end
 
 function Baize:resetStats()
-	local pressedButton = love.window.showMessageBox('Are you sure?', 'Reset statistics for ' .. self.settings.variantName .. '?', {'Yes', 'No', escapebutton = 2}, 'warning')
+	local pressedButton = love.window.showMessageBox('Are you sure?', 'Reset statistics for ' .. _G.SETTINGS.variantName .. '?', {'Yes', 'No', escapebutton = 2}, 'warning')
 	if pressedButton == 1 then
-		self.stats:reset(self.settings.variantName)
-		self.ui:toast(string.format('Statistics for %s have been reset', self.settings.variantName))
+		self.stats:reset(_G.SETTINGS.variantName)
+		self.ui:toast(string.format('Statistics for %s have been reset', _G.SETTINGS.variantName))
 	end
 end
 
 function Baize:toggleCheckbox(var)
-	self.settings[var] = not self.settings[var]
+	_G.SETTINGS[var] = not _G.SETTINGS[var]
 	if var == 'simpleCards' then
 		self:createCardTextures()
 	elseif var == 'shortCards' then
@@ -837,7 +802,7 @@ function Baize:toggleCheckbox(var)
 		-- local undoStack = self.undoStack
 		self:resetPiles()
 		self.script:buildPiles()
-		if self.settings.mirrorBaize then
+		if _G.SETTINGS.mirrorBaize then
 			self:mirrorSlots()
 		end
 		self:layout()
@@ -855,9 +820,9 @@ function Baize:toggleRadio(radio)
 	-- radio.var will be the button pressed (which should be toggled on)
 	-- radio.grp will be the radios in this group (which should be toggled off)
 	for _, s in ipairs(radio.grp) do
-		self.settings[s] = false
+		_G.SETTINGS[s] = false
 	end
-	self.settings[radio.var] = true
+	_G.SETTINGS[radio.var] = true
 	self:createCardTextures()
 end
 
@@ -890,8 +855,8 @@ local function resignGameAreYouSure()
 end
 
 function Baize:changeVariant(vname)
-	-- log.trace('changing variant from', self.settings.variantName, 'to', vname)
-	if vname == self.settings.variantName then
+	-- log.trace('changing variant from', _G.SETTINGS.variantName, 'to', vname)
+	if vname == _G.SETTINGS.variantName then
 		return
 	end
 	local newScript = _G.BAIZE:loadScript(vname)
@@ -901,26 +866,26 @@ function Baize:changeVariant(vname)
 				if not resignGameAreYouSure() then
 					return
 				end
-				self.stats:recordLostGame(self.settings.variantName, self.percent)
+				self.stats:recordLostGame(_G.SETTINGS.variantName, self.percent)
 			end
 		end
 		--
-		self.settings.variantName = vname
+		_G.SETTINGS.variantName = vname
 		self.script = newScript
 		self:resetPiles()
 		self.script:buildPiles()
-		if self.settings.mirrorBaize then
+		if _G.SETTINGS.mirrorBaize then
 			self:mirrorSlots()
 		end
 		self:layout()
 		self:resetState()
-		self.ui:toast('Starting a new game of ' .. self.settings.variantName, 'deal')
+		self.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 		self.script:startGame()
 		self:undoPush()
 		self:updateStatus()
 		self:updateUI()
 		self.ui:updateWidget('title', vname)
-		if self.settings.autoColorCards then
+		if _G.SETTINGS.autoColorCards then
 			self:createCardTextures()
 		end
 	else
@@ -934,7 +899,7 @@ function Baize:newDeal()
 			if not resignGameAreYouSure() then
 				return
 			end
-			self.stats:recordLostGame(self.settings.variantName, self.percent)
+			self.stats:recordLostGame(_G.SETTINGS.variantName, self.percent)
 		end
 	end
 	self:stopSpinning()
@@ -948,7 +913,7 @@ function Baize:newDeal()
 	end
 	self.stock:shuffle()
 	self:resetState()
-	self.ui:toast('Starting a new game of ' .. self.settings.variantName, 'deal')
+	self.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 	self.script:startGame()
 	self:undoPush()
 	self:updateStatus()
@@ -1009,7 +974,7 @@ function Baize:layout()
 	end
 
 	local cardRatio = 1.444
-	if self.settings.shortCards then
+	if _G.SETTINGS.shortCards then
 		cardRatio = 1.222
 	end
 
@@ -1019,7 +984,7 @@ function Baize:layout()
 	-- safey = love.window.toPixels(safey)
 	-- safew = love.window.toPixels(safew)
 	-- safeh = love.window.toPixels(safeh)
-	-- if self.settings.debug then
+	-- if _G.SETTINGS.debug then
 	-- 	local amt = 50
 	-- 	local ww, wh, _ = love.window.getMode()
 	-- 	safex, safey, safew, safeh = amt, amt, ww - (amt*2), wh - (amt*2)
@@ -1572,13 +1537,13 @@ function Baize:stopSpinning()
 end
 
 function Baize:resetSettings()
-	local vname = self.settings.variantName
-	self.settings = {}
+	local vname = _G.SETTINGS.variantName
+	_G.SETTINGS = {}
 	for k,v in pairs(_G.LSOL_DEFAULT_SETTINGS) do
-		self.settings[k] = v
+		_G.SETTINGS[k] = v
 	end
-	self.settings.variantName = vname
-	-- for k,v in pairs(self.settings) do
+	_G.SETTINGS.variantName = vname
+	-- for k,v in pairs(_G.SETTINGS) do
 	-- 	log.trace(k, v)
 	-- end
 end
@@ -1586,7 +1551,7 @@ end
 function Baize:wikipedia()
 	local url = self.script.wikipedia
 	if not url then
-		self.ui:toast('No wikipedia entry for ' .. self.settings.variantName, 'blip')
+		self.ui:toast('No wikipedia entry for ' .. _G.SETTINGS.variantName, 'blip')
 	else
 		love.system.openURL(url)
 	end
@@ -1677,7 +1642,7 @@ function Baize:draw()
 	end
 	self.ui:draw()
 
-	if self.settings.debug then
+	if _G.SETTINGS.debug then
 		love.graphics.setColor(0,1,0)
 		love.graphics.print(string.format('%s sc=%d ww=%d, wh=%d sx=%d sy=%d sw=%d sh=%d',
 			love.system.getOS(),

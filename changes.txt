@@ -35,6 +35,8 @@ _G.LSOL_VERSION history
 	tweaks to About...
 
 10 -
-	Gargantua
+	new variants: Gargantua, Giant, Miss Milligan
 	BUG FIX - Klondike had 8 piles, should have been 7!
 	(saved game of Klondike will not load, just restart deal)
+	window size, position, display restored when not on Android
+	settings moved from baize to global

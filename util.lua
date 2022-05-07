@@ -85,7 +85,7 @@ function Util.baizeChanged(old, new)
 end
 
 function Util.getColorFromSetting(s)
-	local setting = _G.BAIZE.settings[s]
+	local setting = _G.SETTINGS[s]
 	if not setting then
 		log.error('No setting called', s)
 		return 0.5, 0.5, 0.5
@@ -201,7 +201,7 @@ function Util.unsortedPairs(tail, fn)
 end
 
 function Util.play(name)
-	if _G.BAIZE.settings.muteSounds then
+	if _G.SETTINGS.muteSounds then
 		return
 	end
 	-- _G.LSOL_SOUNDS[name]:seek(0)

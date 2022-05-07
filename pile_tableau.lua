@@ -53,7 +53,7 @@ function Tableau:acceptTailError(tail)
 		end
 	end
 	if self.moveType == 'MOVE_ONE_PLUS' then
-		if _G.BAIZE.settings.powerMoves then
+		if _G.SETTINGS.powerMoves then
 			local moves = powerMoves(self)
 			if #tail > moves then
 				if moves == 1 then

@@ -202,9 +202,9 @@ end
 function UI:showSettingsDrawer()
 	-- TODO go through widgets and determine if they are checked or unchecked
 	for _, wgt in ipairs(self.settingsdrawer.widgets) do
-		-- log.trace(wgt.var, 'is', _G.BAIZE.settings[wgt.var])
+		-- log.trace(wgt.var, 'is', _G.SETTINGS[wgt.var])
 		if wgt.var then
-			if _G.BAIZE.settings[wgt.var] then
+			if _G.SETTINGS[wgt.var] then
 				wgt.checked = true
 				wgt.img = wgt.imgChecked
 			else
@@ -240,7 +240,7 @@ function UI:showVariantsDrawer(vtype)
 			table.insert(self.variantsdrawer.widgets, wgt)
 		end
 		table.sort(self.variantsdrawer.widgets, function(a, b) return a.text < b.text end)
-		if _G.BAIZE.settings.debug then
+		if _G.SETTINGS.debug then
 			for _, v in ipairs(self.variantsdrawer.widgets) do
 				print('♥ ' .. v.text)
 			end

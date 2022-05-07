@@ -78,7 +78,7 @@ function Radio:draw()
 		love.graphics.print(self.text, wx + self.imgWidth + 8, wy + 3)
 	end
 
-	if _G.BAIZE.settings.debug then
+	if _G.SETTINGS.debug then
 		Util.setColorFromName('UiGrayedOut')
 		love.graphics.rectangle('line', wx, wy, ww, wh)
 	end

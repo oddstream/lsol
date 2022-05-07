@@ -1,6 +1,7 @@
 -- main.lua
 
--- local log = require 'log'
+local json = require 'json'
+local log = require 'log'
 
 local Card = require 'card'
 local Baize = require 'baize'
@@ -87,6 +88,8 @@ _G.LSOL_VARIANTS = {
 	['Little Spider'] = {file='littlespider.lua', cc=2},
 	Lucas = {file='forty.lua', cc=4, tabs=13, cardsPerTab=3, dealAces=true},
 	Martha = {file='martha.lua', cc=2},
+	['Miss Milligan'] = {file='miss milligan.lua', cc=2},
+	Giant = {file='miss milligan.lua', giant=true, cc=2},
 	Penguin = {file='penguin.lua', cc=4},
 	['Red and Black'] = {file='redandblack.lua', cc=2},
 	Pyramid = {file='pyramid.lua', relaxed=false, cc=2},
@@ -120,7 +123,7 @@ _G.VARIANT_TYPES = {
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight'},
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
-	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Rosamund'},
+	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Miss Milligan','Rosamund'},
 	['> Places'] = {'Alhambra','Australian', 'Yukon', 'Yukon Relaxed','Russian','Crimean','Ukrainian'},
 	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
@@ -274,6 +277,49 @@ _G.LSOL_SOUNDS = {
 
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
+local settingsFname = 'settings.json'
+
+local function loadSettings()
+	local settings
+	local info = love.filesystem.getInfo(settingsFname)
+	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
+		local contents, size = love.filesystem.read(settingsFname)
+		if not contents then
+			log.error(size)
+		else
+			-- log.info('loaded', size, 'bytes from', settingsFname)
+			local ok
+			ok, settings = pcall(json.decode, contents)
+			if not ok then
+				log.error('error decoding', settingsFname, settings)
+				settings = nil
+			end
+		end
+	else
+		log.info('not loading', settingsFname)
+	end
+	return settings or _G.LSOL_DEFAULT_SETTINGS
+end
+
+local function saveSettings(settings)
+	settings.lastVersion = _G.LSOL_VERSION
+	if love.system.getOS() ~= 'Android' then
+		local x, y, i = love.window.getPosition()
+		local w, h = love.window.getMode()
+		settings.windowX = x
+		settings.windowY = y
+		settings.windowWidth = w
+		settings.windowHeight = h
+		settings.displayIndex = i
+	end
+	local success, message = love.filesystem.write(settingsFname, json.encode(settings))
+	if success then
+		-- log.info('wrote to', settingsFname)
+	else
+		log.error(message)
+	end
+end
+
 local function createWindowIcon()
 	local size = 32	-- small size let the OS fuzz it up
 	local heart = '♥'
@@ -347,15 +393,24 @@ There may be a small performance penalty as the output will be flushed after eac
 	-- log.info(limits.texturesize)	-- 16384
 	-- log.info(limits.multicanvas)	-- 8
 
+	_G.SETTINGS = loadSettings()
+
 	if love.system.getOS() == 'Android' then
 		-- force portrait mode
 		-- do not use dpi scale (which would be 3 on Moto G4)
 		love.window.setMode(1080, 1920, {resizable=true, msaa=limits.canvasmsaa, usedpiscale=true})
 	else
 		love.window.setIcon(createWindowIcon())
-		-- love.window.setMode(1024, 500, {resizable=true, minwidth=640, minheight=500})
-		love.window.setMode(1080/2, 1920/2, {resizable=true,  msaa=limits.canvasmsaa, minwidth=640, minheight=500})
-		-- love.window.setMode(1024, 1024, {resizable=true, msaa=limits.canvasmsaa, minwidth=640, minheight=500})
+
+		local s = _G.SETTINGS
+		if s.windowWidth and s.windowHeight then
+			love.window.setMode(s.windowWidth, s.windowHeight, {resizable=true,  msaa=limits.canvasmsaa, minwidth=640, minheight=500})
+		else
+			love.window.setMode(1080/2, 1920/2, {resizable=true,  msaa=limits.canvasmsaa, minwidth=640, minheight=500})
+		end
+		if s.windowX and s.windowY and s.displayIndex then
+			love.window.setPosition(s.windowX, s.windowY, s.displayIndex)
+		end
 	end
 
 	_G.TITLEBARHEIGHT = 48 * _G.UI_SCALE
@@ -381,43 +436,41 @@ There may be a small performance penalty as the output will be flushed after eac
 	createFavoriteVariants(_G.BAIZE.stats)
 	_G.BAIZE.ui = UI.new()
 
-	_G.BAIZE:loadSettings()
-
 	love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
-	_G.BAIZE.ui:updateWidget('title', _G.BAIZE.settings.variantName)
+	_G.BAIZE.ui:updateWidget('title', _G.SETTINGS.variantName)
 
 	_G.BAIZE:loadUndoStack()
 	if _G.BAIZE.undoStack then
-		_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
+		_G.BAIZE.script = _G.BAIZE:loadScript(_G.SETTINGS.variantName)
 		if _G.BAIZE.script then
 			_G.BAIZE:resetPiles()
 			_G.BAIZE.script:buildPiles()
-			if _G.BAIZE.settings.mirrorBaize then
+			if _G.SETTINGS.mirrorBaize then
 				_G.BAIZE:mirrorSlots()
 			end
 			_G.BAIZE:layout()
 			-- don't reset
 			-- don't startGame
-			_G.BAIZE.ui:toast('Resuming a saved game of ' .. _G.BAIZE.settings.variantName, 'load')
+			_G.BAIZE.ui:toast('Resuming a saved game of ' .. _G.SETTINGS.variantName, 'load')
 			_G.BAIZE:undo()	-- pop extra state written when saved, will updateUI
 		else
 			os.exit()
 		end
 	else
-		_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
+		_G.BAIZE.script = _G.BAIZE:loadScript(_G.SETTINGS.variantName)
 		if not _G.BAIZE.script then
-			_G.BAIZE.settings.variantName = 'Klondike'
-			_G.BAIZE.script = _G.BAIZE:loadScript(_G.BAIZE.settings.variantName)
+			_G.SETTINGS.variantName = 'Klondike'
+			_G.BAIZE.script = _G.BAIZE:loadScript(_G.SETTINGS.variantName)
 		end
 		if _G.BAIZE.script then
 			_G.BAIZE:resetPiles()
 			_G.BAIZE.script:buildPiles()
-			if _G.BAIZE.settings.mirrorBaize then
+			if _G.SETTINGS.mirrorBaize then
 				_G.BAIZE:mirrorSlots()
 			end
 			_G.BAIZE:layout()
 			_G.BAIZE:resetState()
-			_G.BAIZE.ui:toast('Starting a new game of ' .. _G.BAIZE.settings.variantName, 'deal')
+			_G.BAIZE.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 			_G.BAIZE.script:startGame()
 			_G.BAIZE:undoPush()
 			_G.BAIZE:updateUI()
@@ -426,10 +479,10 @@ There may be a small performance penalty as the output will be flushed after eac
 		end
 	end
 
-	if _G.BAIZE.settings.lastVersion == 0 then
+	if _G.SETTINGS.lastVersion == 0 then
 		_G.BAIZE.ui:toast(string.format('Welcome to %s', love.filesystem.getIdentity()))
-	elseif _G.BAIZE.settings.lastVersion ~= _G.LSOL_VERSION then
-		_G.BAIZE.ui:toast(string.format('%s version updated from %d to %d', love.filesystem.getIdentity(), _G.BAIZE.settings.lastVersion, _G.LSOL_VERSION))
+	elseif _G.SETTINGS.lastVersion ~= _G.LSOL_VERSION then
+		_G.BAIZE.ui:toast(string.format('%s version updated from %d to %d', love.filesystem.getIdentity(), _G.SETTINGS.lastVersion, _G.LSOL_VERSION))
 	end
 
 	-- _G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
@@ -451,7 +504,7 @@ function love.draw()
 end
 
 function love.resize(w,h)
-	-- if _G.BAIZE.settings.debug then
+	-- if _G.SETTINGS.debug then
 		-- log.trace('resize', w, h)
 	-- end
 	_G.BAIZE:layout()
@@ -479,25 +532,25 @@ function love.keyreleased(key)
 			_G.BAIZE:setBookmark()
 		end
 	elseif key == '1' then
-		_G.BAIZE.settings.oneColorCards = true
-		_G.BAIZE.settings.twoColorCards = false
-		_G.BAIZE.settings.fourColorCards = false
-		_G.BAIZE.settings.autoColorCards = false
+		_G.SETTINGS.oneColorCards = true
+		_G.SETTINGS.twoColorCards = false
+		_G.SETTINGS.fourColorCards = false
+		_G.SETTINGS.autoColorCards = false
 		_G.BAIZE:createCardTextures()
 	elseif key == '2' then
-		_G.BAIZE.settings.oneColorCards = false
-		_G.BAIZE.settings.twoColorCards = true
-		_G.BAIZE.settings.fourColorCards = false
-		_G.BAIZE.settings.autoColorCards = false
+		_G.SETTINGS.oneColorCards = false
+		_G.SETTINGS.twoColorCards = true
+		_G.SETTINGS.fourColorCards = false
+		_G.SETTINGS.autoColorCards = false
 		_G.BAIZE:createCardTextures()
 	elseif key == '4' then
-		_G.BAIZE.settings.oneColorCards = false
-		_G.BAIZE.settings.twoColorCards = false
-		_G.BAIZE.settings.fourColorCards = true
-		_G.BAIZE.settings.autoColorCards = false
+		_G.SETTINGS.oneColorCards = false
+		_G.SETTINGS.twoColorCards = false
+		_G.SETTINGS.fourColorCards = true
+		_G.SETTINGS.autoColorCards = false
 		_G.BAIZE:createCardTextures()
 	elseif key == 'd' and love.keyboard.isDown('lctrl') then
-		_G.BAIZE.settings.debug = not _G.BAIZE.settings.debug
+		_G.SETTINGS.debug = not _G.SETTINGS.debug
 		for _, c in ipairs(_G.BAIZE.deck) do
 			c.movable = false
 		end
@@ -521,7 +574,7 @@ function love.keyreleased(key)
 		end
 	end
 
-	if _G.BAIZE.settings.debug then
+	if _G.SETTINGS.debug then
 		if key == 't' then
 			_G.BAIZE.ui:toast(string.format('Toast %f', math.random()))
 		elseif key == 'up' then
@@ -569,7 +622,7 @@ function love.displayrotated(index, orientation)
 	-- Due to a bug in LOVE 11.3, the orientation value is boolean true instead. A workaround is as follows:
 	-- orientation = love.window.getDisplayOrientation(index)
 	_G.BAIZE:layout()
-	if _G.BAIZE.settings.debug then
+	if _G.SETTINGS.debug then
 		_G.BAIZE.ui:toast('displayrotated ' .. tostring(orientation))
 		_G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
 	end
@@ -578,7 +631,7 @@ end
 function love.quit()
 	-- no args
 	_G.BAIZE.stats:save()
-	_G.BAIZE:saveSettings()
+	saveSettings(_G.SETTINGS)
 	-- don't save completed game, to stop win being recorded when it's reloaded
 	if _G.BAIZE.status ~= 'complete' then
 		_G.BAIZE:saveUndoStack()
