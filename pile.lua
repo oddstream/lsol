@@ -497,7 +497,18 @@ function Pile:drawDraggingCards()
 		end
 	end
 end
-
+--[[
+local function drawRotatedRectangle(mode, x, y, width, height, radius, angle)
+	-- We cannot rotate the rectangle directly, but we
+	-- can move and rotate the coordinate system.
+	love.graphics.push()
+	love.graphics.translate(x, y)
+	love.graphics.rotate(angle)	-- radians
+	love.graphics.rectangle(mode, 0, 0, width, height, radius, radius) -- origin in the top left corner
+	-- love.graphics.rectangle(mode, -width/2, -height/2, width, height) -- origin in the middle
+	love.graphics.pop()
+end
+]]
 function Pile:draw()
 	if self.nodraw then return end
 
@@ -507,6 +518,7 @@ function Pile:draw()
 	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.setLineWidth(1)
 	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
+	-- drawRotatedRectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, -math.pi * 0.1)
 	if self.label then
 		local scale
 		if #self.label > 1 then

@@ -26,6 +26,7 @@ https://www.metmuseum.org/art/collection/search/475513
 + is tabCompareFn for moving or appending? appending.
 
 + No variants beginning with H, I, N, O, Q, V, Z
+	https://old.reddit.com/r/solitaire/comments/o6zzbs/10_less_common_but_popular_twodeck_solitaire_card/
 	https://en.wikipedia.org/wiki/List_of_patience_games
 
 + Daily stats
@@ -43,22 +44,23 @@ https://www.metmuseum.org/art/collection/search/475513
 	Accordian
 	Penguin
 	Yukon
-+ rename Flat Castle
-	have aliases for stats so Beleagured Castle and Flat Castle share the same stats
-	Baker's Dozen (Wide)
+
 + stats icon with three vertical bars https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
 	https://fonts.google.com/icons "Bar Chart"
 	need 36x36 white png
 
 + penguin foundation at top https://old.reddit.com/r/solitaire/comments/u7e0z7/this_one_is_killing_me/
 
++ BUG done_all don't work with split up/down foundations
+	disable collect and done_all for split foundations?
+	make pile.label more specific? eg A♣ or A* instead of just A?
+	or have pile.acceptOrd and pile.acceptSuit? (would need to be in saved game too)
+	or do a set-subtraction check for duplicated Kings and Aces
+	but this is a permissive sim; if the player wants to fuck up, let them
+	but the collect buttons seem unfair
 + BUG Thirteens doesn't complain when stuck
 + BUG false collect all FAB on American Toad when foundation accept card was at bottom of tableau
 + BUG sometimes not descrunching when pile left with two cards
-
-+ Fennel
-	https://gitlab.com/alexjgriffith/min-love2d-fennel
-	https://technomancy.us/187
 
 + http://www.allgoodsw.com/allgood-solitaire-for-ipad-coming-soon/
 	Ascension
@@ -77,13 +79,15 @@ https://www.metmuseum.org/art/collection/search/475513
 + https://en.wikipedia.org/wiki/Crazy_Quilt_(solitaire)
 	requires rotating a pile (Reserve) by 90 degrees
 
-+ card rotating
++ card rotating, for crescent
+	google geometry position of rotated rectangle
 	angle set by owning pile
 	love.graphics.rectangle does not have an angle parameter
 		so will have to create canvas graphic for piles
 		which updates when label/symbol is set
 		and use love.graphics.draw
-		"t's possible to rotate an object about its center by offsetting the origin to the center. Angles must be given in radians for rotation."
+		"it's possible to rotate an object about its center by offsetting the origin to the center.
+		Angles must be given in radians for rotation."
 	card needs to transition/animate when popping and pushing
 	hit testing changes, geometry needed
 	fanning changes
