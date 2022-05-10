@@ -32,8 +32,11 @@ function MountOlympus:buildPiles()
 		local f = Foundation.new({x=x, y=2})
 		f.label = '2'
 	end
+	local ypos = {4.33,4,3.66,3.33,3,3.33,3.66,4,4.33}
+	local i = 1
 	for x = 2, 10 do
-		Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		Tableau.new({x=x, y=ypos[i], fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		i = i + 1
 	end
 end
 
