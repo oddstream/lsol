@@ -103,6 +103,18 @@ function CC.UpSuitTwo(cpair)
 	return nil
 end
 
+function CC.UpSuitTwoWrap(cpair)
+	if cpair[1].suit ~= cpair[2].suit then
+		return 'Cards must be the same suit'
+	end
+	if cpair[1].ord == 12 and cpair[2].ord == 1 then
+	elseif cpair[1].ord == 13 and cpair[2].ord == 2 then
+	elseif cpair[1].ord + 2 ~= cpair[2].ord then
+		return 'Cards must be up by two'
+	end
+	return nil
+end
+
 function CC.UpSuitWrap(cpair)
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must all be the same suit'

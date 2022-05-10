@@ -94,6 +94,7 @@ _G.LSOL_VARIANTS = {
 	Giant = {file='miss milligan.lua', giant=true, cc=2},
 	Penguin = {file='penguin.lua', cc=4},
 	['Red and Black'] = {file='redandblack.lua', cc=2},
+	['Royal Cotillion'] = {file='royal cotillion.lua', cc=4},
 	Pyramid = {file='pyramid.lua', relaxed=false, cc=2},
 	['Pyramid Relaxed'] = {file='pyramid.lua', relaxed=true, cc=2},
 	Rosamund = {file='rosamund.lua', cc=2},
