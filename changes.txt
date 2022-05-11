@@ -34,8 +34,8 @@ _G.LSOL_VERSION history
 	unsimple card back simplified
 	tweaks to About...
 
-10 -
-	new variants: Algerian, Gargantua, Giant, Miss Milligan, Mount Olympus
+10 - released to Play Store 2022-05-11 production
+	new variants: Algerian, Gargantua, Giant, Miss Milligan, Mount Olympus, Royal Cotillion
 	BUG FIX - Klondike had 8 piles, should have been 7!
 	(saved game of Klondike will not load, just restart deal)
 	window size, position, display restored when not on Android

@@ -244,6 +244,7 @@ function UI:showVariantsDrawer(vtype)
 			for _, v in ipairs(self.variantsdrawer.widgets) do
 				print('♥ ' .. v.text)
 			end
+			print(#self.variantsdrawer.widgets, 'variants')
 		end
 		self.variantsdrawer:layout()
 		self.variantsdrawer:show()
