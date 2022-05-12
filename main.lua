@@ -44,7 +44,6 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	twoColorCards = true,
 	fourColorCards = false,
 	autoColorCards = false,
-	shortCards = false,
 }
 
 _G.LSOL_VARIANTS = {

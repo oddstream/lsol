@@ -46,3 +46,4 @@ _G.LSOL_VERSION history
 	slightly annoying sad whistle fail sound
 	slightly darker background
 	one card width margin either side of cards when in landscape
+	retired short cards

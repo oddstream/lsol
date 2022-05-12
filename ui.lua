@@ -36,7 +36,6 @@ local menuWidgets = {
 
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
-	{text='Short cards', var='shortCards'},
 	{text='One-color cards', var='oneColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
 	{text='Two-color cards', var='twoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
 	{text='Four-color cards', var='fourColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},

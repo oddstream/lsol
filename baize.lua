@@ -794,9 +794,6 @@ function Baize:toggleCheckbox(var)
 	_G.SETTINGS[var] = not _G.SETTINGS[var]
 	if var == 'simpleCards' then
 		self:createCardTextures()
-	elseif var == 'shortCards' then
-		self:layout()
-		self:createCardTextures()
 	elseif var == 'mirrorBaize' then
 		self:undoPush()
 		-- local undoStack = self.undoStack
@@ -974,9 +971,6 @@ function Baize:layout()
 	end
 
 	local cardRatio = 1.444
-	if _G.SETTINGS.shortCards then
-		cardRatio = 1.222
-	end
 
 	local safex, safey, safew, safeh = love.window.getSafeArea()
 	-- values returned are in DPI-scaled units (the same coordinate system as most other window-related APIs), not in pixels
