@@ -40,3 +40,9 @@ _G.LSOL_VERSION history
 	(saved game of Klondike will not load, just restart deal)
 	window size, position, display restored when not on Android
 	settings moved from baize to global
+
+11 -
+	Busy Aces
+	slightly annoying sad whistle fail sound
+	slightly darker background
+	one card width margin either side of cards when in landscape

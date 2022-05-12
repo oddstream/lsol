@@ -17,7 +17,6 @@ ANDROID
 + https://apps.apple.com/app/apple-store/id287197884
 + https://www.solebon.com/
 
-
 + BUG showing done_all FAB when unsorted cards in waste?
 
 https://www.broadsheet.ie/2015/02/05/old-suits-barely-worn/
@@ -203,11 +202,7 @@ Whitehead
 Will O The Wisp
 Yield
 
-
 https://en.wikipedia.org/wiki/Gamification
-
-retire done_all from gosol
-new scrunch algorithm & logic to gosol
 
 BUG jammed American Toad; just because a pile is conformant doesn't mean it's collectable
 	pile needs to have collectable card on top

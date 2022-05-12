@@ -131,7 +131,7 @@ function Stats:recordLostGame(v, percent)
 	end
 	s.sumPercents = s.sumPercents + percent
 
-	_G.BAIZE.ui:toast(string.format('Recording a lost (%d%%) game of %s', percent, v))
+	_G.BAIZE.ui:toast(string.format('Recording a lost (%d%%) game of %s', percent, v), 'fail')
 end
 
 --[[

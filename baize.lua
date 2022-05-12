@@ -995,18 +995,26 @@ function Baize:layout()
 	_G.UI_SAFEW = safew
 	_G.UI_SAFEH = safeh
 
-	-- local windowWidth, _, _ = love.window.getMode()
-	-- local slotWidth = windowWidth / (maxSlotX + 1) -- +1 gives a half card width gap either side
-	local slotWidth = safew / (maxSlotX + 1)
+	local landscape = safew > safeh		-- add a one-card-width border either side
 
+	local slotWidth
+	if landscape then
+		slotWidth = safew / (maxSlotX + 3) -- +3 gives a 1.5 card width gap either side
+	else
+		slotWidth = safew / (maxSlotX + 1) -- +1 gives a 0.5 card width gap either side
+	end
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = math.floor(slotWidth - pilePaddingX)
 	local slotHeight = slotWidth * cardRatio
 	local pilePaddingY = slotHeight / 10
 	self.cardHeight = math.floor(slotHeight - pilePaddingY)
-	-- local leftMargin = self.cardWidth / 2 + pilePaddingX
-	local leftMargin = safex + self.cardWidth / 2 + pilePaddingX
-	-- local topMargin = _G.TITLEBARHEIGHT + pilePaddingY
+
+	local leftMargin
+	if landscape then
+		leftMargin = safex + self.cardWidth / 2 + pilePaddingX + self.cardWidth
+	else
+		leftMargin = safex + self.cardWidth / 2 + pilePaddingX
+	end
 	local topMargin = safey + _G.TITLEBARHEIGHT + pilePaddingY
 
 	self.cardRadius = math.floor(self.cardWidth / 16)

@@ -10,7 +10,7 @@ local UI = require 'ui'
 local Util = require 'util'
 
 _G.LSOL_VERSION = '10'
-_G.LSOL_VERSION_DATE = '2022-05-07'
+_G.LSOL_VERSION_DATE = '2022-05-11'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -60,6 +60,7 @@ _G.LSOL_VARIANTS = {
 	['Baker\'s Dozen'] = {file='bakers.lua', cc=1},
 	['Baker\'s Dozen (Wide)'] = {file='bakers.lua', wide=true, cc=1, statsName='Baker\'s Dozen'},
 	['Beleaguered Castle'] = {file='castle.lua', cc=1},
+	['Busy Aces'] = {file='forty.lua', cc=4, tabs=12, cardsPerTab=1, dealAces=false},
 	['Flat Castle'] = {file='castle.lua', cc=1, flat=true, statsName='Beleaguered Castle'},
 	Bisley = {file='bisley.lua', cc=4},
 	['Black Hole'] = {file='blackhole.lua', cc=1},
@@ -123,7 +124,7 @@ _G.VARIANT_TYPES = {
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
 	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open'},
-	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight'},
+	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces'},
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Miss Milligan','Rosamund'},
@@ -276,6 +277,7 @@ _G.LSOL_SOUNDS = {
 	uitap =  love.audio.newSource('assets/sounds/cardSlide8.wav', 'static'),
 	complete = love.audio.newSource('assets/sounds/complete.wav', 'static'),
 	blip = love.audio.newSource('assets/sounds/249895__alienxxx__blip2.wav', 'static'),
+	fail = love.audio.newSource('assets/sounds/fail.wav', 'static'),
 }
 
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
