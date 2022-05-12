@@ -41,9 +41,12 @@ _G.LSOL_VERSION history
 	window size, position, display restored when not on Android
 	settings moved from baize to global
 
-11 -
-	Busy Aces
-	slightly annoying sad whistle fail sound
+11 - released to Play Store 2022-05-12 production
+	new variant: Busy Aces
+	rule fix to Red and Black (auto fill empty tableaux)
+	slightly annoying fail sound
 	slightly darker background
 	one card width margin either side of cards when in landscape
 	retired short cards
+
+12 -

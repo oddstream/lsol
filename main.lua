@@ -9,8 +9,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '10'
-_G.LSOL_VERSION_DATE = '2022-05-11'
+_G.LSOL_VERSION = '11'
+_G.LSOL_VERSION_DATE = '2022-05-12'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -123,7 +123,7 @@ _G.VARIANT_TYPES = {
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
 	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open'},
-	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces'},
+	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Miss Milligan','Rosamund'},

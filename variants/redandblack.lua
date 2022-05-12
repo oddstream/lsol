@@ -26,7 +26,6 @@ end
 function RedAndBlack:buildPiles()
 	Stock.new{x=1, y=1, packs=2}
 	Waste.new{x=2, y=1, fanType='FAN_RIGHT3'}
-
 	for x = 1, 8 do
 		Foundation.new{x=x, y=2}
 		Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'}
@@ -45,6 +44,17 @@ function RedAndBlack:startGame()
 end
 
 function RedAndBlack:afterMove()
+	-- Any spaces are immediately filled by the top card of the wastepile,
+	-- or if none is present, the top card of the stock.
+	for _, tab in ipairs(_G.BAIZE.tableaux) do
+		if #tab.cards == 0 then
+			if #_G.BAIZE.waste.cards > 0 then
+				Util.moveCard(_G.BAIZE.waste, tab)
+			elseif #_G.BAIZE.stock.cards > 0 then
+				Util.moveCard(_G.BAIZE.stock, tab)
+			end
+		end
+	end
 	if #_G.BAIZE.waste.cards == 0 then
 		Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
 	end
@@ -57,7 +67,7 @@ function RedAndBlack:moveTailError(tail)
 		if #tail > 1 then
 			local cpairs = Util.makeCardPairs(tail)
 			for _, cpair in ipairs(cpairs) do
-				local err = self.tabCompareFn(cpair)
+				local err = CC.DownAltColor(cpair)
 				if err then
 					return err
 				end
@@ -77,7 +87,7 @@ function RedAndBlack:tailAppendError(dst, tail)
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
 		else
-			return self.tabCompareFn({dst:peek(), tail[1]})
+			return CC.DownAltColor({dst:peek(), tail[1]})
 		end
 	end
 	return nil

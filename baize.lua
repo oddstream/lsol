@@ -997,9 +997,10 @@ function Baize:layout()
 	else
 		slotWidth = safew / (maxSlotX + 1) -- +1 gives a 0.5 card width gap either side
 	end
+	local slotHeight = slotWidth * cardRatio
+
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = math.floor(slotWidth - pilePaddingX)
-	local slotHeight = slotWidth * cardRatio
 	local pilePaddingY = slotHeight / 10
 	self.cardHeight = math.floor(slotHeight - pilePaddingY)
 
