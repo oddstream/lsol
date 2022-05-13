@@ -8,7 +8,7 @@ PLay it by downloading/installing the LÖVE runtime and typing 'love lsol.love'.
 
 ## Variants
 
-It currently knows how to play:
+It currently knows how to play about 65 variants, including:
 
 ♥ Accordian ♥ Agnes Bernauer ♥ Agnes Sorel ♥ Alhambra ♥ American Toad ♥ American Westcliff ♥ Assembly ♥ Athena ♥ Australian ♥ Baker's Dozen ♥ Baker's Dozen (Wide) ♥ Baker's Game ♥ Baker's Game Relaxed ♥ Beleaguered Castle ♥ Bisley ♥ Black Hole ♥ Blockade ♥ Busy Aces ♥ Canfield ♥ Classic Westcliff ♥ Crimean ♥ Cruel ♥ Duchess ♥ Easthaven ♥ Eight Off ♥ Eight Off Relaxed ♥ Flat Castle ♥ Forty Thieves ♥ Forty and Eight ♥ Freecell ♥ Gate ♥ Josephine ♥ Klondike ♥ Klondike (Turn Three) ♥ Limited ♥ Little Spider ♥ Lucas ♥ Martha ♥ Penguin ♥ Rainbow Canfield ♥ Red and Black ♥ Rosamund's Bower ♥ Russian ♥ Scorpion ♥ Sea Haven Towers ♥ Simple Simon ♥ Spider ♥ Spider One Suit ♥ Spider Two Suits ♥ Storehouse Canfield ♥ Thirteens ♥ Thoughtful ♥ Tri Peaks ♥ Ukrainian ♥ Wasp ♥ Yukon ♥ Yukon Cells ♥ Yukon Relaxed
 
@@ -20,10 +20,14 @@ Some variants have been tried and discarded as being a bit silly, or just too ha
 * King Albert
 * Raglan
 
+Some games I've added reluctantly:
+
+* Pyramid
+* Tri Peaks
+
 Some will never make it here because they are just poor games:
 
 * Golf
-* Pyramid (or most other card matching variants)
 
 ![Screenshot](https://github.com/oddstream/gosol/blob/7152668f4b5053a1d438981e9d4564624616da6a/screenshots/Australian.png)
 

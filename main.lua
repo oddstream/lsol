@@ -277,7 +277,7 @@ _G.LSOL_SOUNDS = {
 	uitap =  love.audio.newSource('assets/sounds/cardSlide8.wav', 'static'),
 	complete = love.audio.newSource('assets/sounds/complete.wav', 'static'),
 	blip = love.audio.newSource('assets/sounds/249895__alienxxx__blip2.wav', 'static'),
-	fail = love.audio.newSource('assets/sounds/fail.wav', 'static'),
+	fail = love.audio.newSource('assets/sounds/237422__plasterbrain__hover-1.ogg', 'static'),
 }
 
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
