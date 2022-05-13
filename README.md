@@ -4,13 +4,13 @@ Towards a polymorphic solitaire engine in [Lua](https://lua.org/)+[LÖVE](https:
 
 ![Screenshot](https://github.com/oddstream/gosol/blob/7152668f4b5053a1d438981e9d4564624616da6a/screenshots/Simple%20Simon.png)
 
-PLay it by downlaoding/installing the LÖVE runtime and typing 'love lsol.love'. It's tested on Linux, Windows and Android.
+PLay it by downloading/installing the LÖVE runtime and typing 'love lsol.love'. It's tested on Linux, Windows and [Android via the Google Play Store](https://play.google.com/store/apps/details?id=com.oddstream.lovesolitaire).
 
 ## Variants
 
 It currently knows how to play:
 
-♥ Accordian ♥ Agnes Bernauer ♥ Agnes Sorel ♥ Alhambra ♥ American Toad ♥ American Westcliff ♥ Assembly ♥ Athena ♥ Australian ♥ Baker's Dozen ♥ Baker's Dozen (Wide) ♥ Baker's Game ♥ Baker's Game Relaxed ♥ Beleaguered Castle ♥ Bisley ♥ Black Hole ♥ Blockade ♥ Canfield ♥ Classic Westcliff ♥ Crimean ♥ Duchess ♥ Easthaven ♥ Eight Off ♥ Eight Off Relaxed ♥ Flat Castle ♥ Forty Thieves ♥ Forty and Eight ♥ Freecell ♥ Gate ♥ Josephine ♥ Klondike ♥ Klondike (Turn Three) ♥ Limited ♥ Little Spider ♥ Lucas ♥ Martha ♥ Penguin ♥ Rainbow Canfield ♥ Red and Black ♥ Rosamund's Bower ♥ Russian ♥ Scorpion ♥ Sea Haven Towers ♥ Simple Simon ♥ Spider ♥ Spider One Suit ♥ Spider Two Suits ♥ Storehouse Canfield ♥ Thirteens ♥ Thoughtful ♥ Tri Peaks ♥ Ukrainian ♥ Wasp ♥ Yukon ♥ Yukon Cells ♥ Yukon Relaxed
+♥ Accordian ♥ Agnes Bernauer ♥ Agnes Sorel ♥ Alhambra ♥ American Toad ♥ American Westcliff ♥ Assembly ♥ Athena ♥ Australian ♥ Baker's Dozen ♥ Baker's Dozen (Wide) ♥ Baker's Game ♥ Baker's Game Relaxed ♥ Beleaguered Castle ♥ Bisley ♥ Black Hole ♥ Blockade ♥ Busy Aces ♥ Canfield ♥ Classic Westcliff ♥ Crimean ♥ Cruel ♥ Duchess ♥ Easthaven ♥ Eight Off ♥ Eight Off Relaxed ♥ Flat Castle ♥ Forty Thieves ♥ Forty and Eight ♥ Freecell ♥ Gate ♥ Josephine ♥ Klondike ♥ Klondike (Turn Three) ♥ Limited ♥ Little Spider ♥ Lucas ♥ Martha ♥ Penguin ♥ Rainbow Canfield ♥ Red and Black ♥ Rosamund's Bower ♥ Russian ♥ Scorpion ♥ Sea Haven Towers ♥ Simple Simon ♥ Spider ♥ Spider One Suit ♥ Spider Two Suits ♥ Storehouse Canfield ♥ Thirteens ♥ Thoughtful ♥ Tri Peaks ♥ Ukrainian ♥ Wasp ♥ Yukon ♥ Yukon Cells ♥ Yukon Relaxed
 
 Variants are added when the whim takes me, or when some aspect of the engine needs testing/extending, or when someone asks.
 

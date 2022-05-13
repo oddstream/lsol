@@ -107,15 +107,13 @@ end
 
 + https://playingcarddecks.com/blogs/all-in/10-builder-solitaire-card-games-with-unusual-layouts
 
-+ https://en.wikipedia.org/wiki/Red_and_Black_(card_game)
-
 + Add all the Opsole variants
 	+ https://www.solitairelaboratory.com/virtuoso.html
 	Creepy Crawly
 	Good Measure
 	Number Ten
 	Osmosis + Peek
-	Cruel + Perseverance
+	Perseverance A and B
 	Single Rail
 	Sir Tommy
 	Spiderette (One Suit)

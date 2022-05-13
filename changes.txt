@@ -50,3 +50,4 @@ _G.LSOL_VERSION history
 	retired short cards
 
 12 -
+	new variant: Cruel

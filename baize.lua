@@ -613,7 +613,7 @@ function Baize:updateStatus()
 		elseif fmoves > 0 then
 			self.status = 'collect'
 		else
-			self.status = string.format('afoot moves=%d fmoves=%d', moves, fmoves)
+			self.status = string.format('afoot mvs=%d fmvs=%d recyc=%d', moves, fmoves, self.recycles)
 		end
 	end
 
@@ -1405,7 +1405,7 @@ end
 
 function Baize:setRecycles(n)
 	self.recycles = n
-	if n == 0 then
+	if n < 1 then
 		self.stock.rune = '☓'	-- https://www.compart.com/en/unicode/U+2613
 	else
 		self.stock.rune = '♲'	-- https://www.compart.com/en/unicode/U+2672

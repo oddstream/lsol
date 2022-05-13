@@ -66,6 +66,7 @@ _G.LSOL_VARIANTS = {
 	Blockade = {file='blockade.lua', cc=4},
 	-- ['Bisley Debug'] = {file='bisley.lua', cc=4, debug=true},
 	Canfield = {file='canfield.lua', cc=2},
+	Cruel = {file='cruel.lua', cc=4},
 	['Rainbow Canfield'] = {file='canfield.lua', cc=1, rainbow=true},
 	['Storehouse Canfield'] = {file='canfield.lua', cc=4, storehouse=true},
 	Duchess = {file='duchess.lua', cc=2},
