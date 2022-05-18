@@ -9,8 +9,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '11'
-_G.LSOL_VERSION_DATE = '2022-05-12'
+_G.LSOL_VERSION = '12'
+_G.LSOL_VERSION_DATE = '2022-05-18'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -121,7 +121,7 @@ _G.LSOL_VARIANTS = {
 
 _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
-	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider'},
+	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider','Penguin'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
 	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
@@ -131,7 +131,7 @@ _G.VARIANT_TYPES = {
 	['> Places'] = {'Algerian','Alhambra','Australian','Mount Olympus','Yukon','Yukon Relaxed','Russian','Crimean','Ukrainian'},
 	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
-	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider'},
+	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider','Little Spider'},
 }
 
 local function createAllVariants()

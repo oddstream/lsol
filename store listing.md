@@ -2,7 +2,7 @@ A collection of solitaire games, with clear graphics, a simple interface, no fee
 
 Made by, and for, solitaire enthusiasts; not by someone trying to sell you something or collect your data.
 
-This new app replaces the older solitaire app.
+This app is a complete re-write of the older solitaire app (com.oddstream.solitaire) which it replaces.
 
 = Why create yet another solitaire app? =
 
@@ -35,6 +35,7 @@ This app contains 65 hand-picked solitaire variations:
 ♥ Canfield
 ♥ Classic Westcliff
 ♥ Crimean
+♥ Cruel
 ♥ Duchess
 ♥ Easthaven
 ♥ Eight Off

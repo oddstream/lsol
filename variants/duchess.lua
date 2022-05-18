@@ -127,7 +127,7 @@ function Duchess:tailAppendError(dst, tail)
 			-- If the entire reserve is exhausted however, it is not replenished;
 			-- spaces that occur after this point have to be filled with cards from the waste pile or,
 			-- if a wastepile has not been made yet, the stock.
-			if tail[1].parent.category == 'Waste' then
+			if tail[1].parent.category ~= 'Reserve' then
 				for _, res in ipairs(_G.BAIZE.reserves) do
 					if #res.cards > 0 then
 						return 'An empty Tableau must be filled from a Reserve'
