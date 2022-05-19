@@ -25,31 +25,51 @@ end
 
 function Spider:buildPiles()
 	Stock.new({x=1, y=1, packs=self.packs, suitFilter=self.suitFilter})
-	for x = 3, 10 do
-		Discard.new({x=x, y=1})
-	end
-	for x = 1, 10 do
-		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+	if self.spiderette then
+		for x = 4, 7 do
+			Discard.new({x=x, y=1})
+		end
+		for x = 1, 7 do
+			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		end
+	else
+		for x = 3, 10 do
+			Discard.new({x=x, y=1})
+		end
+		for x = 1, 10 do
+			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		end
 	end
 end
 
 function Spider:startGame()
 	local src = _G.BAIZE.stock
-	for x = 1, 4 do
-		local pile = _G.BAIZE.tableaux[x]
-		for _ = 1,4 do
-			local card = Util.moveCard(src, pile)
-			card.prone = true
+	if self.spiderette then
+		local deal = 0
+		for _, dst in ipairs(_G.BAIZE.tableaux) do
+			for _ = 1, deal do
+				Util.moveCard(src, dst)
+			end
+			deal = deal + 1
+			Util.moveCard(src, dst)
 		end
-		Util.moveCard(src, pile)
-	end
-	for x = 5, 10 do
-		local pile = _G.BAIZE.tableaux[x]
-		for _ = 1,3 do
-			local card = Util.moveCard(src, pile)
-			card.prone = true
+	else
+		for x = 1, 4 do
+			local pile = _G.BAIZE.tableaux[x]
+			for _ = 1,4 do
+				local card = Util.moveCard(src, pile)
+				card.prone = true
+			end
+			Util.moveCard(src, pile)
 		end
-		Util.moveCard(src, pile)
+		for x = 5, 10 do
+			local pile = _G.BAIZE.tableaux[x]
+			for _ = 1,3 do
+				local card = Util.moveCard(src, pile)
+				card.prone = true
+			end
+			Util.moveCard(src, pile)
+		end
 	end
 	_G.BAIZE:setRecycles(0)
 end

@@ -105,7 +105,10 @@ _G.LSOL_VARIANTS = {
 	Spider = {file='spider.lua', packs=2, cc=4, suitFilter={'♣','♦','♥','♠'}},
 	['Spider One Suit'] = {file='spider.lua', cc=1, packs=8, suitFilter={'♠'}},
 	['Spider Two Suits'] = {file='spider.lua', cc=2, packs=4, suitFilter={'♥', '♠'}},
-	['Good Thirteen'] = {file='thirteens.lua', cc=1},
+	Spiderette = {file='spider.lua', spiderette=true, cc=4, packs=1},
+	['Spiderette One Suit'] = {file='spider.lua', spiderette=true, cc=1, packs=4, suitFilter={'♠'}},
+	['Spiderette Two Suits'] = {file='spider.lua', spiderette=true, cc=2, packs=2, suitFilter={'♥', '♠'}},
+	['Good Thirteen'] = {file='thirteens.lua', packs=1, cc=1},
 	['Classic Westcliff'] = {file='westcliff.lua', cc=2, classic=true},
 	['American Westcliff'] = {file='westcliff.lua', cc=2, american=true},
 	Easthaven = {file='westcliff.lua', cc=2, easthaven=true},
@@ -131,7 +134,7 @@ _G.VARIANT_TYPES = {
 	['> Places'] = {'Algerian','Alhambra','Australian','Mount Olympus','Yukon','Yukon Relaxed','Russian','Crimean','Ukrainian'},
 	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
-	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider','Little Spider'},
+	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider','Little Spider','Spiderette','Spiderette One Suit','Spiderette Two Suits'},
 }
 
 local function createAllVariants()
