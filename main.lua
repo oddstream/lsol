@@ -29,7 +29,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	variantName = 'Klondike',
 	highlightMovable = true,
 	cardTransitionStep = 0.02,
-	simpleCards = true,
+	simpleCards = false,
 	powerMoves = true,
 	muteSounds = false,
 	mirrorBaize = false,
@@ -155,14 +155,12 @@ end
 
 local function createFavoriteVariants(stats)
 
-	local function played(v)
-		return stats[v].won + stats[v].lost
-	end
-
 	-- can only sort a table of keys with numeric indexes, not an associative array
 	local tab = {}
-	for k,_ in pairs(stats) do
-		table.insert(tab, {vname=k, played=played(k)})
+	for k, _ in pairs(stats) do
+		if stats[k].won and stats[k].lost then
+			table.insert(tab, {vname=k, played=stats[k].won + stats[k].lost})
+		end
 	end
 
 	if #tab > 2 then
@@ -309,18 +307,18 @@ local function loadSettings()
 	return settings or _G.LSOL_DEFAULT_SETTINGS
 end
 
-local function saveSettings(settings)
-	settings.lastVersion = _G.LSOL_VERSION
+function _G.saveSettings()
+	_G.SETTINGS.lastVersion = _G.LSOL_VERSION
 	if love.system.getOS() ~= 'Android' then
 		local x, y, i = love.window.getPosition()
 		local w, h = love.window.getMode()
-		settings.windowX = x
-		settings.windowY = y
-		settings.windowWidth = w
-		settings.windowHeight = h
-		settings.displayIndex = i
+		_G.SETTINGS.windowX = x
+		_G.SETTINGS.windowY = y
+		_G.SETTINGS.windowWidth = w
+		_G.SETTINGS.windowHeight = h
+		_G.SETTINGS.displayIndex = i
 	end
-	local success, message = love.filesystem.write(settingsFname, json.encode(settings))
+	local success, message = love.filesystem.write(settingsFname, json.encode(_G.SETTINGS))
 	if success then
 		-- log.info('wrote to', settingsFname)
 	else
@@ -467,7 +465,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	else
 		_G.BAIZE.script = _G.BAIZE:loadScript(_G.SETTINGS.variantName)
 		if not _G.BAIZE.script then
-			_G.SETTINGS.variantName = 'Klondike'
+			_G.SETTINGS.variantName = 'Klondike'	-- TODO save settings
 			_G.BAIZE.script = _G.BAIZE:loadScript(_G.SETTINGS.variantName)
 		end
 		if _G.BAIZE.script then
@@ -638,8 +636,11 @@ end
 
 function love.quit()
 	-- no args
-	_G.BAIZE.stats:save()
-	saveSettings(_G.SETTINGS)
+	-- don't save stats here (with _G.BAIZE.stats:save()) because never quite sure when app quits
+	-- or is forced-stopped; instead, save stats when they change
+
+	-- don't save settings either, for the same reason
+
 	-- don't save completed game, to stop win being recorded when it's reloaded
 	if _G.BAIZE.status ~= 'complete' then
 		_G.BAIZE:saveUndoStack()

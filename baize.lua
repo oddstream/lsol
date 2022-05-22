@@ -792,6 +792,7 @@ end
 
 function Baize:toggleCheckbox(var)
 	_G.SETTINGS[var] = not _G.SETTINGS[var]
+	_G.saveSettings()
 	if var == 'simpleCards' then
 		self:createCardTextures()
 	elseif var == 'mirrorBaize' then
@@ -820,6 +821,7 @@ function Baize:toggleRadio(radio)
 		_G.SETTINGS[s] = false
 	end
 	_G.SETTINGS[radio.var] = true
+	_G.saveSettings()
 	self:createCardTextures()
 end
 
@@ -868,6 +870,7 @@ function Baize:changeVariant(vname)
 		end
 		--
 		_G.SETTINGS.variantName = vname
+		_G.saveSettings()
 		self.script = newScript
 		self:resetPiles()
 		self.script:buildPiles()
@@ -1546,6 +1549,7 @@ function Baize:resetSettings()
 		_G.SETTINGS[k] = v
 	end
 	_G.SETTINGS.variantName = vname
+	_G.saveSettings()
 	-- for k,v in pairs(_G.SETTINGS) do
 	-- 	log.trace(k, v)
 	-- end

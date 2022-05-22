@@ -108,7 +108,7 @@ function Stats:recordWonGame(v, moves)
 	end
 	s.sumMoves = s.sumMoves + moves
 
-	-- _G.BAIZE.ui:toast('Recording a completed game of', v)
+	self:save()
 end
 
 function Stats:recordLostGame(v, percent)
@@ -132,6 +132,7 @@ function Stats:recordLostGame(v, percent)
 	s.sumPercents = s.sumPercents + percent
 
 	_G.BAIZE.ui:toast(string.format('Recording a lost (%d%%) game of %s', percent, v), 'fail')
+	self:save()
 end
 
 --[[
