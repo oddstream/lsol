@@ -104,10 +104,10 @@ local pipInfo = {
 	},
 	--[[ 10 ]] {
 		{x=0.375, y=0.166}, {x=0.625, y=0.166},
-		{x=0.5, y=0.3, scale=0.75},
+		{x=0.5, y=0.285, scale=0.75},
 		{x=0.375, y=0.4}, {x=0.625, y=0.4},
 		{x=0.375, y=0.6}, {x=0.625, y=0.6},
-		{x=0.5, y=0.7, scale=0.75},
+		{x=0.5, y=0.715, scale=0.75},
 		{x=0.375, y=0.833}, {x=0.625, y=0.833},
 
 	},
@@ -280,7 +280,7 @@ function Baize:createCardTextures()
 	if _G.SETTINGS.simpleCards then
 		self.suitFontSize = self.cardWidth / 3
 	else
-		self.suitFontSize = self.cardWidth / 3.75
+		self.suitFontSize = self.cardWidth / 3.5
 	end
 	self.suitFont = love.graphics.newFont(_G.SUIT_FONT, self.suitFontSize)
 	self.suitFontLarge = love.graphics.newFont(_G.SUIT_FONT, self.suitFontSize * 2)
@@ -453,12 +453,12 @@ function Baize:countMoves()
 		-- moving an entire pile to another empty pile of the same type is pointless
 		if #dst.cards == 0 then
 			if #tail == #src.cards then
-				if src.category == dst.category then
+				if src.category == dst.category and src.label == dst.label then
 					return true
 				end
 			end
 		end
-
+--[[
 		if #dst.cards > 0 and #src.cards > #tail then
 			-- disregard if card before tail is same as dst:peek()
 			local cdst = dst:peek()
@@ -476,7 +476,7 @@ function Baize:countMoves()
 			-- 	return true
 			-- end
 		end
-
+]]
 		return false
 	end
 
