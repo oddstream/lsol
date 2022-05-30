@@ -4,6 +4,8 @@ Made by, and for, solitaire enthusiasts; not by someone trying to sell you somet
 
 This app is a complete re-write of the older solitaire app (com.oddstream.solitaire) which it replaces.
 
+It is quite 'hard core', offering little in the way of help or hints when playing; the aim is to replicate the feel of playing with physical cards.
+
 = Why create yet another solitaire app? =
 
 Solitaire games have been around for hundreds of years, and for good reason: they're simple, absorbing and fun to play.

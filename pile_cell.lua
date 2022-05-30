@@ -1,6 +1,7 @@
 -- class Cell, derived from Pile
 
 local Pile = require 'pile'
+local Util = require 'util'
 
 local Cell = {}
 Cell.__index = Cell
@@ -47,6 +48,20 @@ end
 
 function Cell:unsortedPairs()
 	return 0
+end
+
+function Cell:movableTails()
+	-- same as Reserve:movableTails
+	local tails = {}
+	if #self.cards > 0 then
+		local tail = {self:peek()}
+		assert(tail[1].prone==false)				-- top card should never be face down
+		local homes = Util.findHomesForTail(tail)
+		for _, home in ipairs(homes) do
+			table.insert(tails, {tail=tail, dst=home.dst})
+		end
+	end
+	return tails
 end
 
 return Cell

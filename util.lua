@@ -181,6 +181,59 @@ function Util.moveCards(src, idx, dst)
 	src:flipUpExposedCard()
 end
 
+function Util.findHomesForTail(tail)
+
+	local homes = {}	-- {dst=<pile>, weight=<number>}
+
+	for _, card in ipairs(tail) do
+		if card.prone then
+			return homes
+		end
+	end
+
+	local pileTypesToCheck = {_G.BAIZE.foundations, _G.BAIZE.tableaux, _G.BAIZE.cells}
+	-- TODO add discards, and test
+	local card = tail[1]
+	local src = card.parent
+
+	if _G.SETTINGS.debug then
+		-- can the tail be moved in general?
+		local err = src:moveTailError(tail)
+		assert(not err)
+		-- is the tail conformant enough to move?
+		err = _G.BAIZE.script:moveTailError(tail)
+		assert(not err)
+	end
+
+	for _, piles in ipairs(pileTypesToCheck) do
+		for _, dst in ipairs(piles) do
+			if dst ~= src then
+				local err = dst:acceptTailError(tail)
+				if not err then
+					local home = {dst=dst, weight=#dst.cards}
+					if #dst.cards == 0 then
+						if not dst.label then
+							-- filling an empty pile can be a poor move
+							home.weight = 0
+						end
+					else
+						if card.suit == dst:peek().suit then
+							-- spider
+							home.weight = home.weight + 13	-- magic number
+						end
+					end
+					if dst.category == 'Foundation' then
+						home.weight = home.weight + 26	-- magic number
+					end
+					table.insert(homes, home)
+				end
+			end
+		end
+	end
+
+	return homes
+end
+
 function Util.unsortedPairs(tail, fn)
 	if #tail < 2 then
 		return 0

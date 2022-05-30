@@ -1,6 +1,7 @@
 -- class Waste, derived from Pile
 
 local Pile = require 'pile'
+local Util = require 'util'
 
 local Waste = {}
 Waste.__index = Waste
@@ -43,5 +44,19 @@ function Waste:unsortedPairs()
 	end
 	return #self.cards - 1
 end
+
+function Waste:movableTails()
+	local tails = {}
+	if #self.cards > 0 then
+		local tail = {self:peek()}
+		assert(tail[1].prone==false)				-- top card should never be face down
+		local homes = Util.findHomesForTail(tail)
+		for _, home in ipairs(homes) do
+			table.insert(tails, {tail=tail, dst=home.dst})
+		end
+	end
+	return tails
+end
+
 
 return Waste

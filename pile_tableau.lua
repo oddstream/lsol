@@ -85,4 +85,24 @@ function Tableau:unsortedPairs()
 	return Util.unsortedPairs(self.cards, _G.BAIZE.script.tabCompareFn)
 end
 
+function Tableau:movableTails()
+	local tails = {}
+	if #self.cards > 0 then
+		for _, card in ipairs(self.cards) do
+			if not card.prone then
+				local tail = self:makeTail(card)
+				if not self:moveTailError(tail) then
+					if not _G.BAIZE.script:moveTailError(tail) then
+						local homes = Util.findHomesForTail(tail)
+						for _, home in ipairs(homes) do
+							table.insert(tails, {tail=tail, dst=home.dst})
+						end
+					end
+				end
+			end
+		end
+	end
+	return tails
+end
+
 return Tableau

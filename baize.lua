@@ -414,70 +414,38 @@ function Baize:allCards()
 end
 ]]
 
-function Baize:countMoves()
+function Baize:findAllMovableTails()
 
-	local function findHomeForTail(owner, tail)
-		if #tail == 1 then
-			for _, dst in ipairs(self.foundations) do
-				if dst ~= owner then
-					local err = dst:acceptTailError(tail)
-					if not err then
-						return dst
-					end
-				end
-			end
-			for _, dst in ipairs(self.cells) do
-				if dst ~= owner then
-					local err = dst:acceptTailError(tail)
-					if not err then
-						return dst
-					end
-				end
+	local tails = {}	-- {dst=<pile>, tail=<tail>}
+
+	for _, pile in ipairs(self.piles) do
+		local t2 = pile:movableTails()
+		if t2 and #t2 > 0 then
+			for _, t in ipairs(t2) do
+				table.insert(tails, t)
 			end
 		end
-		for _, dst in ipairs(self.tableaux) do
-			if dst ~= owner then
-				local err = dst:acceptTailError(tail)
-				if not err then
-					return dst
-				end
-			end
-		end
-		return nil
 	end
 
-	local function meaninglessMove(src, dst, tail)
-		if dst.category == 'Foundation' then
-			return false
+	--[[
+	for _, t in ipairs(tails) do
+		local c = t.tail[1]
+		log.info(c.parent.category, tostring(c), 'to', t.dst.category)
+	end
+	]]
+
+	return tails
+end
+
+function Baize:countMoves()
+	local moves, fmoves = 0, 0
+
+	if #self.stock.cards == 0 then
+		if self.recycles > 0 then
+			moves = moves + 1
 		end
-		-- moving an entire pile to another empty pile of the same type is pointless
-		if #dst.cards == 0 then
-			if #tail == #src.cards then
-				if src.category == dst.category and src.label == dst.label then
-					return true
-				end
-			end
-		end
---[[
-		if #dst.cards > 0 and #src.cards > #tail then
-			-- disregard if card before tail is same as dst:peek()
-			local cdst = dst:peek()
-			-- src  = 1 2 3 4 5
-			-- tail = 3 4 5
-			-- 5 - 3 = 2
-			-- csrc = 2
-			local csrc = src.cards[#src.cards - #tail]
-			if cdst.ord == csrc.ord and cdst.suit == csrc.suit then
-				return true
-			end
-			-- local err = self.script.tabCompareFn({cdst, tail[1]})
-			-- log.info('meaningless?', tostring(cdst), tostring(tail[1]), err)
-			-- if not err then
-			-- 	return true
-			-- end
-		end
-]]
-		return false
+	else
+		moves = moves + 1
 	end
 
 	if _G.SETTINGS.debug then
@@ -486,79 +454,25 @@ function Baize:countMoves()
 		end
 	end
 
-	local moves, fmoves = 0, 0
-
-	if #self.stock.cards > 0 then
-		moves = moves + 1
-	elseif #self.stock.cards == 0 and self.recycles > 0 then
-		moves = moves + 1
-	end
-
-	-- log.info('moves', moves, 'stock', #self.stock.cards, 'recycles', self.recycles)
-
-	if self.waste and #self.waste.cards > 0 then
-		local tail = {self.waste:peek()}
-		if not self.waste:moveTailError(tail) then
-			local dst = findHomeForTail(self.waste, tail)
-			if dst then
-				moves = moves + 1
-				if dst.category == 'Foundation' then
-					fmoves = fmoves + 1
-				end
-				if _G.SETTINGS.debug then tail[1].movable = true end
-			end
-		end
-	end
-
-	for _, pile in ipairs(self.cells) do
-		if #pile.cards > 0 then
-			local tail = {pile:peek()}
-			if not pile:moveTailError(tail) then
-				local dst = findHomeForTail(pile, tail)
-				if dst --[[and not meaninglessMove(pile, dst, tail)]] then
-					moves = moves + 1
-					if dst.category == 'Foundation' then
-						fmoves = fmoves + 1
-					end
-					if _G.SETTINGS.debug then tail[1].movable = true end
+	for _, tail in ipairs(self:findAllMovableTails()) do
+		-- list of {dst=<pile>, tail=<tail>}
+		local movable = true
+		local src = tail.tail[1].parent
+		local dst = tail.dst
+		-- moving an entire pile from place to another is pointless
+		if #dst.cards == 0 and #tail.tail == #src.cards then
+			if src.label == dst.label then
+				if src.category == dst.category then
+					movable = false
 				end
 			end
 		end
-	end
-
-	for _, pile in ipairs(self.reserves) do
-		if #pile.cards > 0 then
-			local tail = {pile:peek()}
-			if not pile:moveTailError(tail) then
-				local dst = findHomeForTail(pile, tail)
-				if dst then
-					moves = moves + 1
-					if dst.category == 'Foundation' then
-						fmoves = fmoves + 1
-					end
-					if _G.SETTINGS.debug then tail[1].movable = true end
-				end
+		if movable then
+			moves = moves + 1
+			if dst.category == 'Foundation' then
+				fmoves = fmoves + 1
 			end
-		end
-	end
-
-	for _, pile in ipairs(self.tableaux) do
-		for _, card in ipairs(pile.cards) do
-			if not card.prone then
-				local tail = pile:makeTail(card)
-				if not pile:moveTailError(tail) then
-					if not self.script:moveTailError(tail) then
-						local dst = findHomeForTail(pile, tail)
-						if dst and not meaninglessMove(pile, dst, tail) then
-							moves = moves + 1
-							if dst.category == 'Foundation' then
-								fmoves = fmoves + 1
-							end
-							if _G.SETTINGS.debug then tail[1].movable = true end
-						end
-					end
-				end
-			end
+			if _G.SETTINGS.debug then tail.tail[1].movable = true end
 		end
 	end
 
@@ -613,7 +527,7 @@ function Baize:updateStatus()
 		elseif fmoves > 0 then
 			self.status = 'collect'
 		else
-			self.status = string.format('afoot mvs=%d fmvs=%d recyc=%d', moves, fmoves, self.recycles)
+			self.status = string.format('afoot mvs=%d recyc=%d', moves, self.recycles)
 		end
 	end
 
@@ -806,11 +720,6 @@ function Baize:toggleCheckbox(var)
 		self:layout()
 		-- self.undoStack = undoStack
 		self:undo()
-	elseif var == 'debug' then
-		for _, c in ipairs(self.deck) do
-			c.movable = false
-		end
-		self:updateUI()
 	end
 end
 
@@ -1346,7 +1255,7 @@ function Baize:mouseReleased(x, y, button)
 		return
 	end
 	love.mouse.setVisible(true)
-	if math.abs(self.stroke.init.x - x) < 3 and math.abs(self.stroke.init.y - y) < 3 then
+	if math.abs(self.stroke.init.x - x) < 4 and math.abs(self.stroke.init.y - y) < 4 then
 		self:mouseTapped(x, y, button)
 	else
 		if self.stroke.objectType == 'tail' then

@@ -369,6 +369,12 @@ function Pile:makeTail(c)
 	return nil
 end
 
+function Pile:movableTails()
+	-- {dst=<pile>, tail=<tail>}
+	-- by default (for discard, foundation), return nothing
+	return {}
+end
+
 function Pile:updateFromSaved(saved)
 
 	self.cards = {}
@@ -402,55 +408,23 @@ function Pile.acceptTailError(c)
 end
 
 function Pile:tailTapped(tail)
-	-- default/generic tail tapped behaviour
-	local tappedCard = tail[1]
-	local src = self
-	-- try to send a single card to a foundation
-	if #tail == 1 then
-		for _, dst in ipairs(_G.BAIZE.foundations) do
-			local err = dst:acceptCardError(tappedCard)
-			if not err then
-				Util.moveCard(src, dst)
-				return
-			end
+	assert(tail)
+	assert(#tail>0)
+	local homes = Util.findHomesForTail(tail)
+	if homes and #homes > 0 then
+		if #homes > 1 then
+			table.sort(homes, function(a,b) return a.weight > b.weight end)
 		end
-	end
-	-- try to send tail somewhere it's wanted
-	local chosenPile
-	for _, dst in ipairs(_G.BAIZE.tableaux) do
-		if dst ~= src then
-			-- can the tail be moved in general?
-			local err = src:moveTailError(tail)
-			if not err then
-				-- is the tail conformant enough to move?
-				err = _G.BAIZE.script:moveTailError(tail)
-				if not err then
-				-- can the dst accept the tail?
-					err = dst:acceptTailError(tail)
-					if not err then
-						if (#dst.cards == 0) and (not dst.label) then
-							-- annoying to move cards to an empty pile
-						else
-							if #dst.cards == 0 and dst.label then
-								chosenPile = dst
-							elseif #dst.cards > 0 then
-								if tappedCard.suit == dst:peek().suit then
-									-- spider
-									chosenPile = dst
-									break
-								end
-								if (not chosenPile) or (#dst.cards < #chosenPile.cards) then
-									chosenPile = dst
-								end
-							end
-						end
-					end
-				end
-			end
+		local card = tail[1]
+		local src = card.parent
+		assert(src)
+		assert(src==self)
+		assert(homes[1].dst)
+		if #tail == 1 then
+			Util.moveCard(src, homes[1].dst)
+		else
+			Util.moveCards(src, src:indexOf(card), homes[1].dst)
 		end
-	end
-	if chosenPile then
-		Util.moveCards(src, src:indexOf(tappedCard), chosenPile)
 	end
 end
 
