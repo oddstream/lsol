@@ -196,13 +196,13 @@ function Util.findHomesForTail(tail)
 	local card = tail[1]
 	local src = card.parent
 
-	if _G.SETTINGS.debug then
-		-- can the tail be moved in general?
-		local err = src:moveTailError(tail)
-		assert(not err)
-		-- is the tail conformant enough to move?
-		err = _G.BAIZE.script:moveTailError(tail)
-		assert(not err)
+	-- can the tail be moved in general?
+	if src:moveTailError(tail) then
+		return homes
+	end
+	-- is the tail conformant enough to move?
+	if _G.BAIZE.script:moveTailError(tail) then
+		return homes
 	end
 
 	for _, piles in ipairs(pileTypesToCheck) do
