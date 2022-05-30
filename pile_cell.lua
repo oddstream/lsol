@@ -54,11 +54,13 @@ function Cell:movableTails()
 	-- same as Reserve:movableTails
 	local tails = {}
 	if #self.cards > 0 then
-		local tail = {self:peek()}
-		assert(tail[1].prone==false)				-- top card should never be face down
-		local homes = Util.findHomesForTail(tail)
-		for _, home in ipairs(homes) do
-			table.insert(tails, {tail=tail, dst=home.dst})
+		local card = self:peek()
+		if not card.prone then
+			local tail = {card}
+			local homes = Util.findHomesForTail(tail)
+			for _, home in ipairs(homes) do
+				table.insert(tails, {tail=tail, dst=home.dst})
+			end
 		end
 	end
 	return tails
