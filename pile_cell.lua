@@ -54,7 +54,7 @@ function Cell:movableTails()
 	-- same as Reserve:movableTails
 	local tails = {}
 	if #self.cards > 0 then
-		local card = self:peek()
+		local card = self:peek()	-- card should never be prone
 		if not card.prone then
 			local tail = {card}
 			local homes = Util.findHomesForTail(tail)

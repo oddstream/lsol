@@ -1219,18 +1219,27 @@ function Baize:mouseTapped(x, y, button)
 	elseif self.stroke.objectType == 'container' then
 		-- do nothing when tapping on a container
 	elseif self.stroke.objectType == 'tail' then
-		-- print('TRACE tap on', tostring(self.stroke.object[1]), 'parent', self.stroke.object[1].parent.category)
 		-- offer tailTapped to the script first
 		-- the script can then call Pile.tailTapped if it likes
 		local tail = self.stroke.object
 		for _, c in ipairs(tail) do c:cancelDrag() end
-		local oldSnap = self:stateSnapshot()
-		self.script:tailTapped(tail)
-		local newSnap = self:stateSnapshot()
-		if Util.baizeChanged(oldSnap, newSnap) then
-			self:afterUserMove()
+		local err = tail[1].parent:moveTailError(tail)
+		if err then
+			self.ui:toast(err, 'blip')
 		else
-			Util.play('blip')
+			err = self.script:moveTailError(tail)
+			if err then
+				self.ui:toast(err, 'blip')
+			else
+				local oldSnap = self:stateSnapshot()
+				self.script:tailTapped(tail)
+				local newSnap = self:stateSnapshot()
+				if Util.baizeChanged(oldSnap, newSnap) then
+					self:afterUserMove()
+				else
+					Util.play('blip')
+				end
+			end
 		end
 	elseif self.stroke.objectType == 'pile' then
 		-- print('TRACE tap on', self.stroke.object.category)

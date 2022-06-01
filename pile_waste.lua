@@ -23,6 +23,8 @@ function Waste:acceptCardError(c)
 	if c.parent.category ~= 'Stock' then
 		return 'Waste can only accept cards from the Stock'
 	end
+	-- card may be prone if being dragged from Stock;
+	-- that's ok because Stock:pop() will flip it
 	return nil
 end
 
@@ -49,7 +51,7 @@ function Waste:movableTails()
 	local tails = {}
 	if #self.cards > 0 then
 		local card = self:peek()
-		if not card.prone then
+		if not card.prone then	-- all Waste cards should be face up
 			local tail = {card}
 			local homes = Util.findHomesForTail(tail)
 			for _, home in ipairs(homes) do

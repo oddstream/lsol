@@ -19,9 +19,6 @@ end
 -- vtable functions
 
 function Foundation:acceptCardError(c)
-	if c.prone then
-		return 'Cannot move a face down card'
-	end -- eg being dragged from Stock
 	if #self.cards == #_G.BAIZE.deck / #_G.BAIZE.foundations then
 		return 'The Foundation is full'
 	end

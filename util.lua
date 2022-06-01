@@ -192,16 +192,19 @@ function Util.findHomesForTail(tail)
 	end
 
 	local pileTypesToCheck = {_G.BAIZE.foundations, _G.BAIZE.tableaux, _G.BAIZE.cells}
-	-- TODO add discards, and test
+	-- TODO adding discards here didn't move completed tail to discard
 	local card = tail[1]
 	local src = card.parent
 
+	-- the following two checks should have already been made
 	-- can the tail be moved in general?
 	if src:moveTailError(tail) then
+		log.error('Pile:tailMoveError')
 		return homes
 	end
 	-- is the tail conformant enough to move?
 	if _G.BAIZE.script:moveTailError(tail) then
+		log.error('script:tailMoveError')
 		return homes
 	end
 
@@ -212,6 +215,22 @@ function Util.findHomesForTail(tail)
 				if not err then
 					local home = {dst=dst, weight=#dst.cards}
 					if #dst.cards == 0 then
+		--[[
+		if #dst.cards == 0 and #tail.tail == #src.cards then
+			if src.label == dst.label then
+				if src.category == dst.category then
+					movable = false
+				end
+			end
+		end
+		if #tail.tail == #src.cards then
+			if src.label == dst.label then
+				if src.category == dst.category then
+					home = nil
+				end
+			end
+		end
+		]]
 						if not dst.label then
 							-- filling an empty pile can be a poor move
 							home.weight = 0
@@ -219,11 +238,11 @@ function Util.findHomesForTail(tail)
 					else
 						if card.suit == dst:peek().suit then
 							-- spider
-							home.weight = home.weight + 13	-- magic number
+							home.weight = home.weight + 26	-- magic number
 						end
 					end
 					if dst.category == 'Foundation' then
-						home.weight = home.weight + 26	-- magic number
+						home.weight = home.weight + 52	-- magic number
 					end
 					table.insert(homes, home)
 				end

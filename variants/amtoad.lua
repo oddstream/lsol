@@ -62,12 +62,12 @@ end
 function AmToad:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
-		if #tail == 1 then
-			return nil
-		end
-		if #tail ~= #pile.cards then
-			return 'Can only move one card, or the whole pile'
-		end
+		-- if #tail == 1 then
+		-- 	return nil
+		-- end
+		-- if #tail ~= #pile.cards then
+		-- 	return 'Can only move one card, or the whole pile'
+		-- end
 		local cpairs = Util.makeCardPairs(tail)
 		for _, cpair in ipairs(cpairs) do
 			local err = CC.DownSuitWrap(cpair)

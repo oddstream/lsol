@@ -49,7 +49,7 @@ end
 function Tableau:acceptTailError(tail)
 	for _, c in ipairs(tail) do
 		if c.prone then
-			return 'Cannot add a face down card'
+			return 'Cannot add a face down card to a Tableau'
 		end
 	end
 	if self.moveType == 'MOVE_ONE_PLUS' then

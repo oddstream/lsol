@@ -1,7 +1,5 @@
 -- stock, derived from pile
 
-local log = require 'log'
-
 local Card = require 'card'
 local Pile = require 'pile'
 
@@ -10,9 +8,9 @@ Stock.__index = Stock   -- Stock's own __index looks in Stock for methods
 setmetatable(Stock, {__index = Pile}) -- failing that, Stock's metatable then looks in base class for methods
 
 function Stock.new(o)
-	assert(type(o)=='table')
-	assert(type(o.x)=='number')
-	assert(type(o.y)=='number')
+	-- assert(type(o)=='table')
+	-- assert(type(o.x)=='number')
+	-- assert(type(o.y)=='number')
 	o = Pile.new(o)
 	setmetatable(o, Stock)
 

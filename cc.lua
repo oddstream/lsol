@@ -1,14 +1,17 @@
 -- cc
 
-local log = require 'log'
+-- local log = require 'log'
 
 local CC = {}
+
+local proneError = 'Cannot move a face down card'
 
 function CC.EitherProne(cpair)
 	return cpair[1].prone or cpair[2].prone
 end
 
 function CC.Empty(pile, card)
+	if card.prone then return proneError end
 	if pile.label then
 		if pile.label == 'X' then
 			return 'Cannot move cards there'
@@ -22,14 +25,17 @@ function CC.Empty(pile, card)
 end
 
 function CC.None(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	return 'No'
 end
 
 function CC.Any(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	return nil
 end
 
 function CC.Up(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].ord + 1 ~= cpair[2].ord then
 		return 'Cards must be in ascending sequence'
 	end
@@ -37,6 +43,7 @@ function CC.Up(cpair)
 end
 
 function CC.Down(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].ord ~= cpair[2].ord + 1 then
 		return 'Cards must be in descending sequence'
 	end
@@ -44,6 +51,7 @@ function CC.Down(cpair)
 end
 
 function CC.UpOrDownWrap(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].ord == 13 and cpair[2].ord == 1 then
 		return nil
 	elseif cpair[1].ord == 1 and cpair[2].ord == 13 then
@@ -58,11 +66,7 @@ function CC.UpOrDownWrap(cpair)
 end
 
 function CC.UpOrDownSuitWrap(cpair)
-	assert(cpair)
-	assert(cpair[1])
-	assert(cpair[2])
-	assert(cpair[1].suit)
-	assert(cpair[2].suit)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Must be the same suit'
 	end
@@ -70,6 +74,7 @@ function CC.UpOrDownSuitWrap(cpair)
 end
 
 function CC.UpOrDown(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].ord == cpair[2].ord + 1 then
 		return nil	-- eg 4 on 3
 	elseif cpair[1].ord + 1 == cpair[2].ord then
@@ -80,6 +85,7 @@ function CC.UpOrDown(cpair)
 end
 
 function CC.UpOrDownSuit(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must be the same suit'
 	end
@@ -87,6 +93,7 @@ function CC.UpOrDownSuit(cpair)
 end
 
 function CC.UpSuit(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must be the same suit'
 	end
@@ -94,6 +101,7 @@ function CC.UpSuit(cpair)
 end
 
 function CC.UpSuitTwo(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must be the same suit'
 	end
@@ -104,6 +112,7 @@ function CC.UpSuitTwo(cpair)
 end
 
 function CC.UpSuitTwoWrap(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must be the same suit'
 	end
@@ -116,6 +125,7 @@ function CC.UpSuitTwoWrap(cpair)
 end
 
 function CC.UpSuitWrap(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must all be the same suit'
 	end
@@ -130,6 +140,7 @@ function CC.UpSuitWrap(cpair)
 end
 
 function CC.DownSuit(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must be the same suit'
 	end
@@ -137,6 +148,7 @@ function CC.DownSuit(cpair)
 end
 
 function CC.DownSuitTwo(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must be the same suit'
 	end
@@ -147,6 +159,7 @@ function CC.DownSuitTwo(cpair)
 end
 
 function CC.DownSuitWrap(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].suit ~= cpair[2].suit then
 		return 'Cards must be the same suit'
 	end
@@ -161,6 +174,7 @@ function CC.DownSuitWrap(cpair)
 end
 
 function CC.DownColor(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].black ~= cpair[2].black then
 		return 'Cards must be the same color'
 	end
@@ -168,6 +182,7 @@ function CC.DownColor(cpair)
 end
 
 function CC.DownColorWrap(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].black ~= cpair[2].black then
 		return 'Cards must be the same color'
 	end
@@ -180,6 +195,7 @@ function CC.DownColorWrap(cpair)
 end
 
 function CC.UpAltColor(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].black == cpair[2].black then
 		return 'Cards must be in alternating colors'
 	end
@@ -187,6 +203,7 @@ function CC.UpAltColor(cpair)
 end
 
 function CC.DownAltColor(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].black == cpair[2].black then
 		return 'Cards must be in alternating colors'
 	end
@@ -194,6 +211,7 @@ function CC.DownAltColor(cpair)
 end
 
 function CC.DownWrap(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].ord == 1 and cpair[2].ord == 13 then
 		-- King on Ace
 	elseif cpair[1].ord ~= cpair[2].ord + 1 then
@@ -203,6 +221,7 @@ function CC.DownWrap(cpair)
 end
 
 function CC.DownAltColorWrap(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].black == cpair[2].black then
 		return 'Cards must be in alternating colors'
 	end
@@ -238,6 +257,7 @@ function CC.Accordian(cpair)
 end
 
 function CC.Thirteen(cpair)
+	if CC.EitherProne(cpair) then return proneError end
 	local sum = cpair[1].ord + cpair[2].ord
 	if sum ~= 13 then
 		return string.format('The cards must add up to 13, not %d', sum)

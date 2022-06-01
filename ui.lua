@@ -239,12 +239,12 @@ function UI:showVariantsDrawer(vtype)
 			table.insert(self.variantsdrawer.widgets, wgt)
 		end
 		table.sort(self.variantsdrawer.widgets, function(a, b) return a.text < b.text end)
-		if _G.SETTINGS.debug then
-			for _, v in ipairs(self.variantsdrawer.widgets) do
-				print('♥ ' .. v.text)
-			end
-			print(#self.variantsdrawer.widgets, 'variants')
-		end
+		-- if _G.SETTINGS.debug then
+		-- 	for _, v in ipairs(self.variantsdrawer.widgets) do
+		-- 		print('♥ ' .. v.text)
+		-- 	end
+		-- 	print(#self.variantsdrawer.widgets, 'variants')
+		-- end
 		self.variantsdrawer:layout()
 		self.variantsdrawer:show()
 	else

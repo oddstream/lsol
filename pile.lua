@@ -329,6 +329,7 @@ function Pile:indexOf(card)
 end
 
 function Pile:moveTailError(tail)
+	-- check that this type of pile is okay moving this tail from it
 --[[
 	if tail[1].parent.category ~= 'Stock' then
 		for _, c in ipairs(tail) do
@@ -408,8 +409,8 @@ function Pile.acceptTailError(c)
 end
 
 function Pile:tailTapped(tail)
-	assert(tail)
-	assert(#tail>0)
+	-- assert(tail)
+	-- assert(#tail>0)
 	local homes = Util.findHomesForTail(tail)
 	if homes and #homes > 0 then
 		if #homes > 1 then
@@ -417,9 +418,9 @@ function Pile:tailTapped(tail)
 		end
 		local card = tail[1]
 		local src = card.parent
-		assert(src)
-		assert(src==self)
-		assert(homes[1].dst)
+		-- assert(src)
+		-- assert(src==self)
+		-- assert(homes[1].dst)
 		if #tail == 1 then
 			Util.moveCard(src, homes[1].dst)
 		else
