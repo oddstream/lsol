@@ -26,15 +26,28 @@ end
 function Penguin:buildPiles()
 	-- hidden stock
 	Stock.new{x=5, y=-5}
-	-- the flipper, seven cells
-	for x = 1, 7 do
-		Cell.new{x=x, y=1}
-	end
-	for y = 1, 4 do
-		Foundation.new{x=8.5, y=y}
-	end
-	for x = 1, 7 do
-		Tableau.new{x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+	if Util.orientation() == 'landscape' then
+		-- the flipper, seven cells
+		for x = 1, 7 do
+			Cell.new{x=x, y=1}
+		end
+		for y = 1, 4 do
+			Foundation.new{x=8.5, y=y}
+		end
+		for x = 1, 7 do
+			Tableau.new{x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+		end
+	else
+		-- the flipper, seven cells
+		for x = 1, 7 do
+			Cell.new{x=x, y=2}
+		end
+		for x = 2.5, 5.5 do
+			Foundation.new{x=x, y=1}
+		end
+		for x = 1, 7 do
+			Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+		end
 	end
 end
 

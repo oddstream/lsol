@@ -285,4 +285,15 @@ function Util.play(name)
 	end
 end
 
+function Util.orientation()
+	local _, _, safew, safeh = love.window.getSafeArea()
+	if safew > safeh then
+		return 'landscape'
+	elseif safeh > safew then
+		return 'portrait'
+	else
+		return 'square'
+	end
+end
+
 return Util

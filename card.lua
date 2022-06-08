@@ -54,6 +54,7 @@ function Card.new(o)
 	o.flipStep = 0.0
 
 	o.spinDegrees = 0
+	o.spinDelaySeconds = 0.0
 
 	return setmetatable(o, Card)
 end
@@ -203,6 +204,7 @@ function Card:startSpinning()
 	self.directionY = math.random(-3, 3)
 	self.degrees = 0
 	self.spinDegrees = math.random() - 0.5
+	self.spinDelaySeconds = 2.0
 end
 
 function Card:stopSpinning()
@@ -234,27 +236,31 @@ function Card:update(dt_seconds)
 		end
 	end
 	if self.spinDegrees ~= 0 then
-		self.x = self.x + self.directionX
-		self.y = self.y + self.directionY
-		self.degrees  = self.degrees + self.spinDegrees
-		if self.degrees > 360 then
-			self.degrees = self.degrees - 360
-		elseif self.degrees < 0 then
-			self.degrees = self.degrees + 360
-		end
-		-- use the whole window, not just the safe area
-		local windowWidth, windowHeight, _ = love.window.getMode()
-		windowWidth = windowWidth - _G.BAIZE.dragOffset.x
-		windowHeight = windowHeight - _G.BAIZE.dragOffset.y
-		local centerx = self.x + _G.BAIZE.cardWidth / 2
-		local centery = self.y + _G.BAIZE.cardHeight / 2
-		if (centerx < 0) or (centerx > windowWidth) then
-			self.directionX = -self.directionX
-			self.spinDegrees = math.random() - 0.5
-		end
-		if (centery < 0) or (centery > windowHeight) then
-			self.directionY = -self.directionY
-			self.spinDegrees = math.random() - 0.5
+		if self.spinDelaySeconds > 0 then
+			self.spinDelaySeconds = self.spinDelaySeconds - dt_seconds
+		else
+			self.x = self.x + self.directionX
+			self.y = self.y + self.directionY
+			self.degrees  = self.degrees + self.spinDegrees
+			if self.degrees > 360 then
+				self.degrees = self.degrees - 360
+			elseif self.degrees < 0 then
+				self.degrees = self.degrees + 360
+			end
+			-- use the whole window, not just the safe area
+			local windowWidth, windowHeight, _ = love.window.getMode()
+			windowWidth = windowWidth - _G.BAIZE.dragOffset.x
+			windowHeight = windowHeight - _G.BAIZE.dragOffset.y
+			local centerx = self.x + _G.BAIZE.cardWidth / 2
+			local centery = self.y + _G.BAIZE.cardHeight / 2
+			if (centerx < 0) or (centerx > windowWidth) then
+				self.directionX = -self.directionX
+				self.spinDegrees = math.random() - 0.5
+			end
+			if (centery < 0) or (centery > windowHeight) then
+				self.directionY = -self.directionY
+				self.spinDegrees = math.random() - 0.5
+			end
 		end
 	end
 end
@@ -309,7 +315,7 @@ function Card:draw()
 		end
 		if self.spinDegrees ~= 0 then
 			-- love.graphics.draw(img, x, y, self.degrees * math.pi / 180.0, 1.1, 1.1)
-			love.graphics.draw(img, x, y, math.rad(self.degrees), 1.1, 1.1)
+			love.graphics.draw(img, x, y, math.rad(self.degrees))
 		else
 			love.graphics.draw(img, x, y)
 			if self.movable then

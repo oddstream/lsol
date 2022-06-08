@@ -32,20 +32,45 @@ end
 function Yukon:buildPiles()
 	-- hidden stock
 	Stock.new{x=5, y=-5, packs=self.packs, suitFilter=self.suitFilter}
-	-- the flipper, seven cells
-	for y = 1, 4 do
-		local pile = Foundation.new{x=8.5, y=y}
-		pile.label = 'A'
-	end
-	if self.cells then
-		for y = 5, 7 do
-			Cell.new{x=8.5, y=y}
+
+	if Util.orientation() == 'landscape' then
+		for y = 1, 4 do
+			local pile = Foundation.new{x=8.5, y=y}
+			pile.label = 'A'
 		end
-	end
-	for x = 1, 7 do
-		local pile = Tableau.new{x=x, y=1, fanType='FAN_DOWN', moveType='MOVE_ANY'}
-		if not self.relaxed then
-			pile.label = 'K'
+		if self.cells then
+			for y = 5, 7 do
+				Cell.new{x=8.5, y=y}
+			end
+		end
+		for x = 1, 7 do
+			local pile = Tableau.new{x=x, y=1, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+			if not self.relaxed then
+				pile.label = 'K'
+			end
+		end
+	else
+		for x = 2.5, 5.5 do
+			local pile = Foundation.new{x=x, y=1}
+			pile.label = 'A'
+		end
+		if self.cells then
+			for x = 3, 5 do
+				Cell.new{x=x, y=2}
+			end
+			for x = 1, 7 do
+				local pile = Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+				if not self.relaxed then
+					pile.label = 'K'
+				end
+			end
+		else
+			for x = 1, 7 do
+				local pile = Tableau.new{x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+				if not self.relaxed then
+					pile.label = 'K'
+				end
+			end
 		end
 	end
 end

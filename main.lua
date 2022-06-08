@@ -126,7 +126,7 @@ _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider','Penguin'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
-	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open'},
+	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
 	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},

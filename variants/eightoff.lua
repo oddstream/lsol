@@ -25,18 +25,34 @@ end
 
 function EightOff:buildPiles()
 	Stock.new({x=4, y=-4})
-	for x = 1, 8 do
-		Cell.new({x=x, y=1})
-	end
-	for x = 1, 8 do
-		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
-		if not self.relaxed then
-			t.label = 'K'
+	if Util.orientation() == 'landscape' then
+		for x = 1, 8 do
+			Cell.new({x=x, y=1})
 		end
-	end
-	for y = 1, 4 do
-		local f = Foundation.new({x=9.5, y=y})
-		f.label = 'A'
+		for x = 1, 8 do
+			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			if not self.relaxed then
+				t.label = 'K'
+			end
+		end
+		for y = 1, 4 do
+			local f = Foundation.new({x=9.5, y=y})
+			f.label = 'A'
+		end
+	else
+		for x = 1, 8 do
+			Cell.new({x=x, y=2})
+		end
+		for x = 1, 8 do
+			local t = Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			if not self.relaxed then
+				t.label = 'K'
+			end
+		end
+		for x = 3, 6 do
+			local f = Foundation.new({x=x, y=1})
+			f.label = 'A'
+		end
 	end
 end
 
