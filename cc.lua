@@ -210,6 +210,14 @@ function CC.DownAltColor(cpair)
 	return CC.Down(cpair)
 end
 
+function CC.DownAltSuit(cpair)
+	if CC.EitherProne(cpair) then return proneError end
+	if cpair[1].suit == cpair[2].suit then
+		return 'Cards must have different suits'
+	end
+	return CC.Down(cpair)
+end
+
 function CC.DownWrap(cpair)
 	if CC.EitherProne(cpair) then return proneError end
 	if cpair[1].ord == 1 and cpair[2].ord == 13 then

@@ -21,6 +21,9 @@ function Freecell.new(o)
 	if o.bakers then
 		o.tabCompareFn = CC.DownSuit
 		o.wikipedia = 'https://en.wikipedia.org/wiki/Baker%27s_Game'
+	elseif o.chinese then
+		o.tabCompareFn = CC.DownAltSuit
+		o.wikipedia = 'https://en.wikipedia.org/wiki/Baker%27s_Game'
 	else
 		o.tabCompareFn = CC.DownAltColor
 		o.wikipedia = 'https://en.wikipedia.org/wiki/FreeCell'

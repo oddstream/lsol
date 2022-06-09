@@ -76,7 +76,7 @@ _G.LSOL_VARIANTS = {
 	['Eight Off Relaxed'] = {file='eightoff.lua', cc=4, relaxed=true},
 	Freecell = {file='freecell.lua', cc=2, bakers=false, relaxed=true},
 	['Double Freecell'] = {file='freecell.lua', cc=2, relaxed=true, double=true},
-	['Chinese Freecell'] = {file='freecell.lua', cc=2, relaxed=false, chinese=true},
+	['Chinese Freecell'] = {file='freecell.lua', cc=4, relaxed=false, chinese=true},
 	['Sea Haven Towers'] = {file='seahaven.lua', cc=4},
 	['Baker\'s Game'] = {file='freecell.lua', bakers=true, cc=4, relaxed=false},
 	['Baker\'s Game Relaxed'] = {file='freecell.lua', bakers=true, cc=4, relaxed=true},
