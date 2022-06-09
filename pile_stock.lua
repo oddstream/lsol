@@ -3,6 +3,8 @@
 local Card = require 'card'
 local Pile = require 'pile'
 
+local log = require 'log'
+
 local Stock = {}
 Stock.__index = Stock   -- Stock's own __index looks in Stock for methods
 setmetatable(Stock, {__index = Pile}) -- failing that, Stock's metatable then looks in base class for methods

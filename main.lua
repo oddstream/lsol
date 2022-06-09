@@ -75,6 +75,8 @@ _G.LSOL_VARIANTS = {
 	['Eight Off'] = {file='eightoff.lua', cc=4},
 	['Eight Off Relaxed'] = {file='eightoff.lua', cc=4, relaxed=true},
 	Freecell = {file='freecell.lua', cc=2, bakers=false, relaxed=true},
+	['Double Freecell'] = {file='freecell.lua', cc=2, relaxed=true, double=true},
+	['Chinese Freecell'] = {file='freecell.lua', cc=2, relaxed=false, chinese=true},
 	['Sea Haven Towers'] = {file='seahaven.lua', cc=4},
 	['Baker\'s Game'] = {file='freecell.lua', bakers=true, cc=4, relaxed=false},
 	['Baker\'s Game Relaxed'] = {file='freecell.lua', bakers=true, cc=4, relaxed=true},
@@ -128,7 +130,7 @@ _G.VARIANT_TYPES = {
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
 	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
-	['> Freecells'] = {'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
+	['> Freecells'] = {'Chinese Freecell', 'Double Freecell', 'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Miss Milligan','Rosamund'},
 	['> Places'] = {'Algerian','Alhambra','Australian','Mount Olympus','Yukon','Yukon Relaxed','Russian','Crimean','Ukrainian'},
@@ -593,6 +595,32 @@ function love.keyreleased(key)
 		-- elseif key == 'm' then
 		-- 	local result = _G.BAIZE:getPermission('This game will count as a loss. Continue?')
 		-- 	log.trace(result)
+		elseif key == '8' and love.keyboard.isDown('lctrl') then
+			for _, tab in ipairs(_G.BAIZE.tableaux) do
+				table.sort(tab.cards, function(a,b) return a.ord > b.ord end)
+				tab:refan()
+			end
+			_G.BAIZE:updateStatus()
+			_G.BAIZE:updateUI()
+		elseif key == '9' and love.keyboard.isDown('lctrl') then
+			for _, tab in ipairs(_G.BAIZE.tableaux) do
+				table.sort(tab.cards, function(a,b) return a.ord < b.ord end)
+				tab:refan()
+			end
+			_G.BAIZE:updateStatus()
+			_G.BAIZE:updateUI()
+		elseif key == '0' and love.keyboard.isDown('lctrl') then
+			for _, tab in ipairs(_G.BAIZE.tableaux) do
+				for i = #tab.cards, 2, -1 do
+					local j = math.random(i)
+					if i ~= j then
+						tab.cards[i], tab.cards[j] = tab.cards[j], tab.cards[i]
+					end
+				end
+				tab:refan()
+			end
+			_G.BAIZE:updateStatus()
+			_G.BAIZE:updateUI()
 		end
 	end
 

@@ -25,43 +25,97 @@ function Freecell.new(o)
 		o.tabCompareFn = CC.DownAltColor
 		o.wikipedia = 'https://en.wikipedia.org/wiki/FreeCell'
 	end
+	if o.double then
+		o.foundCompareFn = CC.UpSuitWrap
+	else
+		o.foundCompareFn = CC.UpSuit
+	end
 	return setmetatable(o, Freecell)
 end
 
 function Freecell:buildPiles()
-	Stock.new({x=4, y=-4})
-	for x = 1, 4 do
-		Cell.new({x=x, y=1})
-	end
-	for x = 5, 8 do
-		local f = Foundation.new({x=x, y=1})
-		f.label = 'A'
-	end
-	for x = 1, 8 do
-		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
-		if self.relaxed == false then
-			t.label = 'K'
+	if self.double then
+		Stock.new({x=4, y=-4, packs=2})
+		for x = 1, 6 do
+			Cell.new({x=x, y=1})
+		end
+		for x = 7, 10 do
+			local f = Foundation.new({x=x, y=1})
+			f.label = 'A'
+		end
+		for x = 1, 10 do
+			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			if self.relaxed == false then
+				t.label = 'K'
+			end
+		end
+	elseif self.chinese then
+		Stock.new({x=4, y=-4, packs=2, suitFilter={'♦','♥','♠'}})
+		for x = 1, 4 do
+			Cell.new({x=x, y=1})
+		end
+		for x = 6, 11 do
+			local f = Foundation.new({x=x, y=1})
+			f.label = 'A'
+		end
+		for x = 1, 11 do
+			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			if self.relaxed == false then
+				t.label = 'K'
+			end
+		end
+	else
+		Stock.new({x=4, y=-4})
+		for x = 1, 4 do
+			Cell.new({x=x, y=1})
+		end
+		for x = 5, 8 do
+			local f = Foundation.new({x=x, y=1})
+			f.label = 'A'
+		end
+		for x = 1, 8 do
+			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			if self.relaxed == false then
+				t.label = 'K'
+			end
 		end
 	end
 end
 
 function Freecell:startGame()
-	local src, dst
-	src = _G.BAIZE.stock
-	for i = 1, 4 do
-		dst = _G.BAIZE.tableaux[i]
-		for j = 1, 7 do
-			Util.moveCard(src, dst)
+	local stock = _G.BAIZE.stock
+	if self.double then
+		Util.moveCardByOrdAndSuit(stock, _G.BAIZE.foundations[1], 1, '♣')
+		Util.moveCardByOrdAndSuit(stock, _G.BAIZE.foundations[2], 1, '♦')
+		Util.moveCardByOrdAndSuit(stock, _G.BAIZE.foundations[3], 1, '♥')
+		Util.moveCardByOrdAndSuit(stock, _G.BAIZE.foundations[4], 1, '♠')
+		for _, tab in ipairs(_G.BAIZE.tableaux) do
+			for _ = 1, 10 do
+				Util.moveCard(stock, tab)
+			end
+		end
+	elseif self.chinese then
+		while #stock.cards > 0 do
+			for _, tab in ipairs(_G.BAIZE.tableaux) do
+				Util.moveCard(stock, tab)
+			end
+		end
+	else
+		for i = 1, 4 do
+			local tab = _G.BAIZE.tableaux[i]
+			for _ = 1, 7 do
+				Util.moveCard(stock, tab)
+			end
+		end
+		for i = 5, 8 do
+			local tab = _G.BAIZE.tableaux[i]
+			for _ = 1, 6 do
+				Util.moveCard(stock, tab)
+			end
 		end
 	end
-	for i = 5, 8 do
-		dst = _G.BAIZE.tableaux[i]
-		for j = 1, 6 do
-			Util.moveCard(src, dst)
-		end
-	end
-	if #src.cards > 0 then
-		log.error('still', #src.cards, 'cards in Stock')
+	if #stock.cards > 0 then
+		log.error('still', #stock.cards, 'cards in Stock')
 	end
 	_G.BAIZE:setRecycles(0)
 end
@@ -88,7 +142,7 @@ function Freecell:tailAppendError(dst, tail)
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
 		else
-			return CC.UpSuit({dst:peek(), tail[1]})
+			return self.foundCompareFn({dst:peek(), tail[1]})
 		end
 	elseif dst.category == 'Tableau' then
 		if #dst.cards == 0 then
