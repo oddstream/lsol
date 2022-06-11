@@ -122,6 +122,9 @@ _G.LSOL_VARIANTS = {
 	['Russian'] = {file='yukon.lua', cc=4, russian=true},
 	['Crimean'] = {file='crimean.lua', cc=4, crimean=true},
 	['Ukrainian'] = {file='crimean.lua', cc=4, ukrainian=true},
+	['Usk'] = {file='usk.lua', cc=2, relaxed=false},
+	['Usk Relaxed'] = {file='usk.lua', cc=2, relaxed=true},
+	['Somerset'] = {file='somerset.lua', cc=2, relaxed=true},
 }
 
 _G.VARIANT_TYPES = {
@@ -133,7 +136,7 @@ _G.VARIANT_TYPES = {
 	['> Freecells'] = {'Chinese Freecell', 'Double Freecell', 'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Miss Milligan','Rosamund'},
-	['> Places'] = {'Algerian','Alhambra','Australian','Mount Olympus','Yukon','Yukon Relaxed','Russian','Crimean','Ukrainian'},
+	['> Places'] = {'Algerian','Alhambra','Australian','Mount Olympus','Yukon','Yukon Relaxed','Russian','Crimean','Ukrainian','Usk','Usk Relaxed','Somerset'},
 	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider','Little Spider','Spiderette','Spiderette One Suit','Spiderette Two Suits'},

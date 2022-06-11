@@ -1,4 +1,4 @@
--- cruel
+-- usk
 
 local Variant = require 'variant'
 local CC = require 'cc'
@@ -9,53 +9,64 @@ local Tableau = require 'pile_tableau'
 
 local Util = require 'util'
 
-local Cruel = {}
-Cruel.__index = Cruel
-setmetatable(Cruel, {__index = Variant})
+local Usk = {}
+Usk.__index = Usk
+setmetatable(Usk, {__index = Variant})
 
-function Cruel.new(o)
+function Usk.new(o)
 	o = o or {}
-	o.tabCompareFn = CC.DownSuit
-	o.wikipedia = 'https://en.wikipedia.org/wiki/Cruel_(solitaire)'
-	return setmetatable(o, Cruel)
+	o.tabCompareFn = CC.DownAltColor
+	o.wikipedia = 'https://politaire.com/help/usk'
+	o.layouts = {
+		{x = 1, n = 8},
+		{x = 2, n = 8},
+		{x = 3, n = 8},
+		{x = 4, n = 7},
+		{x = 5, n = 6},
+		{x = 6, n = 5},
+		{x = 7, n = 4},
+		{x = 8, n = 3},
+		{x = 9, n = 2},
+		{x = 10, n = 1},
+	}
+	return setmetatable(o, Usk)
 end
 
-function Cruel:buildPiles()
+function Usk:buildPiles()
 	Stock.new({x=1, y=1})
-	for x = 9, 12 do
+	for x = 7, 10 do
 		local pile = Foundation.new({x=x, y=1})
 		pile.label = 'A'
 	end
-	for x = 1, 12 do
-		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE'})
-		t.label = 'X'
-	end
-end
-
-function Cruel:startGame()
-	local src = _G.BAIZE.stock
-	for _, f in ipairs(_G.BAIZE.foundations) do
-		Util.moveCardByOrd(src, f, 1)
-	end
-	for _, t in ipairs(_G.BAIZE.tableaux) do
-		for _ = 1, 4 do
-			Util.moveCard(src, t)
+	for _, layout in ipairs(self.layouts) do
+		local tab = Tableau.new({x=layout.x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		if not self.relaxed then
+			tab.label = 'K'
 		end
 	end
-	_G.BAIZE:setRecycles(0)
 end
 
-function Cruel:afterMove()
-	-- kludge afterMove is called by stock recycle
-	_G.BAIZE:setRecycles(_G.BAIZE.recycles + 1)
+function Usk:dealCards()
+	local stock = _G.BAIZE.stock
+	for _, layout in ipairs(self.layouts) do
+		local tab = _G.BAIZE.tableaux[layout.x]
+		for _ = 1, layout.n do
+			Util.moveCard(stock, tab)
+		end
+	end
 end
 
-function Cruel:moveTailError(tail)
+function Usk:startGame()
+	self:dealCards()
+	_G.BAIZE:setRecycles(1)
+end
+
+function Usk:moveTailError(tail)
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)
 		for _, cpair in ipairs(cpairs) do
-			local err = CC.DownSuit(cpair)
+			local err = CC.DownAltColor(cpair)
 			if err then
 				return err
 			end
@@ -64,7 +75,7 @@ function Cruel:moveTailError(tail)
 	return nil
 end
 
-function Cruel:tailAppendError(dst, tail)
+function Usk:tailAppendError(dst, tail)
 	if dst.category == 'Foundation' then
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
@@ -75,28 +86,30 @@ function Cruel:tailAppendError(dst, tail)
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
 		else
-			return CC.DownSuit({dst:peek(), tail[1]})
+			return CC.DownAltColor({dst:peek(), tail[1]})
 		end
 	end
 	return nil
 end
 
-function Cruel:pileTapped(pile)
+function Usk:pileTapped(pile)
 	if pile.category ~= 'Stock' then
 		return
 	end
 	if _G.BAIZE.recycles == 0 then
-		_G.BAIZE.ui:toast('You cannot recycle until you have moved a card', 'blip')
+		_G.BAIZE.ui:toast('No more recycles', 'blip')
 		return
 	end
 	--[[
+		The redeal procedure begins by picking up all cards on the tableau.
 		The cards from the tableau are collected, one column at a time,
 		starting with the left-most column,
-		picking up the cards in each column in top to bottom order.
-		(Remember - the "top" card is the one you can play - which is confusingly on the bottom on your screen.)
+		picking up the cards in each column in bottom to top order.
 		Then, without shuffling, the cards are dealt out again,
-		starting with the first card picked up,
-		and dealing the cards in the same order as they were picked up.
+		starting with the first card picked up.
+		Deal the tableau in the same arrangement as it was originally dealt,
+		one row at a time, starting with the bottom-most row,
+		dealing the cards in each row in left to right order.
 	]]
 	local stock = _G.BAIZE.stock
 	-- collect cards
@@ -112,18 +125,14 @@ function Cruel:pileTapped(pile)
 		stock.cards[i], stock.cards[j] = stock.cards[j], stock.cards[i]
 	 end
 	-- redeal cards
-	for _, t in ipairs(_G.BAIZE.tableaux) do
-		for _ = 1, 4 do
-			Util.moveCard(stock, t)
-		end
-	end
-	_G.BAIZE:setRecycles(-1)	-- kludge because recycle will trigger afterUserMove
+	self:dealCards()
+	_G.BAIZE:setRecycles(0)
 end
 
--- function Cruel:tailTapped(tail)
+-- function Usk:tailTapped(tail)
 -- 	local card = tail[1]
 -- 	local pile = card.parent
 -- 	pile:tailTapped(tail)
 -- end
 
-return Cruel
+return Usk

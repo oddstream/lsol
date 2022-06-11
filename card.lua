@@ -314,10 +314,10 @@ function Card:draw()
 			y = y - yoffset / 2
 		end
 		if self.spinDegrees ~= 0 then
-			if self.spinDelaySeconds > 0.0 then
+			if self.spinDelaySeconds > 0 then
 				love.graphics.draw(img, x, y)
 			else
-				love.graphics.draw(img, x, y, self.degrees * math.pi / 180.0, 1.333, 1.333)
+				love.graphics.draw(img, x, y, self.degrees * math.pi / 180.0, 1.25, 1.25)
 			end
 		else
 			love.graphics.draw(img, x, y)
