@@ -2,6 +2,7 @@
 
 local bitser = require 'bitser'
 local log = require 'log'
+require 'gradient'
 
 local Card = require 'card'
 local Util = require 'util'
@@ -865,6 +866,33 @@ function Baize:gotoBookmark()
 	self:updateUI()
 end
 
+function Baize:createBackgroundCanvas()
+	local ww, wh, _ = love.window.getMode()
+	local ww2, wh2 = ww / 2, wh / 2
+
+	local canvas = love.graphics.newCanvas(ww, wh)
+	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
+
+	local backColor = _G.SETTINGS['baizeColor'] or 'DarkGreen'
+	local r, g, b, a = love.math.colorFromBytes(unpack(_G.LSOL_COLORS[backColor]))
+	local frontColor = {r, g, b, 1}
+	backColor = {r - 0.2, g - 0.2, b - 0.2, a}
+
+	love.gradient.draw(
+		function()
+			love.graphics.rectangle('fill', 0, 0, ww, wh)
+		end,
+		'radial',		-- gradient type
+		ww2, wh2,		-- center of shape
+		ww2, ww2,		-- width of shape
+		backColor,		-- back color
+		frontColor)		-- front color
+
+	love.graphics.setCanvas()
+
+	self.backgroundCanvas = canvas
+end
+
 function Baize:layout()
 	local oldCardWidth, oldCardHeight = self.cardWidth, self.cardheight
 
@@ -1529,7 +1557,7 @@ function Baize:update(dt_seconds)
 	self.ui:update(dt_seconds)
 
 	if not self.stroke then
-		if (love.timer.getTime() - self.lastInput) > 2.0 then
+		if (love.timer.getTime() - self.lastInput) > 1.0 then
 			self:j_adoube()
 			self.lastInput = love.timer.getTime()
 		end
@@ -1543,12 +1571,10 @@ function Baize:draw()
 	-- love.graphics.translate(0, screenHeight)
 	-- love.graphics.rotate(-math.pi/2)
 
-	do
-		local ww, wh, _ = love.window.getMode()
-		local sx = ww / _G.BACKGROUND_X
-		local sy = wh / _G.BACKGROUND_Y
-		love.graphics.draw(_G.BACKGROUND, 0, 0, 0, sx, sy)
+	if not self.backgroundCanvas then
+		self:createBackgroundCanvas()
 	end
+	love.graphics.draw(self.backgroundCanvas, 0, 0)
 
 	for _, pile in ipairs(self.piles) do
 		pile:draw()
@@ -1569,8 +1595,9 @@ function Baize:draw()
 
 	if _G.SETTINGS.debug then
 		love.graphics.setColor(0,1,0)
-		love.graphics.print(string.format('%s sc=%d ww=%d, wh=%d sx=%d sy=%d sw=%d sh=%d',
+		love.graphics.print(string.format('%s fps=%d sc=%d ww=%d, wh=%d sx=%d sy=%d sw=%d sh=%d',
 			love.system.getOS(),
+			love.timer.getFPS(),
 			love.window.getDPIScale(),
 			love.graphics.getWidth(), love.graphics.getHeight(),
 			_G.UI_SAFEX, _G.UI_SAFEY, _G.UI_SAFEW, _G.UI_SAFEH),

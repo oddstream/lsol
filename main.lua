@@ -131,7 +131,7 @@ _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider','Penguin'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
-	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp'},
+	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp','Usk Relaxed'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
 	['> Freecells'] = {'Chinese Freecell', 'Double Freecell', 'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
@@ -392,13 +392,6 @@ There may be a small performance penalty as the output will be flushed after eac
 		_G.UI_SCALE = 1 - (DPIScale/10)	-- so a DPIScale of 3 would scale the UI from 1.0 to 0.7
 	end
 
-	do
-		local imageData = love.image.newImageData('assets/gradient_img.png')
-		_G.BACKGROUND_X = imageData:getWidth()
-		_G.BACKGROUND_Y = imageData:getHeight()
-		_G.BACKGROUND = love.graphics.newImage(imageData)
-	end
-
 	-- https://love2d.org/forums/viewtopic.php?f=3&t=84348&p=215242&hilit=rounded+rectangle#p215242
 	local limits = love.graphics.getSystemLimits( )
 	-- log.info(limits.canvasmsaa)	-- 16
@@ -448,7 +441,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	createFavoriteVariants(_G.BAIZE.stats)
 	_G.BAIZE.ui = UI.new()
 
-	love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
+	-- love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
 	_G.BAIZE.ui:updateWidget('title', _G.SETTINGS.variantName)
 
 	_G.BAIZE:loadUndoStack()
@@ -519,6 +512,7 @@ function love.resize(w,h)
 	-- if _G.SETTINGS.debug then
 		-- log.trace('resize', w, h)
 	-- end
+	_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
 	_G.BAIZE:layout()
 	for _, pile in ipairs(_G.BAIZE.piles) do
 		pile:refan(Card.setBaizePos)
