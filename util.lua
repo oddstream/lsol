@@ -115,6 +115,15 @@ function Util.setColorFromName(nam)
 	return love.graphics.setColor(Util.getColorFromName(nam))
 end
 
+function Util.getGradientColors(settingName, default)
+	local color = _G.SETTINGS[settingName] or default
+	local r, g, b, a = love.math.colorFromBytes(unpack(_G.LSOL_COLORS[color]))
+	local frontColor = {r + 0.1, g + 0.1, b + 0.1, a}
+	-- backColor = {r - 0.1, g - 0.15, b - 0.2, a}
+	local backColor = {r - 0.1, g - 0.1, b - 0.1, a}
+	return frontColor, backColor
+end
+
 function Util.makeCardPairs(tail)
 	if #tail < 2 then
 		return {}

@@ -44,6 +44,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	twoColorCards = true,
 	fourColorCards = false,
 	autoColorCards = false,
+	gradient = true,
 }
 
 _G.LSOL_VARIANTS = {
@@ -441,7 +442,8 @@ There may be a small performance penalty as the output will be flushed after eac
 	createFavoriteVariants(_G.BAIZE.stats)
 	_G.BAIZE.ui = UI.new()
 
-	-- love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
+	love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
+
 	_G.BAIZE.ui:updateWidget('title', _G.SETTINGS.variantName)
 
 	_G.BAIZE:loadUndoStack()

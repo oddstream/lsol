@@ -167,11 +167,25 @@ end
 
 function Baize:createSimpleFace(ord, suit)
 	local canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
-	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 	love.graphics.setLineWidth(1)
 
-	love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+	if _G.SETTINGS.gradient then
+		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory')
+		love.gradient.draw(
+			function()
+				love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+			end,
+			'radial',
+			self.cardWidth / 2, self.cardHeight / 2,
+			self.cardWidth / 2, self.cardHeight / 2,
+			backColor,
+			frontColor
+		)
+	else
+		love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
+		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+	end
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
@@ -207,11 +221,25 @@ function Baize:createRegularFace(ord, suit)
 	end
 
 	local canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
-	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 	love.graphics.setLineWidth(1)
 
-	love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+	if _G.SETTINGS.gradient then
+		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory')
+		love.gradient.draw(
+			function()
+				love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+			end,
+			'radial',
+			self.cardWidth / 2, self.cardHeight / 2,
+			self.cardWidth / 2, self.cardHeight / 2,
+			backColor,
+			frontColor
+		)
+	else
+		love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
+		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+	end
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
@@ -708,7 +736,7 @@ end
 function Baize:toggleCheckbox(var)
 	_G.SETTINGS[var] = not _G.SETTINGS[var]
 	_G.saveSettings()
-	if var == 'simpleCards' then
+	if var == 'simpleCards' or var == 'gradient' then
 		self:createCardTextures()
 	elseif var == 'mirrorBaize' then
 		self:undoPush()
@@ -873,11 +901,7 @@ function Baize:createBackgroundCanvas()
 	local canvas = love.graphics.newCanvas(ww, wh)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
-	local backColor = _G.SETTINGS['baizeColor'] or 'DarkGreen'
-	local r, g, b, a = love.math.colorFromBytes(unpack(_G.LSOL_COLORS[backColor]))
-	local frontColor = {r, g, b, 1}
-	backColor = {r - 0.2, g - 0.2, b - 0.2, a}
-
+	local frontColor, backColor = Util.getGradientColors('baizeColor', 'darkGreen')
 	love.gradient.draw(
 		function()
 			love.graphics.rectangle('fill', 0, 0, ww, wh)
@@ -1571,10 +1595,12 @@ function Baize:draw()
 	-- love.graphics.translate(0, screenHeight)
 	-- love.graphics.rotate(-math.pi/2)
 
-	if not self.backgroundCanvas then
-		self:createBackgroundCanvas()
+	if _G.SETTINGS.gradient then
+		if not self.backgroundCanvas then
+			self:createBackgroundCanvas()
+		end
+		love.graphics.draw(self.backgroundCanvas, 0, 0)
 	end
-	love.graphics.draw(self.backgroundCanvas, 0, 0)
 
 	for _, pile in ipairs(self.piles) do
 		pile:draw()
