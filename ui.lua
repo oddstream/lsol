@@ -26,9 +26,9 @@ local menuWidgets = {
 	{text='Set bookmark', icon='bookmark_add', baizeCmd='setBookmark'},
 	{text='Go to bookmark', icon='bookmark', name='gotobookmark', enabled=false, baizeCmd='gotoBookmark'},
 	{},
-	{text='Statistics...', icon='list', baizeCmd='showStatsDrawer'},
+	{text='Statistics...', icon='poll', baizeCmd='showStatsDrawer'},
 	{text='Settings...', icon='settings', baizeCmd='showSettingsDrawer'},
-	{text='Wikipedia...', icon='info', baizeCmd='wikipedia'},
+	{text='Wikipedia...', icon='wikipedia', baizeCmd='wikipedia'},
 	{},
 	{text='About...', icon='info', baizeCmd='showAboutDrawer'},
 	{text='Save and quit', icon='close', baizeCmd='quit'},
@@ -36,7 +36,6 @@ local menuWidgets = {
 
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
-	{text='Shading', var='gradient'},
 	{text='One-color cards', var='oneColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
 	{text='Two-color cards', var='twoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
 	{text='Four-color cards', var='fourColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},

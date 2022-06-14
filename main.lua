@@ -9,8 +9,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '15'
-_G.LSOL_VERSION_DATE = '2022-06-02'
+_G.LSOL_VERSION = '16'
+_G.LSOL_VERSION_DATE = '2022-06-14'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -44,7 +44,6 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	twoColorCards = true,
 	fourColorCards = false,
 	autoColorCards = false,
-	gradient = true,
 }
 
 _G.LSOL_VARIANTS = {

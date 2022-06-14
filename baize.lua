@@ -173,7 +173,7 @@ function Baize:createSimpleFace(ord, suit)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 	love.graphics.setLineWidth(1)
 
-	if _G.SETTINGS.gradient then
+	do
 		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.1)
 		love.gradient.draw(
 			function()
@@ -185,10 +185,11 @@ function Baize:createSimpleFace(ord, suit)
 			backColor,
 			frontColor
 		)
-	else
+	end
+	--[[
 		love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
 		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
-	end
+	]]
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
@@ -227,7 +228,7 @@ function Baize:createRegularFace(ord, suit)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 	love.graphics.setLineWidth(1)
 
-	if _G.SETTINGS.gradient then
+	do
 		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.1)
 		love.gradient.draw(
 			function()
@@ -239,10 +240,11 @@ function Baize:createRegularFace(ord, suit)
 			backColor,
 			frontColor
 		)
-	else
+	end
+	--[[
 		love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
 		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
-	end
+	]]
 
 	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
 	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
@@ -1609,12 +1611,10 @@ function Baize:draw()
 	-- love.graphics.translate(0, screenHeight)
 	-- love.graphics.rotate(-math.pi/2)
 
-	if _G.SETTINGS.gradient then
-		if not self.backgroundCanvas then
-			self:createBackgroundCanvas()
-		end
-		love.graphics.draw(self.backgroundCanvas, 0, 0)
+	if not self.backgroundCanvas then
+		self:createBackgroundCanvas()
 	end
+	love.graphics.draw(self.backgroundCanvas, 0, 0)
 
 	for _, pile in ipairs(self.piles) do
 		pile:draw()
