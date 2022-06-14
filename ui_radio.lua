@@ -80,6 +80,7 @@ function Radio:draw()
 
 	if _G.SETTINGS.debug then
 		Util.setColorFromName('UiGrayedOut')
+		love.graphics.setLineWidth(1)
 		love.graphics.rectangle('line', wx, wy, ww, wh)
 	end
 

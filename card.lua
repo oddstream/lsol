@@ -321,9 +321,12 @@ function Card:draw()
 			end
 		else
 			love.graphics.draw(img, x, y)
-			if self.movable then
-				love.graphics.setColor(0,0,0,0.1)
-				love.graphics.rectangle('fill', x, y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight, _G.BAIZE.cardRadius, _G.BAIZE.cardRadius)
+			if self.movable and _G.BAIZE.showMovable then
+				-- love.graphics.setColor(0,0,0,0.1)
+				-- love.graphics.rectangle('fill', x, y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight, _G.BAIZE.cardRadius, _G.BAIZE.cardRadius)
+				Util.setColorFromName('Gold')
+				love.graphics.setLineWidth(2)
+				love.graphics.rectangle('line', x, y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight, _G.BAIZE.cardRadius, _G.BAIZE.cardRadius)
 			end
 		end
 	end

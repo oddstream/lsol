@@ -1,3 +1,6 @@
+-- gradient
+-- https://github.com/HugoBDesigner/love.gradient/blob/master/gradient.lua
+
 love.gradient = {}
 
 love.gradient.types = {"linear", "radial", "angle", "rhombus", "square"}

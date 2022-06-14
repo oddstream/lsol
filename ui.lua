@@ -65,6 +65,8 @@ function UI.new()
 		table.insert(o.titlebar.widgets, wgt)
 		wgt = IconWidget.new({parent=o.titlebar, name='collect', icon='done', align='right', baizeCmd='collect'})
 		table.insert(o.titlebar.widgets, wgt)
+		wgt = IconWidget.new({parent=o.titlebar, name='hint', icon='lightbulb', align='right', baizeCmd='hint'})
+		table.insert(o.titlebar.widgets, wgt)
 
 	o.menudrawer = Drawer.new({width=320 * _G.UI_SCALE})
 	for _, winfo in ipairs(menuWidgets) do

@@ -115,12 +115,15 @@ function Util.setColorFromName(nam)
 	return love.graphics.setColor(Util.getColorFromName(nam))
 end
 
-function Util.getGradientColors(settingName, default)
+function Util.getGradientColors(settingName, default, amount)
+	amount = amount or 0.1
 	local color = _G.SETTINGS[settingName] or default
 	local r, g, b, a = love.math.colorFromBytes(unpack(_G.LSOL_COLORS[color]))
-	local frontColor = {r + 0.1, g + 0.1, b + 0.1, a}
+	local amt = amount + 1.0
+	local frontColor = {r * amt, g * amt, b * amt, a}
 	-- backColor = {r - 0.1, g - 0.15, b - 0.2, a}
-	local backColor = {r - 0.1, g - 0.1, b - 0.1, a}
+	amt = 1.0 - amount
+	local backColor = {r * amt, g * amt, b * amt, a}
 	return frontColor, backColor
 end
 

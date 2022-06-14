@@ -528,6 +528,8 @@ function love.keyreleased(key)
 		_G.BAIZE:undo()
 	elseif key == 'c' then
 		_G.BAIZE:collect()
+	elseif key == 'h' then
+		_G.BAIZE:hint()
 	elseif key == 'n' then
 		_G.BAIZE:newDeal()
 		-- _G.BAIZE.ui:showFAB{icon='star', baizeCmd='newDeal'}
@@ -559,10 +561,10 @@ function love.keyreleased(key)
 		_G.BAIZE:createCardTextures()
 	elseif key == 'd' and love.keyboard.isDown('lctrl') then
 		_G.SETTINGS.debug = not _G.SETTINGS.debug
-		for _, c in ipairs(_G.BAIZE.deck) do
-			c.movable = false
-		end
-		_G.BAIZE:countMoves()	-- mark/unmark movable cards
+		-- for _, c in ipairs(_G.BAIZE.deck) do
+		-- 	c.movable = false
+		-- end
+		-- _G.BAIZE:countMoves()	-- mark/unmark movable cards
 	end
 
 	if love.system.getOS() == 'Android' then

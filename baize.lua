@@ -45,6 +45,9 @@ function Baize.new()
 	o.status = 'virgin'	-- afoot, stuck, collect, complete
 	o.percent = 0
 	o.lastInput = love.timer.getTime()
+	o.showMovable = false
+	o.moves = 0
+	o.fmoves = 0
 	return setmetatable(o, Baize)
 end
 
@@ -171,7 +174,7 @@ function Baize:createSimpleFace(ord, suit)
 	love.graphics.setLineWidth(1)
 
 	if _G.SETTINGS.gradient then
-		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory')
+		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.1)
 		love.gradient.draw(
 			function()
 				love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
@@ -225,7 +228,7 @@ function Baize:createRegularFace(ord, suit)
 	love.graphics.setLineWidth(1)
 
 	if _G.SETTINGS.gradient then
-		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory')
+		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.1)
 		love.gradient.draw(
 			function()
 				love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
@@ -467,20 +470,20 @@ function Baize:findAllMovableTails()
 end
 
 function Baize:countMoves()
-	local moves, fmoves = 0, 0
+
+	self.moves, self.fmoves = 0, 0
+
+	for _, c in ipairs(self.deck) do
+		c.movable = false
+	end
 
 	if #self.stock.cards == 0 then
 		if self.recycles > 0 then
-			moves = moves + 1
+			self.moves = self.moves + 1
 		end
 	else
-		moves = moves + 1
-	end
-
-	if _G.SETTINGS.debug then
-		for _, c in ipairs(self.deck) do
-			c.movable = false
-		end
+		self.moves = self.moves + 1
+		self.stock:peek().movable = true
 	end
 
 	for _, tail in ipairs(self:findAllMovableTails()) do
@@ -497,15 +500,13 @@ function Baize:countMoves()
 			end
 		end
 		if movable then
-			moves = moves + 1
+			self.moves = self.moves + 1
 			if dst.category == 'Foundation' then
-				fmoves = fmoves + 1
+				self.fmoves = self.fmoves + 1
 			end
-			if _G.SETTINGS.debug then tail.tail[1].movable = true end
+			tail.tail[1].movable = true
 		end
 	end
-
-	return moves, fmoves
 end
 
 function Baize:updateFromSaved(saved)
@@ -540,7 +541,8 @@ function Baize:updateFromSaved(saved)
 end
 
 function Baize:updateStatus()
-	local moves, fmoves = 0, 0
+	self.moves, self.fmoves = 0, 0
+
 	if #self.undoStack == 1 then
 		self.status = 'virgin'
 	elseif #self.undoStack > 1 then
@@ -550,19 +552,17 @@ function Baize:updateStatus()
 	if self.script:complete() then
 		self.status = 'complete'
 	else
-		moves, fmoves = self:countMoves()
-		if moves == 0 then
+		self:countMoves()
+		if self.moves == 0 then
 			self.status = 'stuck'
-		elseif fmoves > 0 then
+		elseif self.fmoves > 0 then
 			self.status = 'collect'
 		else
-			self.status = string.format('afoot mvs=%d recyc=%d', moves, self.recycles)
+			self.status = string.format('afoot mvs=%d recyc=%d', self.moves, self.recycles)
 		end
 	end
 
 	self.percent = self.script:percentComplete()
-
-	return moves, fmoves
 end
 
 --[[
@@ -587,6 +587,11 @@ function Baize:updateUI()
 		return false
 	end
 
+	if self.moves == 0 or self.showMovable == true then
+		self.ui:updateWidget('hint', nil, false)
+	else
+		self.ui:updateWidget('hint', nil, true)
+	end
 	self.ui:updateWidget('collect', nil, self.status == 'collect')
 	local undoable = #self.undoStack > 1 and self.status ~= 'complete'
 	self.ui:updateWidget('undo', nil, undoable)
@@ -820,6 +825,7 @@ function Baize:changeVariant(vname)
 		self.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 		self.script:startGame()
 		self:undoPush()
+		self.showMovable = false
 		self:updateStatus()
 		self:updateUI()
 		self.ui:updateWidget('title', vname)
@@ -854,6 +860,7 @@ function Baize:newDeal()
 	self.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 	self.script:startGame()
 	self:undoPush()
+	self.showMovable = false
 	self:updateStatus()
 	self:updateUI()
 end
@@ -865,6 +872,7 @@ function Baize:restartDeal()
 	end
 	self:updateFromSaved(saved)
 	self:undoPush()
+	self.showMovable = false
 	self:updateStatus()
 	self:updateUI()
 end
@@ -901,7 +909,7 @@ function Baize:createBackgroundCanvas()
 	local canvas = love.graphics.newCanvas(ww, wh)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
-	local frontColor, backColor = Util.getGradientColors('baizeColor', 'darkGreen')
+	local frontColor, backColor = Util.getGradientColors('baizeColor', 'darkGreen', 0.2)
 	love.gradient.draw(
 		function()
 			love.graphics.rectangle('fill', 0, 0, ww, wh)
@@ -1093,6 +1101,7 @@ function Baize:afterUserMove()
 	if self.script.afterMove then
 		self.script:afterMove()
 	end
+	self.showMovable = false
 	self:undoPush()
 	self:updateStatus()
 	self:updateUI()
@@ -1493,6 +1502,11 @@ function Baize:collect()
 			end
 		end
 	until totalCardsMoved == 0
+end
+
+function Baize:hint()
+	self.showMovable = true
+	self:updateUI()
 end
 
 function Baize:startSpinning()
