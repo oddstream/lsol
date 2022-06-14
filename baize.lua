@@ -911,7 +911,7 @@ function Baize:createBackgroundCanvas()
 	local canvas = love.graphics.newCanvas(ww, wh)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
-	local frontColor, backColor = Util.getGradientColors('baizeColor', 'darkGreen', 0.2)
+	local frontColor, backColor = Util.getGradientColors('baizeColor', 'darkGreen', 0.25)
 	love.gradient.draw(
 		function()
 			love.graphics.rectangle('fill', 0, 0, ww, wh)

@@ -479,6 +479,7 @@ There may be a small performance penalty as the output will be flushed after eac
 			_G.BAIZE.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 			_G.BAIZE.script:startGame()
 			_G.BAIZE:undoPush()
+			_G.BAIZE:updateStatus()
 			_G.BAIZE:updateUI()
 		else
 			os.exit()
