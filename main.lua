@@ -231,14 +231,17 @@ _G.LSOL_COLORS = {
 
 	-- Orange colors
 	OrangeRed = {255,69,0},
+	Orange = {255, 165, 0},
 
 	-- Yellow colors
 	Gold = {255,215,0},
 
 	-- Brown colors
+	SandyBrown = {244, 164, 96},
 
 	-- Green colors
 	DarkGreen = {0,100,0},
+	PaleGreen = {152, 251, 152},
 
 	-- Cyan colors
 
@@ -250,6 +253,8 @@ _G.LSOL_COLORS = {
 
 	-- Purple, violet, and magenta colors
 	Indigo = {75,0,130},
+	DarkSlateBlue = {72, 61, 139},
+	Violet = {238, 130, 238},
 
 	-- White colors
 	Ivory = {255,255,240},

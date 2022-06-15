@@ -718,6 +718,36 @@ function Baize:showSettingsDrawer()
 	self.ui:showSettingsDrawer()
 end
 
+function Baize:showColorDrawer()
+	self.ui:showColorDrawer()
+end
+
+function Baize:colorBackground()
+	self.ui:showColorPickerDrawer('baizeColor', {'DarkGreen','DarkRed','DarkBlue','DarkSlateBlue','Indigo','Purple','DimGray','Black'})
+end
+
+function Baize:colorCardBack()
+	self.ui:showColorPickerDrawer('cardBackColor', {'CornflowerBlue','Orange','PaleGreen','Pink','Gold','Silver','DarkSalmon'})
+end
+
+function Baize:colorClub()
+	self.ui:showColorPickerDrawer('clubColor', {'DarkGreen','DarkSlateGray','Indigo','DimGray'})
+end
+
+function Baize:colorDiamond()
+	self.ui:showColorPickerDrawer('diamondColor', {'MediumBlue','HotPink','OrangeRed'})
+end
+
+function Baize:modifySetting(tbl)
+	log.info(tbl.setting, ':=', tbl.value)
+	if _G.SETTINGS[tbl.setting] ~= nil then
+		_G.SETTINGS[tbl.setting] = tbl.value
+		_G.saveSettings()
+		self.backgroundCanvas = nil
+		self:createCardTextures()
+	end
+end
+
 function Baize:showAboutDrawer()
 	local strs = {
 		love.filesystem.getIdentity(),
@@ -743,7 +773,7 @@ end
 function Baize:toggleCheckbox(var)
 	_G.SETTINGS[var] = not _G.SETTINGS[var]
 	_G.saveSettings()
-	if var == 'simpleCards' or var == 'gradient' then
+	if var == 'simpleCards' then
 		self:createCardTextures()
 	elseif var == 'mirrorBaize' then
 		self:undoPush()

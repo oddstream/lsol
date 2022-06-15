@@ -28,6 +28,7 @@ local menuWidgets = {
 	{},
 	{text='Statistics...', icon='poll', baizeCmd='showStatsDrawer'},
 	{text='Settings...', icon='settings', baizeCmd='showSettingsDrawer'},
+	{text='Colors...', icon='palette', baizeCmd='showColorDrawer'},
 	{text='Wikipedia...', icon='wikipedia', baizeCmd='wikipedia'},
 	{},
 	{text='About...', icon='info', baizeCmd='showAboutDrawer'},
@@ -43,6 +44,13 @@ local settingsWidgets = {
 	{text='Power moves', var='powerMoves'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
+}
+
+local colorWidgets = {
+	{text='Background', baizeCmd='colorBackground'},
+	{text='Card back', baizeCmd='colorCardBack'},
+	{text='Four-color club', baizeCmd='colorClub'},
+	{text='Four-color diamond', baizeCmd='colorDiamond'},
 }
 
 function UI.new()
@@ -98,6 +106,18 @@ function UI.new()
 		end
 	end
 
+	o.colordrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	for _, winfo in ipairs(colorWidgets) do
+		winfo.parent = o.colordrawer
+		if winfo.text then
+			table.insert(o.colordrawer.widgets, TextWidget.new(winfo))
+		else
+			table.insert(o.colordrawer.widgets, DivWidget.new(winfo))
+		end
+	end
+
+	o.palettedrawer = Drawer.new({width=320 * _G.UI_SCALE})
+
 	o.aboutdrawer = Drawer.new({width=256 * _G.UI_SCALE, font=o.toastFont})
 
 	o.statusbar = Statusbar.new({})
@@ -108,9 +128,9 @@ function UI.new()
 		wgt = TextWidget.new({parent=o.statusbar, name='progress', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
-	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.aboutdrawer, o.statusbar}
+	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.colordrawer, o.palettedrawer, o.aboutdrawer, o.statusbar}
 
-	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.aboutdrawer}
+	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.colordrawer, o.palettedrawer, o.aboutdrawer}
 
 	return o
 end
@@ -215,6 +235,20 @@ function UI:showSettingsDrawer()
 		end
 	end
 	self.settingsdrawer:show()
+end
+
+function UI:showColorDrawer()
+	self.colordrawer:show()
+end
+
+function UI:showColorPickerDrawer(setting, palette)
+	self.palettedrawer.widgets = {}
+	for _, str in ipairs(palette) do
+		local wgt = TextWidget.new({parent=self.palettedrawer, text=str, textColor=str, baizeCmd='modifySetting', param={setting=setting, value=str}})
+		table.insert(self.palettedrawer.widgets, wgt)
+	end
+	self.palettedrawer:layout()
+	self.palettedrawer:show()
 end
 
 function UI:showAboutDrawer(strs)
