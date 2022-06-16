@@ -171,7 +171,6 @@ end
 function Baize:createSimpleFace(ord, suit)
 	local canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
-	love.graphics.setLineWidth(1)
 
 	do
 		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.1)
@@ -186,13 +185,12 @@ function Baize:createSimpleFace(ord, suit)
 			frontColor
 		)
 	end
-	--[[
-		love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
-		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
-	]]
+	-- love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
+	-- love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
-	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
-	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
+	-- outline probably not needed with gradient
+	-- love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
+	-- love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
 	love.graphics.setColor(Util.getColorFromSetting(self:getSuitColor(suit)))
 
@@ -226,7 +224,10 @@ function Baize:createRegularFace(ord, suit)
 
 	local canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
-	love.graphics.setLineWidth(1)
+
+	-- love.graphics.setLineWidth(1)
+	-- love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
+	-- love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
 
 	do
 		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.1)
@@ -241,13 +242,13 @@ function Baize:createRegularFace(ord, suit)
 			frontColor
 		)
 	end
-	--[[
-		love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
-		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
-	]]
 
-	love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
-	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
+	-- love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
+	-- love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+
+	-- outline probably not needed with gradient
+	-- love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
+	-- love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
 
 	local suitColor = self:getSuitColor(suit)
 
@@ -335,14 +336,29 @@ function Baize:createCardTextures()
 
 	-- card back
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
-	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
+	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
+
+	do
+		local frontColor, backColor = Util.getGradientColors('cardBackColor', 'CornflowerBlue', 0.1)
+		love.gradient.draw(
+			function()
+				love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+			end,
+			'radial',
+			self.cardWidth / 2, self.cardHeight / 2,
+			self.cardWidth / 2, self.cardHeight / 2,
+			backColor,
+			frontColor
+		)
+	end
+
+	-- love.graphics.setColor(Util.getColorFromSetting('cardBackColor'))
+	-- love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+
+	-- outline probably not needed with gradient, but allow to show stacked cards better, and disguise corner artifact
 	love.graphics.setLineWidth(1)
-
-	love.graphics.setColor(Util.getColorFromSetting('cardBackColor'))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
-
-	love.graphics.setColor(1, 1, 1, 0.1)
-	love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
+	love.graphics.setColor(0, 0, 0, 0.2)	-- cartoon outlines are black, so why not
+	love.graphics.rectangle('line', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
 
 	if not _G.SETTINGS.simpleCards then
 		local pipWidth = self.suitFont:getWidth('♠') * 0.8
@@ -723,11 +739,11 @@ function Baize:showColorDrawer()
 end
 
 function Baize:colorBackground()
-	self.ui:showColorPickerDrawer('baizeColor', {'DarkGreen','DarkRed','DarkBlue','DarkSlateBlue','Indigo','Purple','DimGray','Black'})
+	self.ui:showColorPickerDrawer('baizeColor', {'Green','DarkGreen','DarkRed','DarkBlue','DarkSlateBlue','Purple','Indigo','Silver','DimGray','Black'})
 end
 
 function Baize:colorCardBack()
-	self.ui:showColorPickerDrawer('cardBackColor', {'CornflowerBlue','Orange','PaleGreen','Pink','Gold','Silver','DarkSalmon'})
+	self.ui:showColorPickerDrawer('cardBackColor', {'CornflowerBlue','Orange','PaleGreen','Pink','Plum','Gold','Silver','DarkSalmon'})
 end
 
 function Baize:colorClub()
@@ -735,11 +751,11 @@ function Baize:colorClub()
 end
 
 function Baize:colorDiamond()
-	self.ui:showColorPickerDrawer('diamondColor', {'MediumBlue','HotPink','OrangeRed'})
+	self.ui:showColorPickerDrawer('diamondColor', {'MediumBlue','DarkBlue','HotPink','OrangeRed'})
 end
 
 function Baize:modifySetting(tbl)
-	log.info(tbl.setting, ':=', tbl.value)
+	-- log.info(tbl.setting, ':=', tbl.value)
 	if _G.SETTINGS[tbl.setting] ~= nil then
 		_G.SETTINGS[tbl.setting] = tbl.value
 		_G.saveSettings()
@@ -1004,9 +1020,9 @@ function Baize:layout()
 	local slotHeight = slotWidth * cardRatio
 
 	local pilePaddingX = slotWidth / 10
-	self.cardWidth = math.floor(slotWidth - pilePaddingX)
+	self.cardWidth = slotWidth - pilePaddingX
 	local pilePaddingY = slotHeight / 10
-	self.cardHeight = math.floor(slotHeight - pilePaddingY)
+	self.cardHeight = slotHeight - pilePaddingY
 
 	local leftMargin
 	if landscape then
@@ -1016,7 +1032,7 @@ function Baize:layout()
 	end
 	local topMargin = safey + _G.TITLEBARHEIGHT + pilePaddingY
 
-	self.cardRadius = math.floor(self.cardWidth / 16)
+	self.cardRadius = self.cardWidth / 14	-- was 16
 
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
 		self.labelFont = love.graphics.newFont(_G.ORD_FONT, self.cardWidth)
@@ -1644,6 +1660,8 @@ function Baize:draw()
 	if not self.backgroundCanvas then
 		self:createBackgroundCanvas()
 	end
+	love.graphics.setColor(Util.getColorFromSetting('baizeColor'))	-- otherwise debug print color fills background (!?)
+
 	love.graphics.draw(self.backgroundCanvas, 0, 0)
 
 	for _, pile in ipairs(self.piles) do

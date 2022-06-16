@@ -195,7 +195,7 @@ end
 
 _G.LSOL_COLORS = {
 	-- Basic colors
-	White = {1,1,1},
+	White = {255,255,255},
 	Silver = {192,192,192},
 	Gray = {128,128,128},
 	Black = {0,0,0},
@@ -255,8 +255,10 @@ _G.LSOL_COLORS = {
 	Indigo = {75,0,130},
 	DarkSlateBlue = {72, 61, 139},
 	Violet = {238, 130, 238},
+	Plum = {221, 160, 221},
 
 	-- White colors
+	Linen = {250, 240, 230},
 	Ivory = {255,255,240},
 
 	-- Gray and black colors
@@ -405,6 +407,16 @@ There may be a small performance penalty as the output will be flushed after eac
 
 	_G.SETTINGS = loadSettings()
 
+--[[
+	do
+		local width, height, flags = love.window.getMode( )
+		print('width', width, 'height', height)
+		for k, v in pairs(flags) do
+			print(k, '=', v)
+		end
+	end
+]]
+
 	if love.system.getOS() == 'Android' then
 		-- force portrait mode
 		-- do not use dpi scale (which would be 3 on Moto G4)
@@ -428,7 +440,8 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.UIFONTSIZE = 24 * _G.UI_SCALE
 	_G.UIFONTSIZE_SMALL = 14  * _G.UI_SCALE
 
-	love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
+	-- print('default lineStyle = ', love.graphics.getLineStyle())
+	-- love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
 
 	_G.UI_SAFEX,
 	_G.UI_SAFEY,
@@ -566,6 +579,8 @@ function love.keyreleased(key)
 		_G.BAIZE:createCardTextures()
 	elseif key == 'd' and love.keyboard.isDown('lctrl') then
 		_G.SETTINGS.debug = not _G.SETTINGS.debug
+		_G.saveSettings()
+
 		-- for _, c in ipairs(_G.BAIZE.deck) do
 		-- 	c.movable = false
 		-- end
@@ -674,7 +689,7 @@ function love.quit()
 	-- don't save stats here (with _G.BAIZE.stats:save()) because never quite sure when app quits
 	-- or is forced-stopped; instead, save stats when they change
 
-	-- don't save settings either, for the same reason
+	_G.saveSettings()	-- in case window has moved or resized
 
 	-- don't save completed game, to stop win being recorded when it's reloaded
 	if _G.BAIZE.status ~= 'complete' then
