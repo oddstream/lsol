@@ -28,6 +28,17 @@ function TextWidget:draw()
 		return
 	end
 
+	if self.backColor then
+		Util.setColorFromName(self.backColor)
+		local x, _, w, _ = self.parent:screenRect()
+		local _, y, _, h = self:screenRect()
+		-- widgets are vertically at 36 pixel intervals
+		local iconSize = 36 * _G.UI_SCALE
+		y = y - (iconSize - h) / 2
+		h = h + (iconSize - h)
+		love.graphics.rectangle('fill', x, y, w, h)
+	end
+
 	local textColor = self.textColor or 'UiForeground'
 
 	love.graphics.setFont(self.font or self.parent.font)

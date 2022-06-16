@@ -46,13 +46,6 @@ local settingsWidgets = {
 	{text='Mute sounds', var='muteSounds'},
 }
 
-local colorWidgets = {
-	{text='Background', baizeCmd='colorBackground'},
-	{text='Card back', baizeCmd='colorCardBack'},
-	{text='Four-color club', baizeCmd='colorClub'},
-	{text='Four-color diamond', baizeCmd='colorDiamond'},
-}
-
 function UI.new()
 	local o = {}
 	setmetatable(o, UI)
@@ -106,17 +99,9 @@ function UI.new()
 		end
 	end
 
-	o.colordrawer = Drawer.new({width=320 * _G.UI_SCALE})
-	for _, winfo in ipairs(colorWidgets) do
-		winfo.parent = o.colordrawer
-		if winfo.text then
-			table.insert(o.colordrawer.widgets, TextWidget.new(winfo))
-		else
-			table.insert(o.colordrawer.widgets, DivWidget.new(winfo))
-		end
-	end
+	o.colordrawer = Drawer.new({width=256 * _G.UI_SCALE})
 
-	o.palettedrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	o.palettedrawer = Drawer.new({width=256 * _G.UI_SCALE})
 
 	o.aboutdrawer = Drawer.new({width=256 * _G.UI_SCALE, font=o.toastFont})
 
@@ -238,15 +223,45 @@ function UI:showSettingsDrawer()
 end
 
 function UI:showColorDrawer()
+	self.colordrawer.widgets = {}
+
+	-- build this dynamically because colors change
+	local wgt = {text='Background', backColor=_G.SETTINGS['baizeColor'], baizeCmd='colorBackground', parent = self.colordrawer}
+	table.insert(self.colordrawer.widgets, TextWidget.new(wgt))
+
+	wgt = {text='Card back', backColor=_G.SETTINGS['cardBackColor'], baizeCmd='colorCardBack', parent = self.colordrawer}
+	table.insert(self.colordrawer.widgets, TextWidget.new(wgt))
+
+	wgt = {text='Four-color club', backColor=_G.SETTINGS['clubColor'], baizeCmd='colorClub', parent = self.colordrawer}
+	table.insert(self.colordrawer.widgets, TextWidget.new(wgt))
+
+	wgt = {text='Four-color diamond', backColor=_G.SETTINGS['diamondColor'], baizeCmd='colorDiamond', parent = self.colordrawer}
+	table.insert(self.colordrawer.widgets, TextWidget.new(wgt))
+
+	self.colordrawer:layout()
 	self.colordrawer:show()
 end
 
 function UI:showColorPickerDrawer(setting, palette)
+	-- if _G.SETTINGS.debug then
+		palette = {}
+		for k, v in pairs(_G.LSOL_COLORS) do
+			table.insert(palette, k)
+		end
+	-- end
 	self.palettedrawer.widgets = {}
 	for _, str in ipairs(palette) do
-		local wgt = TextWidget.new({parent=self.palettedrawer, text=str, textColor=str, baizeCmd='modifySetting', param={setting=setting, value=str}})
+		local r, g, b = _G.LSOL_COLORS[str][1], _G.LSOL_COLORS[str][2], _G.LSOL_COLORS[str][3]
+		local textColor
+		if r + b + g > 400 then	-- 200, 200, 200
+			textColor = 'UiBackground'
+		else
+			textColor = 'UiForeground'
+		end
+		local wgt = TextWidget.new({parent=self.palettedrawer, text=str, textColor=textColor, backColor=str, baizeCmd='modifySetting', param={setting=setting, value=str}})
 		table.insert(self.palettedrawer.widgets, wgt)
 	end
+	table.sort(self.palettedrawer.widgets, function(a,b) return a.text < b.text end)
 	self.palettedrawer:layout()
 	self.palettedrawer:show()
 end

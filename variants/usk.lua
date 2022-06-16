@@ -59,6 +59,9 @@ end
 function Usk:startGame()
 	self:dealCards()
 	_G.BAIZE:setRecycles(1)
+	if self.relaxed then
+		_G.BAIZE.ui:toast('Relaxed version - any card may be placed in an empty pile')
+	end
 end
 
 function Usk:moveTailError(tail)
