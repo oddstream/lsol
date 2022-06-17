@@ -266,6 +266,18 @@ function Card:update(dt_seconds)
 end
 
 function Card:draw()
+
+	if self.spinDegrees == 0 then
+		local pile = self.parent
+		local n = #pile.cards
+		if n > 2 and pile.fanType == 'FAN_NONE' then
+			-- only draw the top two cards as an optimization and to avoid corner artifact
+			if not (self == pile.cards[n] or self == pile.cards[n-1]) then
+				return
+			end
+		end
+	end
+
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
 

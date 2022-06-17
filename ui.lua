@@ -68,42 +68,42 @@ function UI.new()
 		wgt = IconWidget.new({parent=o.titlebar, name='hint', icon='lightbulb', align='right', baizeCmd='hint'})
 		table.insert(o.titlebar.widgets, wgt)
 
-	o.menudrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	o.menuDrawer = Drawer.new({width=320 * _G.UI_SCALE})
 	for _, winfo in ipairs(menuWidgets) do
-		winfo.parent = o.menudrawer
+		winfo.parent = o.menuDrawer
 		if winfo.text then
-			table.insert(o.menudrawer.widgets, IconWidget.new(winfo))
+			table.insert(o.menuDrawer.widgets, IconWidget.new(winfo))
 		else
-			table.insert(o.menudrawer.widgets, DivWidget.new(winfo))
+			table.insert(o.menuDrawer.widgets, DivWidget.new(winfo))
 		end
 	end
 
-	o.typesdrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	o.typesDrawer = Drawer.new({width=320 * _G.UI_SCALE})
 	for k, _ in pairs(_G.VARIANT_TYPES) do
-		wgt = TextWidget.new({parent=o.typesdrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
-		table.insert(o.typesdrawer.widgets, wgt)
+		wgt = TextWidget.new({parent=o.typesDrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
+		table.insert(o.typesDrawer.widgets, wgt)
 	end
-	table.sort(o.typesdrawer.widgets, function(a, b) return a.text < b.text end)
+	table.sort(o.typesDrawer.widgets, function(a, b) return a.text < b.text end)
 
-	o.variantsdrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	o.variantsDrawer = Drawer.new({width=320 * _G.UI_SCALE})
 
-	o.statsdrawer = Drawer.new({width=420 * _G.UI_SCALE})
+	o.statsDrawer = Drawer.new({width=420 * _G.UI_SCALE})
 
-	o.settingsdrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	o.settingsDrawer = Drawer.new({width=320 * _G.UI_SCALE})
 	for _, winfo in ipairs(settingsWidgets) do
-		winfo.parent = o.settingsdrawer
+		winfo.parent = o.settingsDrawer
 		if winfo.grp then
-			table.insert(o.settingsdrawer.widgets, Radio.new(winfo))
+			table.insert(o.settingsDrawer.widgets, Radio.new(winfo))
 		else
-			table.insert(o.settingsdrawer.widgets, Checkbox.new(winfo))
+			table.insert(o.settingsDrawer.widgets, Checkbox.new(winfo))
 		end
 	end
 
-	o.colordrawer = Drawer.new({width=256 * _G.UI_SCALE})
+	o.colorTypesDrawer = Drawer.new({width=256 * _G.UI_SCALE})
 
-	o.palettedrawer = Drawer.new({width=256 * _G.UI_SCALE})
+	o.allColorsDrawer = Drawer.new({width=256 * _G.UI_SCALE})
 
-	o.aboutdrawer = Drawer.new({width=256 * _G.UI_SCALE, font=o.toastFont})
+	o.aboutDrawer = Drawer.new({width=256 * _G.UI_SCALE, font=o.toastFont})
 
 	o.statusbar = Statusbar.new({})
 		wgt = TextWidget.new({parent=o.statusbar, name='stock', text='', align='left'})
@@ -113,9 +113,9 @@ function UI.new()
 		wgt = TextWidget.new({parent=o.statusbar, name='progress', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
-	o.containers = {o.titlebar, o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.colordrawer, o.palettedrawer, o.aboutdrawer, o.statusbar}
+	o.containers = {o.titlebar, o.menuDrawer, o.typesDrawer, o.variantsDrawer, o.statsDrawer, o.settingsDrawer, o.colorTypesDrawer, o.allColorsDrawer, o.aboutDrawer, o.statusbar}
 
-	o.drawers = {o.menudrawer, o.typesdrawer, o.variantsdrawer, o.statsdrawer, o.settingsdrawer, o.colordrawer, o.palettedrawer, o.aboutdrawer}
+	o.drawers = {o.menuDrawer, o.typesDrawer, o.variantsDrawer, o.statsDrawer, o.settingsDrawer, o.colorTypesDrawer, o.allColorsDrawer, o.aboutDrawer}
 
 	return o
 end
@@ -180,34 +180,34 @@ function UI:updateWidget(name, text, enabled)
 end
 
 function UI:toggleMenuDrawer()
-	if self.menudrawer:isOpen() then
-		self.menudrawer:hide()
+	if self.menuDrawer:isOpen() then
+		self.menuDrawer:hide()
 	else
-		self.menudrawer:show()
+		self.menuDrawer:show()
 	end
 end
 
 function UI:showVariantTypesDrawer()
-	self.typesdrawer:show()
+	self.typesDrawer:show()
 end
 
 function UI:showStatsDrawer(strs)
-	self.statsdrawer.widgets = {}
+	self.statsDrawer.widgets = {}
 	for _, str in ipairs(strs) do
-		local wgt = TextWidget.new({parent=self.statsdrawer, text=str})
-		table.insert(self.statsdrawer.widgets, wgt)
+		local wgt = TextWidget.new({parent=self.statsDrawer, text=str})
+		table.insert(self.statsDrawer.widgets, wgt)
 	end
-	local wgt = DivWidget.new({parent=self.statsdrawer})
-	table.insert(self.statsdrawer.widgets, wgt)
-	wgt = TextWidget.new({parent=self.statsdrawer, text='[ Reset ]', baizeCmd='resetStats'})
-	table.insert(self.statsdrawer.widgets, wgt)
-	self.statsdrawer:layout()
-	self.statsdrawer:show()
+	local wgt = DivWidget.new({parent=self.statsDrawer})
+	table.insert(self.statsDrawer.widgets, wgt)
+	wgt = TextWidget.new({parent=self.statsDrawer, text='[ Reset ]', baizeCmd='resetStats'})
+	table.insert(self.statsDrawer.widgets, wgt)
+	self.statsDrawer:layout()
+	self.statsDrawer:show()
 end
 
 function UI:showSettingsDrawer()
 	-- TODO go through widgets and determine if they are checked or unchecked
-	for _, wgt in ipairs(self.settingsdrawer.widgets) do
+	for _, wgt in ipairs(self.settingsDrawer.widgets) do
 		-- log.trace(wgt.var, 'is', _G.SETTINGS[wgt.var])
 		if wgt.var then
 			if _G.SETTINGS[wgt.var] then
@@ -219,85 +219,84 @@ function UI:showSettingsDrawer()
 			end
 		end
 	end
-	self.settingsdrawer:show()
+	self.settingsDrawer:show()
 end
 
 function UI:showColorDrawer()
-	self.colordrawer.widgets = {}
+	self.colorTypesDrawer.widgets = {}
 
 	-- build this dynamically because colors change
-	local wgt = {text='Background', backColor=_G.SETTINGS['baizeColor'], baizeCmd='colorBackground', parent = self.colordrawer}
-	table.insert(self.colordrawer.widgets, TextWidget.new(wgt))
+	local wgt = {text='Background', backColor=_G.SETTINGS['baizeColor'], baizeCmd='colorBackground', parent = self.colorTypesDrawer}
+	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
-	wgt = {text='Card back', backColor=_G.SETTINGS['cardBackColor'], baizeCmd='colorCardBack', parent = self.colordrawer}
-	table.insert(self.colordrawer.widgets, TextWidget.new(wgt))
+	wgt = {text='Card back', backColor=_G.SETTINGS['cardBackColor'], baizeCmd='colorCardBack', parent = self.colorTypesDrawer}
+	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
-	wgt = {text='Four-color club', backColor=_G.SETTINGS['clubColor'], baizeCmd='colorClub', parent = self.colordrawer}
-	table.insert(self.colordrawer.widgets, TextWidget.new(wgt))
+	wgt = {text='Four-color club', backColor=_G.SETTINGS['clubColor'], baizeCmd='colorClub', parent = self.colorTypesDrawer}
+	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
-	wgt = {text='Four-color diamond', backColor=_G.SETTINGS['diamondColor'], baizeCmd='colorDiamond', parent = self.colordrawer}
-	table.insert(self.colordrawer.widgets, TextWidget.new(wgt))
+	wgt = {text='Four-color diamond', backColor=_G.SETTINGS['diamondColor'], baizeCmd='colorDiamond', parent = self.colorTypesDrawer}
+	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
-	self.colordrawer:layout()
-	self.colordrawer:show()
+	self.colorTypesDrawer:layout()
+	self.colorTypesDrawer:show()
 end
 
-function UI:showColorPickerDrawer(setting, palette)
-	-- if _G.SETTINGS.debug then
-		palette = {}
-		for k, v in pairs(_G.LSOL_COLORS) do
+function UI:showColorPickerDrawer(setting)
+	-- fill dynamicaly because setting changes
+	local palette = {}
+	for k, _ in pairs(_G.LSOL_COLORS) do
 			table.insert(palette, k)
 		end
-	-- end
-	self.palettedrawer.widgets = {}
+	self.allColorsDrawer.widgets = {}
 	for _, str in ipairs(palette) do
 		local r, g, b = _G.LSOL_COLORS[str][1], _G.LSOL_COLORS[str][2], _G.LSOL_COLORS[str][3]
 		local textColor
-		if r + b + g > 400 then	-- 200, 200, 200
+		if r + b + g > 400 then
 			textColor = 'UiBackground'
 		else
 			textColor = 'UiForeground'
 		end
-		local wgt = TextWidget.new({parent=self.palettedrawer, text=str, textColor=textColor, backColor=str, baizeCmd='modifySetting', param={setting=setting, value=str}})
-		table.insert(self.palettedrawer.widgets, wgt)
+		local wgt = TextWidget.new({parent=self.allColorsDrawer, text=str, textColor=textColor, backColor=str, baizeCmd='modifySetting', param={setting=setting, value=str}})
+		table.insert(self.allColorsDrawer.widgets, wgt)
 	end
-	table.sort(self.palettedrawer.widgets, function(a,b) return a.text < b.text end)
-	self.palettedrawer:layout()
-	self.palettedrawer:show()
+	table.sort(self.allColorsDrawer.widgets, function(a,b) return a.text < b.text end)
+	self.allColorsDrawer:layout()
+	self.allColorsDrawer:show()
 end
 
 function UI:showAboutDrawer(strs)
-	self.aboutdrawer.widgets = {}
+	self.aboutDrawer.widgets = {}
 	for _, str in ipairs(strs) do
-		local wgt = TextWidget.new({parent=self.aboutdrawer, text=str})
+		local wgt = TextWidget.new({parent=self.aboutDrawer, text=str})
 		if str:find('https://', 1, true) then -- (string, pattern, init, plain)
 			wgt.baizeCmd = 'openURL'
 			wgt.param = str
 			wgt.textColor = 'LightSkyBlue'
 		end
-		table.insert(self.aboutdrawer.widgets, wgt)
+		table.insert(self.aboutDrawer.widgets, wgt)
 	end
-	self.aboutdrawer.widgets[1].font = love.graphics.newFont(_G.ORD_FONT, _G.UIFONTSIZE)
-	self.aboutdrawer:layout()
-	self.aboutdrawer:show()
+	self.aboutDrawer.widgets[1].font = love.graphics.newFont(_G.ORD_FONT, _G.UIFONTSIZE)
+	self.aboutDrawer:layout()
+	self.aboutDrawer:show()
 end
 
 function UI:showVariantsDrawer(vtype)
-	self.variantsdrawer.widgets = {}
+	self.variantsDrawer.widgets = {}
 	if _G.VARIANT_TYPES[vtype] then
 		for _, v in ipairs(_G.VARIANT_TYPES[vtype]) do
-			local wgt = TextWidget.new({parent=self.variantsdrawer, text=v, baizeCmd='changeVariant', param=v})
-			table.insert(self.variantsdrawer.widgets, wgt)
+			local wgt = TextWidget.new({parent=self.variantsDrawer, text=v, baizeCmd='changeVariant', param=v})
+			table.insert(self.variantsDrawer.widgets, wgt)
 		end
-		table.sort(self.variantsdrawer.widgets, function(a, b) return a.text < b.text end)
+		table.sort(self.variantsDrawer.widgets, function(a, b) return a.text < b.text end)
 		-- if _G.SETTINGS.debug then
-		-- 	for _, v in ipairs(self.variantsdrawer.widgets) do
+		-- 	for _, v in ipairs(self.variantsDrawer.widgets) do
 		-- 		print('♥ ' .. v.text)
 		-- 	end
-		-- 	print(#self.variantsdrawer.widgets, 'variants')
+		-- 	print(#self.variantsDrawer.widgets, 'variants')
 		-- end
-		self.variantsdrawer:layout()
-		self.variantsdrawer:show()
+		self.variantsDrawer:layout()
+		self.variantsDrawer:show()
 	else
 		log.error('unknown variant type', vtype)
 	end

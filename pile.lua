@@ -485,6 +485,7 @@ local function drawRotatedRectangle(mode, x, y, width, height, radius, angle)
 end
 ]]
 function Pile:draw()
+
 	if self.nodraw then return end
 
 	local b = _G.BAIZE
@@ -511,6 +512,7 @@ function Pile:draw()
 			b.labelFont:getWidth(self.label) / 2,
 			b.labelFont:getHeight() / 2)
 	end
+
 --[[
 	local ssr = self:screenBox()
 	if ssr then
@@ -519,6 +521,7 @@ function Pile:draw()
 		love.graphics.rectangle('line', ssr.x, ssr.y, ssr.width, ssr.height, 10, 10)
 	end
 ]]
+
 --[[
 	love.graphics.setColor(1,1,1,1)
 	local px, py, pw, ph = self:fannedBaizeRect()	-- should be fannedScreenRect
