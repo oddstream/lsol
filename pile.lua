@@ -493,8 +493,8 @@ function Pile:draw()
 
 	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.setLineWidth(1)
-	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
-	-- drawRotatedRectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, -math.pi * 0.1)
+	love.graphics.rectangle('line', x + 1, y + 1, b.cardWidth - 2, b.cardHeight - 2, b.cardRadius, b.cardRadius)
+
 	if self.label then
 		local scale
 		if #self.label > 1 then

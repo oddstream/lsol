@@ -177,10 +177,12 @@ function Stats:strings(v)
 			table.insert(strs, string.format('Worst number of moves: %d', s.worstMoves))
 			table.insert(strs, string.format('Average number of moves: %d', s.sumMoves / s.won))
 		end
-		if s.currStreak > 0 then
-			table.insert(strs, string.format('You are on a winning streak of %d', s.currStreak))
-		elseif s.currStreak < 0 then
-			table.insert(strs, string.format('You are on a losing streak of %d', s.currStreak))
+
+		if s.currStreak ~= 0 then
+			table.insert(strs, string.format('Current streak: %d', s.currStreak))
+		end
+		if s.bestStreak ~= 0 then
+			table.insert(strs, string.format('Best streak: %d', s.bestStreak))
 		end
 	end
 	return strs

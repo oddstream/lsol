@@ -373,7 +373,7 @@ _G.LSOL_COLORS = {
 	LightGray = {211, 211, 211},
 	Gainsboro = {220, 220, 220},
 
-	UiBackground = {0x32,0x32,0x32},
+	UiBackground = {0x32,0x32,0x32,0xf0},
 	UiForeground = {0xff,0xff,0xff},
 	UiGrayedOut = {0x80,0x80,0x80},
 }
@@ -797,8 +797,10 @@ function love.quit()
 	_G.saveSettings()	-- in case window has moved or resized
 
 	-- don't save completed game, to stop win being recorded when it's reloaded
-	if _G.BAIZE.status ~= 'complete' then
+	if not (_G.BAIZE.status == 'virgin' or _G.BAIZE.status == 'complete') then
 		_G.BAIZE:saveUndoStack()
+	else
+		_G.BAIZE:rmUndoStack()
 	end
 	return false	-- allow app to quit
 end

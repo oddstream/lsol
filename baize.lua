@@ -174,7 +174,7 @@ function Baize:createSimpleFace(ord, suit)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
 	if love.gradient then
-		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.1)
+		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.09)
 		local w, h = self.cardWidth, self.cardHeight
 		local w2, h2 = w/2, h/2
 		love.gradient.draw(
@@ -235,7 +235,7 @@ function Baize:createRegularFace(ord, suit)
 	-- love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
 
 	if love.gradient then
-		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.1)
+		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.09)
 		local w, h = self.cardWidth, self.cardHeight
 		local w2, h2 = w/2, h/2
 		love.gradient.draw(
@@ -346,7 +346,7 @@ function Baize:createCardTextures()
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
 	if love.gradient then
-		local frontColor, backColor = Util.getGradientColors('cardBackColor', 'CornflowerBlue', 0.1)
+		local frontColor, backColor = Util.getGradientColors('cardBackColor', 'CornflowerBlue', 0.09)
 		local w, h = self.cardWidth - 1, self.cardHeight - 1
 		local w2, h2 = w/2, h/2
 		love.gradient.draw(
@@ -709,19 +709,25 @@ function Baize:loadUndoStack()
 	local info = love.filesystem.getInfo(savedUndoStackFname)
 	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
 		undoStack = bitser.loadLoveFile(savedUndoStackFname)
-		-- log.info('loaded', savedUndoStackFname)
+		log.info('loaded', savedUndoStackFname)
 	else
-		log.info('not loading', savedUndoStackFname)
+		log.info(savedUndoStackFname, 'not loaded')
 	end
 	love.filesystem.remove(savedUndoStackFname)	-- either way, delete it
 	self.undoStack = undoStack	-- it's ok for this to be nil
 end
 
 function Baize:saveUndoStack()
-	if not self.status ~= 'complete' then
-		self:undoPush()
-		bitser.dumpLoveFile(savedUndoStackFname, self.undoStack)
-		-- log.info('saved', savedUndoStackFname)
+	self:undoPush()
+	bitser.dumpLoveFile(savedUndoStackFname, self.undoStack)
+	log.info('saved', savedUndoStackFname)
+end
+
+function Baize:rmUndoStack()
+	if love.filesystem.remove(savedUndoStackFname) then
+		log.info('removed', savedUndoStackFname)
+	else
+		log.info(savedUndoStackFname, 'not removed')
 	end
 end
 

@@ -226,16 +226,20 @@ function UI:showColorDrawer()
 	self.colorTypesDrawer.widgets = {}
 
 	-- build this dynamically because colors change
-	local wgt = {text='Background', backColor=_G.SETTINGS['baizeColor'], baizeCmd='colorBackground', parent = self.colorTypesDrawer}
+	local textColor = Util.getForegroundColor(_G.SETTINGS['baizeColor'])
+	local wgt = {text='Background', backColor=_G.SETTINGS['baizeColor'], textColor=textColor, baizeCmd='colorBackground', parent = self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
-	wgt = {text='Card back', backColor=_G.SETTINGS['cardBackColor'], baizeCmd='colorCardBack', parent = self.colorTypesDrawer}
+	textColor = Util.getForegroundColor(_G.SETTINGS['cardBackColor'])
+	wgt = {text='Card back', backColor=_G.SETTINGS['cardBackColor'], textColor=textColor, baizeCmd='colorCardBack', parent = self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
-	wgt = {text='Four-color club', backColor=_G.SETTINGS['clubColor'], baizeCmd='colorClub', parent = self.colorTypesDrawer}
+	textColor = Util.getForegroundColor(_G.SETTINGS['clubColor'])
+	wgt = {text='Four-color club', backColor=_G.SETTINGS['clubColor'], textColor=textColor, baizeCmd='colorClub', parent = self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
-	wgt = {text='Four-color diamond', backColor=_G.SETTINGS['diamondColor'], baizeCmd='colorDiamond', parent = self.colorTypesDrawer}
+	textColor = Util.getForegroundColor(_G.SETTINGS['diamondColor'])
+	wgt = {text='Four-color diamond', backColor=_G.SETTINGS['diamondColor'], textColor=textColor, baizeCmd='colorDiamond', parent = self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
 	self.colorTypesDrawer:layout()
@@ -250,13 +254,7 @@ function UI:showColorPickerDrawer(setting)
 		end
 	self.allColorsDrawer.widgets = {}
 	for _, str in ipairs(palette) do
-		local r, g, b = _G.LSOL_COLORS[str][1], _G.LSOL_COLORS[str][2], _G.LSOL_COLORS[str][3]
-		local textColor
-		if r + b + g > 400 then
-			textColor = 'UiBackground'
-		else
-			textColor = 'UiForeground'
-		end
+		local textColor = Util.getForegroundColor(str)
 		local wgt = TextWidget.new({parent=self.allColorsDrawer, text=str, textColor=textColor, backColor=str, baizeCmd='modifySetting', param={setting=setting, value=str}})
 		table.insert(self.allColorsDrawer.widgets, wgt)
 	end

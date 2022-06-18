@@ -127,6 +127,22 @@ function Util.getGradientColors(settingName, default, amount)
 	return frontColor, backColor
 end
 
+function Util.getForegroundColor(backgroundColor)
+	local color = _G.LSOL_COLORS[backgroundColor]
+	if not color then
+		log.error('No color', backgroundColor)
+		return 'UiForeground'
+	end
+	local r, g, b = color[1], color[2], color[3]
+	local foreColor
+	if r + b + g > 400 then
+		foreColor = 'UiBackground'
+	else
+		foreColor = 'UiForeground'
+	end
+	return foreColor
+end
+
 function Util.makeCardPairs(tail)
 	if #tail < 2 then
 		return {}
