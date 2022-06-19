@@ -4,13 +4,87 @@ Towards a polymorphic solitaire engine in [Lua](https://lua.org/)+[LÖVE](https:
 
 ![Screenshot](https://github.com/oddstream/gosol/blob/7152668f4b5053a1d438981e9d4564624616da6a/screenshots/Simple%20Simon.png)
 
-PLay it by downloading/installing the LÖVE runtime and typing 'love lsol.love'. It's tested on Linux, Windows and [Android via the Google Play Store](https://play.google.com/store/apps/details?id=com.oddstream.lovesolitaire).
+Play it by downloading/installing the LÖVE runtime and typing 'love lsol.love'. It's tested on Linux, Windows and [Android via the Google Play Store](https://play.google.com/store/apps/details?id=com.oddstream.lovesolitaire).
 
 ## Variants
 
-It currently knows how to play about 65 variants, including:
+It currently knows how to play 75 variants:
 
-♥ Accordian ♥ Agnes Bernauer ♥ Agnes Sorel ♥ Alhambra ♥ American Toad ♥ American Westcliff ♥ Assembly ♥ Athena ♥ Australian ♥ Baker's Dozen ♥ Baker's Dozen (Wide) ♥ Baker's Game ♥ Baker's Game Relaxed ♥ Beleaguered Castle ♥ Bisley ♥ Black Hole ♥ Blockade ♥ Busy Aces ♥ Canfield ♥ Classic Westcliff ♥ Crimean ♥ Cruel ♥ Duchess ♥ Easthaven ♥ Eight Off ♥ Eight Off Relaxed ♥ Flat Castle ♥ Forty Thieves ♥ Forty and Eight ♥ Freecell ♥ Gate ♥ Josephine ♥ Klondike ♥ Klondike (Turn Three) ♥ Limited ♥ Little Spider ♥ Lucas ♥ Martha ♥ Penguin ♥ Rainbow Canfield ♥ Red and Black ♥ Rosamund's Bower ♥ Russian ♥ Scorpion ♥ Sea Haven Towers ♥ Simple Simon ♥ Spider ♥ Spider One Suit ♥ Spider Two Suits ♥ Storehouse Canfield ♥ Thirteens ♥ Thoughtful ♥ Tri Peaks ♥ Ukrainian ♥ Wasp ♥ Yukon ♥ Yukon Cells ♥ Yukon Relaxed
+♥ Accordian
+♥ Agnes Bernauer
+♥ Agnes Sorel
+♥ Algerian
+♥ Alhambra
+♥ American Toad
+♥ American Westcliff
+♥ Assembly
+♥ Athena
+♥ Australian
+♥ Baker's Dozen
+♥ Baker's Dozen (Wide)
+♥ Baker's Game
+♥ Baker's Game Relaxed
+♥ Beleaguered Castle
+♥ Bisley
+♥ Black Hole
+♥ Blockade
+♥ Busy Aces
+♥ Canfield
+♥ Chinese Freecell
+♥ Classic Westcliff
+♥ Crimean
+♥ Cruel
+♥ Double Freecell
+♥ Duchess
+♥ Easthaven
+♥ Eight Off
+♥ Eight Off Relaxed
+♥ Flat Castle
+♥ Forty Thieves
+♥ Forty and Eight
+♥ Freecell
+♥ Gargantua
+♥ Gate
+♥ Giant
+♥ Good Thirteen
+♥ Josephine
+♥ Klondike
+♥ Klondike (Turn Three)
+♥ Limited
+♥ Little Spider
+♥ Lucas
+♥ Martha
+♥ Miss Milligan
+♥ Mount Olympus
+♥ Penguin
+♥ Pyramid
+♥ Pyramid Relaxed
+♥ Rainbow Canfield
+♥ Red and Black
+♥ Rosamund
+♥ Royal Cotillion
+♥ Russian
+♥ Scorpion
+♥ Sea Haven Towers
+♥ Simple Simon
+♥ Somerset
+♥ Spider
+♥ Spider One Suit
+♥ Spider Two Suits
+♥ Spiderette
+♥ Spiderette One Suit
+♥ Spiderette Two Suits
+♥ Storehouse Canfield
+♥ Thoughtful
+♥ Tri Peaks
+♥ Tri Peaks Open
+♥ Ukrainian
+♥ Usk
+♥ Usk Relaxed
+♥ Wasp
+♥ Yukon
+♥ Yukon Cells
+♥ Yukon Relaxed
 
 Variants are added when the whim takes me, or when some aspect of the engine needs testing/extending, or when someone asks.
 
@@ -35,7 +109,7 @@ Some will never make it here because they are just poor games:
 
 * Permissive card moves. If you want to move a card from here to there, go ahead and do it. If that move is not allowed by the current rules, the game will put the cards back *and explain why that move is not allowed*.
 * Unlimited undo, without penalty. Also, you can restart a deal without penalty.
-* Bookmarking positions (really good for puzzle-style games like Freecell or Simple Simon).
+* Bookmarking positions (really good for puzzle-style games like Penguin, Freecell or Simple Simon).
 * Scalable cards; when running on a desktop, just resize the window to make the cards fit the baize.
 * Simple or regular card designs.
 * One-tap interface. Tapping on a card or cards tries to move them to a foundation, or to a suitable tableau pile. An empty tableau with a constraint is not considered suitable, as empty tableaux are precious.
@@ -73,7 +147,6 @@ or the ability to scan a deck of cards,
 has either been tried and removed, or not included.
 This includes:
 fancy card designs (front and back),
-changing the screen/baize background,
 keeping an arbitrary score,
 distracting graphics on the screen.
 
@@ -118,9 +191,7 @@ You can restart a deal without penalty; it's not cheating, because you could jus
 
 You cannot move cards from a foundation pile. Most sources I've read explicity ban moves from the foundations, so I've implemented a blanket ban. There's always undo, if you've got into a bad situation.
 
-Single-tapping a card will not send that card to an empty tableau pile. Empty piles are too precious to be so casually used up.
-
-Movable cards are not highlighted. For the longest time, I thought that highlighting movable cards was a neat feature, but I now realize that this feature ruins the essence of most games. In trying to replicate and assist the feeling of playing with real cards, this feature is a step too far.
+Movable cards are not highlighted unless you ask for help by tapping the lightbulb icon. For the longest time, I thought that highlighting movable cards was a neat feature, but I now realize that this feature ruins the essence of most games. In trying to replicate and assist the feeling of playing with real cards, this feature is a step too far.
 
 ### What's with the discard piles?
 
@@ -163,8 +234,8 @@ that anyone else ever has, or ever will.
 * For games that start with a block of cards in the tableau and only allow single cards to be moved (like Forty Thieves), the priority is usually to open up some space (create empty tableaux piles) to allow you to juggle cards around.
 * For Forty Thieves-style games, the *other* priority is to minimize the number of cards in the waste pile.
 * For puzzle-type games (like Baker's Dozen, Freecell, Simple Simon), take your time and think ahead.
-* For games with reshuffles (like Cruel and Perseverance) you need to anticipate the effects of the reshuffle.
-* Use undo and bookmark. Undo isn't cheating; it's improvising, adapting and overcoming.
+* For games with reshuffles (like Usk, Cruel and Perseverance) you need to anticipate the effects of the reshuffle.
+* Use undo and bookmark, a lot. Undo isn't cheating; it's improvising, adapting and overcoming.
 
 ## Terminology and conventions
 
@@ -196,7 +267,7 @@ that anyone else ever has, or ever will.
 
 * Get it working on iOS. But, I don't have a Macintosh and am reluctant to pay Apple the annual App Store fee, and jump through their hoops. If you want to do this, let me know and we'll collaborate.
 * I'd like it to have an inter-user high scores table, but the Google Play games services interface and setup is inpenetrable to me at the moment.
-* Give up and rewrite the whole thing in [Defold](https://www.defold.com), or Dart+Flutter, or Kotlin+Korge, or something else.
+* Give up and rewrite the whole thing - again - in [Defold](https://www.defold.com), or Dart+Flutter, or Kotlin+Korge, or something else.
 
 ## History
 

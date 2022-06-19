@@ -10,7 +10,7 @@ local UI = require 'ui'
 local Util = require 'util'
 
 _G.LSOL_VERSION = '17'
-_G.LSOL_VERSION_DATE = '2022-06-17'
+_G.LSOL_VERSION_DATE = '2022-06-19'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -373,9 +373,9 @@ _G.LSOL_COLORS = {
 	LightGray = {211, 211, 211},
 	Gainsboro = {220, 220, 220},
 
-	UiBackground = {0x32,0x32,0x32,0xf0},
-	UiForeground = {0xff,0xff,0xff},
-	UiGrayedOut = {0x80,0x80,0x80},
+	UiBackground = {0x32,0x32,0x32,0xff},
+	UiForeground = {0xff,0xff,0xff,0xff},
+	UiGrayedOut = {0x80,0x80,0x80,0xff},
 }
 
 _G.ORD_FONT = 'assets/fonts/Acme-Regular.ttf'
