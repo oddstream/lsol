@@ -639,10 +639,6 @@ function love.resize(w,h)
 	-- end
 	_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
 	_G.BAIZE:layout()
-	for _, pile in ipairs(_G.BAIZE.piles) do
-		pile:refan(Card.setBaizePos)
-	end
-	_G.BAIZE.ui:layout()
 end
 
 function love.keyreleased(key)
@@ -782,11 +778,12 @@ end
 function love.displayrotated(index, orientation)
 	-- Due to a bug in LOVE 11.3, the orientation value is boolean true instead. A workaround is as follows:
 	-- orientation = love.window.getDisplayOrientation(index)
+	_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
 	_G.BAIZE:layout()
-	if _G.SETTINGS.debug then
-		_G.BAIZE.ui:toast('displayrotated ' .. tostring(orientation))
-		_G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
-	end
+	-- if _G.SETTINGS.debug then
+	-- 	_G.BAIZE.ui:toast('displayrotated ' .. tostring(orientation))
+	-- 	_G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
+	-- end
 end
 
 function love.quit()
