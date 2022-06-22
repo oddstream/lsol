@@ -11,7 +11,8 @@
             "program": {
                 "lua": "$HOME/love/love-11.4-x86_64.AppImage",
                 "file": "."
-            }
+            },
+			"args" : ["one", "two"]
         },
         {
             "name": "Debug Custom Lua Environment",

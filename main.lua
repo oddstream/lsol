@@ -510,7 +510,28 @@ There may be a small performance penalty as the output will be flushed after eac
 	-- log.info(limits.texturesize)	-- 16384
 	-- log.info(limits.multicanvas)	-- 8
 
+	-- turn off anti-aliasing to stop Gargantua stock black corners problem
+	-- default is 'linear', linear', 1
+	-- print('defaultFilter', love.graphics.getDefaultFilter( ))
+	-- love.graphics.setDefaultFilter('nearest', 'nearest', 1)
+
 	_G.SETTINGS = loadSettings()
+
+--[===[
+--[====[
+--[[
+	if args then
+		print('processing command line args')
+		-- args of the form -setting=value
+		for k, v in pairs(args) do
+			if k > 0 then
+				if string.match(v, '-%a+=%a+') then
+					print(k, v)
+				end
+			end
+		end
+	end
+]]
 
 --[[
 	do
@@ -521,6 +542,8 @@ There may be a small performance penalty as the output will be flushed after eac
 		end
 	end
 ]]
+]====]
+]===]
 
 	if love.system.getOS() == 'Android' then
 		-- force portrait mode
@@ -546,7 +569,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.UIFONTSIZE_SMALL = 14  * _G.UI_SCALE
 
 	-- print('default lineStyle = ', love.graphics.getLineStyle())
-	-- love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
+	love.graphics.setLineStyle('rough')	-- just in case default is 'rough', which is isn't
 
 	_G.UI_SAFEX,
 	_G.UI_SAFEY,
@@ -794,10 +817,10 @@ function love.quit()
 	_G.saveSettings()	-- in case window has moved or resized
 
 	-- don't save completed game, to stop win being recorded when it's reloaded
-	if not (_G.BAIZE.status == 'virgin' or _G.BAIZE.status == 'complete') then
-		_G.BAIZE:saveUndoStack()
-	else
+	if #_G.BAIZE.undoStack == 1 or _G.BAIZE.status == 'complete' then
 		_G.BAIZE:rmUndoStack()
+	else
+		_G.BAIZE:saveUndoStack()
 	end
 	return false	-- allow app to quit
 end

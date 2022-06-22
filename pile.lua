@@ -31,6 +31,19 @@ function Pile:getSavable()
 	return {category=self.category, label=self.label, rune=self.rune, cards=cards}
 end
 
+function Pile.isSavable(obj)
+	if type(obj) == 'table' then
+		-- label, rune and might be nil
+		if type(obj.category) == 'string' then
+			if type(obj.cards) == 'table' then
+				return true
+			end
+		end
+	end
+	log.error('not a saved pile')
+	return false
+end
+
 function Pile:hidden()
 	return self.slot.x < 0 or self.slot.y < 0
 end
@@ -484,6 +497,30 @@ local function drawRotatedRectangle(mode, x, y, width, height, radius, angle)
 	love.graphics.pop()
 end
 ]]
+
+--[[
+-- This is similar to love.graphics.rectangle, except that the rectangle has
+-- rounded corners. r = radius of the corners, n ~ #points used in the polygon.
+local function rounded_rectangle(mode, x, y, w, h, r, n)
+	n = n or 20  -- Number of points in the polygon.
+	if n % 4 > 0 then n = n + 4 - (n % 4) end  -- Include multiples of 90 degrees.
+	local pts, c, d, i = {}, {x + w / 2, y + h / 2}, {w / 2 - r, r - h / 2}, 0
+	while i < n do
+	  local a = i * 2 * math.pi / n
+	  local p = {r * math.cos(a), r * math.sin(a)}
+	  for j = 1, 2 do
+		table.insert(pts, c[j] + d[j] + p[j])
+		if p[j] * d[j] <= 0 and (p[1] * d[2] < p[2] * d[1]) then
+		  d[j] = d[j] * -1
+		  i = i - 1
+		end
+	  end
+	  i = i + 1
+	end
+	love.graphics.polygon(mode, pts)
+end
+]]
+
 function Pile:draw()
 
 	if self.nodraw then return end
@@ -491,9 +528,13 @@ function Pile:draw()
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
 
-	love.graphics.setColor(1, 1, 1, 0.1)
+	if _G.SETTINGS.debug then
+		love.graphics.setColor(0, 0, 1, 1)
+	else
+		love.graphics.setColor(1, 1, 1, 0.1)
+	end
 	love.graphics.setLineWidth(1)
-	love.graphics.rectangle('line', x + 1, y + 1, b.cardWidth - 2, b.cardHeight - 2, b.cardRadius, b.cardRadius)
+	love.graphics.rectangle('line', x + 1, y + 1, b.cardWidth - 3, b.cardHeight - 3, b.cardRadius, b.cardRadius, 20)
 
 	if self.label then
 		local scale

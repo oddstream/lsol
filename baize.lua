@@ -6,6 +6,7 @@ local log = require 'log'
 require 'gradient'	-- comment out to not use gradient
 
 local Card = require 'card'
+local Pile = require 'pile'
 local Util = require 'util'
 
 -- local UI = require 'ui'
@@ -58,6 +59,24 @@ function Baize:getSavable()
 		table.insert(piles, pile:getSavable())
 	end
 	return {recycles=self.recycles, bookmark=self.bookmark, piles=piles}
+end
+
+function Baize:isSavable(obj)
+	if type(obj) == 'table' then
+		if type(obj.recycles) == 'number' then
+			if type(obj.bookmark) == 'number' then
+				if type(obj.piles) == 'table' then
+					if #obj.piles > 0 then
+						if Pile.isSavable(obj.piles[1]) then
+							return true
+						end
+					end
+				end
+			end
+		end
+	end
+	log.error('not a saved baize')
+	return false
 end
 
 -- card graphics creation
@@ -179,7 +198,7 @@ function Baize:createSimpleFace(ord, suit)
 		local w2, h2 = w/2, h/2
 		love.gradient.draw(
 			function()
-				love.graphics.rectangle('fill', 0, 0, w, h, self.cardRadius, self.cardRadius)
+			love.graphics.rectangle('fill', 0, 0, w, h, self.cardRadius, self.cardRadius, 16)
 			end,
 			'radial',
 			w2, h2,
@@ -189,13 +208,13 @@ function Baize:createSimpleFace(ord, suit)
 		)
 	else
 		love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
-		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius, 16)
 	end
 
 	-- outline probably not needed with gradient
 	-- love.graphics.setLineWidth(1)
 	-- love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
-	-- love.graphics.rectangle('line', 0, 0, self.cardWidth-1, self.cardHeight-1, self.cardRadius, self.cardRadius)
+	-- love.graphics.rectangle('line', 0, 0, self.cardWidth-1, self.cardHeight-1, self.cardRadius, self.cardRadius, 16)
 
 	love.graphics.setColor(Util.getColorFromSetting(self:getSuitColor(suit)))
 
@@ -240,7 +259,7 @@ function Baize:createRegularFace(ord, suit)
 		local w2, h2 = w/2, h/2
 		love.gradient.draw(
 			function()
-				love.graphics.rectangle('fill', 0, 0, w, h, self.cardRadius, self.cardRadius)
+				love.graphics.rectangle('fill', 0, 0, w, h, self.cardRadius, self.cardRadius, 16)
 			end,
 			'radial',
 			w2, h2,
@@ -250,12 +269,12 @@ function Baize:createRegularFace(ord, suit)
 		)
 	else
 		love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
-		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius)
+		love.graphics.rectangle('fill', 0, 0, self.cardWidth, self.cardHeight, self.cardRadius, self.cardRadius, 16)
 	end
 
 	-- outline probably not needed with gradient
 	-- love.graphics.setColor(0.5, 0.5, 0.5, 0.1)
-	-- love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius)
+	-- love.graphics.rectangle('line', 1, 1, self.cardWidth-2, self.cardHeight-2, self.cardRadius, self.cardRadius, 16)
 
 	local suitColor = self:getSuitColor(suit)
 
@@ -312,6 +331,10 @@ function Baize:createCardTextures()
 	assert(self.cardWidth and self.cardWidth ~= 0)
 	assert(self.cardHeight and self.cardHeight ~= 0)
 
+	-- turn off anti-aliasing to prevent Gargantua stock corner artifacts
+	-- https://love2d.org/wiki/FilterMode
+	love.graphics.setDefaultFilter('nearest', 'nearest', 1)
+
 	if _G.SETTINGS.simpleCards then
 		self.ordFontSize = self.cardWidth / 3
 	else
@@ -345,13 +368,17 @@ function Baize:createCardTextures()
 	canvas = love.graphics.newCanvas(self.cardWidth, self.cardHeight)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
+	-- love.graphics.setColor(Util.getColorFromSetting('baizeColor'))
+	-- love.graphics.rectangle('fill', 0, 0, self.cardWidth - 1, self.cardHeight - 1, self.cardRadius, self.cardRadius, 16)
+
 	if love.gradient then
-		local frontColor, backColor = Util.getGradientColors('cardBackColor', 'CornflowerBlue', 0.09)
+		local frontColor, backColor = Util.getGradientColors('cardBackColor', 'CornflowerBlue', 0.1)
 		local w, h = self.cardWidth - 1, self.cardHeight - 1
 		local w2, h2 = w/2, h/2
 		love.gradient.draw(
 			function()
-				love.graphics.rectangle('fill', 0, 0, w, h, self.cardRadius, self.cardRadius)
+				love.graphics.rectangle('fill', 0, 0, w, h, self.cardRadius, self.cardRadius, 16)
+				-- rounded_rectangle('fill', 0, 0, w, h, self.cardRadius, 16)
 			end,
 			'radial',
 			w2, h2,
@@ -362,14 +389,19 @@ function Baize:createCardTextures()
 	else
 		-- love.graphics.setLineWidth(1)
 		love.graphics.setColor(Util.getColorFromSetting('cardBackColor'))
-		love.graphics.rectangle('fill', 0, 0, self.cardWidth - 1, self.cardHeight - 1, self.cardRadius, self.cardRadius)
+		love.graphics.rectangle('fill', 0, 0, self.cardWidth - 1, self.cardHeight - 1, self.cardRadius, self.cardRadius, 16)
 	end
 
+--[[
 	-- outline probably not needed with gradient, but allow to show stacked cards better, and disguise corner artifact
 	love.graphics.setLineWidth(1)
-	love.graphics.setColor(0, 0, 0, 0.2)	-- cartoon outlines are black, so why not
-	-- set color to red to see why width, height are - 1
-	love.graphics.rectangle('line', 0, 0, self.cardWidth - 1, self.cardHeight - 1, self.cardRadius, self.cardRadius)
+	if _G.SETTINGS.debug then
+		love.graphics.setColor(1, 0, 0, 1)		-- set color to red to see why width, height are - 1
+	else
+		love.graphics.setColor(0, 0, 0, 0.1)	-- cartoon outlines are black, so why not
+	end
+	love.graphics.rectangle('line', 1, 1, self.cardWidth - 2, self.cardHeight - 2, self.cardRadius, self.cardRadius, 16)
+]]
 
 	if not _G.SETTINGS.simpleCards then
 		local pipWidth = self.suitFont:getWidth('♠') * 0.8
@@ -391,9 +423,13 @@ function Baize:createCardTextures()
 	love.graphics.setCanvas(canvas)	-- direct drawing operations to the canvas
 	love.graphics.setLineWidth(1)
 	love.graphics.setColor(love.math.colorFromBytes(0, 0, 0, 128))
-	love.graphics.rectangle('fill', 0, 0, self.cardWidth - 1, self.cardHeight - 1, self.cardRadius, self.cardRadius)
+	love.graphics.rectangle('fill', 0, 0, self.cardWidth - 1, self.cardHeight - 1, self.cardRadius, self.cardRadius, 16)
 	love.graphics.setCanvas()	-- reset render target to the screen
 	self.cardShadowTexture = canvas
+
+	-- put FilterMode back to default otherwise toast text is garbled
+	-- https://love2d.org/wiki/FilterMode
+	love.graphics.setDefaultFilter('linear', 'linear', 1)
 end
 
 ---
@@ -624,7 +660,7 @@ function Baize:updateUI()
 	self.ui:updateWidget('collect', nil, self.status == 'collect')
 	local undoable = #self.undoStack > 1 and self.status ~= 'complete'
 	self.ui:updateWidget('undo', nil, undoable)
-	self.ui:updateWidget('restartdeal', nil, self.status ~= 'virgin')
+	self.ui:updateWidget('restartdeal', nil, #self.undoStack > 1 --[[self.status ~= 'virgin']])
 	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
 
 	if self.stock:hidden() then
@@ -709,18 +745,32 @@ function Baize:loadUndoStack()
 	local info = love.filesystem.getInfo(savedUndoStackFname)
 	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
 		undoStack = bitser.loadLoveFile(savedUndoStackFname)
-		log.info('loaded', savedUndoStackFname)
 	else
-		log.info(savedUndoStackFname, 'not loaded')
 	end
 	love.filesystem.remove(savedUndoStackFname)	-- either way, delete it
+	--[[
+		undoStack will be an array of objects created by Baize:getSaveable()
+			piles (table, array of objects created by Pile:getSaveable())
+			recycles (number)
+			bookmark (number)
+	--]]
+	if undoStack and #undoStack > 0 then
+		if not self:isSavable(undoStack[1]) then
+			undoStack = nil
+		end
+	end
+	if undoStack then
+		log.info(string.format('undo stack loaded, depth %d', #undoStack))
+	else
+		log.info('undo stack not loaded')
+	end
 	self.undoStack = undoStack	-- it's ok for this to be nil
 end
 
 function Baize:saveUndoStack()
 	self:undoPush()
 	bitser.dumpLoveFile(savedUndoStackFname, self.undoStack)
-	log.info('saved', savedUndoStackFname)
+	log.info('undo stack saved')
 end
 
 function Baize:rmUndoStack()

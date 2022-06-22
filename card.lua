@@ -142,7 +142,7 @@ end
 
 function Card:transitionTo(x, y)
 
-	if self.spinDegrees ~= 0 then
+	if self:spinning() then
 		return
 	end
 
@@ -212,6 +212,10 @@ function Card:stopSpinning()
 	self.spinDegrees = 0
 end
 
+function Card:spinning()
+	return self.spinDegrees ~= 0
+end
+
 function Card:update(dt_seconds)
 	if self:transitioning() then
 		self.lerpStep = self.lerpStep + self.lerpStepAmount
@@ -235,7 +239,7 @@ function Card:update(dt_seconds)
 			self.flipStep = 0.0
 		end
 	end
-	if self.spinDegrees ~= 0 then
+	if self:spinning() then
 		if self.spinDelaySeconds > 0 then
 			self.spinDelaySeconds = self.spinDelaySeconds - dt_seconds
 		else
@@ -266,18 +270,23 @@ function Card:update(dt_seconds)
 end
 
 function Card:draw()
-
-	if self.spinDegrees == 0 then
-		local pile = self.parent
-		local n = #pile.cards
-		if n > 2 and pile.fanType == 'FAN_NONE' then
-			-- only draw the top two cards as an optimization and to avoid corner artifact
-			if not (self == pile.cards[n] or self == pile.cards[n-1]) then
-				return
+--[[
+	if self.prone then
+		if not self:transitioning() then
+			if not self:spinning() then
+				-- always draw spinning and moving cards
+				local pile = self.parent
+				local n = #pile.cards
+				if n > 2 and pile.fanType == 'FAN_NONE' then
+					-- only draw the top two cards as an optimization and to avoid corner artifact
+					if not (self == pile.cards[n] or self == pile.cards[n-1]) then
+						return
+					end
+				end
 			end
 		end
 	end
-
+]]
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
 
@@ -302,46 +311,50 @@ function Card:draw()
 		end
 	end
 
-	if self:flipping() then
+	local function drawCard()
+		love.graphics.draw(img, x, y)
+		if self.movable and b.showMovable then
+			-- love.graphics.setColor(0,0,0,0.1)
+			-- love.graphics.rectangle('fill', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
+			Util.setColorFromName('Gold')
+			love.graphics.setLineWidth(2)
+			love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
+		end
+	end
+
+	if self:spinning() then
+		if self.spinDelaySeconds > 0 then
+			love.graphics.draw(img, x, y)
+		else
+			love.graphics.draw(img, x, y, self.degrees * math.pi / 180.0, 1.25, 1.25)
+		end
+	elseif self:flipping() then
 		local cw = b.cardWidth
 		local scw = cw / self.flipWidth
 		love.graphics.draw(img, x, y,
-		0,
-		self.flipWidth, 1.0,
-		(cw - scw) / 2, 0)
+			0,
+			self.flipWidth, 1.0,
+			(cw - scw) / 2, 0)
+	elseif self:transitioning() then
+		local xoffset, yoffset = 2, 2
+		-- local xoffset = b.cardWidth / 66
+		-- local yoffset = b.cardHeight / 66
+		love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
+		drawCard()
+	elseif self:dragging() then
+		local xoffset, yoffset = 2, 2
+		-- local xoffset = b.cardWidth / 66
+		-- local yoffset = b.cardHeight / 66
+		love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
+		-- this looks intuitively better than "lifting" the card with offset * 2
+		-- even though "lifting" it (moving it up/left towards the light source) would be more "correct"
+		x = x - xoffset / 2
+		y = y - yoffset / 2
+		drawCard()
 	else
-		if self:transitioning() then
-			local xoffset, yoffset = 2, 2
-			-- local xoffset = b.cardWidth / 66
-			-- local yoffset = b.cardHeight / 66
-			love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
-		elseif self:dragging() then
-			local xoffset, yoffset = 2, 2
-			-- local xoffset = b.cardWidth / 66
-			-- local yoffset = b.cardHeight / 66
-			love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
-			-- this looks intuitively better than "lifting" the card with offset * 2
-			-- even though "lifting" it (moving it up/left towards the light source) would be more "correct"
-			x = x - xoffset / 2
-			y = y - yoffset / 2
-		end
-		if self.spinDegrees ~= 0 then
-			if self.spinDelaySeconds > 0 then
-				love.graphics.draw(img, x, y)
-			else
-				love.graphics.draw(img, x, y, self.degrees * math.pi / 180.0, 1.25, 1.25)
-			end
-		else
-			love.graphics.draw(img, x, y)
-			if self.movable and _G.BAIZE.showMovable then
-				-- love.graphics.setColor(0,0,0,0.1)
-				-- love.graphics.rectangle('fill', x, y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight, _G.BAIZE.cardRadius, _G.BAIZE.cardRadius)
-				Util.setColorFromName('Gold')
-				love.graphics.setLineWidth(2)
-				love.graphics.rectangle('line', x, y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight, _G.BAIZE.cardRadius, _G.BAIZE.cardRadius)
-			end
-		end
+		drawCard()
 	end
+
 end
 
 return Card
