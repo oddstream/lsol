@@ -44,6 +44,8 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	twoColorCards = true,
 	fourColorCards = false,
 	autoColorCards = false,
+	cardRoundness = 16,
+	cardOutline = true,
 }
 
 _G.LSOL_VARIANTS = {
@@ -422,7 +424,24 @@ local function loadSettings()
 	else
 		log.info('not loading', settingsFname)
 	end
-	return settings or _G.LSOL_DEFAULT_SETTINGS
+	-- add any settings we have added to the default set which aren't yet in the settings.json
+	if not settings then
+		log.info('creating new settings')
+		settings = {}
+	end
+	for k, v in pairs(_G.LSOL_DEFAULT_SETTINGS) do
+		if settings[k] == nil then	-- don't use 'not'
+			log.info('adding setting', k, '=', v)
+			settings[k] = v
+		end
+	end
+	if settings.debug then
+		log.info('settings:')
+		for k, v in pairs(settings) do
+			log.info(k, v, ':', type(v))
+		end
+	end
+	return settings
 end
 
 function _G.saveSettings()
