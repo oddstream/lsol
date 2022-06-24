@@ -3,14 +3,13 @@
 local json = require 'json'
 local log = require 'log'
 
-local Card = require 'card'
 local Baize = require 'baize'
 local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '17'
-_G.LSOL_VERSION_DATE = '2022-06-19'
+_G.LSOL_VERSION = '18'
+_G.LSOL_VERSION_DATE = '2022-06-24'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -23,11 +22,23 @@ if not _G.table.contains then
   end
 end
 
+if not _G.string.split then
+	function _G.string.split (inputstr, sep)
+		if sep == nil then
+			sep = '%s'
+		end
+		local t = {}
+		for str in string.gmatch(inputstr, '([^' .. sep ..']+)') do
+			table.insert(t, str)
+		end
+		return t
+	end
+end
+
 _G.LSOL_DEFAULT_SETTINGS = {
 	debug = false,
 	lastVersion = 0,
 	variantName = 'Klondike',
-	highlightMovable = true,
 	cardTransitionStep = 0.02,
 	simpleCards = false,
 	powerMoves = true,
@@ -44,8 +55,9 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	twoColorCards = true,
 	fourColorCards = false,
 	autoColorCards = false,
-	cardRoundness = 16,
+	cardRoundness = 12,
 	cardOutline = true,
+	cardRatio = 1.444,
 }
 
 _G.LSOL_VARIANTS = {
@@ -536,21 +548,23 @@ There may be a small performance penalty as the output will be flushed after eac
 
 	_G.SETTINGS = loadSettings()
 
---[===[
---[====[
---[[
 	if args then
-		print('processing command line args')
-		-- args of the form -setting=value
-		for k, v in pairs(args) do
-			if k > 0 then
-				if string.match(v, '-%a+=%a+') then
-					print(k, v)
+		for _, v in ipairs(args) do	-- using ipairs ignores the -ve args (-1 embedded boot.lua, -2 love)
+			local t = _G.string.split(v, '=')
+			if #t == 2 then
+				local set = t[1]
+				local val = t[2]
+				if _G.SETTINGS[set] then
+					log.info('setting', set, 'to', val)
+					_G.SETTINGS[set] = val
+				else
+					log.error('unknown setting', set)
 				end
+			else
+				log.warn('ignoring', v)
 			end
 		end
 	end
-]]
 
 --[[
 	do
@@ -561,8 +575,6 @@ There may be a small performance penalty as the output will be flushed after eac
 		end
 	end
 ]]
-]====]
-]===]
 
 	if love.system.getOS() == 'Android' then
 		-- force portrait mode
@@ -723,11 +735,7 @@ function love.keyreleased(key)
 	elseif key == 'd' and love.keyboard.isDown('lctrl') then
 		_G.SETTINGS.debug = not _G.SETTINGS.debug
 		_G.saveSettings()
-
-		-- for _, c in ipairs(_G.BAIZE.deck) do
-		-- 	c.movable = false
-		-- end
-		-- _G.BAIZE:countMoves()	-- mark/unmark movable cards
+		_G.BAIZE:createCardTextures()
 	end
 
 	if love.system.getOS() == 'Android' then

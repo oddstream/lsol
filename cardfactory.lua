@@ -112,6 +112,7 @@ local function getSuitColor(suit)
 end
 
 local function createSimpleFace(cardFaceTexture, ordFont, suitFont, width, height, ord, suit)
+	-- could/should be a function within factory
 	local canvas = love.graphics.newCanvas(width, height)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
@@ -134,6 +135,7 @@ local function createSimpleFace(cardFaceTexture, ordFont, suitFont, width, heigh
 end
 
 local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLarge, width, height, ord, suit)
+	-- could/should be a function within factory
 
 	local function printAt(str, rx, ry, font, scale, angle)
 		scale = scale or 1.0
@@ -215,7 +217,7 @@ function _G.cardTextureFactory(width, height, radius)
 			if _G.SETTINGS.debug then
 				love.graphics.setColor(1, 0, 0, 1)		-- set color to red to see why width, height are - 2
 			else
-				love.graphics.setColor(0.5, 0.5, 0.5, 0.1)	-- cartoon outlines are black, so why not
+				love.graphics.setColor(0, 0, 0, 0.1)	-- cartoon outlines are black, so why not
 			end
 			love.graphics.rectangle('line', 1, 1, width - 2, height - 2, radius, radius, 16)
 		end

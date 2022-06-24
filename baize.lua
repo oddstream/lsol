@@ -396,12 +396,11 @@ function Baize:loadUndoStack()
 	local info = love.filesystem.getInfo(savedUndoStackFname)
 	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
 		undoStack = bitser.loadLoveFile(savedUndoStackFname)
-	else
 	end
-	love.filesystem.remove(savedUndoStackFname)	-- either way, delete it
+	love.filesystem.remove(savedUndoStackFname)	-- delete it even if error
 	--[[
-		undoStack will be an array of objects created by Baize:getSaveable()
-			piles (table, array of objects created by Pile:getSaveable())
+		undoStack will be an array of objects created by Baize:getSavable()
+			piles (table, array of objects created by Pile:getSavable())
 			recycles (number)
 			bookmark (number)
 	--]]
@@ -708,8 +707,6 @@ function Baize:layout()
 		end
 	end
 
-	local cardRatio = 1.444
-
 	local safex, safey, safew, safeh = love.window.getSafeArea()
 	-- values returned are in DPI-scaled units (the same coordinate system as most other window-related APIs), not in pixels
 	-- safex = love.window.toPixels(safex)
@@ -735,7 +732,7 @@ function Baize:layout()
 	else
 		slotWidth = safew / (maxSlotX + 1) -- +1 gives a 0.5 card width gap either side
 	end
-	local slotHeight = slotWidth * cardRatio
+	local slotHeight = slotWidth * _G.SETTINGS.cardRatio
 
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = slotWidth - pilePaddingX

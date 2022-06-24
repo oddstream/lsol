@@ -529,7 +529,7 @@ function Pile:draw()
 	local x, y = self:screenPos()
 
 	if _G.SETTINGS.debug then
-		love.graphics.setColor(0, 0, 1, 1)
+		love.graphics.setColor(0, 0, 0, 1)
 	else
 		love.graphics.setColor(1, 1, 1, 0.1)
 	end
