@@ -187,10 +187,21 @@ end
 
 function Baize:countMoves()
 
+	local function isWeakMove(src, card)
+		local idx = src:indexOf(card)
+		if idx > 1 then
+			local card0 = src.cards[idx-1]
+			local fn = self.script.tabCompareFn
+			local err = fn({card0, card})
+			return not err
+		end
+		return false
+	end
+
 	self.moves, self.fmoves = 0, 0
 
 	for _, c in ipairs(self.deck) do
-		c.movable = false
+		c.movable = 0
 	end
 
 	if #self.stock.cards == 0 then
@@ -199,12 +210,13 @@ function Baize:countMoves()
 		end
 	else
 		self.moves = self.moves + 1
-		self.stock:peek().movable = true
+		self.stock:peek().movable = 3	-- TODO set according to dst
 	end
 
 	for _, tail in ipairs(self:findAllMovableTails()) do
 		-- list of {dst=<pile>, tail=<tail>}
 		local movable = true
+		local card = tail.tail[1]
 		local src = tail.tail[1].parent
 		local dst = tail.dst
 		-- moving an entire pile from place to another is pointless
@@ -219,8 +231,14 @@ function Baize:countMoves()
 			self.moves = self.moves + 1
 			if dst.category == 'Foundation' then
 				self.fmoves = self.fmoves + 1
+				card.movable = math.max(card.movable, 4)
+			elseif dst.category == 'Tableau' and isWeakMove(src, card) then
+				card.movable = math.max(card.movable, 1)
+			elseif #dst.cards == 0 then
+				card.movable = math.max(card.movable, 2)
+			else
+				card.movable = math.max(card.movable, 3)
 			end
-			tail.tail[1].movable = true
 		end
 	end
 end
