@@ -2,8 +2,7 @@
 
 local Card = require 'card'
 local Pile = require 'pile'
-
-local log = require 'log'
+local Util = require 'util'
 
 local Stock = {}
 Stock.__index = Stock   -- Stock's own __index looks in Stock for methods
@@ -100,9 +99,17 @@ function Stock:draw()
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
 
-	love.graphics.setColor(1, 1, 1, 0.1)
-	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
+	if b.showMovable and b.recycles > 0 then
+		Util.setColorFromSetting('hintColor')
+		love.graphics.setLineWidth(3)
+		love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius, 20)
+	else
+		love.graphics.setColor(1, 1, 1, 0.1)
+		love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
+	end
+
 	if self.rune then
+		love.graphics.setColor(1, 1, 1, 0.1)
 		love.graphics.setFont(b.runeFont)
 		love.graphics.print(self.rune,
 			x + b.cardWidth / 2,

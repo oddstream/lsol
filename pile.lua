@@ -534,7 +534,7 @@ function Pile:draw()
 		love.graphics.setColor(1, 1, 1, 0.1)
 	end
 	love.graphics.setLineWidth(1)
-	love.graphics.rectangle('line', x + 1, y + 1, b.cardWidth - 3, b.cardHeight - 3, b.cardRadius, b.cardRadius, 20)
+	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius, 20)
 
 	if self.label then
 		local scale
@@ -543,6 +543,7 @@ function Pile:draw()
 		else
 			scale = 1.0
 		end
+		love.graphics.setColor(1, 1, 1, 0.1)
 		love.graphics.setFont(b.labelFont)
 		love.graphics.print(self.label,
 			x + b.cardWidth / 2,

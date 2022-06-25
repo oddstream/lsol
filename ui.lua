@@ -242,6 +242,10 @@ function UI:showColorDrawer()
 	wgt = {text='Four-color diamond', backColor=_G.SETTINGS['diamondColor'], textColor=textColor, baizeCmd='colorDiamond', parent = self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
+	textColor = Util.getForegroundColor(_G.SETTINGS['HintColor'])
+	wgt = {text='Hints', backColor=_G.SETTINGS['hintColor'], textColor=textColor, baizeCmd='colorHint', parent = self.colorTypesDrawer}
+	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+
 	self.colorTypesDrawer:layout()
 	self.colorTypesDrawer:show()
 end

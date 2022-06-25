@@ -316,11 +316,7 @@ function Card:draw()
 		if self.movable > 0 and b.showMovable then
 			-- love.graphics.setColor(0,0,0,0.1)
 			-- love.graphics.rectangle('fill', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
-			-- if self.movable == 1 then
-			-- 	Util.setColorFromName('LightYellow')
-			-- else
-				Util.setColorFromName('Gold')
-			-- end
+			Util.setColorFromSetting('hintColor')
 			love.graphics.setLineWidth(self.movable)
 			love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 		end

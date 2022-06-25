@@ -49,7 +49,7 @@ function Baize.new()
 	o.status = 'virgin'	-- afoot, stuck, collect, complete
 	o.percent = 0
 	o.lastInput = love.timer.getTime()
-	o.showMovable = false
+	o.showMovable = _G.SETTINGS.debug
 	o.moves = 0
 	o.fmoves = 0
 	return setmetatable(o, Baize)
@@ -474,19 +474,23 @@ function Baize:showColorDrawer()
 end
 
 function Baize:colorBackground()
-	self.ui:showColorPickerDrawer('baizeColor', {'Green','DarkGreen','DarkRed','DarkBlue','DarkSlateBlue','Purple','Indigo','Silver','DimGray','Black'})
+	self.ui:showColorPickerDrawer('baizeColor')
 end
 
 function Baize:colorCardBack()
-	self.ui:showColorPickerDrawer('cardBackColor', {'CornflowerBlue','Orange','PaleGreen','Pink','Plum','Gold','Silver','DarkSalmon'})
+	self.ui:showColorPickerDrawer('cardBackColor')
 end
 
 function Baize:colorClub()
-	self.ui:showColorPickerDrawer('clubColor', {'DarkGreen','DarkSlateGray','Indigo','DimGray'})
+	self.ui:showColorPickerDrawer('clubColor')
 end
 
 function Baize:colorDiamond()
-	self.ui:showColorPickerDrawer('diamondColor', {'MediumBlue','DarkBlue','HotPink','OrangeRed'})
+	self.ui:showColorPickerDrawer('diamondColor')
+end
+
+function Baize:colorHint()
+	self.ui:showColorPickerDrawer('hintColor')
 end
 
 function Baize:modifySetting(tbl)
@@ -608,7 +612,7 @@ function Baize:changeVariant(vname)
 		self.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 		self.script:startGame()
 		self:undoPush()
-		self.showMovable = false
+		self.showMovable = _G.SETTINGS.debug
 		self:updateStatus()
 		self:updateUI()
 		self.ui:updateWidget('title', vname)
@@ -643,7 +647,7 @@ function Baize:newDeal()
 	self.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 	self.script:startGame()
 	self:undoPush()
-	self.showMovable = false
+	self.showMovable = _G.SETTINGS.debug
 	self:updateStatus()
 	self:updateUI()
 end
@@ -655,7 +659,7 @@ function Baize:restartDeal()
 	end
 	self:updateFromSaved(saved)
 	self:undoPush()
-	self.showMovable = false
+	self.showMovable = _G.SETTINGS.debug
 	self:updateStatus()
 	self:updateUI()
 end
@@ -882,7 +886,7 @@ function Baize:afterUserMove()
 	if self.script.afterMove then
 		self.script:afterMove()
 	end
-	self.showMovable = false
+	self.showMovable = _G.SETTINGS.debug
 	self:undoPush()
 	self:updateStatus()
 	self:updateUI()
@@ -1286,7 +1290,11 @@ function Baize:collect()
 end
 
 function Baize:hint()
-	self.showMovable = true
+	if _G.SETTINGS.debug then
+		self.showMovable = not _G.SETTINGS.debug
+	else
+		self.showMovable = true
+	end
 	self:updateUI()
 end
 
