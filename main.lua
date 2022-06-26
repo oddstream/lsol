@@ -9,7 +9,7 @@ local UI = require 'ui'
 local Util = require 'util'
 
 _G.LSOL_VERSION = '18'
-_G.LSOL_VERSION_DATE = '2022-06-25'
+_G.LSOL_VERSION_DATE = '2022-06-26'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -146,7 +146,7 @@ _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider','Penguin'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
-	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp','Usk Relaxed'},
+	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Gate','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp','Usk Relaxed'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
 	['> Freecells'] = {'Chinese Freecell', 'Double Freecell', 'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
@@ -448,6 +448,15 @@ local function loadSettings()
 			settings[k] = v
 		end
 	end
+
+	local retiredSettings = {'highlightMovable','shortCards'}
+	for _, rs in ipairs(retiredSettings) do
+		if settings[rs] ~= nil then
+			log.info('retiring setting', rs)
+			settings[rs] = nil
+		end
+	end
+
 	if settings.debug then
 		log.info('settings:')
 		for k, v in pairs(settings) do

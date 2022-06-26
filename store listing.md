@@ -2,9 +2,11 @@ A collection of solitaire games, with clear graphics, a simple interface, no fee
 
 Made by, and for, solitaire enthusiasts; not by someone trying to sell you something or collect your data.
 
-This app is a complete re-write of the older solitaire app (com.oddstream.solitaire) which it replaces.
+This app is a complete re-write of the older solitaire app (com.oddstream.solitaire) which it is replacing.
 
 It is quite 'hard core', offering little in the way of help or hints when playing; the aim is to replicate the feel of playing with physical cards.
+
+The app can also be played on desktops (Linux/Mac/Windows) by downloading the LÖVE runtime (from https://love2d.org/#download) and the lsol.love file (from the github repository at https://github.com/oddstream/lsol/blob/master/lsol.love).
 
 = Why create yet another solitaire app? =
 
@@ -14,7 +16,7 @@ Most people know Klondike, and a few more know Spider or Freecell or Pyramid, bu
 
 (Klondike is not a very good game, because you have about a 33% chance of winning each game, and that mostly comes down to luck. Contrast that with Freecell; over 99% of games are winnable, and each is won by 99% skill.)
 
-This app contains 65 hand-picked solitaire variations:
+This app contains over 70 hand-picked solitaire variations, including:
 
 ♥ Accordian
 ♥ Agnes Bernauer
@@ -29,7 +31,6 @@ This app contains 65 hand-picked solitaire variations:
 ♥ Baker's Dozen
 ♥ Baker's Dozen (Wide)
 ♥ Baker's Game
-♥ Baker's Game Relaxed
 ♥ Beleaguered Castle
 ♥ Bisley
 ♥ Black Hole
@@ -41,7 +42,6 @@ This app contains 65 hand-picked solitaire variations:
 ♥ Duchess
 ♥ Easthaven
 ♥ Eight Off
-♥ Eight Off Relaxed
 ♥ Flat Castle
 ♥ Forty Thieves
 ♥ Forty and Eight
@@ -61,7 +61,6 @@ This app contains 65 hand-picked solitaire variations:
 ♥ Mount Olympus
 ♥ Penguin
 ♥ Pyramid
-♥ Pyramid Relaxed
 ♥ Rainbow Canfield
 ♥ Red and Black
 ♥ Rosamund
@@ -70,6 +69,7 @@ This app contains 65 hand-picked solitaire variations:
 ♥ Scorpion
 ♥ Sea Haven Towers
 ♥ Simple Simon
+♥ Somerset
 ♥ Spider
 ♥ Spider One Suit
 ♥ Spider Two Suits
@@ -78,6 +78,7 @@ This app contains 65 hand-picked solitaire variations:
 ♥ Tri Peaks
 ♥ Tri Peaks Open
 ♥ Ukrainian
+♥ Usk
 ♥ Wasp
 ♥ Yukon
 ♥ Yukon Cells

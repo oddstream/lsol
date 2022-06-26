@@ -25,20 +25,23 @@ function Gate.new(o)
 end
 
 function Gate:buildPiles()
-	Stock.new({x=2.5, y=1})
-	Waste.new({x=3.5, y=1, fanType='FAN_RIGHT3'})
+	Stock.new({x=1, y=1})
+	Waste.new({x=2, y=1, fanType='FAN_RIGHT3'})
+
+	for x = 4, 7 do
+		local f = Foundation.new({x=x, y=1})
+		f.label = 'A'
+	end
 
 	for y = 2, 6 do
 		Reserve.new({x=1, y=y, fanType='FAN_NONE'})
-		Reserve.new({x=6, y=y, fanType='FAN_NONE'})
+		Reserve.new({x=7, y=y, fanType='FAN_NONE'})
 	end
 
-	for x = 2, 5 do
-		local f = Foundation.new({x=x, y=2.5})
-		f.label = 'A'
+	for x  = 2.5, 5.5 do
 		-- could work out boundaryPile by examining piles after buildPiles() is called
 		-- but setting them explicitly is more predictable
-		local tupper = Tableau.new({x=x, y=3.5, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		local tupper = Tableau.new({x=x, y=2.5, fanType='FAN_DOWN', moveType='MOVE_ANY'})
 		local tlower = Tableau.new({x=x, y=5.5, fanType='FAN_DOWN', moveType='MOVE_ANY'})
 		tupper.boundaryPile = tlower
 	end

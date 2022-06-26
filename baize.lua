@@ -187,6 +187,19 @@ end
 
 function Baize:countMoves()
 
+	--[[
+	if a movable card has a card before it in a tableau
+	and that pair is conformant
+	then don't show it as weakly movable
+	if card can move to foundation then it's strongly movable
+
+	0 - can't move, or pointless move
+	1 - weak move (conformant with card above)
+	2 - move to cell or empty pile
+	3 - move
+	4 - move to foundation
+	]]
+
 	local function isWeakMove(src, card)
 		local idx = src:indexOf(card)
 		if idx > 1 then
@@ -197,6 +210,8 @@ function Baize:countMoves()
 		end
 		return false
 	end
+
+	-- remind me, why calc fmoves? so we know when to enable collect button
 
 	self.moves, self.fmoves = 0, 0
 
@@ -696,7 +711,7 @@ function Baize:createBackgroundCanvas()
 	local canvas = love.graphics.newCanvas(ww, wh)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
-	local frontColor, backColor = Util.getGradientColors('baizeColor', 'darkGreen', 0.25)
+	local frontColor, backColor = Util.getGradientColors('baizeColor', 'darkGreen', 0.2)
 	love.gradient.draw(
 		function()
 			love.graphics.rectangle('fill', 0, 0, ww, wh)
