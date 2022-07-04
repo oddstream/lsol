@@ -24,11 +24,14 @@ function Freecell.new(o)
 	elseif o.chinese then
 		o.tabCompareFn = CC.DownAltSuit
 		o.wikipedia = 'https://en.wikipedia.org/wiki/Baker%27s_Game'
+	elseif o.selective then
+		o.tabCompareFn = CC.DownAltColorWrap
+		o.wikipedia = 'https://en.wikipedia.org/wiki/FreeCell'
 	else
 		o.tabCompareFn = CC.DownAltColor
 		o.wikipedia = 'https://en.wikipedia.org/wiki/FreeCell'
 	end
-	if o.double then
+	if o.double or o.selective then
 		o.foundCompareFn = CC.UpSuitWrap
 	else
 		o.foundCompareFn = CC.UpSuit
@@ -74,7 +77,9 @@ function Freecell:buildPiles()
 		end
 		for x = 5, 8 do
 			local f = Foundation.new({x=x, y=1})
-			f.label = 'A'
+			if not self.selective then
+				f.label = 'A'
+			end
 		end
 		for x = 1, 8 do
 			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
@@ -96,6 +101,19 @@ function Freecell:startGame()
 			for _ = 1, 10 do
 				Util.moveCard(stock, tab)
 			end
+		end
+	elseif self.easy then
+		Util.moveCardByOrdAndSuit(stock, _G.BAIZE.foundations[1], 1, '♣')
+		Util.moveCardByOrdAndSuit(stock, _G.BAIZE.foundations[2], 1, '♦')
+		Util.moveCardByOrdAndSuit(stock, _G.BAIZE.foundations[3], 1, '♥')
+		Util.moveCardByOrdAndSuit(stock, _G.BAIZE.foundations[4], 1, '♠')
+		while #stock.cards > 0 do
+			for _, tab in ipairs(_G.BAIZE.tableaux) do
+				Util.moveCard(stock, tab)
+			end
+		end
+		for _, tab in ipairs(_G.BAIZE.tableaux) do
+			tab:buryCards(13)
 		end
 	elseif self.chinese then
 		while #stock.cards > 0 do
@@ -120,11 +138,41 @@ function Freecell:startGame()
 	if #stock.cards > 0 then
 		log.error('still', #stock.cards, 'cards in Stock')
 	end
+	if self.blind then
+		for _, tab in ipairs(_G.BAIZE.tableaux) do
+			for i = 1, #tab.cards - 1 do
+				tab.cards[i]:flipDown()
+			end
+			tab:refan()
+		end
+	end
+	if self.selective then
+		_G.BAIZE.ui:toast('The first card played to the foundation sets the base value for all the foundations')
+	end
 	_G.BAIZE:setRecycles(0)
 end
 
--- function Freecell:afterMove()
--- end
+function Freecell:afterMove()
+	if self.selective then
+		local f1 = _G.BAIZE.foundations[1]
+		if not f1.label then
+			-- To start the game, the player will choose among the top cards of the reserve fans which will start the first foundation pile.
+			-- Once he/she makes that decision and picks a card, the three other cards with the same rank,
+			-- whenever they become available, will start the other three foundations.
+			for _, f in ipairs(_G.BAIZE.foundations) do
+				-- find where the first card landed
+				if #f.cards > 0 then
+					local c = f:peek()
+					-- grab it's ordinal and apply it to all the foundations
+					for _, pile in ipairs(_G.BAIZE.foundations) do
+						pile.label = _G.ORD2STRING[c.ord]
+					end
+					break
+				end
+			end
+		end
+	end
+end
 
 function Freecell:moveTailError(tail)
 	local pile = tail[1].parent

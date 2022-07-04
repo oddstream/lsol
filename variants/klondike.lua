@@ -20,6 +20,9 @@ function Klondike.new(o)
 	if o.gargantua then
 		o.packs = 2
 		o.wikipedia = 'https://en.wikipedia.org/wiki/Gargantua_(card_game)'
+	elseif o.triple then
+		o.packs = 3
+		o.wikipedia = 'https://en.wikipedia.org/wiki/Klondike_(solitaire)'
 	else
 		o.packs = 1
 		o.wikipedia = 'https://en.wikipedia.org/wiki/Klondike_(solitaire)'
@@ -46,6 +49,15 @@ function Klondike:buildPiles()
 			pile.label = 'A'
 		end
 		for x = 3, 11 do
+			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			pile.label = 'K'
+		end
+	elseif self.triple then
+		for x = 4, 15 do
+			local pile = Foundation.new({x=x, y=1})
+			pile.label = 'A'
+		end
+		for x = 5, 15 do
 			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
 			pile.label = 'K'
 		end

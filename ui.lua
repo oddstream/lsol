@@ -242,7 +242,7 @@ function UI:showColorDrawer()
 	wgt = {text='Four-color diamond', backColor=_G.SETTINGS['diamondColor'], textColor=textColor, baizeCmd='colorDiamond', parent = self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
-	textColor = Util.getForegroundColor(_G.SETTINGS['HintColor'])
+	textColor = Util.getForegroundColor(_G.SETTINGS['hintColor'])
 	wgt = {text='Hints', backColor=_G.SETTINGS['hintColor'], textColor=textColor, baizeCmd='colorHint', parent = self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
@@ -351,12 +351,12 @@ function UI:toast(message, soundName)
 	-- if we are already displaying this message, reset secondsLeft and quit
 	for _, t in ipairs(self.toasts) do
 		if t.message == message then
-			t.secondsLeft = 5
+			t.secondsLeft = 6
 			table.sort(self.toasts, function(a, b) return a.secondsLeft > b.secondsLeft end)
 			return
 		end
 	end
-	local t = {message=message, secondsLeft=4 + #self.toasts}
+	local t = {message=message, secondsLeft=5 + #self.toasts}
 	t.mw = self.toastFont:getWidth(message)
 	t.mh = self.toastFont:getHeight()
 	t.rw = t.mw + self.toastFont:getWidth('M') * 2

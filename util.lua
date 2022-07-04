@@ -128,6 +128,11 @@ function Util.getGradientColors(settingName, default, amount)
 end
 
 function Util.getForegroundColor(backgroundColor)
+	if not backgroundColor then
+		log.error('Unknown color', backgroundColor)
+		return 'UiForeground'
+	end
+
 	local color = _G.LSOL_COLORS[backgroundColor]
 	if not color then
 		log.error('No color', backgroundColor)

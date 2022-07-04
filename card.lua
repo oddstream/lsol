@@ -216,6 +216,19 @@ function Card:spinning()
 	return self.spinDegrees ~= 0
 end
 
+--[[
+function Card:shake()
+	self.shakeExtent = math.ceil((_G.BAIZE.cardWidth / 25))
+	self.shakeDst = self.x + self.shakeExtent
+	self.shakeOffset = 0
+	print('shake', tostring(self))
+end
+
+function Card:shaking()
+	return self.shakeExtent ~= nil	-- doubles up as a flag
+end
+]]
+
 function Card:update(dt_seconds)
 	if self:transitioning() then
 		self.lerpStep = self.lerpStep + self.lerpStepAmount
@@ -267,6 +280,30 @@ function Card:update(dt_seconds)
 			end
 		end
 	end
+--[[
+	if self:shaking() then
+		-- move to the right, then to the left, then back to center
+		if self.shakeDst > 0 then
+			if self.shakeOffset >= self.shakeExtent then
+				self.shakeDst = -self.shakeExtent
+			else
+				self.shakeOffset = self.shakeOffset + 1
+			end
+		elseif self.shakeDst < 0 then
+			if self.shakeOffset <= -self.shakeExtent then
+				self.shakeDst = 0
+			else
+				self.shakeOffset = self.shakeOffset - 1
+			end
+		else	-- shakeDst must be 0
+			if self.shakeOffset == 0 then
+				self.shakeExtent = nil	-- finished shaking
+			else
+				self.shakeOffset = self.shakeOffset + 1
+			end
+		end
+	end
+]]
 end
 
 function Card:draw()
@@ -352,6 +389,11 @@ function Card:draw()
 		y = y - yoffset / 2
 		drawCard()
 	else
+--[[
+		if self:shaking() then
+			x = x + self.shakeOffset
+		end
+]]
 		drawCard()
 	end
 
