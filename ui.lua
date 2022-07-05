@@ -352,7 +352,7 @@ function UI:toast(message, soundName)
 	for _, t in ipairs(self.toasts) do
 		if t.message == message then
 			t.secondsLeft = 6
-			table.sort(self.toasts, function(a, b) return a.secondsLeft > b.secondsLeft end)
+			table.sort(self.toasts, function(a, b) return a.secondsLeft < b.secondsLeft end)
 			return
 		end
 	end
@@ -431,15 +431,13 @@ function UI:draw()
 		self.modalDialog:draw()
 	end
 
-	local function drawToast(t, y)
-		Util.setColorFromName('UiForeground')
-		love.graphics.draw(t.texture, _G.UI_SAFEX + (_G.UI_SAFEW - t.mw) / 2, _G.UI_SAFEY + ((_G.UI_SAFEH - t.mh) / 2) + y)
-	end
-
 	if #self.toasts > 0 then
+		love.graphics.setColor(1,1,1,1)
+		local y = (_G.UI_SAFEY + _G.UI_SAFEH) - _G.STATUSBARHEIGHT
 		for i = 1, #self.toasts do
-			-- (i + 2) to nudge to toasts down the screen a little
-			drawToast(self.toasts[i], (i + 2) * (_G.TITLEBARHEIGHT + self.toastFont:getHeight()))
+			local t = self.toasts[i]
+			y = y - (t.rh * 1.3333)
+			love.graphics.draw(t.texture, (_G.UI_SAFEW - t.rw) / 2, y)
 		end
 	end
 

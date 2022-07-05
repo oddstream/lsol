@@ -1448,6 +1448,9 @@ function Baize:draw()
 			love.graphics.getWidth(), love.graphics.getHeight(),
 			_G.UI_SAFEX, _G.UI_SAFEY, _G.UI_SAFEW, _G.UI_SAFEH),
 			56, 16)
+		love.graphics.setColor(0,0,0,1)
+		local x = _G.UI_SAFEX + (_G.UI_SAFEW / 2)
+		love.graphics.line(x, _G.UI_SAFEY, x, _G.UI_SAFEY + _G.UI_SAFEH)
 	end
 	-- love.graphics.setFont(self.suitFont)
 	-- love.graphics.print(string.format('#undoStack %d', #_G.BAIZE.undoStack, 10, 10))
