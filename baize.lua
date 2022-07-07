@@ -1004,38 +1004,45 @@ function Baize:mousePressed(x, y, button)
 		end
 		-- log.info('strokeStart on widget', w.text or w.icon)
 	else
-		-- we drag the menu drawer containers up/down
-		local con = self.ui:findContainerAt(x, y)
-		if con then
-			-- log.info('strokeStart on container')
-			self.stroke.object = con
-			self.stroke.objectType = 'container'
-			con:startDrag(x, y)
+		local t = self.ui:findToastAt(x, y)
+		if t then
+			-- log.info('found a toast', t.message)
+			self.stroke.object = t
+			self.stroke.objectType = 'toast'
 		else
-			-- we didn't touch a widget, or container, so there's no need for a drawer to be open?
-			self.ui:hideDrawers()
-
-			local card = self:findCardAt(x, y)
-			if card then
-				if card.spinDegrees == 0 then
-					local tail = card.parent:makeTail(card)
-					for _, c in ipairs(tail) do
-						c:startDrag()
-					end
-					love.mouse.setVisible(false)
-					self.stroke.object = tail
-					self.stroke.objectType = 'tail'
-					-- print(tostring(card), 'tail len', #tail)
-				end
+			-- we drag the menu drawer containers up/down
+			local con = self.ui:findContainerAt(x, y)
+			if con then
+				-- log.info('strokeStart on container')
+				self.stroke.object = con
+				self.stroke.objectType = 'container'
+				con:startDrag(x, y)
 			else
-				local pile = self:findPileAt(x, y)
-				if pile then
-					self.stroke.object = pile
-					self.stroke.objectType = 'pile'
+				-- we didn't touch a widget, or container, so there's no need for a drawer to be open?
+				self.ui:hideDrawers()
+
+				local card = self:findCardAt(x, y)
+				if card then
+					if card.spinDegrees == 0 then
+						local tail = card.parent:makeTail(card)
+						for _, c in ipairs(tail) do
+							c:startDrag()
+						end
+						love.mouse.setVisible(false)
+						self.stroke.object = tail
+						self.stroke.objectType = 'tail'
+						-- print(tostring(card), 'tail len', #tail)
+					end
 				else
-					self:startDrag()
-					self.stroke.object = self
-					self.stroke.objectType = 'baize'
+					local pile = self:findPileAt(x, y)
+					if pile then
+						self.stroke.object = pile
+						self.stroke.objectType = 'pile'
+					else
+						self:startDrag()
+						self.stroke.object = self
+						self.stroke.objectType = 'baize'
+					end
 				end
 			end
 		end
@@ -1077,6 +1084,8 @@ function Baize:mouseTapped(x, y, button)
 				self[wgt.baizeCmd](self, wgt.param)	-- w.param may be nil
 			end
 		end
+	elseif self.stroke.objectType == 'toast' then
+		self.ui:untoast(self.stroke.object)
 	elseif self.stroke.objectType == 'container' then
 		-- do nothing when tapping on a container
 	elseif self.stroke.objectType == 'tail' then

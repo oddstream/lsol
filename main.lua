@@ -858,7 +858,7 @@ function love.quit()
 	_G.saveSettings()	-- in case window has moved or resized
 
 	-- don't save completed game, to stop win being recorded when it's reloaded
-	if #_G.BAIZE.undoStack == 1 or _G.BAIZE.status == 'complete' then
+	if --[[ #_G.BAIZE.undoStack == 1 or ]] _G.BAIZE.status == 'complete' then
 		_G.BAIZE:rmUndoStack()
 	else
 		_G.BAIZE:saveUndoStack()

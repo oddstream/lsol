@@ -384,6 +384,27 @@ function UI:toast(message, soundName)
 	end
 end
 
+function UI:untoast(removeMe)
+	for i = 1, #self.toasts do
+		if self.toasts[i] == removeMe then
+			-- log.info('removing toast', removeMe.message)
+			table.remove(self.toasts, i)
+			break
+		end
+	end
+end
+
+function UI:findToastAt(x, y)
+	for _, t in ipairs(self.toasts) do
+		if t.x and t.y then	-- may not exist until toast is drawn
+			if Util.inRect(x, y, t.x, t.y, t.x + t.rw, t.y + t.rh) then
+				return t
+			end
+		end
+	end
+	return nil
+end
+
 function UI:layout()
 	for _, con in ipairs(self.containers) do
 		con:layout()
@@ -437,7 +458,9 @@ function UI:draw()
 		for i = 1, #self.toasts do
 			local t = self.toasts[i]
 			y = y - (t.rh * 1.3333)
-			love.graphics.draw(t.texture, (_G.UI_SAFEW - t.rw) / 2, y)
+			t.x = (_G.UI_SAFEW - t.rw) / 2
+			t.y = y
+			love.graphics.draw(t.texture, t.x, t.y)
 		end
 	end
 
