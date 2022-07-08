@@ -425,10 +425,15 @@ end
 local savedUndoStackFname = 'undoStack.bitser'
 
 function Baize:loadUndoStack()
-	local undoStack
+	local ok, undoStack
 	local info = love.filesystem.getInfo(savedUndoStackFname)
 	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
-		undoStack = bitser.loadLoveFile(savedUndoStackFname)
+		ok, undoStack = pcall(bitser.loadLoveFile, savedUndoStackFname)
+		if not ok then
+			-- undoStack is now an error message
+			log.error('error loading', savedUndoStackFname, undoStack)
+			undoStack = nil
+		end
 	end
 	love.filesystem.remove(savedUndoStackFname)	-- delete it even if error
 	--[[

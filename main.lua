@@ -434,6 +434,7 @@ local function loadSettings()
 			local ok
 			ok, settings = pcall(json.decode, contents)
 			if not ok then
+				-- settings is now an error message
 				log.error('error decoding', settingsFname, settings)
 				settings = nil
 			end
