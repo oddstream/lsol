@@ -10,7 +10,7 @@ function Foundation.new(o)
 	o.category = 'Foundation'
 	o.fanType = 'FAN_NONE'
 	o.moveType = 'MOVE_NONE'
-	o = Pile.new(o)
+	o = Pile.prepare(o)
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.foundations, o)
   return setmetatable(o, Foundation)

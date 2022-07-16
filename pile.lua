@@ -12,10 +12,18 @@ Pile.__index = Pile
 local minFanFactor, maxFanFactor = 0.16666, 0.28
 local backFanFactor = 0.1
 
-function Pile.new(o)
-	-- assert(type(o)=='table')
-	-- assert(type(o.x)=='number')
-	-- assert(type(o.y)=='number')
+function Pile.prepare(o)
+	-- nb this doesn't create a new Pile object; rather, it decorates/prepares an existing one
+	-- important to preserve any members that are in o
+	if _G.SETTINGS.debug then
+		assert(type(o)=='table')
+		assert(type(o.x)=='number')
+		assert(type(o.y)=='number')
+		assert(type(o.category=='string'))
+		assert(type(o.fanType=='string'))
+		assert(type(o.moveType=='string'))
+	end
+	-- x, y in o are moved to Pile.slot.x,y
 	o.slot = {x = o.x, y = o.y}
 	o.x, o.y = 0, 0
 	o.cards = {}

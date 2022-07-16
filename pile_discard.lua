@@ -10,7 +10,7 @@ function Discard.new(o)
 	o.category = 'Discard'
 	o.fanType = 'FAN_NONE'
 	o.moveType = 'MOVE_NONE'
-	o = Pile.new(o)
+	o = Pile.prepare(o)
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.discards, o)
 	return setmetatable(o, Discard)

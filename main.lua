@@ -8,8 +8,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '18'
-_G.LSOL_VERSION_DATE = '2022-06-26'
+_G.LSOL_VERSION = '19'
+_G.LSOL_VERSION_DATE = '2022-07-08'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -396,6 +396,13 @@ _G.LSOL_COLORS = {
 	UiForeground = {0xff,0xff,0xff,0xff},
 	UiGrayedOut = {0x80,0x80,0x80,0xff},
 }
+
+--[[
+	Using Acme (semi-bold) for card ordinals and pile labels
+	Alternatives:
+		CARDC___.TTF (also includes suit symbols)
+		RobotoSlab-SemiBold.ttf (more traditional card look)
+]]
 
 _G.ORD_FONT = 'assets/fonts/Acme-Regular.ttf'
 _G.SUIT_FONT = 'assets/fonts/DejaVuSans.ttf'

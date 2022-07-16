@@ -9,10 +9,10 @@ Tableau.__index = Tableau
 setmetatable(Tableau, {__index = Pile})
 
 function Tableau.new(o)
-	o = Pile.new(o)
-	assert(o.fanType)
-	assert(o.moveType)
 	o.category = 'Tableau'
+	o.fanType = o.fanType or 'FAN_DOWN'
+	o.moveType = o.moveType or 'MOVE_ANY'
+	o = Pile.prepare(o)
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.tableaux, o)
 	return setmetatable(o, Tableau)

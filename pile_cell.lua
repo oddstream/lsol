@@ -11,7 +11,7 @@ function Cell.new(o)
 	o.category = 'Cell'
 	o.fanType = 'FAN_NONE'
 	o.moveType = 'MOVE_ONE'
-	o = Pile.new(o)
+	o = Pile.prepare(o)
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.cells, o)
 	return setmetatable(o, Cell)

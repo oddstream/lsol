@@ -44,10 +44,9 @@ function Checkbox.new(o)
 end
 
 function Checkbox:draw()
-	local cx, cy, cw, ch = self.parent:screenRect()
+	local _, cy, _, ch = self.parent:screenRect()
 	local wx, wy, ww, wh = self:screenRect()
 
-	-- TODO consider using scissors
 	if wy < cy then
 		return
 	end

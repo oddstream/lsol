@@ -9,18 +9,15 @@ Stock.__index = Stock   -- Stock's own __index looks in Stock for methods
 setmetatable(Stock, {__index = Pile}) -- failing that, Stock's metatable then looks in base class for methods
 
 function Stock.new(o)
-	-- assert(type(o)=='table')
-	-- assert(type(o.x)=='number')
-	-- assert(type(o.y)=='number')
-	o = Pile.new(o)
-	setmetatable(o, Stock)
-
 	o.category = 'Stock'
 	o.ordFilter = o.ordFilter or {1,2,3,4,5,6,7,8,9,10,11,12,13}
 	o.suitFilter = o.suitFilter or {'♣','♦','♥','♠'}
 	o.packs = o.packs or 1
 	o.fanType = 'FAN_NONE'
 	o.moveType = 'MOVE_ONE'
+
+	o = Pile.prepare(o)
+	setmetatable(o, Stock)
 
 	for pack = 1, o.packs do
 		for _, ord in ipairs(o.ordFilter) do
@@ -45,12 +42,13 @@ function Stock.new(o)
 	for _, c in ipairs(o.cards) do
 		table.insert(_G.BAIZE.deck, c)
 	end
-	assert(#o.cards == #_G.BAIZE.deck)
+	-- assert(#o.cards == #_G.BAIZE.deck)
 
 	return o
 end
 
 function Stock:shuffle()
+	-- used to run this 6 times, but, honestly, I can't tell the difference between 6 and 1
 	for i = #self.cards, 2, -1 do
 		local j = math.random(i)
 		if i ~= j then

@@ -49,7 +49,7 @@ function Baize.new()
 	o.status = 'virgin'	-- afoot, stuck, collect, complete
 	o.percent = 0
 	o.lastInput = love.timer.getTime()
-	o.showMovable = _G.SETTINGS.debug
+	o.showMovable = false
 	o.moves = 0
 	o.fmoves = 0
 	return setmetatable(o, Baize)
@@ -358,7 +358,6 @@ function Baize:updateUI()
 	end
 
 	if _G.SETTINGS.debug then
-		-- self.ui:updateWidget('status', string.format('%s(%d)', self.status, #self.undoStack))
 		self.ui:updateWidget('status', self.status)
 	else
 		self.ui:updateWidget('status', string.format('%d', #self.undoStack - 1))
@@ -370,6 +369,7 @@ function Baize:updateUI()
 		self.ui:updateWidget('progress', string.format('%d%%', self.percent))
 	end
 
+	-- TODO this doesn't belong here
 	if self.status == 'complete' then
 		self.ui:toast(_G.SETTINGS.variantName .. ' complete', 'complete')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
@@ -413,10 +413,15 @@ function Baize:undo()
 		self.ui:toast('Cannot undo a completed game', 'blip')
 		return
 	end
+	self:unhint()
+
 	local _ = self:undoPop()	-- remove current state
 	local saved = self:undoPop()
-	assert(saved)
-	self:updateFromSaved(saved)
+	if not saved then
+		log.error('undoPop returned nil')
+	else
+		self:updateFromSaved(saved)
+	end
 	self:undoPush()	-- replace current state
 	self:updateStatus()
 	self:updateUI()
@@ -632,7 +637,7 @@ function Baize:changeVariant(vname)
 		self.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 		self.script:startGame()
 		self:undoPush()
-		self.showMovable = _G.SETTINGS.debug
+		self:unhint()
 		self:updateStatus()
 		self:updateUI()
 		self.ui:updateWidget('title', vname)
@@ -667,7 +672,7 @@ function Baize:newDeal()
 	self.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
 	self.script:startGame()
 	self:undoPush()
-	self.showMovable = _G.SETTINGS.debug
+	self:unhint()
 	self:updateStatus()
 	self:updateUI()
 end
@@ -679,13 +684,13 @@ function Baize:restartDeal()
 	end
 	self:updateFromSaved(saved)
 	self:undoPush()
-	self.showMovable = _G.SETTINGS.debug
+	self:unhint()
 	self:updateStatus()
 	self:updateUI()
 end
 
 function Baize:setBookmark()
-	-- TODO if Complete
+	-- no point setting a bookmark if virgin or complete, but we allow it
 	self.bookmark = #self.undoStack
 	local saved = self:undoPeek()
 	saved.bookmark = self.bookmark
@@ -906,7 +911,7 @@ function Baize:afterUserMove()
 	if self.script.afterMove then
 		self.script:afterMove()
 	end
-	self.showMovable = _G.SETTINGS.debug
+	self:unhint()
 	self:undoPush()
 	self:updateStatus()
 	self:updateUI()
@@ -1130,7 +1135,7 @@ function Baize:mouseTapped(x, y, button)
 			end
 		end
 	elseif self.stroke.objectType == 'baize' then
-		-- TODO close any open UI drawer
+		-- nothing (could be something, maybe a context menu or somesuch?)
 	end
 end
 
@@ -1284,7 +1289,7 @@ end
 function Baize:collect()
 	-- collect should be exactly the same as the user tapping repeatedly on the
 	-- waste, cell, reserve and tableau piles
-	-- nb there is no collecting in games with discard piles (ie spiders)
+	-- nb there is no collecting in games with discard piles
 
 	-- TODO could move this back to vtable
 	local function collectFromPile(pile)
@@ -1325,6 +1330,15 @@ function Baize:hint()
 		self.showMovable = true
 	end
 	self:updateUI()
+end
+
+function Baize:unhint()
+	if _G.SETTINGS.debug then
+		self.showMovable = _G.SETTINGS.debug
+	else
+		self.showMovable = false
+	end
+	-- self:updateUI()
 end
 
 function Baize:startSpinning()

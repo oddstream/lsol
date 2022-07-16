@@ -203,8 +203,8 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 end
 
 function _G.cardTextureFactory(width, height, radius)
-	assert(width and width ~= 0)
-	assert(height and height ~= 0)
+	-- assert(width and width ~= 0)
+	-- assert(height and height ~= 0)
 
 	local halfWidth = width / 2
 	local halfHeight = height / 2

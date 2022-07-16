@@ -18,7 +18,7 @@ function TextWidget.new(o)
 end
 
 function TextWidget:draw()
-	local cx, cy, cw, ch = self.parent:screenRect()
+	local _, cy, _, ch = self.parent:screenRect()
 	local wx, wy, ww, wh = self:screenRect()
 
 	if wy < cy then

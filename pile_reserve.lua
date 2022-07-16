@@ -8,10 +8,10 @@ Reserve.__index = Reserve
 setmetatable(Reserve, {__index = Pile})
 
 function Reserve.new(o)
-	o = Pile.new(o)
 	o.category = 'Reserve'
-	assert(o.fanType)
+	o.fanType = o.fanType or 'FAN_DOWN'
 	o.moveType = 'MOVE_ONE'
+	o = Pile.prepare(o)
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.reserves, o)
 	return setmetatable(o, Reserve)
