@@ -15,8 +15,15 @@ setmetatable(Cruel, {__index = Variant})
 
 function Cruel.new(o)
 	o = o or {}
-	o.tabCompareFn = CC.DownSuit
-	o.wikipedia = 'https://en.wikipedia.org/wiki/Cruel_(solitaire)'
+	if o.subtype == 'Cruel' then
+		o.tabCompareFn = CC.UpOrDownSuit
+		o.wikipedia = 'https://en.wikipedia.org/wiki/Cruel_(solitaire)'
+		o.moveType = 'MOVE_ONE'
+	elseif o.subtype == 'Perseverance' then
+		o.tabCompareFn = CC.DownSuit
+		o.wikipedia = 'https://en.wikipedia.org/wiki/Perseverance_(solitaire)'
+		o.moveType = 'MOVE_ANY'
+	end
 	return setmetatable(o, Cruel)
 end
 
@@ -27,7 +34,7 @@ function Cruel:buildPiles()
 		pile.label = 'A'
 	end
 	for x = 1, 12 do
-		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE'})
+		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType=self.moveType})
 		t.label = 'X'
 	end
 end
@@ -42,20 +49,27 @@ function Cruel:startGame()
 			Util.moveCard(src, t)
 		end
 	end
-	_G.BAIZE:setRecycles(0)
+	if self.subtype == 'Cruel' then
+		_G.BAIZE:setRecycles(0)
+	elseif self.subtype == 'Perseverance' then
+		_G.BAIZE:setRecycles(2)
+	end
 end
 
 function Cruel:afterMove()
 	-- kludge afterMove is called by stock recycle
-	_G.BAIZE:setRecycles(_G.BAIZE.recycles + 1)
+	if self.subtype == 'Cruel' then
+		_G.BAIZE:setRecycles(_G.BAIZE.recycles + 1)
+	end
 end
 
 function Cruel:moveTailError(tail)
+	-- not reached by Cruel because Tableau moveType == 'MOVE_ONE'
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)
 		for _, cpair in ipairs(cpairs) do
-			local err = CC.DownSuit(cpair)
+			local err = self.tabCompareFn(cpair)
 			if err then
 				return err
 			end
@@ -75,7 +89,7 @@ function Cruel:tailAppendError(dst, tail)
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
 		else
-			return CC.DownSuit({dst:peek(), tail[1]})
+			return self.tabCompareFn({dst:peek(), tail[1]})
 		end
 	end
 	return nil
@@ -85,8 +99,11 @@ function Cruel:pileTapped(pile)
 	if pile.category ~= 'Stock' then
 		return
 	end
-	if _G.BAIZE.recycles == 0 then
-		_G.BAIZE.ui:toast('You cannot recycle until you have moved a card', 'blip')
+	if self.subtype == 'Cruel' and _G.BAIZE.recycles == 0 then
+		_G.BAIZE.ui:toast('You cannot redeal until you have moved a card', 'blip')
+		return
+	elseif self.subtype == 'Perseverance' and _G.BAIZE.recycles == 0 then
+		_G.BAIZE.ui:toast('No more redeals', 'blip')
 		return
 	end
 	--[[
@@ -117,7 +134,14 @@ function Cruel:pileTapped(pile)
 			Util.moveCard(stock, t)
 		end
 	end
-	_G.BAIZE:setRecycles(-1)	-- kludge because recycle will trigger afterUserMove
+	if self.subtype == 'Cruel' then
+		_G.BAIZE:setRecycles(-1)	-- kludge because recycle will trigger afterUserMove
+	elseif self.subtype == 'Perseverance' then
+		_G.BAIZE:setRecycles(_G.BAIZE.recycles - 1)
+		if _G.BAIZE.recycles == 1 then
+			_G.BAIZE.ui:toast('One more redeal')
+		end
+	end
 end
 
 -- function Cruel:tailTapped(tail)

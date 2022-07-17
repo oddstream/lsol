@@ -81,7 +81,8 @@ _G.LSOL_VARIANTS = {
 	Blockade = {file='blockade.lua', cc=4},
 	-- ['Bisley Debug'] = {file='bisley.lua', cc=4, debug=true},
 	Canfield = {file='canfield.lua', cc=2},
-	Cruel = {file='cruel.lua', cc=4},
+	Cruel = {file='cruel.lua', cc=4, subtype='Cruel'},
+	Perseverance = {file='cruel.lua', cc=4, subtype='Perseverance'},
 	['Rainbow Canfield'] = {file='canfield.lua', cc=1, rainbow=true},
 	['Storehouse Canfield'] = {file='canfield.lua', cc=4, storehouse=true},
 	Duchess = {file='duchess.lua', cc=2},
@@ -158,6 +159,7 @@ _G.VARIANT_TYPES = {
 	['> Places'] = {'Algerian','Alhambra','Australian','Mount Olympus','Yukon','Yukon Relaxed','Russian','Crimean','Ukrainian','Usk','Usk Relaxed','Somerset'},
 	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
+	['> Redealers'] = {'Cruel', 'Perseverance','Usk','Usk Relaxed'},
 	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider','Little Spider','Spiderette','Spiderette One Suit','Spiderette Two Suits'},
 }
 
