@@ -138,7 +138,9 @@ function Cruel:pileTapped(pile)
 		_G.BAIZE:setRecycles(-1)	-- kludge because recycle will trigger afterUserMove
 	elseif self.subtype == 'Perseverance' then
 		_G.BAIZE:setRecycles(_G.BAIZE.recycles - 1)
-		if _G.BAIZE.recycles == 1 then
+		if _G.BAIZE.recycles == 0 then
+			_G.BAIZE.ui:toast('No more redeals')
+		elseif _G.BAIZE.recycles == 1 then
 			_G.BAIZE.ui:toast('One more redeal')
 		end
 	end
