@@ -502,6 +502,10 @@ function Baize:colorBackground()
 	self.ui:showColorPickerDrawer('baizeColor')
 end
 
+function Baize:colorCardFace()
+	self.ui:showColorPickerDrawer('cardFaceColor')
+end
+
 function Baize:colorCardBack()
 	self.ui:showColorPickerDrawer('cardBackColor')
 end
@@ -512,6 +516,14 @@ end
 
 function Baize:colorDiamond()
 	self.ui:showColorPickerDrawer('diamondColor')
+end
+
+function Baize:colorHeart()
+	self.ui:showColorPickerDrawer('heartColor')
+end
+
+function Baize:colorSpade()
+	self.ui:showColorPickerDrawer('spadeColor')
 end
 
 function Baize:colorHint()
@@ -553,7 +565,7 @@ end
 function Baize:toggleCheckbox(var)
 	_G.SETTINGS[var] = not _G.SETTINGS[var]
 	_G.saveSettings()
-	if var == 'simpleCards' then
+	if var == 'simpleCards' or var == 'autoColorCards' then
 		self:createCardTextures()
 	elseif var == 'mirrorBaize' then
 		self:undoPush()
@@ -641,9 +653,7 @@ function Baize:changeVariant(vname)
 		self:updateStatus()
 		self:updateUI()
 		self.ui:updateWidget('title', vname)
-		if _G.SETTINGS.autoColorCards then
-			self:createCardTextures()
-		end
+		self:createCardTextures()
 	else
 		self.ui:toast('Do not know how to play ' .. vname, 'blip')
 	end
@@ -1359,13 +1369,18 @@ function Baize:stopSpinning()
 end
 
 function Baize:resetSettings()
-	local vname = _G.SETTINGS.variantName
-	_G.SETTINGS = {}
-	for k,v in pairs(_G.LSOL_DEFAULT_SETTINGS) do
-		_G.SETTINGS[k] = v
+	local pressedButton = love.window.showMessageBox('Are you sure?', 'Reset settings?', {'Yes', 'No', escapebutton = 2}, 'warning')
+	if pressedButton == 1 then
+		local vname = _G.SETTINGS.variantName
+		_G.SETTINGS = {}
+		for k,v in pairs(_G.LSOL_DEFAULT_SETTINGS) do
+			_G.SETTINGS[k] = v
+		end
+		_G.SETTINGS.variantName = vname
+		_G.saveSettings()
+
+		self:createCardTextures()
 	end
-	_G.SETTINGS.variantName = vname
-	_G.saveSettings()
 	-- for k,v in pairs(_G.SETTINGS) do
 	-- 	log.trace(k, v)
 	-- end
