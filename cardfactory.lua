@@ -64,51 +64,52 @@ local pipInfo = {
 }
 
 local function getSuitColor(suit)
-	local suitColor
-	if _G.SETTINGS.fourColorCards then
-		if suit == '♣' then
-			suitColor = 'clubColor'
-		elseif suit == '♦' then
-			suitColor = 'diamondColor'
-		elseif suit == '♥' then
-			suitColor = 'heartColor'
-		elseif suit == '♠' then
-			suitColor = 'spadeColor'
-		end
-	elseif _G.SETTINGS.twoColorCards then
-		if suit == '♦' or suit == '♥' then
-			suitColor = 'heartColor'
-		else
-			suitColor = 'spadeColor'
-		end
-	elseif _G.SETTINGS.oneColorCards then
-		suitColor = 'spadeColor'
-	elseif _G.SETTINGS.autoColorCards then
+	-- returns {r, g, b} table that can be passed to love.graphics.setColor
+	-- after unpacking and passing through getColorFromBytes
+	local suitColorSetting
+	if _G.SETTINGS.autoColorCards then
 		if _G.BAIZE.script.cc == 4 then
 			if suit == '♣' then
-				suitColor = 'clubColor'
+				suitColorSetting = 'clubColor'
 			elseif suit == '♦' then
-				suitColor = 'diamondColor'
+				suitColorSetting = 'diamondColor'
 			elseif suit == '♥' then
-				suitColor = 'heartColor'
+				suitColorSetting = 'heartColor'
 			elseif suit == '♠' then
-				suitColor = 'spadeColor'
+				suitColorSetting = 'spadeColor'
 			end
 		elseif _G.BAIZE.script.cc == 2 then
 			if suit == '♦' or suit == '♥' then
-				suitColor = 'heartColor'
+				suitColorSetting = 'heartColor'
 			else
-				suitColor = 'spadeColor'
+				suitColorSetting = 'spadeColor'
 			end
 		elseif _G.BAIZE.script.cc == 1 then
-			suitColor = 'spadeColor'
+			suitColorSetting = 'spadeColor'
 		else
-			log.error('unknown value for color of cards in script')
+			log.error('unknown script.cc value')
 		end
 	else
-		log.error('unknown value for color of cards in settings')
+		if suit == '♦' or suit == '♥' then
+			return _G.LSOL_COLORS['Crimson']
+		else
+			return _G.LSOL_COLORS['Black']
+		end
 	end
-	return suitColor
+
+	local fallback = {0.5, 0.5, 0.5}
+	local setting = _G.SETTINGS[suitColorSetting]
+	if not setting then
+		log.error('No setting called', suitColorSetting)
+		return fallback
+	end
+	local rgb = _G.LSOL_COLORS[setting]
+	if not rgb then
+		log.error('No color for setting', suitColorSetting)
+		return fallback
+	end
+
+	return rgb	-- alpha is optional and defaults to 1
 end
 
 local function createSimpleFace(cardFaceTexture, ordFont, suitFont, width, height, ord, suit)
@@ -119,7 +120,7 @@ local function createSimpleFace(cardFaceTexture, ordFont, suitFont, width, heigh
 	love.graphics.setColor(1,1,1,1)
 	love.graphics.draw(cardFaceTexture)
 
-	love.graphics.setColor(Util.getColorFromSetting(getSuitColor(suit)))
+	love.graphics.setColor(love.math.colorFromBytes(unpack(getSuitColor(suit))))
 
 	local ords = _G.ORD2STRING[ord]
 	-- local ordw, ordh = self.ordFont:getWidth(ords), self.ordFont:getHeight(ords)
@@ -156,10 +157,10 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 	love.graphics.setColor(1,1,1,1)
 	love.graphics.draw(cardFaceTexture)
 
-	local suitColor = getSuitColor(suit)
+	local suitRGB = getSuitColor(suit)
 
 	-- every card gets an ord top left and bottom right (inverted)
-	love.graphics.setColor(Util.getColorFromSetting(suitColor))
+	love.graphics.setColor(love.math.colorFromBytes(unpack(suitRGB)))
 	love.graphics.setFont(ordFont)
 	if ord == 10 then
 		printAt(_G.ORD2STRING[ord], 0.15, 0.15, ordFont, 0.9)
@@ -170,7 +171,7 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 	end
 
 	if ord > 1 and ord < 11 then
-		love.graphics.setColor(Util.getColorFromSetting(suitColor))
+		love.graphics.setColor(love.math.colorFromBytes(unpack(suitRGB)))
 		love.graphics.setFont(suitFont)
 		local pips = pipInfo[ord]
 		for _, pip in ipairs(pips) do
@@ -189,7 +190,7 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 		love.graphics.setColor(0,0,0,0.05)
 		love.graphics.rectangle('fill', width * 0.25, height * 0.25, width * 0.5, height * 0.5)
 
-		love.graphics.setColor(Util.getColorFromSetting(suitColor))
+		love.graphics.setColor(love.math.colorFromBytes(unpack(suitRGB)))
 		love.graphics.setFont(suitFontLarge)
 		printAt(suit, 0.5, 0.5, suitFontLarge)
 

@@ -37,10 +37,7 @@ local menuWidgets = {
 
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
-	{text='One-color cards', var='oneColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
-	{text='Two-color cards', var='twoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
-	{text='Four-color cards', var='fourColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
-	{text='Auto-color cards', var='autoColorCards', grp={'oneColorCards','twoColorCards','fourColorCards', 'autoColorCards'}},
+	{text='Colorful cards', var='autoColorCards'},
 	{text='Power moves', var='powerMoves'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
@@ -97,6 +94,10 @@ function UI.new()
 		else
 			table.insert(o.settingsDrawer.widgets, Checkbox.new(winfo))
 		end
+	end
+	do
+		local rw = TextWidget.new({parent=o.settingsDrawer, text='[ Reset ]', baizeCmd='resetSettings'})
+		table.insert(o.settingsDrawer.widgets, rw)
 	end
 
 	o.colorTypesDrawer = Drawer.new({width=256 * _G.UI_SCALE})
@@ -227,23 +228,35 @@ function UI:showColorDrawer()
 
 	-- build this dynamically because colors change
 	local textColor = Util.getForegroundColor(_G.SETTINGS['baizeColor'])
-	local wgt = {text='Background', backColor=_G.SETTINGS['baizeColor'], textColor=textColor, baizeCmd='colorBackground', parent = self.colorTypesDrawer}
+	local wgt = {text='Background', backColor=_G.SETTINGS['baizeColor'], textColor=textColor, baizeCmd='colorBackground', parent=self.colorTypesDrawer}
+	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+
+	textColor=Util.getForegroundColor(_G.SETTINGS['cardFaceColor'])
+	wgt = {text='Card face', backColor=_G.SETTINGS['cardFaceColor'], textColor=textColor, baizeCmd='colorCardFace', parent=self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['cardBackColor'])
-	wgt = {text='Card back', backColor=_G.SETTINGS['cardBackColor'], textColor=textColor, baizeCmd='colorCardBack', parent = self.colorTypesDrawer}
+	wgt = {text='Card back', backColor=_G.SETTINGS['cardBackColor'], textColor=textColor, baizeCmd='colorCardBack', parent=self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['clubColor'])
-	wgt = {text='Four-color club', backColor=_G.SETTINGS['clubColor'], textColor=textColor, baizeCmd='colorClub', parent = self.colorTypesDrawer}
+	wgt = {text='Colorful club', backColor=_G.SETTINGS['clubColor'], textColor=textColor, baizeCmd='colorClub', parent=self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['diamondColor'])
-	wgt = {text='Four-color diamond', backColor=_G.SETTINGS['diamondColor'], textColor=textColor, baizeCmd='colorDiamond', parent = self.colorTypesDrawer}
+	wgt = {text='Colorful diamond', backColor=_G.SETTINGS['diamondColor'], textColor=textColor, baizeCmd='colorDiamond', parent=self.colorTypesDrawer}
+	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+
+	textColor = Util.getForegroundColor(_G.SETTINGS['heartColor'])
+	wgt = {text='Colorful heart', backColor=_G.SETTINGS['heartColor'], textColor=textColor, baizeCmd='colorHeart', parent=self.colorTypesDrawer}
+	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+
+	textColor = Util.getForegroundColor(_G.SETTINGS['spadeColor'])
+	wgt = {text='Colorful spade', backColor=_G.SETTINGS['spadeColor'], textColor=textColor, baizeCmd='colorSpade', parent=self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['hintColor'])
-	wgt = {text='Hints', backColor=_G.SETTINGS['hintColor'], textColor=textColor, baizeCmd='colorHint', parent = self.colorTypesDrawer}
+	wgt = {text='Hints', backColor=_G.SETTINGS['hintColor'], textColor=textColor, baizeCmd='colorHint', parent=self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
 
 	self.colorTypesDrawer:layout()

@@ -48,13 +48,10 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardBackColor = 'CornflowerBlue',
 	cardFaceColor = 'Ivory',
 	clubColor = 'DarkGreen',
-	diamondColor = 'MediumBlue',
+	diamondColor = 'DarkBlue',
 	heartColor = 'Crimson',
 	spadeColor = 'Black',
 	hintColor = 'Gold',
-	oneColorCards = false,
-	twoColorCards = true,
-	fourColorCards = false,
 	autoColorCards = false,
 	cardRoundness = 12,
 	cardOutline = true,
@@ -463,7 +460,7 @@ local function loadSettings()
 		end
 	end
 
-	local retiredSettings = {'highlightMovable','shortCards'}
+	local retiredSettings = {'highlightMovable','shortCards','oneColorCards','twoColorcards','fourColorCards'}
 	for _, rs in ipairs(retiredSettings) do
 		if settings[rs] ~= nil then
 			log.info('retiring setting', rs)
@@ -738,24 +735,6 @@ function love.keyreleased(key)
 		else
 			_G.BAIZE:setBookmark()
 		end
-	elseif key == '1' then
-		_G.SETTINGS.oneColorCards = true
-		_G.SETTINGS.twoColorCards = false
-		_G.SETTINGS.fourColorCards = false
-		_G.SETTINGS.autoColorCards = false
-		_G.BAIZE:createCardTextures()
-	elseif key == '2' then
-		_G.SETTINGS.oneColorCards = false
-		_G.SETTINGS.twoColorCards = true
-		_G.SETTINGS.fourColorCards = false
-		_G.SETTINGS.autoColorCards = false
-		_G.BAIZE:createCardTextures()
-	elseif key == '4' then
-		_G.SETTINGS.oneColorCards = false
-		_G.SETTINGS.twoColorCards = false
-		_G.SETTINGS.fourColorCards = true
-		_G.SETTINGS.autoColorCards = false
-		_G.BAIZE:createCardTextures()
 	elseif key == 'd' and love.keyboard.isDown('lctrl') then
 		_G.SETTINGS.debug = not _G.SETTINGS.debug
 		_G.saveSettings()

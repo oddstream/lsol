@@ -30,6 +30,9 @@ local Card = {
 }
 Card.__index = Card
 
+-- FLIP_STEP has to be big/fast enough to make sure flipping completes before transition
+local FLIP_STEP = 0.15
+
 function Card:__tostring()
 	return self.textureId
 end
@@ -103,7 +106,7 @@ end
 function Card:flipUp()
 	if self.prone then
 		self.prone = false
-		self.flipStep = -0.05	-- start by making card narrower
+		self.flipStep = -FLIP_STEP	-- start by making card narrower
 		self.flipWidth = 1.0
 	end
 end
@@ -111,7 +114,7 @@ end
 function Card:flipDown()
 	if not self.prone then
 		self.prone = true
-		self.flipStep = -0.05	-- start by making card narrower
+		self.flipStep = -FLIP_STEP	-- start by making card narrower
 		self.flipWidth = 1.0
 	end
 end
@@ -245,7 +248,7 @@ function Card:update(dt_seconds)
 	if self:flipping() then
 		self.flipWidth = self.flipWidth + self.flipStep
 		if self.flipWidth <= 0.0 then
-			self.flipStep = 0.05 -- now make card wider
+			self.flipStep = FLIP_STEP -- now make card wider
 		elseif self.flipWidth >= 1.0 then
 			-- finished flipping
 			self.flipWidth = 1.0
