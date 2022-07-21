@@ -7,6 +7,7 @@ local Drawer = require 'ui_drawer'
 local Statusbar = require 'ui_statusbar'
 local IconWidget = require 'ui_iconwidget'
 local TextWidget = require 'ui_textwidget'
+local MenuItemWidget = require 'ui_menuitemwidget'
 local DivWidget = require 'ui_divwidget'
 local Checkbox = require 'ui_checkbox'
 local Radio = require 'ui_radio'
@@ -69,7 +70,7 @@ function UI.new()
 	for _, winfo in ipairs(menuWidgets) do
 		winfo.parent = o.menuDrawer
 		if winfo.text then
-			table.insert(o.menuDrawer.widgets, IconWidget.new(winfo))
+			table.insert(o.menuDrawer.widgets, MenuItemWidget.new(winfo))
 		else
 			table.insert(o.menuDrawer.widgets, DivWidget.new(winfo))
 		end
@@ -77,7 +78,7 @@ function UI.new()
 
 	o.typesDrawer = Drawer.new({width=320 * _G.UI_SCALE})
 	for k, _ in pairs(_G.VARIANT_TYPES) do
-		wgt = TextWidget.new({parent=o.typesDrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
+		wgt = MenuItemWidget.new({parent=o.typesDrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
 		table.insert(o.typesDrawer.widgets, wgt)
 	end
 	table.sort(o.typesDrawer.widgets, function(a, b) return a.text < b.text end)
@@ -146,7 +147,7 @@ function UI:findWidgetAt(x, y)
 	local con = self:findContainerAt(x, y)
 	if con then
 		for _, w in ipairs(con.widgets) do
-			if Util.inRect(x, y, w:screenRect()) then
+			if Util.inRect(x, y, w:hitRect()) then
 				return w
 			end
 		end
@@ -229,35 +230,35 @@ function UI:showColorDrawer()
 	-- build this dynamically because colors change
 	local textColor = Util.getForegroundColor(_G.SETTINGS['baizeColor'])
 	local wgt = {text='Background', backColor=_G.SETTINGS['baizeColor'], textColor=textColor, baizeCmd='colorBackground', parent=self.colorTypesDrawer}
-	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 
 	textColor=Util.getForegroundColor(_G.SETTINGS['cardFaceColor'])
 	wgt = {text='Card face', backColor=_G.SETTINGS['cardFaceColor'], textColor=textColor, baizeCmd='colorCardFace', parent=self.colorTypesDrawer}
-	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['cardBackColor'])
 	wgt = {text='Card back', backColor=_G.SETTINGS['cardBackColor'], textColor=textColor, baizeCmd='colorCardBack', parent=self.colorTypesDrawer}
-	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['clubColor'])
 	wgt = {text='Colorful club', backColor=_G.SETTINGS['clubColor'], textColor=textColor, baizeCmd='colorClub', parent=self.colorTypesDrawer}
-	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['diamondColor'])
 	wgt = {text='Colorful diamond', backColor=_G.SETTINGS['diamondColor'], textColor=textColor, baizeCmd='colorDiamond', parent=self.colorTypesDrawer}
-	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['heartColor'])
 	wgt = {text='Colorful heart', backColor=_G.SETTINGS['heartColor'], textColor=textColor, baizeCmd='colorHeart', parent=self.colorTypesDrawer}
-	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['spadeColor'])
 	wgt = {text='Colorful spade', backColor=_G.SETTINGS['spadeColor'], textColor=textColor, baizeCmd='colorSpade', parent=self.colorTypesDrawer}
-	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 
 	textColor = Util.getForegroundColor(_G.SETTINGS['hintColor'])
 	wgt = {text='Hints', backColor=_G.SETTINGS['hintColor'], textColor=textColor, baizeCmd='colorHint', parent=self.colorTypesDrawer}
-	table.insert(self.colorTypesDrawer.widgets, TextWidget.new(wgt))
+	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 
 	self.colorTypesDrawer:layout()
 	self.colorTypesDrawer:show()
@@ -272,7 +273,7 @@ function UI:showColorPickerDrawer(setting)
 	self.allColorsDrawer.widgets = {}
 	for _, str in ipairs(palette) do
 		local textColor = Util.getForegroundColor(str)
-		local wgt = TextWidget.new({parent=self.allColorsDrawer, text=str, textColor=textColor, backColor=str, baizeCmd='modifySetting', param={setting=setting, value=str}})
+		local wgt = MenuItemWidget.new({parent=self.allColorsDrawer, text=str, textColor=textColor, backColor=str, baizeCmd='modifySetting', param={setting=setting, value=str}})
 		table.insert(self.allColorsDrawer.widgets, wgt)
 	end
 	table.sort(self.allColorsDrawer.widgets, function(a,b) return a.text < b.text end)
@@ -300,7 +301,7 @@ function UI:showVariantsDrawer(vtype)
 	self.variantsDrawer.widgets = {}
 	if _G.VARIANT_TYPES[vtype] then
 		for _, v in ipairs(_G.VARIANT_TYPES[vtype]) do
-			local wgt = TextWidget.new({parent=self.variantsDrawer, text=v, baizeCmd='changeVariant', param=v})
+			local wgt = MenuItemWidget.new({parent=self.variantsDrawer, text=v, baizeCmd='changeVariant', param=v})
 			table.insert(self.variantsDrawer.widgets, wgt)
 		end
 		table.sort(self.variantsDrawer.widgets, function(a, b) return a.text < b.text end)

@@ -31,7 +31,7 @@ end
 
 function IconWidget:draw()
 	-- very important!: reset color before drawing to canvas to have colors properly displayed
-	local cx, cy, cw, ch = self.parent:screenRect()
+	local _, cy, _, ch = self.parent:screenRect()
 	local wx, wy, ww, wh = self:screenRect()
 
 	if wy < cy then
@@ -40,6 +40,8 @@ function IconWidget:draw()
 	if wy + wh > cy + ch then
 		return
 	end
+
+	-- nb no backColor or textColor
 
 	if self.enabled then
 		local mx, my = love.mouse.getPosition()
@@ -56,19 +58,16 @@ function IconWidget:draw()
 		Util.setColorFromName('UiGrayedOut')
 	end
 
-	local iconWidth
 	if self.img then
 		love.graphics.draw(self.img, wx, wy, 0, _G.UI_SCALE, _G.UI_SCALE)
-		iconWidth = self.imgWidth
-	else
-		iconWidth = 0
 	end
 
+	--[[
 	if self.text then
 		love.graphics.setFont(self.parent.font)
 		love.graphics.print(self.text, wx + iconWidth + 8, wy + 3)
 	end
-
+]]
 	if _G.SETTINGS.debug then
 		Util.setColorFromName('UiGrayedOut')
 		love.graphics.setLineWidth(1)
