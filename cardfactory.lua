@@ -282,7 +282,7 @@ function _G.cardTextureFactory(width, height, radius)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
 	if love.gradient then
-		local frontColor, backColor = Util.getGradientColors('cardBackColor', 'CornflowerBlue', 0.1)
+		local frontColor, backColor = Util.getGradientColors('cardBackColor', 'CornflowerBlue', 0.09)
 		love.gradient.draw(
 			function()
 				drawCardRect()

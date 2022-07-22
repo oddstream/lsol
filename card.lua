@@ -31,7 +31,7 @@ local Card = {
 Card.__index = Card
 
 -- FLIP_STEP has to be big/fast enough to make sure flipping completes before transition
-local FLIP_STEP = 0.15
+local FLIP_STEP = 0.1
 
 function Card:__tostring()
 	return self.textureId

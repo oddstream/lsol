@@ -13,7 +13,7 @@ function Titlebar.new(o)
 
 	o.height = _G.TITLEBARHEIGHT
 	o.align = 'top'
-	o.font = love.graphics.newFont(_G.ORD_FONT, _G.UIFONTSIZE)	-- smaller than _G.UI_MEDIUM_FONT
+	o.font = love.graphics.newFont(_G.UI_MEDIUM_FONT, _G.UIFONTSIZE_TITLEBAR)
 	o.spacex = o.font:getWidth('M')
 	o.spacey = o.font:getHeight()
 

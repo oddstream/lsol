@@ -8,8 +8,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '19'
-_G.LSOL_VERSION_DATE = '2022-07-08'
+_G.LSOL_VERSION = '21'
+_G.LSOL_VERSION_DATE = '2022-07-22'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -152,7 +152,7 @@ _G.VARIANT_TYPES = {
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
 	['> Freecells'] = {'Blind Freecell','Easy Freecell', 'Selective Freecell', 'Chinese Freecell', 'Double Freecell', 'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Triple Klondike', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
-	['> People'] = {'Agnes Bernauer','Agnes Sorel','Josephine','Martha','Miss Milligan','Rosamund'},
+	['> People'] = {'Agnes Bernauer','Agnes Sorel','Baker\'s Game','Baker\'s Game Relaxed','Josephine','Martha','Miss Milligan','Rosamund'},
 	['> Places'] = {'Algerian','Alhambra','Australian','Mount Olympus','Yukon','Yukon Relaxed','Russian','Crimean','Ukrainian','Usk','Usk Relaxed','Somerset'},
 	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
@@ -618,6 +618,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.TITLEBARHEIGHT = 48 * _G.UI_SCALE
 	_G.STATUSBARHEIGHT = 24 * _G.UI_SCALE
 	_G.UIFONTSIZE = 24 * _G.UI_SCALE
+	_G.UIFONTSIZE_TITLEBAR = 20  * _G.UI_SCALE
 	_G.UIFONTSIZE_SMALL = 14  * _G.UI_SCALE
 
 	-- print('default lineStyle = ', love.graphics.getLineStyle())
