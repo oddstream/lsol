@@ -152,7 +152,7 @@ _G.VARIANT_TYPES = {
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
 	['> Freecells'] = {'Blind Freecell','Easy Freecell', 'Selective Freecell', 'Chinese Freecell', 'Double Freecell', 'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena', 'Gargantua', 'Triple Klondike', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
-	['> People'] = {'Agnes Bernauer','Agnes Sorel','Baker\'s Game','Baker\'s Game Relaxed','Josephine','Martha','Miss Milligan','Rosamund'},
+	['> People'] = {'Agnes Bernauer','Agnes Sorel','Athena','Baker\'s Game','Baker\'s Game Relaxed','Josephine','Martha','Miss Milligan','Rosamund'},
 	['> Places'] = {'Algerian','Alhambra','Australian','Mount Olympus','Yukon','Yukon Relaxed','Russian','Crimean','Ukrainian','Usk','Usk Relaxed','Somerset'},
 	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},
 	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
@@ -628,6 +628,27 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.UI_SAFEY,
 	_G.UI_SAFEW,
 	_G.UI_SAFEH = love.window.getSafeArea()
+
+	-- preload the recycle icons
+	-- https://materialdesignicons.com/icon/restart (>1 recycles)
+	-- https://materialdesignicons.com/icon/restart-off (no more recycles)
+	-- https://materialdesignicons.com/icon/restart-alert (one remaining recycle)
+	do
+		local fname = 'assets/icons/restart.png'
+		local imageData = love.image.newImageData(fname)
+		if not imageData then
+			log.error('could not load', fname)
+		else
+			_G.LSOL_ICON_RESTART = love.graphics.newImage(imageData)
+		end
+		fname = 'assets/icons/restart-off.png'
+		imageData = love.image.newImageData(fname)
+		if not imageData then
+			log.error('could not load', fname)
+		else
+			_G.LSOL_ICON_RESTART_OFF = love.graphics.newImage(imageData)
+		end
+	end
 
 	_G.BAIZE = Baize.new()
 

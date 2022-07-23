@@ -94,6 +94,11 @@ function Stock:unsortedPairs()
 end
 
 function Stock:draw()
+
+	if self:hidden() then
+		return
+	end
+
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
 
@@ -105,7 +110,7 @@ function Stock:draw()
 		love.graphics.setColor(1, 1, 1, 0.1)
 		love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	end
-
+--[[
 	if self.rune then
 		love.graphics.setColor(1, 1, 1, 0.1)
 		love.graphics.setFont(b.runeFont)
@@ -118,6 +123,34 @@ function Stock:draw()
 			b.runeFont:getWidth(self.rune) / 2,		-- origin offset
 			b.runeFont:getHeight() / 2)				-- origin offset
 	end
+]]
+	local icon
+	if b.recycles == 0 then
+		icon = _G.LSOL_ICON_RESTART_OFF
+	else
+		icon = _G.LSOL_ICON_RESTART
+	end
+	-- icons are currently 48x48
+	-- scale so icon width,height is half of pile/card width
+	local iw, ih = icon:getWidth(), icon:getHeight()
+	local scale = b.cardWidth / iw / 2
+	x = x + (b.cardWidth - (iw*scale)) / 2
+	y = y + (b.cardHeight - (ih*scale)) / 2
+
+	local mx, my = love.mouse.getPosition()
+	if Util.inRect(mx, my, self:screenRect()) then
+		if love.mouse.isDown(1) then
+			x = x + 2
+			y = y + 2
+		end
+	end
+
+	love.graphics.setColor(1, 1, 1, 0.1)
+	love.graphics.draw(icon,
+		x, y,
+		0,	-- rotation
+		scale, scale
+	)
 end
 
 return Stock

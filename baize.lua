@@ -286,7 +286,7 @@ function Baize:updateFromSaved(saved)
 
 	self.bookmark = saved.bookmark
 	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
-	self:setRecycles(saved.recycles)	-- updates stock rune
+	self:setRecycles(saved.recycles)
 end
 
 function Baize:updateStatus()
@@ -807,8 +807,7 @@ function Baize:layout()
 	self.cardRadius = self.cardWidth / _G.SETTINGS.cardRoundness
 
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
-		self.labelFont = love.graphics.newFont(_G.ORD_FONT, self.cardWidth)
-		self.runeFont = love.graphics.newFont(_G.SUIT_FONT, self.cardWidth)
+		self.labelFont = love.graphics.newFont(_G.ORD_FONT, self.cardWidth * 0.666)
 		self:createCardTextures()
 	end
 
@@ -1216,11 +1215,6 @@ end
 
 function Baize:setRecycles(n)
 	self.recycles = n
-	if n < 1 then
-		self.stock.rune = '☓'	-- https://www.compart.com/en/unicode/U+2613
-	else
-		self.stock.rune = '♲'	-- https://www.compart.com/en/unicode/U+2672
-	end
 end
 
 function Baize:recycleWasteToStock()

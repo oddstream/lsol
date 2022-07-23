@@ -36,12 +36,12 @@ function Pile:getSavable()
 	for _, c in ipairs(self.cards) do
 		table.insert(cards, c:getSavable())
 	end
-	return {category=self.category, label=self.label, rune=self.rune, cards=cards}
+	return {category=self.category, label=self.label, cards=cards}
 end
 
 function Pile.isSavable(obj)
 	if type(obj) == 'table' then
-		-- label, rune and might be nil
+		-- label might be nil
 		if type(obj.category) == 'string' then
 			if type(obj.cards) == 'table' then
 				return true
