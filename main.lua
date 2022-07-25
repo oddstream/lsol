@@ -8,8 +8,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '21'
-_G.LSOL_VERSION_DATE = '2022-07-22'
+_G.LSOL_VERSION = '21.5'
+_G.LSOL_VERSION_DATE = '2022-07-24'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -56,6 +56,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardRoundness = 12,
 	cardOutline = true,
 	cardRatio = 1.444,
+	-- lockRotation = false,
 }
 
 _G.LSOL_VARIANTS = {
@@ -107,6 +108,7 @@ _G.LSOL_VARIANTS = {
 	Josephine = {file='forty.lua', cc=4, tabs=10, cardsPerTab=4, josephine=true},
 	Limited = {file='forty.lua', cc=4, tabs=12, cardsPerTab=3},
 	['Little Spider'] = {file='littlespider.lua', cc=2},
+	['Little Spider (Fanned)'] = {file='littlespider.lua', cc=2, fanned=true},
 	Lucas = {file='forty.lua', cc=4, tabs=13, cardsPerTab=3, dealAces=true},
 	Martha = {file='martha.lua', cc=2},
 	['Miss Milligan'] = {file='miss milligan.lua', cc=2},
@@ -622,7 +624,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.UIFONTSIZE_SMALL = 14  * _G.UI_SCALE
 
 	-- print('default lineStyle = ', love.graphics.getLineStyle())
-	love.graphics.setLineStyle('rough')	-- just in case default is 'rough', which is isn't
+	love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
 
 	_G.UI_SAFEX,
 	_G.UI_SAFEY,
@@ -818,6 +820,22 @@ function love.keyreleased(key)
 			end
 			_G.BAIZE:updateStatus()
 			_G.BAIZE:updateUI()
+
+			-- see Card measureTime
+		elseif key == 'q' then
+			local flipTimeTotal = 0
+			local lerpTimeTotal = 0
+			local flipCountTotal = 0
+			local lerpCountTotal = 0
+			for _, c in ipairs(_G.BAIZE.deck) do
+				flipTimeTotal = flipTimeTotal + c.flipTime
+				flipCountTotal = flipCountTotal + c.flipCount
+				lerpTimeTotal = lerpTimeTotal + c.lerpTime
+				lerpCountTotal = lerpCountTotal + c.lerpCount
+			end
+			log.info('flip total=', flipCountTotal, 'time=', flipTimeTotal, 'avg=', flipTimeTotal / flipCountTotal)
+			log.info('lerp total=', lerpCountTotal, 'time=', lerpTimeTotal, 'avg=', lerpTimeTotal / lerpCountTotal)
+
 		end
 	end
 
@@ -853,8 +871,10 @@ end
 function love.displayrotated(index, orientation)
 	-- Due to a bug in LOVE 11.3, the orientation value is boolean true instead. A workaround is as follows:
 	-- orientation = love.window.getDisplayOrientation(index)
-	_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
-	_G.BAIZE:layout()
+	-- if not _G.SETTINGS.lockRotation then
+		_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
+		_G.BAIZE:layout()
+	-- end
 	-- if _G.SETTINGS.debug then
 	-- 	_G.BAIZE.ui:toast('displayrotated ' .. tostring(orientation))
 	-- 	_G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))

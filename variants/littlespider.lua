@@ -1,6 +1,6 @@
 -- little spider
 
--- local log = require 'log'
+local log = require 'log'
 
 local Variant = require 'variant'
 local CC = require 'cc'
@@ -18,31 +18,62 @@ setmetatable(LittleSpider, {__index = Variant})
 function LittleSpider.new(o)
 	o.wikipedia = 'https://en.wikipedia.org/wiki/Little_Spider'
 	o.tabCompareFn = CC.None
-	o.aceColor = 'unknown'
-	o.kingColor = 'unknown'
 	return setmetatable(o, LittleSpider)
 end
 
 function LittleSpider:buildPiles()
 	Stock.new({x=1, y=1})
-	for x = 2, 5 do
-		Tableau.new({x=x, y=1, fanType='FAN_NONE', moveType='MOVE_ONE'})
+	if self.fanned then
+		self.topTabY = 1
+		self.foundY = 3.5
+		self.bottomTabY = 6
+		self.fanFanType = 'FAN_DOWN'
+	else
+		self.topTabY = 1
+		self.foundY = 2
+		self.bottomTabY = 3
+		self.fanFanType = 'FAN_NONE'
 	end
-	for x = 2, 3 do
-		local f = Foundation.new({x=x, y=2})
+	for x = 2.5, 5.5 do
+		Tableau.new({x=x, y=self.topTabY, fanType=self.tabFanType, moveType='MOVE_ONE'})
+	end
+	for x = 2.5, 3.5 do
+		local f = Foundation.new({x=x, y=self.foundY})
 		f.label = 'A'
 	end
-	for x = 4, 5 do
-		local f = Foundation.new({x=x, y=2})
+	for x = 4.5, 5.5 do
+		local f = Foundation.new({x=x, y=self.foundY})
 		f.label = 'K'
 	end
-	for x = 2, 5 do
-		Tableau.new({x=x, y=3, fanType='FAN_NONE', moveType='MOVE_ONE'})
+	for x = 2.5, 5.5 do
+		Tableau.new({x=x, y=self.bottomTabY, fanType=self.tabFanType, moveType='MOVE_ONE'})
 	end
 
-	-- for i = 1, 4 do
-	-- 	_G.BAIZE.tableaux[i].boundaryPile = _G.BAIZE.foundations[i]
-	-- end
+	for i = 1, 4 do
+		_G.BAIZE.tableaux[i].boundaryPile = _G.BAIZE.foundations[i]
+	end
+end
+
+local function placedAceColor()
+	local founds = _G.BAIZE.foundations
+	if #founds[1].cards > 0 then
+		return founds[1].cards[1].redBlack
+	end
+	if #founds[2].cards > 0 then
+		return founds[2].cards[1].redBlack
+	end
+	return 'none'
+end
+
+local function placedKingColor()
+	local founds = _G.BAIZE.foundations
+	if #founds[3].cards > 0 then
+		return founds[3].cards[1].redBlack
+	end
+	if #founds[4].cards > 0 then
+		return founds[4].cards[1].redBlack
+	end
+	return 'none'
 end
 
 function LittleSpider:startGame()
@@ -53,11 +84,8 @@ function LittleSpider:startGame()
 	_G.BAIZE:setRecycles(0)
 end
 
-local function IsBottomTableau(t)
-	return t.category == 'Tableau' and t.slot.y == 3
-end
-
 function LittleSpider:afterMove()
+	log.trace('ace =', placedAceColor(), 'king =', placedKingColor())
 end
 
 function LittleSpider:moveTailError(tail)
@@ -81,7 +109,7 @@ function LittleSpider:tailAppendError(dst, tail)
 		-- while cards from the lower row can only be placed on the foundations directly on top of [above] it.
 		if #_G.BAIZE.stock.cards > 0 then
 			local src = tail[1].parent
-			if IsBottomTableau(src) then
+			if src.category == 'Tableau' and src.slot.y == self.bottomTabY then
 				if src.slot.x ~= dst.slot.x then
 					return 'Cards from the lower row can only be placed on the foundation directly above'
 				end
@@ -89,30 +117,24 @@ function LittleSpider:tailAppendError(dst, tail)
 		end
 
 		if #dst.cards == 0 then
+			local pac = placedAceColor()
+			local pkc = placedKingColor()
 			local card = tail[1]
+			local cc = card.redBlack
+
 			if dst.label == 'A' and card.ord == 1 then
-				if self.aceColor == 'unknown' then
-					if card.black == true then
-						self.aceColor = 'black'
-					else
-						self.aceColor = 'red'
-					end
-				elseif self.aceColor == 'red' and card.black == true then
-					return 'Expecting a red ace'
-				elseif self.aceColor == 'black' and card.black == false then
-					return 'Expecting a black ace'
+				if not (pac == 'none' or pac == cc) then
+					return 'Expecting a ' .. pac .. ' A'
+				end
+				if pkc == cc then
+					return 'Already placed a ' .. pkc .. ' K'
 				end
 			elseif dst.label == 'K' and card.ord == 13 then
-				if self.kingColor == 'unknown' then
-					if card.black == true then
-						self.kingColor = 'black'
-					else
-						self.kingColor = 'red'
-					end
-				elseif self.kingColor == 'red' and card.black == true then
-					return 'Expecting a red king'
-				elseif self.kingColor == 'black' and card.black == false then
-					return 'Expecting a black king'
+				if not (pkc == 'none' or pkc == cc) then
+					return 'Expecting a ' .. pkc .. ' K'
+				end
+				if pac == cc then
+					return 'Already placed a ' .. pac .. ' A'
 				end
 			end
 			return CC.Empty(dst, card)

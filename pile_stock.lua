@@ -102,7 +102,7 @@ function Stock:draw()
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
 
-	if b.showMovable and b.recycles > 0 then
+	if b.showMovable and b.recycles > 0 and b.waste and #b.waste.cards > 0 then
 		Util.setColorFromSetting('hintColor')
 		love.graphics.setLineWidth(3)
 		love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius, 20)

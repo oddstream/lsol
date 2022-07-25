@@ -42,6 +42,7 @@ local settingsWidgets = {
 	{text='Power moves', var='powerMoves'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
+	-- {text='Lock rotation', var='lockRotation'},
 }
 
 function UI.new()

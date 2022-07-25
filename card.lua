@@ -27,11 +27,17 @@ local Card = {
 
 	-- directionX, directionY
 	-- degrees, spin
+
+	-- lerpCount
+	-- lerpTime
+	-- lerpStartTime
+	-- flipCount
+	-- flipTime
+	-- flipStartTime
 }
 Card.__index = Card
 
--- FLIP_STEP has to be big/fast enough to make sure flipping completes before transition
-local FLIP_STEP = 0.1
+local measureTime = true	-- debug for measuring transition and flip time
 
 function Card:__tostring()
 	return self.textureId
@@ -43,7 +49,13 @@ function Card.new(o)
 	-- assert(type(o.suit)=='string')
 	-- assert(type(o.ord)=='number')
 
+	if o.suit == '♣' or o.suit == '♠' then
+		o.redBlack = 'black'
+	else
+		o.redBlack = 'red'
+	end
 	o.black = o.suit == '♣' or o.suit == '♠'	-- helps when comparing colors
+	o.red = not o.black
 
 	-- fictional start point off top of screen
 	o.x = 512
@@ -55,9 +67,22 @@ function Card.new(o)
 	o.lerpStep = 1.0
 
 	o.flipStep = 0.0
+	-- cards have to flip faster than they transition
+	-- remember that flipping happens in two steps
+	-- so three times faster would do, but four times faster seems snappier
+	-- with cardTransitionStep at 0.02, and flipStepAmount at 0.08,
+	-- average transitions take 0.64ms, flips take 0.39ms
+	o.flipStepAmount = _G.SETTINGS.cardTransitionStep * 4
 
 	o.spinDegrees = 0
 	o.spinDelaySeconds = 0.0
+
+	if measureTime then
+		o.flipTime = 0.0
+		o.flipCount = 0
+		o.lerpTime = 0.0
+		o.lerpCount = 0
+	end
 
 	return setmetatable(o, Card)
 end
@@ -106,16 +131,22 @@ end
 function Card:flipUp()
 	if self.prone then
 		self.prone = false
-		self.flipStep = -FLIP_STEP	-- start by making card narrower
+		self.flipStep = -self.flipStepAmount	-- start by making card narrower
 		self.flipWidth = 1.0
+		if measureTime then
+			self.flipStartTime = love.timer.getTime()
+		end
 	end
 end
 
 function Card:flipDown()
 	if not self.prone then
 		self.prone = true
-		self.flipStep = -FLIP_STEP	-- start by making card narrower
+		self.flipStep = -self.flipStepAmount	-- start by making card narrower
 		self.flipWidth = 1.0
+		if measureTime then
+			self.flipStartTime = love.timer.getTime()
+		end
 	end
 end
 
@@ -165,6 +196,10 @@ function Card:transitionTo(x, y)
 	self.lerpStep = 0.2	-- starting from 0.0 feels a little laggy
 	self.lerpStepAmount = _G.SETTINGS.cardTransitionStep
 	self.lerping = true
+
+	if measureTime then
+		self.lerpStartTime = love.timer.getTime()
+	end
 end
 
 function Card:dragging()
@@ -243,16 +278,24 @@ function Card:update(dt_seconds)
 			-- make sure card is in proper place
 			-- and terminate any transition
 			self:setBaizePos(self.dst.x, self.dst.y)
+			if measureTime then
+				self.lerpTime = self.lerpTime + (love.timer.getTime() - self.lerpStartTime)
+				self.lerpCount = self.lerpCount + 1
+			end
 		end
 	end
 	if self:flipping() then
 		self.flipWidth = self.flipWidth + self.flipStep
 		if self.flipWidth <= 0.0 then
-			self.flipStep = FLIP_STEP -- now make card wider
+			self.flipStep = self.flipStepAmount -- now make card wider
 		elseif self.flipWidth >= 1.0 then
 			-- finished flipping
 			self.flipWidth = 1.0
 			self.flipStep = 0.0
+			if measureTime then
+				self.flipTime = self.flipTime + (love.timer.getTime() - self.flipStartTime)
+				self.flipCount = self.flipCount + 1
+			end
 		end
 	end
 	if self:spinning() then
