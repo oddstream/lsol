@@ -22,7 +22,11 @@ function Stock.new(o)
 	for pack = 1, o.packs do
 		for _, ord in ipairs(o.ordFilter) do
 			for _, suit in ipairs(o.suitFilter) do
-				Pile.push(o, Card.new({pack=pack, ord=ord, suit=suit, prone=true}))
+				if o.faceUpStock then
+					Pile.push(o, Card.new({pack=pack, ord=ord, suit=suit, prone=false}))
+				else
+					Pile.push(o, Card.new({pack=pack, ord=ord, suit=suit, prone=true}))
+				end
 				-- card parent is assigned in Pile.push
 			end
 		end
