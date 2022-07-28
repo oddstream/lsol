@@ -59,8 +59,12 @@ end
 
 function Stock:push(c)
 	Pile.push(self, c)
-	-- Stock cards are always prone
-	c:flipDown()
+	-- Stock cards are always prone, unless overriden
+	if self.faceUpStock then
+		c:flipUp()
+	else
+		c:flipDown()
+	end
 end
 
 function Stock:pop()

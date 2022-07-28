@@ -22,9 +22,7 @@ function Frog.new(o)
 end
 
 function Frog:buildPiles()
-	Stock.new({x=-5, y=5, packs=2})
-
-	self.stock = Reserve.new({x=1, y=1, fanType='FAN_NONE'})
+	self.stock = Stock.new({x=1, y=1, packs=2, faceUpStock=true})
 	for x = 2.5, 9.5 do
 		local f = Foundation.new({x=x, y=1})
 		f.label = 'A'
@@ -62,10 +60,11 @@ function Frog:startGame()
 				self.reserve:push(c)
 			end
 		end
-	end
-
-	while #src.cards > 0 do
-		Util.moveCard(src, self.stock)
+		-- "In case there is no ace segregated in making the reserve,
+		-- an ace is removed from the stock to become the first foundation"
+		if #_G.BAIZE.foundations[1].cards == 0 then
+			Util.moveCardByOrd(src, _G.BAIZE.foundations[8], 1)
+		end
 	end
 
 	_G.BAIZE:setRecycles(0)
@@ -74,24 +73,27 @@ end
 -- function Frog:afterMove()
 -- end
 
--- function Frog:moveTailError(tail)
--- end
+function Frog:moveTailError(tail)
+	return nil
+end
 
 function Frog:tailAppendError(dst, tail)
 	if dst.category == 'Foundation' then
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
 		else
+			-- "The foundations are built up regardless of suit up to kings."
 			return CC.Up({dst:peek(), tail[1]})
 		end
 	elseif dst.category == 'Tableau' then
+		-- "once a card is in a wastepile [tableau], it stays there until it can be built on the foundations"
 		-- cannot move tab to tab or reserve to tab
 		local src = tail[1].parent
 		if src.category == 'Tableau' then
-			return 'Cannot move a card from tableau to tableau'
+			return 'Cannot move a card from Tableau to Tableau'
 		end
 		if src == self.reserve then
-			return 'Cannot move a card from reserve to tableau'
+			return 'Cannot move a card from the Reserve to a Tableau'
 		end
 	end
 	return nil
@@ -107,9 +109,11 @@ function Frog:tailTapped(tail)
 		local homes = Util.findHomesForTail(tail)
 		if homes and #homes > 0 then
 			if #homes > 1 then
+				-- put card in the emptiest pile (sort < instead of >)
 				table.sort(homes, function(a,b) return a.weight < b.weight end)
 			end
 			if homes[#homes].dst.category == 'Foundation' then
+				-- unless one of the homes is a foundation
 				Util.moveCard(self.stock, homes[#homes].dst)
 			else
 				Util.moveCard(self.stock, homes[1].dst)
