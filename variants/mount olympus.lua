@@ -103,8 +103,8 @@ function MountOlympus:tailAppendError(dst, tail)
 	return nil
 end
 
-function MountOlympus:pileTapped(pile)
-end
+-- function MountOlympus:pileTapped(pile)
+-- end
 
 function MountOlympus:tailTapped(tail)
 	local pile = tail[1].parent

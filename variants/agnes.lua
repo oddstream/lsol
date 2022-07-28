@@ -117,8 +117,8 @@ function Agnes:tailAppendError(dst, tail)
 	return nil
 end
 
-function Agnes:pileTapped(pile)
-end
+-- function Agnes:pileTapped(pile)
+-- end
 
 function Agnes:tailTapped(tail)
 	local card = tail[1]

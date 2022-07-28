@@ -42,7 +42,9 @@ local settingsWidgets = {
 	{text='Power moves', var='powerMoves'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
-	-- {text='Lock rotation', var='lockRotation'},
+	-- {text='Auto rotation', var='orientAuto', grp={'orientAuto', 'orientPortrait', 'orientLandscape'}},
+	-- {text='Lock portrait', var='orientPortrait', grp={'orientAuto', 'orientPortrait', 'orientLandscape'}},
+	-- {text='Lock landscape', var='orientLandscape', grp={'orientAuto', 'orientPortrait', 'orientLandscape'}},
 }
 
 function UI.new()
@@ -266,7 +268,7 @@ function UI:showColorDrawer()
 end
 
 function UI:showColorPickerDrawer(setting)
-	-- fill dynamicaly because setting changes
+	-- fill dynamically because setting changes
 	local palette = {}
 	for k, _ in pairs(_G.LSOL_COLORS) do
 			table.insert(palette, k)

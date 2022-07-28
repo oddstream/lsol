@@ -103,8 +103,8 @@ function Crimean:tailAppendError(dst, tail)
 	return nil
 end
 
-function Crimean:pileTapped(pile)
-end
+-- function Crimean:pileTapped(pile)
+-- end
 
 function Crimean:tailTapped(tail)
 	local card = tail[1]

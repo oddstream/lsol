@@ -8,7 +8,11 @@ It is quite 'hard core', offering little in the way of help or hints when playin
 
 The app can also be played on desktops (Linux/Mac/Windows) by downloading the LÖVE runtime (from https://love2d.org/#download) and the lsol.love file (from the github repository at https://github.com/oddstream/lsol/blob/master/lsol.love).
 
-= Why create yet another solitaire app? =
+== ISSUES AND FEEDBACK ==
+
+If you find a bug/glitch/problem, then please create an issue at https://github.com/oddstream/lsol/issues
+
+= WHY CREATE YET ANOTHER SOLITAIRE APP? =
 
 Solitaire games have been around for hundreds of years, and for good reason: they're simple, absorbing and fun to play.
 
@@ -86,7 +90,7 @@ This app contains over 70 hand-picked solitaire variations, including:
 
 Games like Penguin and Simple Simon are really satisfying to win. Give them a go!
 
-= What makes this different from other solitaire apps? =
+= WWHAT MAKES THIS DIFFERENT FROM THE OTHER 462 SOLITAIRE APPS? =
 
 No adverts, no fees, no spooky permissions, no tracking.
 
@@ -100,6 +104,6 @@ If your favorite version is not included, email us and tell us why it's your fav
 
 In any case, send some feedback about what you like and don't like.
 
-= Credits =
+= CREDITS =
 
 Sounds by Victor Vashenko and Kenney.nl

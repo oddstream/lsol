@@ -57,10 +57,10 @@ end
 local function placedAceColor()
 	local founds = _G.BAIZE.foundations
 	if #founds[1].cards > 0 then
-		return founds[1].cards[1].redBlack
+		return founds[1].cards[1].twoColor
 	end
 	if #founds[2].cards > 0 then
-		return founds[2].cards[1].redBlack
+		return founds[2].cards[1].twoColor
 	end
 	return 'none'
 end
@@ -68,10 +68,10 @@ end
 local function placedKingColor()
 	local founds = _G.BAIZE.foundations
 	if #founds[3].cards > 0 then
-		return founds[3].cards[1].redBlack
+		return founds[3].cards[1].twoColor
 	end
 	if #founds[4].cards > 0 then
-		return founds[4].cards[1].redBlack
+		return founds[4].cards[1].twoColor
 	end
 	return 'none'
 end
@@ -120,7 +120,7 @@ function LittleSpider:tailAppendError(dst, tail)
 			local pac = placedAceColor()
 			local pkc = placedKingColor()
 			local card = tail[1]
-			local cc = card.redBlack
+			local cc = card.twoColor
 
 			if dst.label == 'A' and card.ord == 1 then
 				if not (pac == 'none' or pac == cc) then

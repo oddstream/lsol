@@ -175,7 +175,7 @@ end
 
 function CC.DownColor(cpair)
 	if CC.EitherProne(cpair) then return proneError end
-	if cpair[1].black ~= cpair[2].black then
+	if cpair[1].twoColor ~= cpair[2].twoColor then
 		return 'Cards must be the same color'
 	end
 	return CC.Down(cpair)
@@ -183,7 +183,7 @@ end
 
 function CC.DownColorWrap(cpair)
 	if CC.EitherProne(cpair) then return proneError end
-	if cpair[1].black ~= cpair[2].black then
+	if cpair[1].twoColor ~= cpair[2].twoColor then
 		return 'Cards must be the same color'
 	end
 	if cpair[1].ord == 1 and cpair[2].ord == 13 then
@@ -196,7 +196,7 @@ end
 
 function CC.UpAltColor(cpair)
 	if CC.EitherProne(cpair) then return proneError end
-	if cpair[1].black == cpair[2].black then
+	if cpair[1].twoColor == cpair[2].twoColor then
 		return 'Cards must be in alternating colors'
 	end
 	return CC.Up(cpair)
@@ -204,7 +204,7 @@ end
 
 function CC.DownAltColor(cpair)
 	if CC.EitherProne(cpair) then return proneError end
-	if cpair[1].black == cpair[2].black then
+	if cpair[1].twoColor == cpair[2].twoColor then
 		return 'Cards must be in alternating colors'
 	end
 	return CC.Down(cpair)
@@ -230,7 +230,7 @@ end
 
 function CC.DownAltColorWrap(cpair)
 	if CC.EitherProne(cpair) then return proneError end
-	if cpair[1].black == cpair[2].black then
+	if cpair[1].twoColor == cpair[2].twoColor then
 		return 'Cards must be in alternating colors'
 	end
 	if cpair[1].ord == 1 and cpair[2].ord == 13 then

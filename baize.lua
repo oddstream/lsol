@@ -1217,10 +1217,10 @@ function Baize:setRecycles(n)
 	self.recycles = n
 end
 
-function Baize:recycleWasteToStock()
+function Baize:recyclePileToStock(pile)
 	if self.recycles > 0 then
-		while #self.waste.cards > 0 do
-			Util.moveCard(self.waste, self.stock)
+		while #pile.cards > 0 do
+			Util.moveCard(pile, self.stock)
 		end
 		self:setRecycles(self.recycles - 1)
 		if self.recycles == 0 then
@@ -1233,6 +1233,10 @@ function Baize:recycleWasteToStock()
 	else
 		self.ui:toast('No more recycles', 'blip')
 	end
+end
+
+function Baize:recycleWasteToStock()
+	self:recyclePileToStock(self.waste)
 end
 
 function Baize:complete()

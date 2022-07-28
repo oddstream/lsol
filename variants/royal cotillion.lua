@@ -101,10 +101,9 @@ function RoyalCotillion:tailAppendError(dst, tail)
 	return nil
 end
 
---[[
-function RoyalCotillion:pileTapped(pile)
-end
-]]
+
+-- function RoyalCotillion:pileTapped(pile)
+-- end
 
 function RoyalCotillion:tailTapped(tail)
 	local pile = tail[1].parent

@@ -50,12 +50,10 @@ function Card.new(o)
 	-- assert(type(o.ord)=='number')
 
 	if o.suit == '♣' or o.suit == '♠' then
-		o.redBlack = 'black'
+		o.twoColor = 'black'
 	else
-		o.redBlack = 'red'
+		o.twoColor = 'red'
 	end
-	o.black = o.suit == '♣' or o.suit == '♠'	-- helps when comparing colors
-	o.red = not o.black
 
 	-- fictional start point off top of screen
 	o.x = 512
@@ -242,7 +240,7 @@ function Card:startSpinning()
 	self.directionY = math.random(-3, 3)
 	self.degrees = 0
 	self.spinDegrees = math.random() - 0.5
-	self.spinDelaySeconds = 1.0
+	self.spinDelaySeconds = 2.0
 end
 
 function Card:stopSpinning()

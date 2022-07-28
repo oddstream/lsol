@@ -99,8 +99,8 @@ function Algerian:tailAppendError(dst, tail)
 	return nil
 end
 
-function Algerian:pileTapped(pile)
-end
+-- function Algerian:pileTapped(pile)
+-- end
 
 function Algerian:tailTapped(tail)
 	local pile = tail[1].parent

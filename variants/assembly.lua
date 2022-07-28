@@ -74,8 +74,8 @@ function Assembly:tailAppendError(dst, tail)
 	return nil
 end
 
-function Assembly:pileTapped(pile)
-end
+-- function Assembly:pileTapped(pile)
+-- end
 
 function Assembly:tailTapped(tail)
 	local card = tail[1]

@@ -36,6 +36,7 @@ function Alhambra:buildPiles()
 	end
 
 	Stock.new({x=3.75, y=4, packs=2})
+	-- waste pile implemented as a tableau because cards may be built onto it from tabs
 	Tableau.new({x=4.75, y=4, fanType='FAN_RIGHT3', moveType='MOVE_ONE'})
 end
 
@@ -91,23 +92,7 @@ end
 
 function Alhambra:pileTapped(pile)
 	if pile.category == 'Stock' then
-		local stock = _G.BAIZE.stock
-		if _G.BAIZE.recycles > 0 then
-			local tab = _G.BAIZE.tableaux[1]
-			while #tab.cards > 0 do
-				Util.moveCard(tab, stock)
-			end
-			_G.BAIZE:setRecycles(_G.BAIZE.recycles - 1)
-			if _G.BAIZE.recycles == 0 then
-				_G.BAIZE.ui:toast('No more recycles', 'blip')
-			elseif _G.BAIZE.recycles == 1 then
-				_G.BAIZE.ui:toast('One more recycle')
-			elseif _G.BAIZE.recycles < 10 then
-				_G.BAIZE.ui:toast(string.format('%d recycles remaining', _G.BAIZE.recycles))
-			end
-		else
-			_G.BAIZE.ui:toast('No more recycles', 'blip')
-		end
+		_G.BAIZE:recyclePileToStock(_G.BAIZE.tableaux[1])
 	end
 end
 

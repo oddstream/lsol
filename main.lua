@@ -8,8 +8,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '21.5'
-_G.LSOL_VERSION_DATE = '2022-07-24'
+_G.LSOL_VERSION = '22'
+_G.LSOL_VERSION_DATE = '2022-07-27'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -56,7 +56,9 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardRoundness = 12,
 	cardOutline = true,
 	cardRatio = 1.444,
-	-- lockRotation = false,
+	-- orientAuto = true,
+	-- orientPortrait = false,
+	-- orientLandscape = false,
 }
 
 _G.LSOL_VARIANTS = {
@@ -107,6 +109,8 @@ _G.LSOL_VARIANTS = {
 	['Forty and Eight'] = {file='forty.lua', cc=4, tabs=10, cardsPerTab=5, recycles=1},
 	Josephine = {file='forty.lua', cc=4, tabs=10, cardsPerTab=4, josephine=true},
 	Limited = {file='forty.lua', cc=4, tabs=12, cardsPerTab=3},
+	Frog = {file='frog.lua', cc=1},
+	Fly = {file='frog.lua', cc=1, dealAllAces=true},
 	['Little Spider'] = {file='littlespider.lua', cc=2},
 	['Little Spider (Fanned)'] = {file='littlespider.lua', cc=2, fanned=true},
 	Lucas = {file='forty.lua', cc=4, tabs=13, cardsPerTab=3, dealAces=true},
@@ -148,7 +152,7 @@ _G.LSOL_VARIANTS = {
 
 _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
-	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider','Penguin'},
+	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider','Penguin','Frog','Fly'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
 	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Gate','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp','Usk Relaxed','Easy Freecell'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
@@ -869,12 +873,14 @@ function love.wheelmoved(x, y)
 end
 
 function love.displayrotated(index, orientation)
+	-- https://love2d.org/wiki/love.displayrotated
+
 	-- Due to a bug in LOVE 11.3, the orientation value is boolean true instead. A workaround is as follows:
 	-- orientation = love.window.getDisplayOrientation(index)
-	-- if not _G.SETTINGS.lockRotation then
-		_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
-		_G.BAIZE:layout()
-	-- end
+
+	_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
+	_G.BAIZE:layout()
+
 	-- if _G.SETTINGS.debug then
 	-- 	_G.BAIZE.ui:toast('displayrotated ' .. tostring(orientation))
 	-- 	_G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
