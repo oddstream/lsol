@@ -19,14 +19,18 @@ function Stock.new(o)
 	o = Pile.prepare(o)
 	setmetatable(o, Stock)
 
+	local startingProneFlag
+	if o.faceUpStock then
+		-- used by Fly/Frog because they don't have a Waste
+		startingProneFlag = false
+	else
+		startingProneFlag = true
+	end
+
 	for pack = 1, o.packs do
 		for _, ord in ipairs(o.ordFilter) do
 			for _, suit in ipairs(o.suitFilter) do
-				if o.faceUpStock then
-					Pile.push(o, Card.new({pack=pack, ord=ord, suit=suit, prone=false}))
-				else
-					Pile.push(o, Card.new({pack=pack, ord=ord, suit=suit, prone=true}))
-				end
+				Pile.push(o, Card.new({pack=pack, ord=ord, suit=suit, prone=startingProneFlag}))
 				-- card parent is assigned in Pile.push
 			end
 		end
@@ -61,6 +65,10 @@ function Stock:shuffle()
 	end
 end
 
+--- push a card onto the stock pile
+-- override the base Pile.push because Stock cards are (usually) all prone
+-- @param c Card
+-- @return nil
 function Stock:push(c)
 	Pile.push(self, c)
 	-- Stock cards are always prone, unless overriden
@@ -71,6 +79,8 @@ function Stock:push(c)
 	end
 end
 
+--[[
+-- Pile.pop always flips the popped card up so this is unnecessary?
 function Stock:pop()
 	local c = Pile.pop(self)
 	if c then
@@ -78,6 +88,7 @@ function Stock:pop()
 	end
 	return c
 end
+]]
 
 -- vtable functions
 
@@ -103,19 +114,20 @@ end
 
 function Stock:draw()
 
-	if self:hidden() then
+	if self.nodraw == true then
 		return
 	end
 
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
 
-	if b.showMovable and b.recycles > 0 and b.waste and #b.waste.cards > 0 then
+	if b.showMovable and b.recycles > 0 then
 		Util.setColorFromSetting('hintColor')
 		love.graphics.setLineWidth(3)
 		love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius, 20)
 	else
 		love.graphics.setColor(1, 1, 1, 0.1)
+		love.graphics.setLineWidth(1)
 		love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	end
 --[[

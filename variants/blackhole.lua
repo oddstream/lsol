@@ -23,7 +23,7 @@ end
 
 function BlackHole:buildPiles()
 
-	self.stock = Stock.new({x=-5, y=-5})
+	self.stock = Stock.new({x=-5, y=-5, nodraw=true})
 
 	self.foundation = Foundation.new({x=5 + 2, y=2.5 + 1, fanType='FAN_NONE'})
 

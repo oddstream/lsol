@@ -24,7 +24,7 @@ function EightOff.new(o)
 end
 
 function EightOff:buildPiles()
-	Stock.new({x=4, y=-4})
+	Stock.new({x=4, y=-4, nodraw=true})
 	if Util.orientation() == 'landscape' then
 		for x = 1, 8 do
 			Cell.new({x=x, y=1})

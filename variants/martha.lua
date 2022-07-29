@@ -21,7 +21,7 @@ function Martha.new(o)
 end
 
 function Martha:buildPiles()
-	Stock.new({x=-5, y=-5})
+	Stock.new({x=-5, y=-5, nodraw=true})
 	for x = 9, 12 do
 		local pile = Foundation.new({x=x, y=1})
 		pile.label = 'A'

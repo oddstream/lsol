@@ -22,7 +22,7 @@ function LittleSpider.new(o)
 end
 
 function LittleSpider:buildPiles()
-	Stock.new({x=1, y=1})
+	Stock.new({x=1, y=1, nodraw=true})
 	if self.fanned then
 		self.topTabY = 1
 		self.foundY = 3.5

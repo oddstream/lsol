@@ -22,7 +22,7 @@ function Frog.new(o)
 end
 
 function Frog:buildPiles()
-	self.stock = Stock.new({x=1, y=1, packs=2, faceUpStock=true})
+	self.stock = Stock.new({x=1, y=1, packs=2, faceUpStock=true, nodraw=true})
 	for x = 2.5, 9.5 do
 		local f = Foundation.new({x=x, y=1})
 		f.label = 'A'

@@ -37,7 +37,7 @@ function Algerian:buildPiles()
 	for x = 1, 6 do
 		Reserve.new({x=x, y=4, fanType='FAN_DOWN'})
 	end
-	self.stock = Stock.new({x=8, y=4, packs=2})
+	self.stock = Stock.new({x=8, y=4, packs=2, nodraw=true})
 
 	for i = 1, 6 do
 		_G.BAIZE.tableaux[i].boundaryPile = _G.BAIZE.reserves[i]

@@ -52,7 +52,7 @@ function Pile.isSavable(obj)
 	return false
 end
 
-function Pile:hidden()
+function Pile:offScreen()
 	return self.slot.x < 0 or self.slot.y < 0
 end
 
@@ -531,7 +531,9 @@ end
 
 function Pile:draw()
 
-	if self.nodraw then return end
+	if self.nodraw == true then
+		return
+	end
 
 	local b = _G.BAIZE
 	local x, y = self:screenPos()

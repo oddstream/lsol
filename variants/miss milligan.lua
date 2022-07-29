@@ -25,7 +25,7 @@ function MissMilligan.new(o)
 end
 
 function MissMilligan:buildPiles()
-	self.stock = Stock.new{x=1, y=1, packs=self.packs, suitFilter=self.suitFilter}
+	self.stock = Stock.new{x=1, y=1, packs=self.packs, suitFilter=self.suitFilter, nodraw=true}
 
 	self.foundations = {}
 	for x = 3, 10 do

@@ -22,7 +22,7 @@ function MountOlympus.new(o)
 end
 
 function MountOlympus:buildPiles()
-	self.stock = Stock.new({x=1, y=1, packs=2})
+	self.stock = Stock.new({x=1, y=1, packs=2, nodraw=true})
 
 	for x = 3, 10 do
 		local f = Foundation.new({x=x, y=1})

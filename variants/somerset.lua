@@ -33,7 +33,7 @@ function Somerset.new(o)
 end
 
 function Somerset:buildPiles()
-	Stock.new({x=-4, y=-4})
+	Stock.new({x=-4, y=-4, nodraw=true})
 	for x = 7, 10 do
 		local pile = Foundation.new({x=x, y=1})
 		pile.label = 'A'

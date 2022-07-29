@@ -24,8 +24,7 @@ function Penguin.new(o)
 end
 
 function Penguin:buildPiles()
-	-- hidden stock
-	Stock.new{x=5, y=-5}
+	Stock.new{x=5, y=-5, nodraw=true}
 	if Util.orientation() == 'landscape' then
 		-- the flipper, seven cells
 		for x = 1, 7 do

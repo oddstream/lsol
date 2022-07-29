@@ -25,7 +25,7 @@ function Blockade.new(o)
 end
 
 function Blockade:buildPiles()
-	Stock.new{x=1, y=1, packs=self.packs, suitFilter=self.suitFilter}
+	Stock.new{x=1, y=1, packs=self.packs, suitFilter=self.suitFilter, nodraw=true}
 
 	for x = 5, 12 do
 		local pile = Foundation.new{x=x, y=1}

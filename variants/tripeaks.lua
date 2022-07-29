@@ -47,7 +47,7 @@ function TriPeaks:buildPiles()
 		Reserve.new({x=x, y=3, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
 	end
 
-	self.stock = Stock.new({x=5, y=4.5})
+	self.stock = Stock.new({x=5, y=4.5, nodraw=true})
 	self.foundation = Foundation.new({x=6, y=4.5, fanType='FAN_NONE'})
 	self.tableaux = _G.BAIZE.reserves
 end

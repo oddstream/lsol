@@ -41,7 +41,7 @@ end
 
 function Freecell:buildPiles()
 	if self.double then
-		Stock.new({x=4, y=-4, packs=2})
+		Stock.new({x=4, y=-4, packs=2, nodraw=true})
 		for x = 1, 6 do
 			Cell.new({x=x, y=1})
 		end

@@ -22,7 +22,7 @@ function Scorpion.new(o)
 end
 
 function Scorpion:buildPiles()
-	Stock.new({x=1, y=1})
+	Stock.new({x=1, y=1, nodraw=true})
 	for x = 4, 7 do
 		Discard.new({x=x, y=1})
 	end

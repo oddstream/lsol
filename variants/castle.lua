@@ -21,7 +21,7 @@ function Castle.new(o)
 end
 
 function Castle:buildPiles()
-	Stock.new({x=4, y=-4})
+	Stock.new({x=4, y=-4, nodraw=true})
 	if self.flat then
 		for x = 3, 6 do
 			local pile = Foundation.new({x=x, y=1})

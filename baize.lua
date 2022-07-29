@@ -347,7 +347,7 @@ function Baize:updateUI()
 	self.ui:updateWidget('restartdeal', nil, #self.undoStack > 1 --[[self.status ~= 'virgin']])
 	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
 
-	if self.stock:hidden() then
+	if self.stock:offScreen() then
 		self.ui:updateWidget('stock', '')
 	else
 		if self.waste then

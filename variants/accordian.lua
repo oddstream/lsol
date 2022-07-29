@@ -21,7 +21,7 @@ end
 
 function Accordian:buildPiles()
 	-- log.trace('Accordian.buildPiles')
-	Stock.new({x=7, y=-5})
+	Stock.new({x=7, y=-5, nodraw=true})
 
 	for y = 1, 4 do
 		for x = 1, 13 do

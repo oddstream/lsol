@@ -24,7 +24,7 @@ function Spider.new(o)
 end
 
 function Spider:buildPiles()
-	Stock.new({x=1, y=1, packs=self.packs, suitFilter=self.suitFilter})
+	Stock.new({x=1, y=1, packs=self.packs, suitFilter=self.suitFilter, nodraw=true})
 	if self.spiderette then
 		for x = 4, 7 do
 			Discard.new({x=x, y=1})

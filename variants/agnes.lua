@@ -25,7 +25,7 @@ function Agnes.new(o)
 end
 
 function Agnes:buildPiles()
-	Stock.new({x=1, y=1})
+	Stock.new({x=1, y=1, nodraw=true})
 	for x = 4, 7 do
 		Foundation.new({x=x, y=1})
 	end

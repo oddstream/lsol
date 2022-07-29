@@ -30,8 +30,7 @@ function Yukon.new(o)
 end
 
 function Yukon:buildPiles()
-	-- hidden stock
-	Stock.new{x=5, y=-5, packs=self.packs, suitFilter=self.suitFilter}
+	Stock.new{x=5, y=-5, packs=self.packs, suitFilter=self.suitFilter, nodraw=true}
 
 	if Util.orientation() == 'landscape' then
 		for y = 1, 4 do

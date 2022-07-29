@@ -23,7 +23,7 @@ function SimpleSimon.new(o)
 end
 
 function SimpleSimon:buildPiles()
-	Stock.new({x=4, y=-4})
+	Stock.new({x=4, y=-4, nodraw=true})
 	for x = 4, 7 do
 		Discard.new({x=x, y=1})
 	end

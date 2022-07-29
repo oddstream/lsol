@@ -23,7 +23,7 @@ function Crimean.new(o)
 end
 
 function Crimean:buildPiles()
-	Stock.new({x=-5, y=-5})
+	Stock.new({x=-5, y=-5, nodraw=true})
 	if self.crimean then
 		for x = 1, 3 do
 			Reserve.new({x=x, y=1, fanType='FAN_NONE'})

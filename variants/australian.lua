@@ -21,7 +21,6 @@ function Australian.new(o)
 end
 
 function Australian:buildPiles()
-	-- log.trace('Australian.buildPiles')
 	Stock.new({x=1, y=1})
 	Waste.new({x=2, y=1, fanType='FAN_RIGHT3'})
 	for x = 4, 7 do
