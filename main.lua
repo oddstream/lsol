@@ -9,7 +9,7 @@ local UI = require 'ui'
 local Util = require 'util'
 
 _G.LSOL_VERSION = '22'
-_G.LSOL_VERSION_DATE = '2022-07-27'
+_G.LSOL_VERSION_DATE = '2022-07-31'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)

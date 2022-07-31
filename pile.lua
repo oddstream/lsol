@@ -531,6 +531,7 @@ end
 
 function Pile:draw()
 
+	-- don't draw graphics if pile is redundant when all cards have left it
 	if self.nodraw == true then
 		return
 	end

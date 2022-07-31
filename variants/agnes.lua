@@ -81,6 +81,7 @@ function Agnes:startGame()
 			f.label =  _G.ORD2STRING[ord]
 		end
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 function Agnes:afterMove()

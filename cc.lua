@@ -6,6 +6,22 @@ local CC = {}
 
 local proneError = 'Cannot move a face down card'
 
+local ordStr2English = {
+	A = 'an Ace',
+	['2'] = 'a Two',
+	['3'] = 'a Three',
+	['4'] = 'a Four',
+	['5'] = 'a Five',
+	['6'] = 'a Six',
+	['7'] = 'a Seven',
+	['8'] = 'an Eight',
+	['9'] = 'a Nine',
+	['10'] = 'a Ten',
+	J = 'a Jack',
+	Q = 'a Queen',
+	K = 'a King',
+}
+
 function CC.EitherProne(cpair)
 	return cpair[1].prone or cpair[2].prone
 end
@@ -18,7 +34,7 @@ function CC.Empty(pile, card)
 		end
 		local ordStr = _G.ORD2STRING[card.ord]
 		if pile.label ~= ordStr then
-			return string.format('Can only accept %s, not %s', pile.label, ordStr)
+			return string.format('Can only accept %s, not %s', ordStr2English[pile.label], ordStr2English[ordStr])
 		end
 	end
 	return nil

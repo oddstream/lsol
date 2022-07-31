@@ -114,6 +114,7 @@ end
 
 function Stock:draw()
 
+	-- don't draw graphics if pile is redundant when all cards have left it
 	if self.nodraw == true then
 		return
 	end
@@ -130,20 +131,7 @@ function Stock:draw()
 		love.graphics.setLineWidth(1)
 		love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	end
---[[
-	if self.rune then
-		love.graphics.setColor(1, 1, 1, 0.1)
-		love.graphics.setFont(b.runeFont)
-		love.graphics.print(self.rune,
-			x + b.cardWidth / 2,
-			y + b.cardHeight / 2,
-			0,	-- orientation
-			1,	-- x scale
-			1,	-- y scale
-			b.runeFont:getWidth(self.rune) / 2,		-- origin offset
-			b.runeFont:getHeight() / 2)				-- origin offset
-	end
-]]
+
 	local icon
 	if b.recycles == 0 then
 		icon = _G.LSOL_ICON_RESTART_OFF
