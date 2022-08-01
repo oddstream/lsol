@@ -9,7 +9,7 @@ local Util = require 'util'
 local Pile = {}
 Pile.__index = Pile
 
-local minFanFactor, maxFanFactor = 0.16666, 0.28
+local minFanFactor = 0.16666
 local backFanFactor = 0.1
 
 function Pile.prepare(o)
@@ -27,7 +27,7 @@ function Pile.prepare(o)
 	o.slot = {x = o.x, y = o.y}
 	o.x, o.y = 0, 0
 	o.cards = {}
-	o.faceFanFactor = 0.28
+	o.faceFanFactor = Util.defaultFanFactor()
 	return setmetatable(o, Pile)
 end
 
@@ -248,6 +248,8 @@ function Pile:calcFanFactor()
 	-- f = (r - h) / (h * (n-1))
 	-- https://www.mymathtutors.com/algebra-tutors/adding-numerators/online-calculator---rearrange.html
 
+	-- pile only has a box if it is FAN_LEFT, FAN_RIGHT or FAN_DOWN
+
 	if (not self.box) or (#self.cards < 4) then
 		return false
 	end
@@ -255,10 +257,10 @@ function Pile:calcFanFactor()
 	local box = self:screenBox()
 	if self.fanType == 'FAN_DOWN' then
 		ff = (box.height - _G.BAIZE.cardHeight) / (_G.BAIZE.cardHeight * (#self.cards - 1))
-		ff = Util.clamp(ff, minFanFactor, maxFanFactor)
+		ff = Util.clamp(ff, minFanFactor, Util.maxFanFactor())
 	elseif self.fanType == 'FAN_RIGHT' or self.fanType == 'FAN_LEFT' then
 		ff = (box.width - _G.BAIZE.cardWidth) / (_G.BAIZE.cardWidth * (#self.cards - 1))
-		ff = Util.clamp(ff, minFanFactor, maxFanFactor)
+		ff = Util.clamp(ff, minFanFactor, Util.maxFanFactor())
 	end
 	if ff == self.faceFanFactor then
 		return false
@@ -414,7 +416,7 @@ function Pile:updateFromSaved(saved)
 	end
 
 	self.label = saved.label
-	self.faceFanFactor =  0.28
+	self.faceFanFactor = Util.defaultFanFactor()
 end
 
 -- vtable functions
@@ -566,20 +568,19 @@ function Pile:draw()
 			b.labelFont:getHeight() / 2)
 	end
 
---[[
-	local ssr = self:screenBox()
-	if ssr then
-		love.graphics.setColor(1,1,1,0.1)
-		love.graphics.setLineWidth(1)
-		love.graphics.rectangle('line', ssr.x, ssr.y, ssr.width, ssr.height, 10, 10)
+	if _G.SETTINGS.debug then
+		local sb = self:screenBox()
+		if sb then
+			love.graphics.setColor(1,1,1,0.1)
+			love.graphics.setLineWidth(1)
+			love.graphics.rectangle('line', sb.x, sb.y, sb.width, sb.height, 10, 10)
+		end
+		love.graphics.setColor(1,1,1,1)
+		local px, py, pw, ph = self:fannedBaizeRect()	-- should be fannedScreenRect
+		love.graphics.rectangle('line', px, py, pw, ph)
 	end
-]]
 
---[[
-	love.graphics.setColor(1,1,1,1)
-	local px, py, pw, ph = self:fannedBaizeRect()	-- should be fannedScreenRect
-	love.graphics.rectangle('line', px, py, pw, ph)
-]]
+
 end
 
 return Pile

@@ -71,10 +71,10 @@ end
 -- function Algerian:afterMove()
 -- end
 
--- function Algerian:moveTailError(tail)
--- 	-- can only move one card
--- 	return nil
--- end
+function Algerian:moveTailError(tail)
+	-- can only move one card
+	return nil
+end
 
 function Algerian:tailAppendError(dst, tail)
 	if dst.category == 'Foundation' then

@@ -228,7 +228,7 @@ function _G.cardTextureFactory(width, height, radius)
 
 	local ordFontSize
 	if _G.SETTINGS.simpleCards then
-		ordFontSize = width / 3
+		ordFontSize = width / 2.5
 	else
 		ordFontSize = width / 3.75
 	end
@@ -236,7 +236,7 @@ function _G.cardTextureFactory(width, height, radius)
 
 	local suitFontSize
 	if _G.SETTINGS.simpleCards then
-		suitFontSize = width / 3
+		suitFontSize = width / 2.5
 	else
 		suitFontSize = width / 3.5
 	end

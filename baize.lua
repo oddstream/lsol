@@ -284,6 +284,8 @@ function Baize:updateFromSaved(saved)
 		-- end
 	end
 
+	self:j_adoube()
+
 	self.bookmark = saved.bookmark
 	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
 	self:setRecycles(saved.recycles)
@@ -537,6 +539,13 @@ function Baize:modifySetting(tbl)
 		_G.saveSettings()
 		self.backgroundCanvas = nil
 		self:createCardTextures()
+		self:j_adoube()
+		-- for _, pile in ipairs(self.piles) do
+		-- 	pile.faceFanFactor = Util.defaultFanFactor()
+		-- 	if pile:calcFanFactor() then
+		-- 		pile:refan(Card.transitionTo)
+		-- 	end
+		-- end
 	end
 end
 
@@ -671,7 +680,7 @@ function Baize:newDeal()
 	self:stopSpinning()
 	self.ui:hideFAB()
 	for _, p in ipairs(self.piles) do
-		p.faceFanFactor = 0.28
+		p.faceFanFactor = Util.defaultFanFactor()
 		p.cards = {}
 	end
 	for _, c in ipairs(self.deck) do
@@ -833,39 +842,74 @@ function Baize:layout()
 	or the top of another pile that is directly below this pile
 ]]
 
-	for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
-		if pile.fanType == 'FAN_DOWN' then
-			pile.box = {
-				x = pile.x,
-				y = pile.y,
-				width = self.cardWidth,
-			}
-			if pile.boundaryPile then
-				pile.box.height = pile.boundaryPile.y - pile.y
-			else
-				pile.box.height = -1
+	if _G.SETTINGS.cardScrunching then
+		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
+			if pile.fanType == 'FAN_DOWN' then
+				pile.box = {
+					x = pile.x,
+					y = pile.y,
+					width = self.cardWidth,
+				}
+				if pile.boundaryPile then
+					pile.box.height = pile.boundaryPile.y - pile.y
+				else
+					pile.box.height = -1	-- signal to use Baize height
+				end
+			elseif pile.fanType == 'FAN_RIGHT' then
+				pile.box = {
+					x = pile.x,
+					y = pile.y,
+					height = self.cardHeight
+				}
+				if pile.boundaryPile then
+					pile.box.width = pile.boundaryPile.x - pile.x
+				else
+					pile.box.width = -1	-- signal to use Baize width
+				end
+			elseif pile.fanType == 'FAN_LEFT' then
+				pile.box = {
+					x = 0,
+					y = pile.y,
+					width = pile.x + self.cardWidth,
+					height = self.cardHeight
+				}
 			end
-		elseif pile.fanType == 'FAN_RIGHT' then
-			pile.box = {
-				x = pile.x,
-				y = pile.y,
-				height = self.cardHeight
-			}
-			if pile.boundaryPile then
-				pile.box.width = pile.boundaryPile.x - pile.x
-			else
-				pile.box.width = -1
-			end
-		elseif pile.fanType == 'FAN_LEFT' then
-			pile.box = {
-				x = 0,
-				y = pile.y,
-				width = pile.x + self.cardWidth,
-				height = self.cardHeight
-			}
-		end
 
-		pile:refan(Card.setBaizePos)
+			pile:refan(Card.setBaizePos)
+		end
+	else
+		-- version of the above that only honors boundaryPile, not baize
+		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
+			if pile.boundaryPile then
+				if pile.fanType == 'FAN_DOWN' then
+					pile.box = {
+						x = pile.x,
+						y = pile.y,
+						width = self.cardWidth,
+						height = pile.boundaryPile.y - pile.y
+					}
+				elseif pile.fanType == 'FAN_RIGHT' then
+					pile.box = {
+						x = pile.x,
+						y = pile.y,
+						width = pile.boundaryPile.x - pile.x,
+						height = self.cardHeight
+					}
+				elseif pile.fanType == 'FAN_LEFT' then
+					pile.box = {
+						x = 0,
+						y = pile.y,
+						width = pile.x + self.cardWidth,
+						height = self.cardHeight
+					}
+				else
+					pile.box = nil
+				end
+			else
+				pile.box = nil
+			end
+			pile:refan(Card.setBaizePos)
+		end
 	end
 
 	self.ui:layout()
@@ -999,7 +1043,7 @@ end
 
 function Baize:stopDrag()
 	for _, pile in ipairs(self.piles) do
-		pile.faceFanFactor = 0.28
+		pile.faceFanFactor = Util.defaultFanFactor()
 		pile:refan(Card.transitionTo)
 	end
 end
@@ -1398,12 +1442,12 @@ function Baize:openURL(url)
 end
 
 function Baize:j_adoube()
-
+--[[
 	local function mayNeedAdjusting(pile)
 		if not pile.box then
 			return false
 		end
-		if pile.faceFanFactor < 0.28 then
+		if pile.faceFanFactor ~= Util.defaultFanFactor() then	-- was <
 			return true
 		end
 		if #pile.cards < 2 then
@@ -1421,11 +1465,20 @@ function Baize:j_adoube()
 	end
 
 	for _, pile in ipairs(self.piles) do
-		if mayNeedAdjusting(pile) then
-			if pile:calcFanFactor() then
+		-- if mayNeedAdjusting(pile) then
+			-- if pile:calcFanFactor() then
+				pile:calcFanFactor()
 				pile:refan(Card.transitionTo)
-			end
+			-- end
+		-- end
+	end
+]]
+	for _, pile in ipairs(self.piles) do
+		pile.faceFanFactor = Util.defaultFanFactor()
+		if _G.SETTINGS.cardScrunching then
+			pile:calcFanFactor()
 		end
+		pile:refan(Card.transitionTo)
 	end
 end
 

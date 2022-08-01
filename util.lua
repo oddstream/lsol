@@ -329,4 +329,20 @@ function Util.orientation()
 	end
 end
 
+function Util.defaultFanFactor()
+	if _G.SETTINGS.simpleCards then
+		return 0.35
+	else
+		return 0.28
+	end
+end
+
+function Util.maxFanFactor()
+	if _G.SETTINGS.simpleCards then
+		return 0.35
+	else
+		return 0.28
+	end
+end
+
 return Util

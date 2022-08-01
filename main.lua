@@ -56,6 +56,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardRoundness = 12,
 	cardOutline = true,
 	cardRatio = 1.444,
+	cardScrunching = false,
 	-- orientAuto = true,
 	-- orientPortrait = false,
 	-- orientLandscape = false,

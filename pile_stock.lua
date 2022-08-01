@@ -56,6 +56,7 @@ function Stock.new(o)
 end
 
 function Stock:shuffle()
+	-- https://en.wikipedia.org/wiki/Shuffling
 	-- used to run this 6 times, but, honestly, I can't tell the difference between 6 and 1
 	for i = #self.cards, 2, -1 do
 		local j = math.random(i)

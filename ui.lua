@@ -39,6 +39,7 @@ local menuWidgets = {
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
 	{text='Colorful cards', var='autoColorCards'},
+	{text='Compress piles', var='cardScrunching'},
 	{text='Power moves', var='powerMoves'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
