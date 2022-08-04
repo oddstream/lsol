@@ -9,7 +9,6 @@ local Util = require 'util'
 local Pile = {}
 Pile.__index = Pile
 
-local minFanFactor = 0.16666
 local backFanFactor = 0.1
 
 function Pile.prepare(o)
@@ -27,7 +26,7 @@ function Pile.prepare(o)
 	o.slot = {x = o.x, y = o.y}
 	o.x, o.y = 0, 0
 	o.cards = {}
-	o.faceFanFactor = Util.defaultFanFactor()
+	o.faceFanFactor = Util.maxFanFactor()
 	return setmetatable(o, Pile)
 end
 
@@ -162,8 +161,12 @@ end
 function Pile:refan(fn)
 	fn = fn or Card.transitionTo
 	if #self.cards == 0 then
+		-- self.faceFanFactor = 1
 		return
 	end
+
+	self:calcFaceFanFactor()
+
 	local doFan3 = false
 	if self.fanType == 'FAN_NONE' then
 		for _, c in ipairs(self.cards) do
@@ -236,12 +239,13 @@ function Pile:screenBox()
 	if box then
 		box.x = box.x + _G.BAIZE.dragOffset.x
 		box.y = box.y + _G.BAIZE.dragOffset.y
-		box.height = box.height -  _G.BAIZE.dragOffset.y
+		box.width = box.width - _G.BAIZE.dragOffset.x
+		box.height = box.height - _G.BAIZE.dragOffset.y
 	end
 	return box
 end
 
-function Pile:calcFanFactor()
+function Pile:calcFaceFanFactor()
 	-- result = ((#cards - 1) * (cardheight * factor)) + cardheight
 	-- r = (n-1) * (h * f) + h
 	-- make factor the subject
@@ -250,23 +254,29 @@ function Pile:calcFanFactor()
 
 	-- pile only has a box if it is FAN_LEFT, FAN_RIGHT or FAN_DOWN
 
-	if (not self.box) or (#self.cards < 4) then
-		return false
+	-- self.faceFanFactor = Util.maxFanFactor()
+	-- if (not self.box) or (#self.cards < 4) then
+	-- 	return
+	-- end
+	if #self.cards < 2 or not self.box then
+		-- otherwise moving a tail to an empty pile will scrunch the cards
+		self.faceFanFactor = Util.maxFanFactor()
+		return
 	end
 	local ff
 	local box = self:screenBox()
-	if self.fanType == 'FAN_DOWN' then
-		ff = (box.height - _G.BAIZE.cardHeight) / (_G.BAIZE.cardHeight * (#self.cards - 1))
-		ff = Util.clamp(ff, minFanFactor, Util.maxFanFactor())
-	elseif self.fanType == 'FAN_RIGHT' or self.fanType == 'FAN_LEFT' then
-		ff = (box.width - _G.BAIZE.cardWidth) / (_G.BAIZE.cardWidth * (#self.cards - 1))
-		ff = Util.clamp(ff, minFanFactor, Util.maxFanFactor())
-	end
-	if ff == self.faceFanFactor then
-		return false
+	if box then
+		if self.fanType == 'FAN_DOWN' then
+			ff = (box.height - _G.BAIZE.cardHeight) / (_G.BAIZE.cardHeight * (#self.cards - 1))
+			ff = Util.clamp(ff, Util.minFanFactor(), Util.maxFanFactor())
+		elseif self.fanType == 'FAN_RIGHT' or self.fanType == 'FAN_LEFT' then
+			ff = (box.width - _G.BAIZE.cardWidth) / (_G.BAIZE.cardWidth * (#self.cards - 1))
+			ff = Util.clamp(ff, Util.minFanFactor(), Util.maxFanFactor())
+		else
+			self.faceFanFactor = Util.maxFanFactor()
+		end
 	end
 	self.faceFanFactor = ff
-	return true
 end
 
 function Pile:peek()
@@ -277,9 +287,9 @@ function Pile:pop()
 	local c = table.remove(self.cards)
 	if c then
 		c.parent = nil
-		if self.fanType == 'FAN_RIGHT3' or self.fanType == 'FAN_DOWN3' then
-			self:refan(Card.transitionTo)
-		end
+		-- if self.fanType == 'FAN_RIGHT3' or self.fanType == 'FAN_DOWN3' then
+			self:refan()
+		-- end
 		c:flipUp()
 	end
 	return c
@@ -290,6 +300,7 @@ function Pile:push(c)
 	table.insert(self.cards, c)
 	c.parent = self
 	c:transitionTo(x, y)
+	self:refan()
 	-- c:setBaizePos(x, y)
 end
 
@@ -416,7 +427,7 @@ function Pile:updateFromSaved(saved)
 	end
 
 	self.label = saved.label
-	self.faceFanFactor = Util.defaultFanFactor()
+	self.faceFanFactor = Util.maxFanFactor()
 end
 
 -- vtable functions

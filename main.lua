@@ -8,8 +8,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '22'
-_G.LSOL_VERSION_DATE = '2022-07-31'
+_G.LSOL_VERSION = '23'
+_G.LSOL_VERSION_DATE = '2022-08-04'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -843,8 +843,6 @@ function love.keyreleased(key)
 
 		end
 	end
-
-	_G.BAIZE.lastInput = love.timer.getTime()
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
@@ -870,7 +868,6 @@ function love.wheelmoved(x, y)
 		_G.BAIZE:dragBy(x*24, y*24)
 		_G.BAIZE:stopDrag()
 	end
-	_G.BAIZE.lastInput = love.timer.getTime()
 end
 
 function love.displayrotated(index, orientation)

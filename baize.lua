@@ -48,7 +48,6 @@ function Baize.new()
 	o.bookmark = 0
 	o.status = 'virgin'	-- afoot, stuck, collect, complete
 	o.percent = 0
-	o.lastInput = love.timer.getTime()
 	o.showMovable = false
 	o.moves = 0
 	o.fmoves = 0
@@ -283,8 +282,6 @@ function Baize:updateFromSaved(saved)
 			pile:updateFromSaved(savedPile)
 		-- end
 	end
-
-	self:j_adoube()
 
 	self.bookmark = saved.bookmark
 	self.ui:updateWidget('gotobookmark', nil, self.bookmark ~= 0)
@@ -539,13 +536,6 @@ function Baize:modifySetting(tbl)
 		_G.saveSettings()
 		self.backgroundCanvas = nil
 		self:createCardTextures()
-		self:j_adoube()
-		-- for _, pile in ipairs(self.piles) do
-		-- 	pile.faceFanFactor = Util.defaultFanFactor()
-		-- 	if pile:calcFanFactor() then
-		-- 		pile:refan(Card.transitionTo)
-		-- 	end
-		-- end
 	end
 end
 
@@ -572,6 +562,8 @@ function Baize:resetStats()
 end
 
 function Baize:toggleCheckbox(var)
+	-- log.info('toggle', var)
+
 	_G.SETTINGS[var] = not _G.SETTINGS[var]
 	_G.saveSettings()
 	if var == 'simpleCards' or var == 'autoColorCards' then
@@ -587,6 +579,8 @@ function Baize:toggleCheckbox(var)
 		self:layout()
 		-- self.undoStack = undoStack
 		self:undo()
+	elseif var == 'cardScrunching' then
+		self:layout()	-- recalc pile boxes and refan
 	end
 end
 
@@ -680,7 +674,7 @@ function Baize:newDeal()
 	self:stopSpinning()
 	self.ui:hideFAB()
 	for _, p in ipairs(self.piles) do
-		p.faceFanFactor = Util.defaultFanFactor()
+		p.faceFanFactor = Util.maxFanFactor()
 		p.cards = {}
 	end
 	for _, c in ipairs(self.deck) do
@@ -844,6 +838,7 @@ function Baize:layout()
 
 	if _G.SETTINGS.cardScrunching then
 		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
+			pile.faceFanFactor = Util.maxFanFactor()
 			if pile.fanType == 'FAN_DOWN' then
 				pile.box = {
 					x = pile.x,
@@ -874,12 +869,12 @@ function Baize:layout()
 					height = self.cardHeight
 				}
 			end
-
-			pile:refan(Card.setBaizePos)
+		pile:refan()
 		end
 	else
 		-- version of the above that only honors boundaryPile, not baize
 		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
+			pile.faceFanFactor = Util.maxFanFactor()
 			if pile.boundaryPile then
 				if pile.fanType == 'FAN_DOWN' then
 					pile.box = {
@@ -908,7 +903,7 @@ function Baize:layout()
 			else
 				pile.box = nil
 			end
-			pile:refan(Card.setBaizePos)
+		pile:refan()
 		end
 	end
 
@@ -1042,9 +1037,8 @@ function Baize:dragBy(dx, dy)
 end
 
 function Baize:stopDrag()
-	for _, pile in ipairs(self.piles) do
-		pile.faceFanFactor = Util.defaultFanFactor()
-		pile:refan(Card.transitionTo)
+	if _G.SETTINGS.cardScrunching then
+		self:layout()	-- recalc pile boxes and refan
 	end
 end
 
@@ -1248,12 +1242,11 @@ function Baize:mouseReleased(x, y, button)
 			end
 		elseif self.stroke.objectType == 'pile' then
 			-- do nothing, we don't drag piles
-		elseif self.stroke.type == 'baize' then
+		elseif self.stroke.objectType == 'baize' then
 			self:stopDrag()
 		end
 	end
 
-	self.lastInput = love.timer.getTime()
 	self.stroke = nil
 end
 
@@ -1406,7 +1399,7 @@ function Baize:stopSpinning()
 		for _, card in ipairs(pile.cards) do
 			card:stopSpinning()
 		end
-		pile:refan(Card.transitionTo)
+		pile:refan()
 	end
 end
 
@@ -1441,47 +1434,6 @@ function Baize:openURL(url)
 	love.system.openURL(url)
 end
 
-function Baize:j_adoube()
---[[
-	local function mayNeedAdjusting(pile)
-		if not pile.box then
-			return false
-		end
-		if pile.faceFanFactor ~= Util.defaultFanFactor() then	-- was <
-			return true
-		end
-		if #pile.cards < 2 then
-			-- pile may have had, say, 12 scrunched cards, and it's left with 2 after a collect
-			return false
-		end
-		local c = pile:peek()
-		local cx, cy, cw, ch = c:baizeRect()
-		local box = pile:baizeBox()
-		-- make sure card is entirely within pile's box
-		if not Util.rectContains(box.x, box.y, box.width, box.height, cx, cy, cw, ch) then
-			return true
-		end
-		return false
-	end
-
-	for _, pile in ipairs(self.piles) do
-		-- if mayNeedAdjusting(pile) then
-			-- if pile:calcFanFactor() then
-				pile:calcFanFactor()
-				pile:refan(Card.transitionTo)
-			-- end
-		-- end
-	end
-]]
-	for _, pile in ipairs(self.piles) do
-		pile.faceFanFactor = Util.defaultFanFactor()
-		if _G.SETTINGS.cardScrunching then
-			pile:calcFanFactor()
-		end
-		pile:refan(Card.transitionTo)
-	end
-end
-
 function Baize:quit()
 	love.event.quit(0)
 end
@@ -1491,13 +1443,6 @@ function Baize:update(dt_seconds)
 		pile:update(dt_seconds)
 	end
 	self.ui:update(dt_seconds)
-
-	if not self.stroke then
-		if (love.timer.getTime() - self.lastInput) > 1.0 then
-			self:j_adoube()
-			self.lastInput = love.timer.getTime()
-		end
-	end
 end
 
 function Baize:draw()
@@ -1548,7 +1493,6 @@ function Baize:draw()
 	end
 	-- love.graphics.setFont(self.suitFont)
 	-- love.graphics.print(string.format('#undoStack %d', #_G.BAIZE.undoStack, 10, 10))
-	-- love.graphics.print(string.format('%f', love.timer.getTime() - self.lastInput), 56, 2)
 end
 
 return Baize

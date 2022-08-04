@@ -73,8 +73,12 @@ end
 	each pile
 ]]
 function Util.baizeChanged(old, new)
-	assert(type(old)=='table')
-	assert(type(new)=='table')
+	if (not old) or (not new) then
+		log.trace('nil passed to baizeChanged')
+		return true
+	end
+	-- assert(type(old)=='table')
+	-- assert(type(new)=='table')
 	if #old ~= #new then
 		return true	-- shouldn't ever happen
 	end
@@ -329,12 +333,8 @@ function Util.orientation()
 	end
 end
 
-function Util.defaultFanFactor()
-	if _G.SETTINGS.simpleCards then
-		return 0.35
-	else
-		return 0.28
-	end
+function Util.minFanFactor()
+	return 0.16666
 end
 
 function Util.maxFanFactor()
