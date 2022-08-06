@@ -124,17 +124,17 @@ function LittleSpider:tailAppendError(dst, tail)
 
 			if dst.label == 'A' and card.ord == 1 then
 				if not (pac == 'none' or pac == cc) then
-					return 'Expecting a ' .. pac .. ' A'
+					return 'Expecting a ' .. pac .. ' Ace'
 				end
 				if pkc == cc then
-					return 'Already placed a ' .. pkc .. ' K'
+					return 'Already placed a ' .. pkc .. ' King'
 				end
 			elseif dst.label == 'K' and card.ord == 13 then
 				if not (pkc == 'none' or pkc == cc) then
-					return 'Expecting a ' .. pkc .. ' K'
+					return 'Expecting a ' .. pkc .. ' King'
 				end
 				if pac == cc then
-					return 'Already placed a ' .. pac .. ' A'
+					return 'Already placed a ' .. pac .. ' Ace'
 				end
 			end
 			return CC.Empty(dst, card)

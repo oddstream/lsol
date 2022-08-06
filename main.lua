@@ -9,7 +9,7 @@ local UI = require 'ui'
 local Util = require 'util'
 
 _G.LSOL_VERSION = '23'
-_G.LSOL_VERSION_DATE = '2022-08-04'
+_G.LSOL_VERSION_DATE = '2022-08-06'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -56,7 +56,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardRoundness = 12,
 	cardOutline = true,
 	cardRatio = 1.444,
-	cardScrunching = false,
+	cardScrunching = true,
 	-- orientAuto = true,
 	-- orientPortrait = false,
 	-- orientLandscape = false,
@@ -157,14 +157,14 @@ _G.VARIANT_TYPES = {
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
 	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Gate','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp','Usk Relaxed','Easy Freecell'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
-	['> Freecells'] = {'Blind Freecell','Easy Freecell', 'Selective Freecell', 'Chinese Freecell', 'Double Freecell', 'Eight Off', 'Eight Off Relaxed', 'Freecell', 'Baker\'s Game', 'Baker\'s Game Relaxed','Sea Haven Towers'},
-	['> Klondikes'] = {'Athena', 'Gargantua', 'Triple Klondike', 'Klondike', 'Klondike (Turn Three)', 'Easthaven', 'Classic Westcliff', 'American Westcliff','Agnes Bernauer','Thoughtful'},
+	['> Freecells'] = {'Blind Freecell','Easy Freecell','Selective Freecell','Chinese Freecell','Double Freecell', 'Eight Off','Eight Off Relaxed','Freecell','Baker\'s Game','Baker\'s Game Relaxed','Sea Haven Towers'},
+	['> Klondikes'] = {'Athena','Gargantua','Triple Klondike','Klondike','Klondike (Turn Three)','Easthaven', 'Classic Westcliff','American Westcliff','Agnes Bernauer','Thoughtful'},
 	['> People'] = {'Agnes Bernauer','Agnes Sorel','Athena','Baker\'s Game','Baker\'s Game Relaxed','Josephine','Martha','Miss Milligan','Rosamund'},
 	['> Places'] = {'Algerian','Alhambra','Australian','Mount Olympus','Yukon','Yukon Relaxed','Russian','Crimean','Ukrainian','Usk','Usk Relaxed','Somerset'},
-	['> Popular'] = {'Klondike', 'Forty Thieves', 'Freecell', 'Spider', 'Yukon', 'Tri Peaks'},
-	['> Puzzlers'] = {'Eight Off', 'Freecell', 'Penguin', 'Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
-	['> Redealers'] = {'Cruel', 'Perseverance','Usk','Usk Relaxed'},
-	['> Spiders'] = {'Spider One Suit', 'Spider Two Suits', 'Spider','Little Spider','Spiderette','Spiderette One Suit','Spiderette Two Suits'},
+	['> Popular'] = {'Klondike', 'Forty Thieves','Freecell','Spider','Yukon','Tri Peaks'},
+	['> Puzzlers'] = {'Beleaguered Castle','Flat Castle','Eight Off','Freecell','Penguin','Simple Simon','Baker\'s Dozen','Baker\'s Dozen (Wide)'},
+	['> Redealers'] = {'Cruel','Perseverance','Usk','Usk Relaxed'},
+	['> Spiders'] = {'Spider One Suit','Spider Two Suits', 'Spider','Little Spider','Little Spider (Fanned)','Spiderette','Spiderette One Suit','Spiderette Two Suits'},
 }
 
 local function createAllVariants()

@@ -566,21 +566,24 @@ function Baize:toggleCheckbox(var)
 
 	_G.SETTINGS[var] = not _G.SETTINGS[var]
 	_G.saveSettings()
-	if var == 'simpleCards' or var == 'autoColorCards' then
+
+	if var == 'simpleCards' then
 		self:createCardTextures()
+		self:buildPileBoxesAndRefan()
+	elseif var == 'autoColorCards' then
+		self:createCardTextures()
+	elseif var == 'cardScrunching' then
+		self:buildPileBoxesAndRefan()
+	-- powerMoves
 	elseif var == 'mirrorBaize' then
 		self:undoPush()
-		-- local undoStack = self.undoStack
 		self:resetPiles()
 		self.script:buildPiles()
 		if _G.SETTINGS.mirrorBaize then
 			self:mirrorSlots()
 		end
 		self:layout()
-		-- self.undoStack = undoStack
 		self:undo()
-	elseif var == 'cardScrunching' then
-		self:layout()	-- recalc pile boxes and refan
 	end
 end
 
@@ -750,6 +753,90 @@ function Baize:createBackgroundCanvas()
 	self.backgroundCanvas = canvas
 end
 
+function Baize:buildPileBoxesAndRefan()
+--[[
+	piles with fanType == FAN_DOWN, FAN_RIGHT or FAN_LEFT have a 'box'
+	within which, all the cards of that pile must fit
+	if the cards start to spill outside the box
+	then the fan factor is decreased and the cards are refanned
+
+	for example, consider a pile with fanType == FAN_DOWN:
+	the box will start at the x,y position of the pile, and be the same width as a card
+	the bottom of the box will either be the bottom of the baize,
+	or the top of another pile that is directly below this pile
+]]
+	if _G.SETTINGS.cardScrunching then
+		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
+			pile.faceFanFactor = Util.maxFanFactor()
+			if pile.fanType == 'FAN_DOWN' then
+				pile.box = {
+					x = pile.x,
+					y = pile.y,
+					width = self.cardWidth,
+				}
+				if pile.boundaryPile then
+					pile.box.height = pile.boundaryPile.y - pile.y
+				else
+					pile.box.height = -1	-- signal to use Baize height
+				end
+			elseif pile.fanType == 'FAN_RIGHT' then
+				pile.box = {
+					x = pile.x,
+					y = pile.y,
+					height = self.cardHeight
+				}
+				if pile.boundaryPile then
+					pile.box.width = pile.boundaryPile.x - pile.x
+				else
+					pile.box.width = -1	-- signal to use Baize width
+				end
+			elseif pile.fanType == 'FAN_LEFT' then
+				pile.box = {
+					x = 0,
+					y = pile.y,
+					width = pile.x + self.cardWidth,
+					height = self.cardHeight
+				}
+			end
+		pile:refan()
+		end
+	else
+		-- version of the above that only honors boundaryPile, not baize
+		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
+			pile.faceFanFactor = Util.maxFanFactor()
+			if pile.boundaryPile then
+				if pile.fanType == 'FAN_DOWN' then
+					pile.box = {
+						x = pile.x,
+						y = pile.y,
+						width = self.cardWidth,
+						height = pile.boundaryPile.y - pile.y
+					}
+				elseif pile.fanType == 'FAN_RIGHT' then
+					pile.box = {
+						x = pile.x,
+						y = pile.y,
+						width = pile.boundaryPile.x - pile.x,
+						height = self.cardHeight
+					}
+				elseif pile.fanType == 'FAN_LEFT' then
+					pile.box = {
+						x = 0,
+						y = pile.y,
+						width = pile.x + self.cardWidth,
+						height = self.cardHeight
+					}
+				else
+					pile.box = nil
+				end
+			else
+				pile.box = nil
+			end
+		pile:refan()
+		end
+	end
+end
+
 function Baize:layout()
 	local oldCardWidth, oldCardHeight = self.cardWidth, self.cardheight
 
@@ -824,88 +911,7 @@ function Baize:layout()
 		)
 	end
 
---[[
-	piles with fanType == FAN_DOWN, FAN_RIGHT or FAN_LEFT have a 'box'
-	within which, all the cards of that pile must fit
-	if the cards start to spill outside the box
-	then the fan factor is decreased and the cards are refanned
-
-	for example, consider a pile with fanType == FAN_DOWN:
-	the box will start at the x,y position of the pile, and be the same width as a card
-	the bottom of the box will either be the bottom of the baize,
-	or the top of another pile that is directly below this pile
-]]
-
-	if _G.SETTINGS.cardScrunching then
-		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
-			pile.faceFanFactor = Util.maxFanFactor()
-			if pile.fanType == 'FAN_DOWN' then
-				pile.box = {
-					x = pile.x,
-					y = pile.y,
-					width = self.cardWidth,
-				}
-				if pile.boundaryPile then
-					pile.box.height = pile.boundaryPile.y - pile.y
-				else
-					pile.box.height = -1	-- signal to use Baize height
-				end
-			elseif pile.fanType == 'FAN_RIGHT' then
-				pile.box = {
-					x = pile.x,
-					y = pile.y,
-					height = self.cardHeight
-				}
-				if pile.boundaryPile then
-					pile.box.width = pile.boundaryPile.x - pile.x
-				else
-					pile.box.width = -1	-- signal to use Baize width
-				end
-			elseif pile.fanType == 'FAN_LEFT' then
-				pile.box = {
-					x = 0,
-					y = pile.y,
-					width = pile.x + self.cardWidth,
-					height = self.cardHeight
-				}
-			end
-		pile:refan()
-		end
-	else
-		-- version of the above that only honors boundaryPile, not baize
-		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
-			pile.faceFanFactor = Util.maxFanFactor()
-			if pile.boundaryPile then
-				if pile.fanType == 'FAN_DOWN' then
-					pile.box = {
-						x = pile.x,
-						y = pile.y,
-						width = self.cardWidth,
-						height = pile.boundaryPile.y - pile.y
-					}
-				elseif pile.fanType == 'FAN_RIGHT' then
-					pile.box = {
-						x = pile.x,
-						y = pile.y,
-						width = pile.boundaryPile.x - pile.x,
-						height = self.cardHeight
-					}
-				elseif pile.fanType == 'FAN_LEFT' then
-					pile.box = {
-						x = 0,
-						y = pile.y,
-						width = pile.x + self.cardWidth,
-						height = self.cardHeight
-					}
-				else
-					pile.box = nil
-				end
-			else
-				pile.box = nil
-			end
-		pile:refan()
-		end
-	end
+	self:buildPileBoxesAndRefan()
 
 	self.ui:layout()
 end
@@ -1038,7 +1044,7 @@ end
 
 function Baize:stopDrag()
 	if _G.SETTINGS.cardScrunching then
-		self:layout()	-- recalc pile boxes and refan
+		self:buildPileBoxesAndRefan()
 	end
 end
 
