@@ -412,6 +412,7 @@ function Baize:undo()
 		self.ui:toast('Cannot undo a completed game', 'blip')
 		return
 	end
+
 	self:unhint()
 
 	local _ = self:undoPop()	-- remove current state
@@ -576,14 +577,19 @@ function Baize:toggleCheckbox(var)
 		self:buildPileBoxesAndRefan()
 	-- powerMoves
 	elseif var == 'mirrorBaize' then
-		self:undoPush()
-		self:resetPiles()
-		self.script:buildPiles()
-		if _G.SETTINGS.mirrorBaize then
-			self:mirrorSlots()
+		if self.status == 'complete' then
+			self.ui:toast('Cannot mirror a completed game', 'blip')
+		else
+			self:undoPush()
+			self:resetPiles()
+			self.script:buildPiles()
+			if _G.SETTINGS.mirrorBaize then
+				self:mirrorSlots()
+			end
+			self:layout()
+			-- BUG when doing this with completed/spinning game, cannot undo completed game
+			self:undo()
 		end
-		self:layout()
-		self:undo()
 	end
 end
 

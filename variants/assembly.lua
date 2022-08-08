@@ -38,6 +38,7 @@ function Assembly:startGame()
 	for _, dst in ipairs(_G.BAIZE.tableaux) do
 		Util.moveCard(src, dst)
 	end
+	_G.BAIZE:setRecycles(0)
 end
 
 function Assembly:afterMove()

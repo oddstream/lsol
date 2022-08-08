@@ -254,10 +254,6 @@ function Pile:calcFaceFanFactor()
 
 	-- pile only has a box if it is FAN_LEFT, FAN_RIGHT or FAN_DOWN
 
-	-- self.faceFanFactor = Util.maxFanFactor()
-	-- if (not self.box) or (#self.cards < 4) then
-	-- 	return
-	-- end
 	if #self.cards < 2 or not self.box then
 		-- otherwise moving a tail to an empty pile will scrunch the cards
 		self.faceFanFactor = Util.maxFanFactor()
