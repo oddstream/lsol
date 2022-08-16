@@ -16,7 +16,11 @@ setmetatable(Klondike, {__index = Variant})
 
 function Klondike.new(o)
 	o = o or {}
-	o.tabCompareFn = CC.DownAltColor
+	if o.whitehead then
+		o.tabCompareFn = CC.DownColor
+	else
+		o.tabCompareFn = CC.DownAltColor
+	end
 	if o.gargantua then
 		o.packs = 2
 		o.wikipedia = 'https://en.wikipedia.org/wiki/Gargantua_(card_game)'
@@ -79,7 +83,7 @@ function Klondike:startGame()
 		for _, dst in ipairs(_G.BAIZE.tableaux) do
 			for _= 1, 2 do
 				local card = Util.moveCard(src, dst)
-				if not self.thoughtful then card.prone = true end
+				if not (self.thoughtful or self.whitehead) then card.prone = true end
 				Util.moveCard(src, dst)
 			end
 		end
@@ -88,7 +92,7 @@ function Klondike:startGame()
 		for _, dst in ipairs(_G.BAIZE.tableaux) do
 			for _ = 1, dealDown do
 				local card = Util.moveCard(src, dst)
-				if not self.thoughtful then card.prone = true end
+				if not (self.thoughtful or self.whitehead) then card.prone = true end
 			end
 			dealDown = dealDown + 1
 			Util.moveCard(src, dst)
@@ -114,7 +118,7 @@ function Klondike:moveTailError(tail)
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)
 		for _, cpair in ipairs(cpairs) do
-			local err = CC.DownAltColor(cpair)
+			local err = self.tabCompareFn(cpair)
 			if err then
 				return err
 			end
@@ -134,7 +138,7 @@ function Klondike:tailAppendError(dst, tail)
 		if #dst.cards == 0 then
 			return CC.Empty(dst, tail[1])
 		else
-			return CC.DownAltColor({dst:peek(), tail[1]})
+			return self.tabCompareFn({dst:peek(), tail[1]})
 		end
 	end
 	return nil
