@@ -592,6 +592,7 @@ function Baize:toggleCheckbox(var)
 		end
 	-- muteSounds
 	elseif var == 'allowOrientation' then
+		-- could have used https://love2d.org/wiki/love.window.updateMode
 		love.event.quit('restart')
 	end
 end

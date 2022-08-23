@@ -151,11 +151,14 @@ keeping an arbitrary score,
 distracting graphics on the screen.
 
 The user interface tries to stick to the Material Design guidelines, and so is minimal and tactile.
+
 I looked at a lot of the other solitaire websites and apps out there, and think how distracting some of them are. Features seem to have been added because the developers thought they were cool; they never seem to have stopped to consider that just because they *could* implement a feature, that they *should*.
 
 ### Sometimes the cards are really huge or really tiny
 
-Either resize your browser/desktop window (if using scalable cards) or change the settings to fixed size cards.
+If you're running the app on a desktop, resize the window; the cards will scale automatically.
+
+If you're runnning on a mobile device, try rotating the device. (Solitaire apps are better suited to the larger and squarer screens of tablets, rather than phones.)
 
 ### The rules for a variation are wrong
 
@@ -171,17 +174,14 @@ So, rather than just making this stuff up, I've tried to find a well researched 
 * R - restart deal
 * B - bookmark current position (LCtrl or LShift + B to go back to the bookmarked position)
 * C - collect cards to the foundations
-* 1 - one-color cards
-* 2 - two-color cards (black and red)
-* 4 - four-color cards (black, red, dark orange and indigo)
 
 ### What about scores?
 
 Nope, the software doesn't keep an arbitary score. Too confusing. Just the number of wins, number of moves, the average 'completeness percentage' and your winning streak (streaks are great).
-A game isn't counted until you move a card.
-Thereafter, if you ask for a new deal or switch to a different variant, that counts as a loss.
 
-You can cheat the score system by restarting a deal and then asking for a new deal.
+A game isn't counted until you move a card. Thereafter, if you ask for a new deal or switch to a different variant, that counts as a loss.
+
+You can 'cheat' the score system by restarting a deal and then asking for a new deal.
 
 'Completeness percentage' is calculated from the number of unsorted pairs of cards in all the piles.
 
@@ -206,6 +206,20 @@ Solitaire is also called *patience*; it's hard to feel patient when you're press
 
 ### What's with the settings?
 
+#### Simple cards
+
+Use a set of card faces that have minimal graphics, just ordinal and suit. Can be easier to 'scan', especially on small devices.
+
+#### Colorful cards
+
+Normally, cards are either red or black. This setting makes the cards either just black, red/black or four-colored, depending on the variant being played. In variants where the tableaux build in suit (like Forty Thieves, Penguin or Eight Off) this can be a real help.
+
+#### Compress piles
+
+With this on, piles of cards that a long and would overshoot the screen (usually the bottom of the screen, but also the right edge) are compressed dynamically (up to a point) so that all the cards can be seen. However, this can make the cards hard to read.
+
+In any case, the baize can be dragged up or down to make all the cards visible.
+
 #### Power moves
 
 Some variants (eg Freecell or Forty Thieves) only allow you to move one card at a time. Moving several cards between piles requires you to move them, one at a time, via an empty pile or cell. Enabling power moves automates this, allowing multi-card moves between piles. The number of cards you can move is calculated from the number of empty piles and cells (if any).
@@ -218,24 +232,28 @@ For left-handed players on mobile devices.
 
 So you can, for example, listen to an audio book while playing.
 
+#### Allow orientation (Android only)
+
+With this set to 'on' (the default), rotating the phone/tablet will re-orient the baize.
+
+With this set to 'off', the orientation will be fixed to whatever it was when the app started.
+
 ### Is the game rigged?
 
-No. The cards are shuffled randomly using a Fisher-Yates shuffle
-driven by a Park-Miller pseudo random number generator,
-which is in itself seeded by a random number. This mechanism was tested and analysed to make sure it produced an even distribution of shuffled cards.
+No. The cards are shuffled randomly using a Fisher-Yates shuffle driven by a Park-Miller pseudo random number generator,which is in itself seeded by a random number. This mechanism was tested and analysed to make sure it produced an even distribution of shuffled cards.
 
-There are 80658175170943878571660636856403766975289505440883277824000000000000
-possible deals of a pack of 52 playing cards; you're never going to play the same game twice, nor indeed play the same game
-that anyone else ever has, or ever will.
+There are [80,658,175,170,943,878,571,660,636,856,403,766,975,289,505,440,883,277,824,000,000,000,000](https://en.wikipedia.org/wiki/Shuffling) possible deals of a pack of 52 playing cards; you're never going to play the same game twice, nor indeed play the same game that anyone else ever has, or ever will.
+
+It's possible that a deal will start with no movable cards, just like it might if you'd dealt physical cards on a physical table.
 
 ### Any hints and tips?
 
-* For games that start with face down cards (like Klondike or Yukon) the priority is to get the face down cards turned over.
+* For games that start with any face down cards (like Klondike or Yukon) the priority is to get the face down cards turned over.
 * For games that start with a block of cards in the tableau and only allow single cards to be moved (like Forty Thieves), the priority is usually to open up some space (create empty tableaux piles) to allow you to juggle cards around.
 * For Forty Thieves-style games, the *other* priority is to minimize the number of cards in the waste pile.
-* For puzzle-type games (like Baker's Dozen, Freecell, Simple Simon), take your time and think ahead.
+* For puzzle-type games (like Baker's Dozen, Freecell, Penguin, Simple Simon), take your time and think ahead.
 * For games with reshuffles (like Usk, Cruel and Perseverance) you need to anticipate the effects of the reshuffle.
-* Use undo and bookmark, a lot. Undo isn't cheating; it's improvising, adapting and overcoming.
+* Use undo and bookmark, a lot. Undo isn't cheating; it's experimenting and learning.
 
 ## Terminology and conventions
 
