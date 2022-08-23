@@ -43,10 +43,11 @@ local settingsWidgets = {
 	{text='Power moves', var='powerMoves'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
-	-- {text='Auto rotation', var='orientAuto', grp={'orientAuto', 'orientPortrait', 'orientLandscape'}},
-	-- {text='Lock portrait', var='orientPortrait', grp={'orientAuto', 'orientPortrait', 'orientLandscape'}},
-	-- {text='Lock landscape', var='orientLandscape', grp={'orientAuto', 'orientPortrait', 'orientLandscape'}},
 }
+
+if love.system.getOS() == 'Android' then
+	table.insert(settingsWidgets, {text='Allow orientation', var='allowOrientation'})
+end
 
 function UI.new()
 	local o = {}
@@ -70,7 +71,7 @@ function UI.new()
 		wgt = IconWidget.new({parent=o.titlebar, name='hint', icon='lightbulb', align='right', baizeCmd='hint'})
 		table.insert(o.titlebar.widgets, wgt)
 
-	o.menuDrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	o.menuDrawer = Drawer.new({width=300 * _G.UI_SCALE})
 	for _, winfo in ipairs(menuWidgets) do
 		winfo.parent = o.menuDrawer
 		if winfo.text then
@@ -80,18 +81,18 @@ function UI.new()
 		end
 	end
 
-	o.typesDrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	o.typesDrawer = Drawer.new({width=300 * _G.UI_SCALE})
 	for k, _ in pairs(_G.VARIANT_TYPES) do
 		wgt = MenuItemWidget.new({parent=o.typesDrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
 		table.insert(o.typesDrawer.widgets, wgt)
 	end
 	table.sort(o.typesDrawer.widgets, function(a, b) return a.text < b.text end)
 
-	o.variantsDrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	o.variantsDrawer = Drawer.new({width=300 * _G.UI_SCALE})
 
-	o.statsDrawer = Drawer.new({width=420 * _G.UI_SCALE})
+	o.statsDrawer = Drawer.new({width=400 * _G.UI_SCALE})
 
-	o.settingsDrawer = Drawer.new({width=320 * _G.UI_SCALE})
+	o.settingsDrawer = Drawer.new({width=300 * _G.UI_SCALE})
 	for _, winfo in ipairs(settingsWidgets) do
 		winfo.parent = o.settingsDrawer
 		if winfo.grp then

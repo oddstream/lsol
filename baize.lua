@@ -590,6 +590,10 @@ function Baize:toggleCheckbox(var)
 			-- BUG when doing this with completed/spinning game, cannot undo completed game
 			self:undo()
 		end
+	-- muteSounds
+	elseif var == 'allowOrientation' then
+		self.ui:toast('Quit and restart the app for this to take effect')
+		-- love.event.quit('restart') works on Linux but not Android
 	end
 end
 
@@ -900,14 +904,15 @@ function Baize:layout()
 	end
 	local topMargin = safey + _G.TITLEBARHEIGHT + pilePaddingY
 
-	self.cardRadius = self.cardWidth / _G.SETTINGS.cardRoundness
+	self.cardRadius = self.cardWidth / 10 -- _G.SETTINGS.cardRoundness
 
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
 		self.labelFont = love.graphics.newFont(_G.ORD_FONT, self.cardWidth * 0.666)
 		self:createCardTextures()
+		-- _G.consoleLog(string.format('card %d %d', self.cardWidth, self.cardHeight))
+		-- log.info('card width, height', self.cardWidth, self.cardHeight)
 	end
 
-	-- log.info('card width, height', self.cardWidth, self.cardHeight)
 
 	for _, pile in ipairs(self.piles) do
 		pile:setBaizePos(
@@ -1489,6 +1494,8 @@ function Baize:draw()
 		pile:drawDraggingCards()
 	end
 	self.ui:draw()
+
+	_G.drawConsoleLogMessages()
 
 	if _G.SETTINGS.debug then
 		love.graphics.setColor(0,1,0)

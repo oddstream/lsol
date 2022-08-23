@@ -554,7 +554,7 @@ function Pile:draw()
 		love.graphics.setColor(1, 1, 1, 0.1)
 	end
 	love.graphics.setLineWidth(1)
-	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius, 20)
+	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 
 	if self.label then
 		local scale
@@ -580,7 +580,7 @@ function Pile:draw()
 		if sb then
 			love.graphics.setColor(1,1,1,0.1)
 			love.graphics.setLineWidth(1)
-			love.graphics.rectangle('line', sb.x, sb.y, sb.width, sb.height, 10, 10)
+			love.graphics.rectangle('line', sb.x, sb.y, sb.width, sb.height)
 		end
 		love.graphics.setColor(1,1,1,1)
 		local px, py, pw, ph = self:fannedBaizeRect()	-- should be fannedScreenRect

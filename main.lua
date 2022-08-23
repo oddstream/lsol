@@ -57,9 +57,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardOutline = true,
 	cardRatio = 1.444,
 	cardScrunching = true,
-	-- orientAuto = true,
-	-- orientPortrait = false,
-	-- orientLandscape = false,
+	allowOrientation = true,	-- requires restart
 }
 
 _G.LSOL_VARIANTS = {
@@ -171,9 +169,15 @@ _G.VARIANT_TYPES = {
 local function createAllVariants()
 
 	local lst = {}
+	local kLongest = ''
 	for k,_ in pairs(_G.LSOL_VARIANTS) do
 		table.insert(lst, k)
+		if #k > #kLongest then
+			kLongest = k
+		end
 	end
+	log.info('Longest variant name is ', kLongest)
+
 	-- sorting happens after widgets are added to types/variants drawers
 	_G.VARIANT_TYPES['> All'] = lst
 	-- for k,_ in pairs(_G.VARIANT_TYPES) do
@@ -434,6 +438,24 @@ _G.LSOL_SOUNDS = {
 
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
+_G.consoleLogMessages = {}
+
+function _G.consoleLog(msg)
+	table.insert(_G.consoleLogMessages, 1, msg)
+end
+
+function _G.drawConsoleLogMessages()
+	love.graphics.setColor(1,1,1,1)
+	local y = (_G.UI_SAFEY + _G.UI_SAFEH) - _G.STATUSBARHEIGHT
+	for i = 1, #_G.consoleLogMessages do
+		y = y - 24
+		if y < _G.TITLEBARHEIGHT then
+			break
+		end
+		love.graphics.print(_G.consoleLogMessages[i], 8, y)
+	end
+end
+
 local settingsFname = 'settings.json'
 
 local function loadSettings()
@@ -556,6 +578,10 @@ There may be a small performance penalty as the output will be flushed after eac
 
 		Motorola Moto G4			1080 x 1920 pixels, 16:9 ratio (~401 ppi density)
 		https://www.gsmarena.com/motorola_moto_g4-8103.php
+
+		Motorola Moto G31			1080 x 2400 pixels, 20:9 ratio (~411 ppi density)
+		https://www.gsmarena.com/motorola_moto_g31-11225.php
+		DPIScale = 2.625
 	]]
 
 	_G.UI_SCALE = 1
@@ -563,6 +589,8 @@ There may be a small performance penalty as the output will be flushed after eac
 	if DPIScale > 1 then
 		_G.UI_SCALE = 1 - (DPIScale/10)	-- so a DPIScale of 3 would scale the UI from 1.0 to 0.7
 	end
+
+	-- _G.consoleLog(string.format('DPIScale %f, UI_SCALE %f', DPIScale, _G.UI_SCALE))
 
 	-- https://love2d.org/forums/viewtopic.php?f=3&t=84348&p=215242&hilit=rounded+rectangle#p215242
 	local limits = love.graphics.getSystemLimits( )
@@ -605,37 +633,53 @@ There may be a small performance penalty as the output will be flushed after eac
 	end
 ]]
 
-	if love.system.getOS() == 'Android' then
-		-- force portrait mode
-		-- do not use dpi scale (which would be 3 on Moto G4)
-		love.window.setMode(1080, 1920, {resizable=true, msaa=limits.canvasmsaa, usedpiscale=true})
-	else
-		love.window.setIcon(createWindowIcon())
+	-- trying to use antialiasing to get rid of jagged rounded rectangles
+	-- https://love2d.org/forums/viewtopic.php?f=3&t=84348&p=215242&hilit=rounded+rectangle&sid=6ce64568192cd62b80b22ec79b4fdcda
 
+	do
 		local s = _G.SETTINGS
-		if s.windowWidth and s.windowHeight then
-			love.window.setMode(s.windowWidth, s.windowHeight, {resizable=true,  msaa=limits.canvasmsaa, minwidth=640, minheight=500})
+		if love.system.getOS() == 'Android' then
+			-- w, h seem to be ignored when resizable=true, window is sized by Android
+			-- set w, h when resizable=false to get correct orientation
+			local opts = {usedpiscale=true, msaa=limits.canvasmsaa, resizable=s.allowOrientation}
+			local w, h = love.window.getSafeArea()
+			love.window.setMode(w, h, opts)
 		else
-			love.window.setMode(1080/2, 1920/2, {resizable=true,  msaa=limits.canvasmsaa, minwidth=640, minheight=500})
-		end
-		if s.windowX and s.windowY and s.displayIndex then
-			love.window.setPosition(s.windowX, s.windowY, s.displayIndex)
+			love.window.setIcon(createWindowIcon())
+
+			-- log.info('limits.canvasmsaa', limits.canvasmsaa)	-- 16 on BLACKBOX
+			local opts = {resizable=true, minwidth=640, minheight=480, msaa=limits.canvasmsaa}
+			if s.windowWidth and s.windowHeight then
+				love.window.setMode(s.windowWidth, s.windowHeight, opts)
+			else
+				love.window.setMode(1080/2, 1920/2, opts)
+			end
 		end
 	end
 
 	_G.TITLEBARHEIGHT = 48 * _G.UI_SCALE
 	_G.STATUSBARHEIGHT = 24 * _G.UI_SCALE
-	_G.UIFONTSIZE = 24 * _G.UI_SCALE
-	_G.UIFONTSIZE_TITLEBAR = 20  * _G.UI_SCALE
+	_G.UIFONTSIZE = 22 * _G.UI_SCALE
+	_G.UIFONTSIZE_TITLEBAR = 22  * _G.UI_SCALE
 	_G.UIFONTSIZE_SMALL = 14  * _G.UI_SCALE
 
+	-- default lineStyle is 'smooth'
 	-- print('default lineStyle = ', love.graphics.getLineStyle())
-	love.graphics.setLineStyle('smooth')	-- just in case default is 'rough', which is isn't
+	-- love.graphics.setLineStyle('rough')
 
 	_G.UI_SAFEX,
 	_G.UI_SAFEY,
 	_G.UI_SAFEW,
 	_G.UI_SAFEH = love.window.getSafeArea()
+
+	-- _G.consoleLog(string.format('safe area %d %d %d %d', love.window.getSafeArea()))
+	-- _G.consoleLog(string.format('safe area toPixels %d %d %d %d',
+	-- 	love.window.toPixels(_G.UI_SAFEX),
+	-- 	love.window.toPixels(_G.UI_SAFEY),
+	-- 	love.window.toPixels(_G.UI_SAFEW),
+	-- 	love.window.toPixels(_G.UI_SAFEH)
+	-- ))
+	-- implies safe area returns scaled values (which we want to work in), window size reported in pixels
 
 	-- preload the recycle icons
 	-- https://materialdesignicons.com/icon/restart (>1 recycles)
@@ -738,10 +782,12 @@ function love.draw()
 	_G.BAIZE:draw()
 end
 
-function love.resize(w,h)
-	-- if _G.SETTINGS.debug then
-		-- log.trace('resize', w, h)
-	-- end
+function love.resize(w, h)
+	-- _G.consoleLog(string.format('resize %d %d', w, h))
+	w, h = love.window.getMode()
+	-- _G.consoleLog(string.format('window %d %d', w, h))
+	-- _G.consoleLog(string.format('safe area %d %d %d %d', love.window.getSafeArea()))
+
 	_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
 	_G.BAIZE:layout()
 end
@@ -876,6 +922,8 @@ function love.displayrotated(index, orientation)
 
 	-- Due to a bug in LOVE 11.3, the orientation value is boolean true instead. A workaround is as follows:
 	-- orientation = love.window.getDisplayOrientation(index)
+
+	-- _G.consoleLog(string.format('displayrotated %d %s', index, orientation))
 
 	_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
 	_G.BAIZE:layout()

@@ -184,6 +184,9 @@ function Stats:strings(v)
 		if s.bestStreak ~= 0 then
 			table.insert(strs, string.format('Best streak: %d', s.bestStreak))
 		end
+		if s.worstStreak ~= 0 then
+			table.insert(strs, string.format('Worst streak: %d', s.worstStreak))
+		end
 	end
 	return strs
 end
