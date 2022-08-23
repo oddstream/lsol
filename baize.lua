@@ -592,8 +592,7 @@ function Baize:toggleCheckbox(var)
 		end
 	-- muteSounds
 	elseif var == 'allowOrientation' then
-		self.ui:toast('Quit and restart the app for this to take effect')
-		-- love.event.quit('restart') works on Linux but not Android
+		love.event.quit('restart')
 	end
 end
 

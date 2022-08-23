@@ -784,7 +784,7 @@ end
 
 function love.resize(w, h)
 	-- _G.consoleLog(string.format('resize %d %d', w, h))
-	w, h = love.window.getMode()
+	-- w, h = love.window.getMode()
 	-- _G.consoleLog(string.format('window %d %d', w, h))
 	-- _G.consoleLog(string.format('safe area %d %d %d %d', love.window.getSafeArea()))
 
