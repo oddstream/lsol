@@ -8,8 +8,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '23'
-_G.LSOL_VERSION_DATE = '2022-08-06'
+_G.LSOL_VERSION = '24'
+_G.LSOL_VERSION_DATE = '2022-08-24'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -55,7 +55,12 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	autoColorCards = false,
 	cardRoundness = 12,
 	cardOutline = true,
-	cardRatio = 1.444,
+	-- DefaultRatio = 1.444
+    -- BridgeRatio  = 1.561
+    -- PokerRatio   = 1.39
+    -- OpsoleRatio  = 1.5556 // 3.5/2.25
+	cardRatioPortrait = 1.444,
+	cardRatioLandscape = 1.39,
 	cardScrunching = true,
 	allowOrientation = true,	-- requires restart
 }
@@ -154,7 +159,7 @@ _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider','Penguin','Frog','Fly'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
-	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Gate','Lucas','Martha','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp','Usk Relaxed','Easy Freecell'},
+	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Gate','Lucas','Martha','Mount Olympus','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp','Usk Relaxed','Easy Freecell'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
 	['> Freecells'] = {'Blind Freecell','Easy Freecell','Selective Freecell','Chinese Freecell','Double Freecell', 'Eight Off','Eight Off Relaxed','Freecell','Baker\'s Game','Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena','Gargantua','Triple Klondike','Klondike','Klondike (Turn Three)','Easthaven', 'Classic Westcliff','American Westcliff','Agnes Bernauer','Thoughtful','Whitehead'},
@@ -176,7 +181,7 @@ local function createAllVariants()
 			kLongest = k
 		end
 	end
-	log.info('Longest variant name is ', kLongest)
+	-- log.info('Longest variant name is ', kLongest)	-- Little Spider (Fanned)
 
 	-- sorting happens after widgets are added to types/variants drawers
 	_G.VARIANT_TYPES['> All'] = lst

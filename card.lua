@@ -418,7 +418,7 @@ function Card:draw()
 			self.flipWidth, 1.0,
 			(cw - scw) / 2, 0)
 	elseif self:transitioning() then
-		local xoffset, yoffset = 2, 2
+		local xoffset, yoffset = 1, 1
 		-- local xoffset = b.cardWidth / 66
 		-- local yoffset = b.cardHeight / 66
 		love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)

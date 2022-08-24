@@ -546,10 +546,10 @@ function Baize:showAboutDrawer()
 		string.format('Version %d %s', _G.LSOL_VERSION, _G.LSOL_VERSION_DATE),
 		'',
 		'https://oddstream.games',
+		'https://github.com/oddstream/lsol#readme',
 		'https://love2d.org',
 		'',
-		'This program comes with',
-		'absolutely no warranty',
+		'This program comes with no warranty',
 	}
 	self.ui:showAboutDrawer(strs)
 end
@@ -883,13 +883,14 @@ function Baize:layout()
 
 	local landscape = safew > safeh		-- add a one-card-width border either side
 
-	local slotWidth
+	local slotWidth, slotHeight
 	if landscape then
 		slotWidth = safew / (maxSlotX + 3) -- +3 gives a 1.5 card width gap either side
+		slotHeight = slotWidth * _G.SETTINGS.cardRatioLandscape
 	else
 		slotWidth = safew / (maxSlotX + 1) -- +1 gives a 0.5 card width gap either side
+		slotHeight = slotWidth * _G.SETTINGS.cardRatioPortrait
 	end
-	local slotHeight = slotWidth * _G.SETTINGS.cardRatio
 
 	local pilePaddingX = slotWidth / 10
 	self.cardWidth = slotWidth - pilePaddingX
@@ -900,7 +901,7 @@ function Baize:layout()
 	if landscape then
 		leftMargin = safex + self.cardWidth / 2 + pilePaddingX + self.cardWidth
 	else
-		leftMargin = safex + self.cardWidth / 2 + pilePaddingX
+		leftMargin = safex + self.cardWidth / 2 + pilePaddingX	-- - (pilePaddingX * 4) to have smaller border
 	end
 	local topMargin = safey + _G.TITLEBARHEIGHT + pilePaddingY
 

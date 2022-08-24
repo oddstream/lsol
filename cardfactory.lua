@@ -213,12 +213,15 @@ function _G.cardTextureFactory(width, height, radius)
 	local function drawCardRect()
 		love.graphics.rectangle('fill', 0, 0, width, height, radius, radius)
 		if _G.SETTINGS.cardOutline then
-			-- outline probably not needed with gradient
 			love.graphics.setLineWidth(1)
 			if _G.SETTINGS.debug then
 				love.graphics.setColor(1, 0, 0, 1)		-- set color to red to see why width, height are - 2
 			else
-				love.graphics.setColor(0, 0, 0, 0.05)	-- cartoon outlines are black, so why not
+				if _G.SETTINGS.simpleCards then
+					love.graphics.setColor(0, 0, 0, 0.1)	-- cartoon outlines are black, so why not
+				else
+					love.graphics.setColor(0, 0, 0, 0.05)	-- cartoon outlines are black, so why not
+				end
 			end
 			love.graphics.rectangle('line', 1, 1, width - 2, height - 2, radius, radius)
 		end
@@ -256,8 +259,8 @@ function _G.cardTextureFactory(width, height, radius)
 	canvas = love.graphics.newCanvas(width, height)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
-	if love.gradient then
-		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.09)
+	if love.gradient and (not _G.SETTINGS.simpleCards) then
+		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.06)
 		love.gradient.draw(
 			function()
 				drawCardRect()
@@ -281,7 +284,7 @@ function _G.cardTextureFactory(width, height, radius)
 	canvas = love.graphics.newCanvas(width, height)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
-	if love.gradient then
+	if love.gradient and (not _G.SETTINGS.simpleCards) then
 		local frontColor, backColor = Util.getGradientColors('cardBackColor', 'CornflowerBlue', 0.09)
 		love.gradient.draw(
 			function()
