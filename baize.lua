@@ -545,8 +545,8 @@ function Baize:showAboutDrawer()
 		love.filesystem.getIdentity(),
 		string.format('Version %d %s', _G.LSOL_VERSION, _G.LSOL_VERSION_DATE),
 		'',
-		'https://oddstream.games',
 		'https://github.com/oddstream/lsol#readme',
+		'https://oddstream.games',
 		'https://love2d.org',
 		'',
 		'This program comes with no warranty',
@@ -573,6 +573,9 @@ function Baize:toggleCheckbox(var)
 		self:buildPileBoxesAndRefan()
 	elseif var == 'autoColorCards' then
 		self:createCardTextures()
+	elseif var == 'gradientShading' then
+		self:createCardTextures()
+		self.backgroundCanvas = nil
 	elseif var == 'cardScrunching' then
 		self:buildPileBoxesAndRefan()
 	-- powerMoves
@@ -747,17 +750,21 @@ function Baize:createBackgroundCanvas()
 	local canvas = love.graphics.newCanvas(ww, wh)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
-	local frontColor, backColor = Util.getGradientColors('baizeColor', 'darkGreen', 0.2)
-	love.gradient.draw(
-		function()
-			love.graphics.rectangle('fill', 0, 0, ww, wh)
-		end,
-		'radial',		-- gradient type
-		ww2, wh2,		-- center of shape
-		ww2, ww2,		-- width of shape
-		backColor,		-- back color
-		frontColor)		-- front color
-
+	if love.gradient and _G.SETTINGS.gradientShading then
+		local frontColor, backColor = Util.getGradientColors('baizeColor', 'darkGreen', 0.2)
+		love.gradient.draw(
+			function()
+				love.graphics.rectangle('fill', 0, 0, ww, wh)
+			end,
+			'radial',		-- gradient type
+			ww2, wh2,		-- center of shape
+			ww2, ww2,		-- width of shape
+			backColor,		-- back color
+			frontColor)		-- front color
+	else
+		love.graphics.setColor(Util.getColorFromSetting('baizeColor'))
+		love.graphics.rectangle('fill', 0, 0, ww, wh)
+	end
 	love.graphics.setCanvas()
 
 	self.backgroundCanvas = canvas

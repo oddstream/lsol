@@ -63,6 +63,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardRatioLandscape = 1.39,
 	cardScrunching = true,
 	allowOrientation = true,	-- requires restart
+	gradientShading = true,
 }
 
 _G.LSOL_VARIANTS = {

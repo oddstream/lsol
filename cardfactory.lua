@@ -188,7 +188,7 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 		-- they also get purdy rectangles in the middle
 
 		love.graphics.setColor(0,0,0,0.05)
-		love.graphics.rectangle('fill', width * 0.25, height * 0.25, width * 0.5, height * 0.5)
+		love.graphics.rectangle('fill', width * 0.25, height * 0.25, width * 0.5, height * 0.5, width / 20, height / 20)
 
 		love.graphics.setColor(love.math.colorFromBytes(unpack(suitRGB)))
 		love.graphics.setFont(suitFontLarge)
@@ -217,10 +217,10 @@ function _G.cardTextureFactory(width, height, radius)
 			if _G.SETTINGS.debug then
 				love.graphics.setColor(1, 0, 0, 1)		-- set color to red to see why width, height are - 2
 			else
-				if _G.SETTINGS.simpleCards then
-					love.graphics.setColor(0, 0, 0, 0.1)	-- cartoon outlines are black, so why not
-				else
+				if _G.SETTINGS.gradientShading then
 					love.graphics.setColor(0, 0, 0, 0.05)	-- cartoon outlines are black, so why not
+				else
+					love.graphics.setColor(0, 0, 0, 0.1)	-- cartoon outlines are black, so why not
 				end
 			end
 			love.graphics.rectangle('line', 1, 1, width - 2, height - 2, radius, radius)
@@ -259,7 +259,7 @@ function _G.cardTextureFactory(width, height, radius)
 	canvas = love.graphics.newCanvas(width, height)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
-	if love.gradient and (not _G.SETTINGS.simpleCards) then
+	if love.gradient and _G.SETTINGS.gradientShading then
 		local frontColor, backColor = Util.getGradientColors('cardFaceColor', 'Ivory', 0.06)
 		love.gradient.draw(
 			function()
@@ -284,7 +284,7 @@ function _G.cardTextureFactory(width, height, radius)
 	canvas = love.graphics.newCanvas(width, height)
 	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
 
-	if love.gradient and (not _G.SETTINGS.simpleCards) then
+	if love.gradient and _G.SETTINGS.gradientShading then
 		local frontColor, backColor = Util.getGradientColors('cardBackColor', 'CornflowerBlue', 0.09)
 		love.gradient.draw(
 			function()

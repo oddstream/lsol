@@ -39,6 +39,7 @@ local menuWidgets = {
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
 	{text='Colorful cards', var='autoColorCards'},
+	{text='Gradient shading', var='gradientShading'},
 	{text='Compress piles', var='cardScrunching'},
 	{text='Power moves', var='powerMoves'},
 	{text='Mirror baize', var='mirrorBaize'},
