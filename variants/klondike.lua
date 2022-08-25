@@ -72,7 +72,7 @@ function Klondike:buildPiles()
 		end
 		for x = 1, 7 do
 			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
-			pile.label = 'K'
+			if not self.whitehead then pile.label = 'K' end
 		end
 	end
 end
