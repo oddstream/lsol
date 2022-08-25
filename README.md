@@ -214,6 +214,10 @@ Use a set of card faces that have minimal graphics, just ordinal and suit. Can b
 
 Normally, cards are either red or black. This setting makes the cards either just black, red/black or four-colored, depending on the variant being played. In variants where the tableaux build in suit (like Forty Thieves, Penguin or Eight Off) this can be a real help.
 
+#### Gradient shading
+
+By default, the baize and card backgrounds have a shading effect, where the center is lighter than the edges. You can turn this off if you find it annoying or distracting. There is no performance penalty or benefit either way.
+
 #### Compress piles
 
 With this on, piles of cards that a long and would overshoot the screen (usually the bottom of the screen, but also the right edge) are compressed dynamically (up to a point) so that all the cards can be seen. However, this can make the cards hard to read.
@@ -240,7 +244,7 @@ With this set to 'off', the orientation will be fixed to whatever it was when th
 
 ### Is the game rigged?
 
-No. The cards are shuffled randomly using a Fisher-Yates shuffle driven by a Park-Miller pseudo random number generator,which is in itself seeded by a random number. This mechanism was tested and analysed to make sure it produced an even distribution of shuffled cards.
+No. The cards are shuffled randomly using a Fisher-Yates shuffle driven by a Park-Miller pseudo random number generator, which is in itself seeded by a random number. This mechanism was tested and analysed to make sure it produced an even distribution of shuffled cards.
 
 There are [80,658,175,170,943,878,571,660,636,856,403,766,975,289,505,440,883,277,824,000,000,000,000](https://en.wikipedia.org/wiki/Shuffling) possible deals of a pack of 52 playing cards; you're never going to play the same game twice, nor indeed play the same game that anyone else ever has, or ever will.
 
@@ -285,7 +289,7 @@ It's possible that a deal will start with no movable cards, just like it might i
 
 * Get it working on iOS. But, I don't have a Macintosh and am reluctant to pay Apple the annual App Store fee, and jump through their hoops. If you want to do this, let me know and we'll collaborate.
 * I'd like it to have an inter-user high scores table, but the Google Play games services interface and setup is inpenetrable to me at the moment.
-* Give up and rewrite the whole thing - again - in [Defold](https://www.defold.com), or Dart+Flutter, or Kotlin+Korge, or something else.
+* Give up and rewrite the whole thing - again - in [Defold](https://www.defold.com), or Godot, or Java, or Dart+Flutter, or Kotlin+Korge, or something else.
 
 ## History
 
