@@ -13,6 +13,10 @@ function Container.new(o)
 	return setmetatable(o, Container)
 end
 
+function Container:baizePos()
+	return self.x + self.dragOffset.x, self.y + self.dragOffset.y
+end
+
 function Container:screenRect()
 	return self.x, self.y, self.width, self.height -- bar is not scrollable, so baize == screen pos
 end

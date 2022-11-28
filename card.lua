@@ -59,7 +59,7 @@ function Card.new(o)
 	o.x = 512
 	o.y = -128
 
-	o.textureId = string.format('%02u%s', o.ord, o.suit)	-- used as index/key into Card Texture Library
+	o.textureId = Util.cardTextureId(o.ord, o.suit)	-- used as index/key into Card Texture Library
 
 	o.lerping = false
 	o.lerpStep = 1.0
@@ -419,8 +419,6 @@ function Card:draw()
 			(cw - scw) / 2, 0)
 	elseif self:transitioning() then
 		local xoffset, yoffset = 1, 1
-		-- local xoffset = b.cardWidth / 66
-		-- local yoffset = b.cardHeight / 66
 		love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
 		drawCard()
 	elseif self:dragging() then

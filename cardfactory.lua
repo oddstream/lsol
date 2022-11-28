@@ -50,13 +50,35 @@ local pipInfo = {
 		{x=0.375, y=0.833}, {x=0.625, y=0.833},
 	},
 	--[[ 10 ]] {
-		{x=0.375, y=0.166}, {x=0.625, y=0.166},
+	--[[
+		X X
+		 X
+		X X
+		X X
+		 X
+		X X
+	--]]
+		{x=0.375, y=0.166, scale=0.75}, {x=0.625, y=0.166},
 		{x=0.5, y=0.285, scale=0.75},
 		{x=0.375, y=0.4}, {x=0.625, y=0.4},
 		{x=0.375, y=0.6}, {x=0.625, y=0.6},
 		{x=0.5, y=0.715, scale=0.75},
-		{x=0.375, y=0.833}, {x=0.625, y=0.833},
+		{x=0.375, y=0.833}, {x=0.625, y=0.833, scale=0.75},
 
+	--[[
+		 X
+		X X
+		X X
+		X X
+		X X
+		 X
+		{x=0.5, y=0.166},
+		{x=0.375, y=0.3}, {x=0.625, y=0.3},
+		{x=0.2, y=0.45}, {x=0.8, y=0.45},
+		{x=0.2, y=0.6}, {x=0.8, y=0.6},
+		{x=0.375, y=0.75}, {x=0.625, y=0.75},
+		{x=0.5, y=0.833},
+	]]
 	},
 	--[[ 11 ]] {},
 	--[[ 12 ]] {},
@@ -112,6 +134,26 @@ local function getSuitColor(suit)
 	return rgb	-- alpha is optional and defaults to 1
 end
 
+--[[
+local function createAltFace(ordFont, width, height, radius, ord, suit)
+	local canvas = love.graphics.newCanvas(width, height)
+	love.graphics.setCanvas({canvas, stencil=true})	-- direct drawing operations to the canvas
+
+	love.graphics.setColor(love.math.colorFromBytes(unpack(getSuitColor(suit))))
+	love.graphics.rectangle('fill', 0, 0, width, height, radius, radius)
+	love.graphics.setLineWidth(1)
+	love.graphics.rectangle('line', 1, 1, width - 2, height - 2, radius, radius)
+
+	love.graphics.setColor(1, 1, 1, 1)
+	local ords = _G.ORD2STRING[ord]
+	love.graphics.setFont(ordFont)
+	love.graphics.print(ords, width * 0.5, height * 0.5)
+
+	love.graphics.setCanvas()	-- reset render target to the screen
+	return canvas
+end
+]]
+
 local function createSimpleFace(cardFaceTexture, ordFont, suitFont, width, height, ord, suit)
 	-- could/should be a function within factory
 	local canvas = love.graphics.newCanvas(width, height)
@@ -162,15 +204,12 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 	-- every card gets an ord top left and bottom right (inverted)
 	love.graphics.setColor(love.math.colorFromBytes(unpack(suitRGB)))
 	love.graphics.setFont(ordFont)
-	if ord == 10 then
-		printAt(_G.ORD2STRING[ord], 0.15, 0.15, ordFont, 0.9)
-		printAt(_G.ORD2STRING[ord], 0.85, 0.85, ordFont, 0.9, math.pi)
-	else
-		printAt(_G.ORD2STRING[ord], 0.15, 0.15, ordFont)
-		printAt(_G.ORD2STRING[ord], 0.85, 0.85, ordFont, 1.0, math.pi)
-	end
+	printAt(_G.ORD2STRING[ord], 0.15, 0.15, ordFont)
+	printAt(_G.ORD2STRING[ord], 0.85, 0.85, ordFont, 1.0, math.pi)
 
 	if ord > 1 and ord < 11 then
+		-- cards 2 .. 10 get pips in the middle
+
 		love.graphics.setColor(love.math.colorFromBytes(unpack(suitRGB)))
 		love.graphics.setFont(suitFont)
 		local pips = pipInfo[ord]
@@ -233,7 +272,7 @@ function _G.cardTextureFactory(width, height, radius)
 	if _G.SETTINGS.simpleCards then
 		ordFontSize = width / 2.5
 	else
-		ordFontSize = width / 3.75
+		ordFontSize = width / 3.5
 	end
 	local ordFont = love.graphics.newFont(_G.ORD_FONT, ordFontSize)
 
@@ -252,7 +291,7 @@ function _G.cardTextureFactory(width, height, radius)
 
 	-- turn off anti-aliasing to prevent Gargantua stock corner artifacts
 	-- https://love2d.org/wiki/FilterMode
-	love.graphics.setDefaultFilter('nearest', 'nearest', 1)
+	-- love.graphics.setDefaultFilter('nearest', 'nearest', 1)
 
 	-- blank card face
 
@@ -272,7 +311,7 @@ function _G.cardTextureFactory(width, height, radius)
 			frontColor
 		)
 	else
-		love.graphics.setColor(Util.getColorFromSetting('cardFaceColor'))
+		Util.setColorFromSetting('cardFaceColor')
 		drawCardRect()
 	end
 
@@ -297,7 +336,7 @@ function _G.cardTextureFactory(width, height, radius)
 			frontColor
 		)
 	else
-		love.graphics.setColor(Util.getColorFromSetting('cardBackColor'))
+		Util.setColorFromSetting('cardBackColor')
 		drawCardRect()
 	end
 
@@ -328,17 +367,18 @@ function _G.cardTextureFactory(width, height, radius)
 
 	-- put FilterMode back to default otherwise toast text, pips are garbled
 	-- https://love2d.org/wiki/FilterMode
-	love.graphics.setDefaultFilter('linear', 'linear', 1)
+	-- love.graphics.setDefaultFilter('linear', 'linear', 1)
 
 	--
 
 	local cardFaceTextures = {}
 	for _, ord in ipairs{1,2,3,4,5,6,7,8,9,10,11,12,13} do
 		for _, suit in ipairs{'♣','♦','♥','♠'} do
+			local key = Util.cardTextureId(ord, suit)
 			if _G.SETTINGS.simpleCards then
-				cardFaceTextures[string.format('%02u%s', ord, suit)] = createSimpleFace(cardFaceTexture, ordFont, suitFont, width, height, ord, suit)
+				cardFaceTextures[key] = createSimpleFace(cardFaceTexture, ordFont, suitFont, width, height, ord, suit)
 			else
-				cardFaceTextures[string.format('%02u%s', ord, suit)] = createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLarge, width, height, ord, suit)
+				cardFaceTextures[key] = createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLarge, width, height, ord, suit)
 			end
 		end
 	end

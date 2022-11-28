@@ -5,7 +5,6 @@ local log = require 'log'
 
 require 'gradient'	-- comment out to not use gradient
 
-local Card = require 'card'
 local Pile = require 'pile'
 local Util = require 'util'
 
@@ -452,18 +451,20 @@ function Baize:loadUndoStack()
 			undoStack = nil
 		end
 	end
+	--[[
 	if undoStack then
 		log.info(string.format('undo stack loaded, depth %d', #undoStack))
 	else
 		log.info('undo stack not loaded')
 	end
+	]]
 	self.undoStack = undoStack	-- it's ok for this to be nil
 end
 
 function Baize:saveUndoStack()
 	self:undoPush()
 	bitser.dumpLoveFile(savedUndoStackFname, self.undoStack)
-	log.info('undo stack saved')
+	-- log.info('undo stack saved')
 end
 
 function Baize:rmUndoStack()
@@ -762,7 +763,7 @@ function Baize:createBackgroundCanvas()
 			backColor,		-- back color
 			frontColor)		-- front color
 	else
-		love.graphics.setColor(Util.getColorFromSetting('baizeColor'))
+		Util.setColorFromSetting('baizeColor')
 		love.graphics.rectangle('fill', 0, 0, ww, wh)
 	end
 	love.graphics.setCanvas()
@@ -915,7 +916,7 @@ function Baize:layout()
 	self.cardRadius = self.cardWidth / 10 -- _G.SETTINGS.cardRoundness
 
 	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
-		self.labelFont = love.graphics.newFont(_G.ORD_FONT, self.cardWidth * 0.666)
+		self.labelFont = love.graphics.newFont(_G.ORD_FONT, self.cardWidth * 0.7)
 		self:createCardTextures()
 		-- _G.consoleLog(string.format('card %d %d', self.cardWidth, self.cardHeight))
 		-- log.info('card width, height', self.cardWidth, self.cardHeight)
@@ -1478,7 +1479,7 @@ function Baize:draw()
 	-- love.graphics.rotate(-math.pi/2)
 
 
-	love.graphics.setColor(Util.getColorFromSetting('baizeColor'))	-- otherwise debug print color fills background (!?)
+	Util.setColorFromSetting('baizeColor')	-- otherwise debug print color fills background (!?)
 	if love.gradient then
 		if not self.backgroundCanvas then
 			self:createBackgroundCanvas()

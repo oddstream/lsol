@@ -40,10 +40,12 @@ function CC.Empty(pile, card)
 	return nil
 end
 
+--[[
 function CC.None(cpair)
 	if CC.EitherProne(cpair) then return proneError end
 	return 'No'
 end
+]]
 
 function CC.Any(cpair)
 	if CC.EitherProne(cpair) then return proneError end

@@ -45,7 +45,7 @@ function Drawer:hide()
 	self.aniState = 'left'
 end
 
-function Drawer:update()
+function Drawer:update(dt_seconds)
 	if self.aniState == 'left' then
 		-- draw is fully closed when x == left edge of safe area - width
 		local closedx = _G.UI_SAFEX - self.width

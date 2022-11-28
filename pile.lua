@@ -1,5 +1,5 @@
 -- pile
--- virtual base class for Stock, Waste, Foundation, Tableau, Reserve, Cell
+-- virtual base class for Stock, Waste, Foundation, Tableau, Reserve, Cell, Discard
 
 local log = require 'log'
 

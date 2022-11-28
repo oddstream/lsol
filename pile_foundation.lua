@@ -29,6 +29,11 @@ function Foundation:acceptTailError(tail)
 	if #tail > 1 then
 		return 'Cannot move more than one card to a Foundation'
 	end
+	-- BUG FIX added 2022-11-28
+	if #self.cards == #_G.BAIZE.deck / #_G.BAIZE.foundations then
+		return 'The Foundation is full'
+	end
+	-- /BUG FIX
 	return _G.BAIZE.script:tailAppendError(self, tail)
 end
 

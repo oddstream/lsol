@@ -379,7 +379,7 @@ function UI:toast(message, soundName)
 	local t = {message=message, secondsLeft=5 + #self.toasts}
 	t.mw = self.toastFont:getWidth(message)
 	t.mh = self.toastFont:getHeight()
-	t.rw = t.mw + self.toastFont:getWidth('M') * 2
+	t.rw = t.mw + self.toastFont:getWidth('M') * 3
 	t.rh = t.mh + self.toastFont:getHeight() * 2
 
 	-- create a texture to avoid calling rectangle, print every frame

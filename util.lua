@@ -50,6 +50,7 @@ function Util.overlapArea(x, y, w, h, X, Y, W, H)
 	return ox * oy;
 end
 
+--[[
 function Util.rectContains(X, Y, W, H, x, y, w, h)
 	if x < X or y < Y then
 		return false
@@ -62,6 +63,7 @@ function Util.rectContains(X, Y, W, H, x, y, w, h)
 	end
 	return true
 end
+]]
 
 function Util.inRect(x, y, rx, ry, rw, rh)
 	return x >= rx and y >= ry and x < (rx + rw) and y < (ry + rh)
@@ -71,6 +73,8 @@ end
 	due to the lack of bit operators in Lua 5.1, it's tricky to use CRC32 to compare
 	two baizes for any changes. So, we just use two tables that record the length of
 	each pile
+
+	TODO LÖVE uses LuaJIT, which includes bit library
 ]]
 function Util.baizeChanged(old, new)
 	if (not old) or (not new) then
@@ -125,7 +129,6 @@ function Util.getGradientColors(settingName, default, amount)
 	local r, g, b, a = love.math.colorFromBytes(unpack(_G.LSOL_COLORS[color]))
 	local amt = amount + 1.0
 	local frontColor = {r * amt, g * amt, b * amt, a}
-	-- backColor = {r - 0.1, g - 0.15, b - 0.2, a}
 	amt = 1.0 - amount
 	local backColor = {r * amt, g * amt, b * amt, a}
 	return frontColor, backColor
@@ -343,6 +346,10 @@ function Util.maxFanFactor()
 	else
 		return 0.28
 	end
+end
+
+function Util.cardTextureId(ord, suit)
+	return string.format('%02u%s', ord, suit)
 end
 
 return Util
