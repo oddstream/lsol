@@ -18,13 +18,6 @@ end
 
 -- vtable functions
 
-function Foundation:acceptCardError(c)
-	if #self.cards == #_G.BAIZE.deck / #_G.BAIZE.foundations then
-		return 'The Foundation is full'
-	end
-	return _G.BAIZE.script:tailAppendError(self, {c})
-end
-
 function Foundation:acceptTailError(tail)
 	if #tail > 1 then
 		return 'Cannot move more than one card to a Foundation'

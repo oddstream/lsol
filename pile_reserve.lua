@@ -21,10 +21,6 @@ end
 
 -- vtable functions
 
-function Reserve:acceptCardError(c)
-	return 'Cannot move a card to a Reserve'
-end
-
 function Reserve:acceptTailError(c)
 	return 'Cannot move a card to a Reserve'
 end

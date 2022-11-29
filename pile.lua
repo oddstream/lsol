@@ -428,11 +428,6 @@ end
 
 -- vtable functions
 
-function Pile.acceptCardError(c)
-	log.warn('base acceptCardError should not be called')
-	return nil
-end
-
 function Pile.acceptTailError(c)
 	log.warn('base acceptTailError should not be called')
 	return nil

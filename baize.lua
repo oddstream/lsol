@@ -1370,7 +1370,7 @@ function Baize:collect()
 				while true do
 					local card = pile:peek()
 					if not card then break end
-					local err = fp:acceptCardError(card)
+					local err = fp:acceptTailError({card})
 					if err then
 						break	-- done with this foundation, try another
 					end

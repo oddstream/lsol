@@ -22,10 +22,6 @@ function Discard:push(c)
 	c:flipDown()
 end
 
-function Discard:acceptCardError(c)
-	return 'Cannot move a single card to a Discard'
-end
-
 function Discard:acceptTailError(tail)
 	if #self.cards ~= 0 then
 		return 'Can only move cards to an empty Discard'

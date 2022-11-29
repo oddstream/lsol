@@ -19,20 +19,16 @@ end
 
 -- vtable functions
 
-function Waste:acceptCardError(c)
-	if c.parent.category ~= 'Stock' then
+function Waste:acceptTailError(tail)
+	if #tail > 1 then
+		return 'Can only move a single card to Waste'
+	end
+	if tail[1].parent.category ~= 'Stock' then
 		return 'Waste can only accept cards from the Stock'
 	end
 	-- card may be prone if being dragged from Stock;
 	-- that's ok because Stock:pop() will flip it
 	return nil
-end
-
-function Waste:acceptTailError(tail)
-	if #tail > 1 then
-		return 'Can only move a single card to Waste'
-	end
-	return self:acceptCardError(tail[1])
 end
 
 -- use Pile.tailTapped

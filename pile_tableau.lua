@@ -18,13 +18,6 @@ function Tableau.new(o)
 	return setmetatable(o, Tableau)
 end
 
-function Tableau:acceptCardError(c)
-	if c.prone then
-		return 'Cannot add a face down card to a Tableau'
-	end
-	return _G.BAIZE.script:tailAppendError(self, {c})
-end
-
 local function powerMoves(pileTarget)
 	-- (1 + number of empty freecells) * 2 ^ (number of empty columns)
 	-- see http://ezinearticles.com/?Freecell-PowerMoves-Explained&id=104608

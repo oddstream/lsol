@@ -17,17 +17,6 @@ function Cell.new(o)
 	return setmetatable(o, Cell)
 end
 
-function Cell:acceptCardError(c)
-	if #self.cards ~= 0 then
-		return 'A Cell can only contain one card'
-	end
-	if c.prone then
-		-- eg being dragged from Stock
-		return 'Cannot add a face down card to a Cell'
-	end
-	return nil
-end
-
 function Cell:acceptTailError(tail)
 	if #self.cards ~= 0 then
 		return 'A Cell can only contain one card'
