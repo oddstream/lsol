@@ -39,7 +39,6 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	debug = false,
 	lastVersion = 0,
 	variantName = 'Klondike',
-	cardTransitionStep = 0.02,
 	simpleCards = false,
 	powerMoves = true,
 	muteSounds = false,
@@ -419,8 +418,11 @@ _G.LSOL_COLORS = {
 	Alternatives:
 		CARDC___.TTF (also includes suit symbols)
 		RobotoSlab-SemiBold.ttf (more traditional card look)
+		RobotoCondensed-Regular.ttf
+	https://fonts.google.com/
 ]]
 
+-- _G.ORD_FONT = 'assets/fonts/RobotoCondensed-Regular.ttf'
 _G.ORD_FONT = 'assets/fonts/Acme-Regular.ttf'
 _G.SUIT_FONT = 'assets/fonts/DejaVuSans.ttf'
 _G.UI_MEDIUM_FONT = 'assets/fonts/Roboto-Medium.ttf'
@@ -462,6 +464,7 @@ function _G.drawConsoleLogMessages()
 	end
 end
 
+-- ~/.local/share/love/LÖVE Solitaire/settings.json
 local settingsFname = 'settings.json'
 
 local function loadSettings()
@@ -564,8 +567,8 @@ which will turn the buffering off.
 There may be a small performance penalty as the output will be flushed after each print.
 ]]
 
-	-- required for ZeroBrane
-	--[[
+-- required for ZeroBrane
+--[[
 	io.stdout:setvbuf('no')	-- 'no', 'full' or 'line'
 
 	if args then
@@ -574,8 +577,17 @@ There may be a small performance penalty as the output will be flushed after eac
 		end
 		if arg[#arg] == "-debug" then require("mobdebug").start() end
 	end
-	]]
+]]
 
+--[[
+	print(Util.lerp(1.0, 0.0, 0.25))
+	print(Util.lerp(1.0, 0.0, 0.5))
+	print(Util.lerp(1.0, 0.0, 0.75))
+
+	print(Util.lerp(0.0, 1.0, 0.25))
+	print(Util.lerp(0.0, 1.0, 0.5))
+	print(Util.lerp(0.0, 1.0, 0.75))
+]]
 	math.randomseed(os.time())
 
 	--[[
@@ -607,7 +619,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	-- turn off anti-aliasing to stop Gargantua stock black corners problem
 	-- default is 'linear', linear', 1
 	-- print('defaultFilter', love.graphics.getDefaultFilter( ))
-	-- love.graphics.setDefaultFilter('nearest', 'nearest', 1)
+	love.graphics.setDefaultFilter('nearest', 'nearest', 1)
 
 	_G.SETTINGS = loadSettings()
 

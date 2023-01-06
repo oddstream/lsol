@@ -160,12 +160,12 @@ function Stats:strings(v)
 		table.insert(strs, string.format('Won: %u', s.won))
 		table.insert(strs, string.format('Lost: %u', s.lost))
 
-		local winRate = s.won / (s.won+s.lost) * 100
+		local winRate = (s.won * 100) / (s.won+s.lost)
 		table.insert(strs, string.format('Win rate: %d%%', winRate))
 
 		local avp = averagePercent(s)
 		if avp < 100 then
-			table.insert(strs, string.format('Average complete: %d%%', averagePercent(s)))
+			table.insert(strs, string.format('Average complete: %d%%', avp))
 		end
 		if s.bestPercent < 100 then
 			-- not yet won a game

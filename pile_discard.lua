@@ -1,6 +1,8 @@
 -- class Discard, derived from Pile
 
 local Pile = require 'pile'
+local Util = require 'util'
+local CC = require 'cc'
 
 local Discard = {}
 Discard.__index = Discard
@@ -34,7 +36,13 @@ function Discard:acceptTailError(tail)
 	if #tail ~= #_G.BAIZE.deck / #_G.BAIZE.discards then
 		return 'Can only move a full set of cards to a Discard'
 	end
-	return _G.BAIZE.script:moveTailError(tail)	-- check cards are conformant
+	-- added 2023-01
+	if Util.unsortedPairs(tail, CC.DownSuit) > 0 then
+		return 'Cards must the the same suit and go down in rank'
+	end
+	-- Scorpion tails can always be moved, but Mrs Mop/Simple Simon tails
+	-- must be conformant to be moved
+	return _G.BAIZE.script:moveTailError(tail)
 end
 
 function Discard:tailTapped(tail)

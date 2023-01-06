@@ -449,7 +449,8 @@ function Pile:tailTapped(tail)
 		if #tail == 1 then
 			Util.moveCard(src, homes[1].dst)
 		else
-			Util.moveCards(src, src:indexOf(card), homes[1].dst)
+			-- Util.moveCards(src, src:indexOf(card), homes[1].dst)
+			Util.moveCards2(card, homes[1].dst)
 		end
 	end
 end

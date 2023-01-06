@@ -181,7 +181,7 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 	-- could/should be a function within factory
 
 	local function printAt(str, rx, ry, font, scale, angle)
-		scale = scale or 1.0
+		-- scale = scale or 1.0
 		angle = angle or 0.0
 		local ox = font:getWidth(str) / 2
 		local oy = font:getHeight(str) / 2
@@ -189,7 +189,7 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 			width * rx,
 			height * ry,
 			angle,
-			scale, scale,
+			1.0, 1.0,	--scale, scale,
 			ox, oy)
 	end
 
@@ -280,7 +280,7 @@ function _G.cardTextureFactory(width, height, radius)
 	if _G.SETTINGS.simpleCards then
 		suitFontSize = width / 2.5
 	else
-		suitFontSize = width / 3.5
+		suitFontSize = width / 3.75
 	end
 	local suitFont = love.graphics.newFont(_G.SUIT_FONT, suitFontSize)
 	local suitFontLarge = love.graphics.newFont(_G.SUIT_FONT, suitFontSize * 2)

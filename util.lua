@@ -50,6 +50,10 @@ function Util.overlapArea(x, y, w, h, X, Y, W, H)
 	return ox * oy;
 end
 
+function Util.nearEnough(a, b, d)
+	return math.abs(a-b) < d
+end
+
 --[[
 function Util.rectContains(X, Y, W, H, x, y, w, h)
 	if x < X or y < Y then
@@ -203,6 +207,7 @@ function Util.moveCardByOrdAndSuit(src, dst, ord, suit)
 	return nil
 end
 
+--[[
 function Util.moveCards(src, idx, dst)
 	local tmp = {}
 	while #src.cards >= idx do
@@ -217,6 +222,29 @@ function Util.moveCards(src, idx, dst)
 	end
 	while #tmp > 0 do
 		dst:push(table.remove(tmp))
+	end
+	src:flipUpExposedCard()
+end
+]]
+
+function Util.moveCards2(card, dst)
+	local tmp = {}
+	local src = card.parent
+	while true do
+		local c = src:pop()
+		if c == nil then
+			log.error('Cannot find card', card)
+		end
+		table.insert(tmp, c)
+		if c == card then
+			break
+		end
+	end
+	if #tmp > 0 then
+		Util.play('move4')
+		while #tmp > 0 do
+			dst:push(table.remove(tmp))
+		end
 	end
 	src:flipUpExposedCard()
 end

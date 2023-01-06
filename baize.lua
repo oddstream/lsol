@@ -192,10 +192,10 @@ function Baize:countMoves()
 	if card can move to foundation then it's strongly movable
 
 	0 - can't move, or pointless move
-	1 - weak move (conformant with card above)
-	2 - move to cell or empty pile
-	3 - move
-	4 - move to foundation
+	1 - move to cell or empty pile
+	2 - normal move
+	3 - move to match suit (Spider &c)
+	4 - move to discard/foundation
 	]]
 
 	local function isWeakMove(src, card)
@@ -242,15 +242,27 @@ function Baize:countMoves()
 		end
 		if movable then
 			self.moves = self.moves + 1
-			if dst.category == 'Foundation' then
+			if dst.category == 'Cell' then
+				card.movable = math.max(card.movable, 1)
+			elseif dst.category == 'Discard' then
+				card.movable = math.max(card.movable, 4)
+			elseif dst.category == 'Foundation' then
 				self.fmoves = self.fmoves + 1
 				card.movable = math.max(card.movable, 4)
-			elseif dst.category == 'Tableau' and isWeakMove(src, card) then
-				card.movable = math.max(card.movable, 1)
-			elseif #dst.cards == 0 then
-				card.movable = math.max(card.movable, 2)
-			else
-				card.movable = math.max(card.movable, 3)
+			elseif dst.category == 'Tableau' then
+				if #dst.cards == 0 then
+					if dst.label == '' then
+						card.movable = math.max(card.movable, 1)
+					else
+						card.movable = math.max(card.movable, 2)
+					end
+				else
+					if dst:peek().suit == card.suit then
+						card.movable = math.max(card.movable, 3)
+					else
+						card.movable = math.max(card.movable, 2)
+					end
+				end
 			end
 		end
 	end
@@ -1255,7 +1267,8 @@ function Baize:mouseReleased(x, y, button)
 								if #tail == 1 then
 									Util.moveCard(src, dst)
 								else
-									Util.moveCards(src, src:indexOf(tail[1]), dst)
+									-- Util.moveCards(src, src:indexOf(tail[1]), dst)
+									Util.moveCards2(tail[1], dst)
 								end
 								local newSnap = self:stateSnapshot()
 								if Util.baizeChanged(oldSnap, newSnap) then
@@ -1360,9 +1373,11 @@ end
 function Baize:collect()
 	-- collect should be exactly the same as the user tapping repeatedly on the
 	-- waste, cell, reserve and tableau piles
-	-- nb there is no collecting in games with discard piles
+	-- nb there is no collecting to discard piles, they are optional and presence of
+	-- cards in them does not signify a complete game
 
-	-- TODO could move this back to vtable
+	-- TODO could move this back to vtable, but csol had that and it didn't count
+	-- multiple collects from one pile as separate moves
 	local function collectFromPile(pile)
 		local cardsMoved = 0
 		if pile then

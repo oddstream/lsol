@@ -17,27 +17,16 @@ local Card = {
 	-- y
 	-- src {x, y}
 	-- dst {x, y}
-	-- lerpStep			current lerp value 0.0 .. 1.0; if < 1.0, card is lerping
-	-- lerpStepAmount	the amount a transitioning card moves each tick
-	-- lerping			a boolean to save some messy comparisons
 	-- dragStart {x,y}
 
-	-- flipStep
+	-- flipDirection
 	-- flipWidth
+	-- flipStartTime
 
 	-- directionX, directionY
 	-- degrees, spin
-
-	-- lerpCount
-	-- lerpTime
-	-- lerpStartTime
-	-- flipCount
-	-- flipTime
-	-- flipStartTime
 }
 Card.__index = Card
-
-local measureTime = true	-- debug for measuring transition and flip time
 
 function Card:__tostring()
 	return self.textureId
@@ -61,26 +50,14 @@ function Card.new(o)
 
 	o.textureId = Util.cardTextureId(o.ord, o.suit)	-- used as index/key into Card Texture Library
 
-	o.lerping = false
-	o.lerpStep = 1.0
-
-	o.flipStep = 0.0
 	-- cards have to flip faster than they transition
 	-- remember that flipping happens in two steps
 	-- so three times faster would do, but four times faster seems snappier
-	-- with cardTransitionStep at 0.02, and flipStepAmount at 0.08,
-	-- average transitions take 0.64ms, flips take 0.39ms
-	o.flipStepAmount = _G.SETTINGS.cardTransitionStep * 4
+	o.flypWidth = 1.0	-- lerps from 1.0 to 0.0 (then from 0.0 to 1.0)
+	o.flypDirection = 0	-- -1 narrower, 0 statis, +1 wider
 
 	o.spinDegrees = 0
 	o.spinDelaySeconds = 0.0
-
-	if measureTime then
-		o.flipTime = 0.0
-		o.flipCount = 0
-		o.lerpTime = 0.0
-		o.lerpCount = 0
-	end
 
 	return setmetatable(o, Card)
 end
@@ -93,17 +70,6 @@ function Card:setBaizePos(x, y)
 	self.x = x
 	self.y = y
 	self:stopTransition()
---[[
-	if not self:dragging() then
-		local ssr = self.parent:screenBox()
-		if ssr then
-			use Util.rectContains()
-			if not Util.inRect(self.x, self.y, ssr.x, ssr.y, ssr.width, ssr.height) then
-				log.warn('card', tostring(self), 'outside ssr')
-			end
-		end
-	end
-]]
 end
 
 function Card:screenPos()
@@ -126,25 +92,23 @@ function Card:screenRect()
 	return self.x  + _G.BAIZE.dragOffset.x, self.y  + _G.BAIZE.dragOffset.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
+function Card:_startFlip()
+	self.flypWidth = 1.0
+	self.flypDirection = -1	-- start by making card narrower
+	self.flypStartTime = love.timer.getTime()
+end
+
 function Card:flipUp()
 	if self.prone then
 		self.prone = false
-		self.flipStep = -self.flipStepAmount	-- start by making card narrower
-		self.flipWidth = 1.0
-		if measureTime then
-			self.flipStartTime = love.timer.getTime()
-		end
+		self:_startFlip()
 	end
 end
 
 function Card:flipDown()
 	if not self.prone then
 		self.prone = true
-		self.flipStep = -self.flipStepAmount	-- start by making card narrower
-		self.flipWidth = 1.0
-		if measureTime then
-			self.flipStartTime = love.timer.getTime()
-		end
+		self:_startFlip()
 	end
 end
 
@@ -157,19 +121,21 @@ function Card:flip()
 end
 
 function Card:flipping()
-	return self.flipStep ~= 0.0
+	return self.flypDirection ~= 0.0
 end
 
 function Card:transitioning()
-	return self.lerping
-	-- return self.lerpStep < 1.0 and self.dst and self.src and (self.x ~= self.dst.x or self.y ~= self.dst.y)
+	return self.dst ~= nil
+end
+
+function Card:nearEnough()
+	return math.abs(self.x - self.dst.x) < 1.0 and math.abs(self.y - self.dst.y) < 1.0
+	-- return self.x == self.dst.x and self.y == self.dst.y
 end
 
 function Card:stopTransition()
 	self.src = nil
 	self.dst = nil
-	self.lerpStep = 1.0
-	self.lerping = false
 end
 
 function Card:transitionTo(x, y)
@@ -184,20 +150,16 @@ function Card:transitionTo(x, y)
 	end
 
 	if self.dst then
-		if self.dst.x == x and self.dst.y == y and self.lerpStep < 1.0 then
+		if self:nearEnough() then
+			self:setBaizePos(x, y)
 			return	-- repeat request
 		end
 	end
 
 	self.src = {x = self.x, y = self.y}
 	self.dst = {x = x, y = y}
-	self.lerpStep = 0.2	-- starting from 0.0 feels a little laggy
-	self.lerpStepAmount = _G.SETTINGS.cardTransitionStep
-	self.lerping = true
 
-	if measureTime then
-		self.lerpStartTime = love.timer.getTime()
-	end
+	self.lerpStartTime = love.timer.getTime()
 end
 
 function Card:dragging()
@@ -266,36 +228,55 @@ end
 ]]
 
 function Card:update(dt_seconds)
+
 	if self:transitioning() then
-		self.lerpStep = self.lerpStep + self.lerpStepAmount
-		if self.lerpStep < 1.0 then
-			self.x = Util.smootherstep(self.src.x, self.dst.x, self.lerpStep)
-			self.y = Util.smootherstep(self.src.y, self.dst.y, self.lerpStep)
+		if not self:nearEnough() then
+			-- Calculate the fraction of the total duration that has passed
+			local t = (love.timer.getTime() - self.lerpStartTime) / 0.666
+			self.x = Util.smootherstep(self.src.x, self.dst.x, t)
+			self.y = Util.smootherstep(self.src.y, self.dst.y, t)
+			-- local rate = 10.0	-- too low gives settling flicker
+			-- https://www.gamedeveloper.com/programming/improved-lerp-smoothing-
+			-- value = lerp(target, value, exp2(-rate*deltaTime))
+			-- exp2(x) is 2 ^ x
+			-- ... rate controls how quickly the value converges on the target.
+			-- With a rate of 1.0, the value will move halfway to the target each second.
+			-- If you double the rate, the value will move in twice as fast.
+			-- If you halve the rate, it will move in half as fast.
+			--
+			-- Even better, it’s frame rate independent.
+			-- If you lerp() this way 60 times with a delta time of 1/60 s,
+			-- it will be the same result as 30 times with 1/30 s, or once with 1 s.
+			-- No fixed time step is needed, or the jittery movement it causes.
+			-- self.x = Util.lerp(self.dst.x, self.x, math.pow(2, -rate * dt_seconds))
+			-- self.y = Util.lerp(self.dst.y, self.y, math.pow(2, -rate * dt_seconds))
 		else
 			-- we have arrived at our destination
 			-- make sure card is in proper place
 			-- and terminate any transition
-			self:setBaizePos(self.dst.x, self.dst.y)
-			if measureTime then
-				self.lerpTime = self.lerpTime + (love.timer.getTime() - self.lerpStartTime)
-				self.lerpCount = self.lerpCount + 1
-			end
+			self:setBaizePos(self.dst.x, self.dst.y)	-- also stops lerping
 		end
 	end
+
 	if self:flipping() then
-		self.flipWidth = self.flipWidth + self.flipStep
-		if self.flipWidth <= 0.0 then
-			self.flipStep = self.flipStepAmount -- now make card wider
-		elseif self.flipWidth >= 1.0 then
-			-- finished flipping
-			self.flipWidth = 1.0
-			self.flipStep = 0.0
-			if measureTime then
-				self.flipTime = self.flipTime + (love.timer.getTime() - self.flipStartTime)
-				self.flipCount = self.flipCount + 1
+		-- Calculate the fraction of the total duration that has passed
+		local t = (love.timer.getTime() - self.flypStartTime) / 0.333
+		if self.flypDirection < 0 then
+			self.flypWidth = Util.lerp(1.0, 0.0, t)
+			if self.flypWidth <= 0.0 then
+				-- reverse direction, make card bigger
+				self.flypDirection = 1
+				self.flypStartTime = love.timer.getTime()
+			end
+		elseif self.flypDirection > 0 then
+			self.flypWidth = Util.lerp(0.0, 1.0, t)
+			if self.flypWidth >= 1.0 then
+				-- finished
+				self.flypDirection = 0
 			end
 		end
 	end
+
 	if self:spinning() then
 		if self.spinDelaySeconds > 0 then
 			self.spinDelaySeconds = self.spinDelaySeconds - dt_seconds
@@ -376,7 +357,7 @@ function Card:draw()
 	love.graphics.setColor(1,1,1,1)
 
 	local img
-	if self.flipStep < 0.0 then
+	if self.flypDirection < 0.0 then
 		if self.prone then
 			-- card is getting narrower, and it's going to show face down, but show face up
 			img = b.cardTextureLibrary[self.textureId]
@@ -393,7 +374,22 @@ function Card:draw()
 	end
 
 	local function drawCard()
+		-- if b.showMovable and self.movable > 0 then
+		-- 	if self.movable == 1 then
+		-- 		love.graphics.setColor(1,1,0.9,1)
+		-- 	elseif self.movable == 2 then
+		-- 		love.graphics.setColor(1,1,0.8,1)
+		-- 	elseif self.movable == 3 then
+		-- 		love.graphics.setColor(1,1,0.7,1)
+		-- 	elseif self.movable == 4 then
+		-- 		love.graphics.setColor(1,1,0.6,1)
+		-- 	end
+		-- end
+		-- love.graphics.draw(img, x, y)
+		-- love.graphics.setColor(1,1,1,1)
+
 		love.graphics.draw(img, x, y)
+
 		if b.showMovable and self.movable > 0 then
 			-- BUG after mirror baize when complete "cannot undo a completed game"
 			-- self.movable will be nil
@@ -401,6 +397,7 @@ function Card:draw()
 			Util.setColorFromSetting('hintColor')
 			love.graphics.setLineWidth(self.movable)
 			love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
+			love.graphics.setColor(1,1,1,1)
 		end
 	end
 
@@ -412,10 +409,10 @@ function Card:draw()
 		end
 	elseif self:flipping() then
 		local cw = b.cardWidth
-		local scw = cw / self.flipWidth
+		local scw = cw / self.flypWidth
 		love.graphics.draw(img, x, y,
 			0,
-			self.flipWidth, 1.0,
+			self.flypWidth, 1.0,
 			(cw - scw) / 2, 0)
 	elseif self:transitioning() then
 		local xoffset, yoffset = 1, 1
@@ -430,7 +427,9 @@ function Card:draw()
 		-- even though "lifting" it (moving it up/left towards the light source) would be more "correct"
 		x = x - xoffset / 2
 		y = y - yoffset / 2
+		love.graphics.setColor(1, 0.95, 1, 1)
 		drawCard()
+		love.graphics.setColor(1,1,1,1)
 	else
 --[[
 		if self:shaking() then
