@@ -111,7 +111,7 @@ function UI.new()
 
 	o.allColorsDrawer = Drawer.new({width=256 * _G.UI_SCALE})
 
-	o.aboutDrawer = Drawer.new({width=320 * _G.UI_SCALE, font=o.toastFont})
+	o.aboutDrawer = Drawer.new({width=360 * _G.UI_SCALE, font=o.toastFont})
 
 	o.statusbar = Statusbar.new({})
 		wgt = TextWidget.new({parent=o.statusbar, name='stock', text='', align='left'})

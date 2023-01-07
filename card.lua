@@ -202,7 +202,7 @@ function Card:startSpinning()
 	self.directionY = math.random(-3, 3)
 	self.degrees = 0
 	self.spinDegrees = math.random() - 0.5
-	self.spinDelaySeconds = 2.0
+	self.spinDelaySeconds = 1.0
 end
 
 function Card:stopSpinning()

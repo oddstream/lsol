@@ -177,11 +177,12 @@ local function createSimpleFace(cardFaceTexture, ordFont, suitFont, width, heigh
 	return canvas
 end
 
-local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLarge, width, height, ord, suit)
+local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontSmall, suitFontLarge, width, height, ord, suit)
 	-- could/should be a function within factory
 
-	local function printAt(str, rx, ry, font, scale, angle)
-		-- scale = scale or 1.0
+	local function printAt(str, rx, ry, font, angle)
+		love.graphics.setFont(font)
+		-- jaggies with scale at anything other than 1.0
 		angle = angle or 0.0
 		local ox = font:getWidth(str) / 2
 		local oy = font:getHeight(str) / 2
@@ -189,7 +190,7 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 			width * rx,
 			height * ry,
 			angle,
-			1.0, 1.0,	--scale, scale,
+			1.0, 1.0,
 			ox, oy)
 	end
 
@@ -203,23 +204,24 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 
 	-- every card gets an ord top left and bottom right (inverted)
 	love.graphics.setColor(love.math.colorFromBytes(unpack(suitRGB)))
-	love.graphics.setFont(ordFont)
 	printAt(_G.ORD2STRING[ord], 0.15, 0.15, ordFont)
-	printAt(_G.ORD2STRING[ord], 0.85, 0.85, ordFont, 1.0, math.pi)
+	printAt(_G.ORD2STRING[ord], 0.85, 0.85, ordFont, math.pi)
 
 	if ord > 1 and ord < 11 then
 		-- cards 2 .. 10 get pips in the middle
 
 		love.graphics.setColor(love.math.colorFromBytes(unpack(suitRGB)))
-		love.graphics.setFont(suitFont)
 		local pips = pipInfo[ord]
 		for _, pip in ipairs(pips) do
-			local scale = pip.scale or 1.0
-			local angle = 0
+			local angle = 0.0
 			if pip.y > 0.5 then
 				angle = math.pi
 			end
-			printAt(suit, pip.x, pip.y, suitFont, scale, angle)
+			if pip.scale and pip.scale < 1.0 then
+				printAt(suit, pip.x, pip.y, suitFontSmall, angle)
+			else
+				printAt(suit, pip.x, pip.y, suitFont, angle)
+			end
 		end
 	else
 		-- Ace, Jack, Queen, King get suit runes at top right and bottom left
@@ -230,12 +232,10 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLar
 		love.graphics.rectangle('fill', width * 0.25, height * 0.25, width * 0.5, height * 0.5, width / 20, height / 20)
 
 		love.graphics.setColor(love.math.colorFromBytes(unpack(suitRGB)))
-		love.graphics.setFont(suitFontLarge)
 		printAt(suit, 0.5, 0.5, suitFontLarge)
 
-		love.graphics.setFont(suitFont)
 		printAt(suit, 0.85, 0.15, suitFont)
-		printAt(suit, 0.15, 0.85, suitFont, 1.0, math.pi)
+		printAt(suit, 0.15, 0.85, suitFont, math.pi)
 	end
 
 	love.graphics.setCanvas()	-- reset render target to the screen
@@ -275,6 +275,7 @@ function _G.cardTextureFactory(width, height, radius)
 		ordFontSize = width / 3.5
 	end
 	local ordFont = love.graphics.newFont(_G.ORD_FONT, ordFontSize)
+	local ordFont10 = love.graphics.newFont(_G.ORD_FONT, ordFontSize * 0.8)
 
 	local suitFontSize
 	if _G.SETTINGS.simpleCards then
@@ -283,6 +284,7 @@ function _G.cardTextureFactory(width, height, radius)
 		suitFontSize = width / 3.75
 	end
 	local suitFont = love.graphics.newFont(_G.SUIT_FONT, suitFontSize)
+	local suitFontSmall = love.graphics.newFont(_G.SUIT_FONT, suitFontSize * 0.8)
 	local suitFontLarge = love.graphics.newFont(_G.SUIT_FONT, suitFontSize * 2)
 
 	-- create textures
@@ -378,7 +380,11 @@ function _G.cardTextureFactory(width, height, radius)
 			if _G.SETTINGS.simpleCards then
 				cardFaceTextures[key] = createSimpleFace(cardFaceTexture, ordFont, suitFont, width, height, ord, suit)
 			else
-				cardFaceTextures[key] = createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontLarge, width, height, ord, suit)
+				if ord == 10 then
+					cardFaceTextures[key] = createRegularFace(cardFaceTexture, ordFont10, suitFont, suitFontSmall, suitFontLarge, width, height, ord, suit)
+				else
+					cardFaceTextures[key] = createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontSmall, suitFontLarge, width, height, ord, suit)
+				end
 			end
 		end
 	end

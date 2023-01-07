@@ -8,8 +8,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '24'
-_G.LSOL_VERSION_DATE = '2022-08-25'
+_G.LSOL_VERSION = '25'
+_G.LSOL_VERSION_DATE = '2023-01-07'
 
 if not _G.table.contains then
   function _G.table.contains(tab, val)
@@ -499,7 +499,7 @@ local function loadSettings()
 		end
 	end
 
-	local retiredSettings = {'highlightMovable','shortCards','oneColorCards','twoColorcards','fourColorCards'}
+	local retiredSettings = {'highlightMovable','shortCards','oneColorCards','twoColorcards','fourColorCards','cardTransitionStep'}
 	for _, rs in ipairs(retiredSettings) do
 		if settings[rs] ~= nil then
 			log.info('retiring setting', rs)
@@ -679,7 +679,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.STATUSBARHEIGHT = 24 * _G.UI_SCALE
 	_G.UIFONTSIZE = 22 * _G.UI_SCALE
 	_G.UIFONTSIZE_TITLEBAR = 22  * _G.UI_SCALE
-	_G.UIFONTSIZE_SMALL = 14  * _G.UI_SCALE
+	_G.UIFONTSIZE_SMALL = 16  * _G.UI_SCALE	-- 14 created artifacts with antialiasing turned off
 
 	-- default lineStyle is 'smooth'
 	-- print('default lineStyle = ', love.graphics.getLineStyle())

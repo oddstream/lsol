@@ -50,6 +50,13 @@ function Util.overlapArea(x, y, w, h, X, Y, W, H)
 	return ox * oy;
 end
 
+-- distance finds the length of the hypotenuse between two points
+function Util.distance(x, y , X, Y)
+	local first = math.pow(X - x, 2)
+	local second = math.pow(Y - y, 2)
+	return math.sqrt(first + second)
+end
+
 function Util.nearEnough(a, b, d)
 	return math.abs(a-b) < d
 end
