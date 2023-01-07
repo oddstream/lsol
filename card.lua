@@ -232,7 +232,7 @@ function Card:update(dt_seconds)
 	if self:transitioning() then
 		if not self:nearEnough() then
 			-- Calculate the fraction of the total duration that has passed
-			local t = (love.timer.getTime() - self.lerpStartTime) / 0.666
+			local t = (love.timer.getTime() - self.lerpStartTime) / 0.55
 			self.x = Util.smootherstep(self.src.x, self.dst.x, t)
 			self.y = Util.smootherstep(self.src.y, self.dst.y, t)
 			-- local rate = 10.0	-- too low gives settling flicker
@@ -260,7 +260,7 @@ function Card:update(dt_seconds)
 
 	if self:flipping() then
 		-- Calculate the fraction of the total duration that has passed
-		local t = (love.timer.getTime() - self.flypStartTime) / 0.333
+		local t = (love.timer.getTime() - self.flypStartTime) / 0.275
 		if self.flypDirection < 0 then
 			self.flypWidth = Util.lerp(1.0, 0.0, t)
 			if self.flypWidth <= 0.0 then
@@ -427,9 +427,9 @@ function Card:draw()
 		-- even though "lifting" it (moving it up/left towards the light source) would be more "correct"
 		x = x - xoffset / 2
 		y = y - yoffset / 2
-		love.graphics.setColor(1, 0.95, 1, 1)
+		-- love.graphics.setColor(1, 0.95, 1, 1)
 		drawCard()
-		love.graphics.setColor(1,1,1,1)
+		-- love.graphics.setColor(1,1,1,1)
 	else
 --[[
 		if self:shaking() then

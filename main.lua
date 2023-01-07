@@ -679,7 +679,7 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.STATUSBARHEIGHT = 24 * _G.UI_SCALE
 	_G.UIFONTSIZE = 22 * _G.UI_SCALE
 	_G.UIFONTSIZE_TITLEBAR = 22  * _G.UI_SCALE
-	_G.UIFONTSIZE_SMALL = 16  * _G.UI_SCALE	-- 14 created artifacts with antialiasing turned off
+	_G.UIFONTSIZE_SMALL = 14  * _G.UI_SCALE	-- 14 created artifacts with antialiasing turned off
 
 	-- default lineStyle is 'smooth'
 	-- print('default lineStyle = ', love.graphics.getLineStyle())

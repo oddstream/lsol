@@ -245,22 +245,22 @@ function Baize:countMoves()
 			if dst.category == 'Cell' then
 				card.movable = math.max(card.movable, 1)
 			elseif dst.category == 'Discard' then
-				card.movable = math.max(card.movable, 4)
+				card.movable = math.max(card.movable, 6)
 			elseif dst.category == 'Foundation' then
 				self.fmoves = self.fmoves + 1
-				card.movable = math.max(card.movable, 4)
+				card.movable = math.max(card.movable, 6)
 			elseif dst.category == 'Tableau' then
 				if #dst.cards == 0 then
 					if dst.label == '' then
 						card.movable = math.max(card.movable, 1)
 					else
-						card.movable = math.max(card.movable, 2)
+						card.movable = math.max(card.movable, 3)
 					end
 				else
 					if dst:peek().suit == card.suit then
-						card.movable = math.max(card.movable, 3)
+						card.movable = math.max(card.movable, 4)
 					else
-						card.movable = math.max(card.movable, 2)
+						card.movable = math.max(card.movable, 3)
 					end
 				end
 			end
