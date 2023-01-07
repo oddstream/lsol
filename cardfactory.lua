@@ -246,6 +246,10 @@ function _G.cardTextureFactory(width, height, radius)
 	-- assert(width and width ~= 0)
 	-- assert(height and height ~= 0)
 
+	-- turn off anti-aliasing to prevent fuzzy cards
+	-- https://love2d.org/wiki/FilterMode
+	love.graphics.setDefaultFilter('nearest', 'nearest', 1)
+
 	local halfWidth = width / 2
 	local halfHeight = height / 2
 
@@ -290,10 +294,6 @@ function _G.cardTextureFactory(width, height, radius)
 	-- create textures
 
 	local canvas
-
-	-- turn off anti-aliasing to prevent Gargantua stock corner artifacts
-	-- https://love2d.org/wiki/FilterMode
-	-- love.graphics.setDefaultFilter('nearest', 'nearest', 1)
 
 	-- blank card face
 
@@ -367,10 +367,6 @@ function _G.cardTextureFactory(width, height, radius)
 	love.graphics.setCanvas()	-- reset render target to the screen
 	local cardShadowTexture = canvas
 
-	-- put FilterMode back to default otherwise toast text, pips are garbled
-	-- https://love2d.org/wiki/FilterMode
-	-- love.graphics.setDefaultFilter('linear', 'linear', 1)
-
 	--
 
 	local cardFaceTextures = {}
@@ -388,6 +384,10 @@ function _G.cardTextureFactory(width, height, radius)
 			end
 		end
 	end
+
+	-- put FilterMode back to default otherwise toast text, pips are garbled
+	-- https://love2d.org/wiki/FilterMode
+	love.graphics.setDefaultFilter('linear', 'linear', 1)
 
 	return cardFaceTextures, cardBackTexture, cardShadowTexture
 end

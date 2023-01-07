@@ -616,11 +616,6 @@ There may be a small performance penalty as the output will be flushed after eac
 	-- log.info(limits.texturesize)	-- 16384
 	-- log.info(limits.multicanvas)	-- 8
 
-	-- turn off anti-aliasing to stop Gargantua stock black corners problem
-	-- default is 'linear', linear', 1
-	-- print('defaultFilter', love.graphics.getDefaultFilter( ))
-	love.graphics.setDefaultFilter('nearest', 'nearest', 1)
-
 	_G.SETTINGS = loadSettings()
 
 	if args then

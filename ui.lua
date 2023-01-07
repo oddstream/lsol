@@ -387,6 +387,10 @@ function UI:toast(message, soundName)
 	-- Single-line snackbar height: 48dp
 	-- Text: Roboto Regular 14sp
 	-- Default background fill: #323232 100%
+
+	-- small font gets corrupted with antialiasing on, so turn it off when building toast image
+	love.graphics.setDefaultFilter('linear', 'linear', 1)
+
 	local canvas = love.graphics.newCanvas(t.rw, t.rh)
 	love.graphics.setCanvas(canvas)
 	Util.setColorFromName('UiBackground')
@@ -396,6 +400,8 @@ function UI:toast(message, soundName)
 	love.graphics.print(t.message, (t.rw / 2) - (t.mw / 2), (t.rh / 2) - (t.mh / 2))
 	love.graphics.setCanvas()
 	t.texture = canvas
+
+	love.graphics.setDefaultFilter('nearest', 'nearest', 1)
 
 	table.insert(self.toasts, 1, t)
 
