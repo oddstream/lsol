@@ -1381,9 +1381,10 @@ function Baize:collect()
 		for _, fp in ipairs(self.foundations) do
 			local c = fp:peek()
 			if c == nil then
-				if fp.label == '' then
-					log.error('Foundation has no label')
-				else
+				if fp.label ~= '' then
+					-- Foundations usually are created with labels
+					-- but some games like Duchess the label is not set
+					-- until after the first move to a foundation
 					local n = Util.shortStringToOrdinal(fp.label)
 					if n < ord then
 						ord = n
