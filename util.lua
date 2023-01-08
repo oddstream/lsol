@@ -387,4 +387,14 @@ function Util.cardTextureId(ord, suit)
 	return string.format('%02u%s', ord, suit)
 end
 
+function Util.shortStringToOrdinal(ss)
+	for i, s in ipairs({"?", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"}) do
+		if ss == s then
+			return i
+		end
+	end
+	log.error("Unknown short string", ss)
+	return 0
+end
+
 return Util

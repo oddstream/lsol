@@ -228,6 +228,10 @@ In any case, the baize can be dragged up or down to make all the cards visible.
 
 Some variants (eg Freecell or Forty Thieves) only allow you to move one card at a time. Moving several cards between piles requires you to move them, one at a time, via an empty pile or cell. Enabling power moves automates this, allowing multi-card moves between piles. The number of cards you can move is calculated from the number of empty piles and cells (if any).
 
+#### Safe collect
+
+In games like Klondike that build tableau cards in alternating colors, you can sometimes get into trouble by moving cards to the foundations too soon. With this option turned on, the titlebar collect button will only move cards to the foundation piles when it is safe to do so.
+
 #### Mirror baize
 
 For left-handed players on mobile devices.
@@ -257,6 +261,7 @@ It's possible that a deal will start with no movable cards, just like it might i
 * For Forty Thieves-style games, the *other* priority is to minimize the number of cards in the waste pile.
 * For puzzle-type games (like Baker's Dozen, Freecell, Penguin, Simple Simon), take your time and think ahead.
 * For games with reshuffles (like Usk, Cruel and Perseverance) you need to anticipate the effects of the reshuffle.
+* Focus on sorting the cards in the tableaux, rather than moving cards to the foundations. Only move cards to the foundations when you *have* to.
 * Use undo and bookmark, a lot. Undo isn't cheating; it's experimenting and learning.
 
 ## Terminology and conventions
@@ -284,6 +289,56 @@ It's possible that a deal will start with no movable cards, just like it might i
 * A game is EASY when the deal has been 'fixed', usually by moving Aces to the foundations, or shuffling Kings or Aces in the tableaux.
 
 ![Screenshot](https://github.com/oddstream/gosol/blob/7152668f4b5053a1d438981e9d4564624616da6a/screenshots/Klondike.png)
+
+## The seven different types of piles
+
+### Stock
+
+All games have a stock pile, because this is where the cards are created and start their life.
+
+In some games, like Freecell, the stock pile is off screen (invisible). In others, like Klondike, it's on screen (usually at the top left corner) and tapping the top card will cause one card to be flipped up and moved to a waste pile. In other games, like Spider, tapping the top card will cause cards to be moved to each of the tableau piles.
+
+All cards in the stock are always face down. You can't move a card to the stock pile. There is only ever one stock pile.
+
+### Tableau
+
+Tableau piles are where the main building in the game happens. The player tries to move the cards around the tableau and other piles, so that the cards in each tableau pile are sorted into some game-specific order. For example, in Klondike and Freecell, the tableau cards start in some random order, and must be sorted into increasing rank and alternating color.
+
+Sometimes, there is a constraint on which card may be placed onto an empty tableau, for example in Klondike, and empty tableau can only contain a King.
+
+Some cards in the tableau pile may start life face down; the game will automatically turn the cards up when they are exposed.
+
+### Foundation
+
+Foundation piles are where the player is trying to move the cards to, so that the game is completed.
+
+The cards in each foundation usually start with an Ace, and build up, always the same suit. A foundation pile is full (complete) when it contains 13 cards.
+
+Only one card at a time can be moved to a foundation.
+
+### Discard
+
+Discard piles aren't usually found in other solitaire implementations.
+
+Discard piles are like foundation piles, except that only a complete set of 13 cards can be moved at once.
+
+Moving completed sets of cards to a discard is optional, and is usally done to create space in the tableaux. You do not have to move cards to a discard pile to complete a game.
+
+### Waste
+
+A waste pile can store any number of cards, all face up. You can only move one card at a time to a waste pile, and that card must come from the stock pile. There is only ever one waste pile.
+
+In some games (like Klondike) cards in the waste pile can be recycled back to the stock pile, by tapping on an empty stock pile. The game may restrict the number of times this can happen.
+
+### Cell
+
+A cell is either empty, or it can contain one card of any type. Cell cards are always face up, and available for play to tableau or foundation piles. Cells are used as temporary holding areas for cards.
+
+### Reserve
+
+A reserve pile contains a series of cards, usually all face down with only the top card face up and available for play to a foundation, tableau or cell pile.
+
+Only one card at a time may be moved from a reserve, and cards can never be moved to a reserve pile.
 
 ## TODO
 

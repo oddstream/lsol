@@ -41,6 +41,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	variantName = 'Klondike',
 	simpleCards = false,
 	powerMoves = true,
+	safeCollect = false,
 	muteSounds = false,
 	mirrorBaize = false,
 	baizeColor = 'ForestGreen',

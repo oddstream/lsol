@@ -1376,6 +1376,28 @@ function Baize:collect()
 	-- nb there is no collecting to discard piles, they are optional and presence of
 	-- cards in them does not signify a complete game
 
+	local function smallestFoundationOrdinal()
+		local ord = 99
+		for _, fp in ipairs(self.foundations) do
+			local c = fp:peek()
+			if c == nil then
+				if fp.label == '' then
+					log.error('Foundation has no label')
+				else
+					local n = Util.shortStringToOrdinal(fp.label)
+					if n < ord then
+						ord = n
+					end
+				end
+			else
+				if c.ord < ord then
+					ord = c.ord
+				end
+			end
+		end
+		return ord
+	end
+
 	-- TODO could move this back to vtable, but csol had that and it didn't count
 	-- multiple collects from one pile as separate moves
 	local function collectFromPile(pile)
@@ -1388,6 +1410,15 @@ function Baize:collect()
 					local err = fp:acceptTailError({card})
 					if err then
 						break	-- done with this foundation, try another
+					end
+					if _G.SETTINGS.safeCollect and self.script.cc == 2 then
+						local n = smallestFoundationOrdinal() + 1
+						if n > 13 then
+							n = 1
+						end
+						if card.ord > n then
+							break	-- done with this foundation, try another
+						end
 					end
 					Util.moveCard(pile, fp)
 					cardsMoved = cardsMoved + 1
@@ -1407,6 +1438,10 @@ function Baize:collect()
 			end
 		end
 	until totalCardsMoved == 0
+
+	-- if self.fmoves > 0 then
+	-- 	self.ui:toast("Not safe")
+	-- end
 end
 
 function Baize:hint()
