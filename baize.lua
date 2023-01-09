@@ -1376,27 +1376,31 @@ function Baize:collect()
 	-- nb there is no collecting to discard piles, they are optional and presence of
 	-- cards in them does not signify a complete game
 
-	local function smallestFoundationOrdinal()
-		local ord = 99
-		for _, fp in ipairs(self.foundations) do
-			local c = fp:peek()
-			if c == nil then
-				if fp.label ~= '' then
-					-- Foundations usually are created with labels
-					-- but some games like Duchess the label is not set
-					-- until after the first move to a foundation
-					local n = Util.shortStringToOrdinal(fp.label)
-					if n < ord then
-						ord = n
-					end
-				end
-			else
-				if c.ord < ord then
-					ord = c.ord
-				end
+	local function doingSafeCollect()
+		if not _G.SETTINGS.safeCollect then
+			return false, 0
+		end
+		if self.script.cc ~= 2 then
+			return false, 0
+		end
+		if self.foundations == nil then
+			return false, 0
+		end
+		local f1 = self.foundations[1]
+		if f1.label ~= 'A' then
+			return false, 0	-- Duchess
+		end
+		local lowest = 99
+		for _, f in ipairs(self.foundations) do
+			if #f.cards == 0 then
+				return true, 1
+			end
+			local card = f:peek()
+			if card.ord < lowest then
+				lowest = card.ord
 			end
 		end
-		return ord
+		return true, lowest + 1
 	end
 
 	-- TODO could move this back to vtable, but csol had that and it didn't count
@@ -1412,12 +1416,9 @@ function Baize:collect()
 					if err then
 						break	-- done with this foundation, try another
 					end
-					if _G.SETTINGS.safeCollect and self.script.cc == 2 then
-						local n = smallestFoundationOrdinal() + 1
-						if n > 13 then
-							n = 1
-						end
-						if card.ord > n then
+					local ok, safeOrd = doingSafeCollect()
+					if ok then
+						if card.ord ~= safeOrd then
 							break	-- done with this foundation, try another
 						end
 					end
@@ -1440,8 +1441,8 @@ function Baize:collect()
 		end
 	until totalCardsMoved == 0
 
-	-- if self.fmoves > 0 then
-	-- 	self.ui:toast("Not safe")
+	-- if self.fmoves > 0 and _G.SETTINGS.safeCollect and self.script.cc == 2 then
+	-- 	self.ui:toast("Not safe to collect card(s)")
 	-- end
 end
 

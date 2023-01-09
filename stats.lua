@@ -165,7 +165,7 @@ function Stats:strings(v)
 
 		local avp = averagePercent(s)
 		if avp < 100 then
-			table.insert(strs, string.format('Average complete: %d%%', avp))
+			table.insert(strs, string.format('Average incomplete: %d%%', avp))
 		end
 		if s.bestPercent < 100 then
 			-- not yet won a game
