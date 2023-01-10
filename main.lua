@@ -581,13 +581,17 @@ There may be a small performance penalty as the output will be flushed after eac
 ]]
 
 --[[
-	print(Util.lerp(1.0, 0.0, 0.25))
-	print(Util.lerp(1.0, 0.0, 0.5))
-	print(Util.lerp(1.0, 0.0, 0.75))
+	print('down', Util.smoothstep(1.0, 0.0, 0.0))
+	print('down', Util.smoothstep(1.0, 0.0, 0.25))
+	print('down', Util.smoothstep(1.0, 0.0, 0.5))
+	print('down', Util.smoothstep(1.0, 0.0, 0.75))
+	print('down', Util.smoothstep(1.0, 0.0, 1.0))
 
-	print(Util.lerp(0.0, 1.0, 0.25))
-	print(Util.lerp(0.0, 1.0, 0.5))
-	print(Util.lerp(0.0, 1.0, 0.75))
+	print('up', Util.smoothstep(0.0, 1.0, 0.0))
+	print('up', Util.smoothstep(0.0, 1.0, 0.25))
+	print('up', Util.smoothstep(0.0, 1.0, 0.5))
+	print('up', Util.smoothstep(0.0, 1.0, 0.75))
+	print('up', Util.smoothstep(0.0, 1.0, 1.0))
 ]]
 	math.randomseed(os.time())
 

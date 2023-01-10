@@ -28,6 +28,10 @@ local Card = {
 }
 Card.__index = Card
 
+local LERP_SECONDS = 0.5
+local FLIP_SECONDS = LERP_SECONDS / 3
+local SPIN_SECONDS = LERP_SECONDS * 2
+
 function Card:__tostring()
 	return self.textureId
 end
@@ -53,8 +57,8 @@ function Card.new(o)
 	-- cards have to flip faster than they transition
 	-- remember that flipping happens in two steps
 	-- so three times faster would do, but four times faster seems snappier
-	o.flypWidth = 1.0	-- lerps from 1.0 to 0.0 (then from 0.0 to 1.0)
-	o.flypDirection = 0	-- -1 narrower, 0 statis, +1 wider
+	o.flipWidth = 1.0	-- lerps from 1.0 to 0.0 (then from 0.0 to 1.0)
+	o.flipDirection = 0	-- -1 narrower, 0 statis, +1 wider
 
 	o.spinDegrees = 0
 	o.spinDelaySeconds = 0.0
@@ -93,9 +97,9 @@ function Card:screenRect()
 end
 
 function Card:_startFlip()
-	self.flypWidth = 1.0
-	self.flypDirection = -1	-- start by making card narrower
-	self.flypStartTime = love.timer.getTime()
+	self.flipWidth = 1.0
+	self.flipDirection = -1	-- start by making card narrower
+	self.flipStartTime = love.timer.getTime()
 end
 
 function Card:flipUp()
@@ -121,7 +125,7 @@ function Card:flip()
 end
 
 function Card:flipping()
-	return self.flypDirection ~= 0.0
+	return self.flipDirection ~= 0.0
 end
 
 function Card:transitioning()
@@ -200,14 +204,16 @@ end
 function Card:startSpinning()
 	self.directionX = math.random(-3, 3)
 	self.directionY = math.random(-3, 3)
-	self.degrees = 0
-	self.spinDegrees = math.random() - 0.5
-	self.spinDelaySeconds = 1.0
+	self.degrees = 0.0
+	repeat
+		self.spinDegrees = math.random() - 0.5
+	until self.spinDegress ~= 0.0
+	self.spinDelaySeconds = SPIN_SECONDS
 end
 
 function Card:stopSpinning()
-	self.degrees = 0
-	self.spinDegrees = 0
+	self.degrees = 0.0
+	self.spinDegrees = 0.0
 end
 
 function Card:spinning()
@@ -232,9 +238,9 @@ function Card:update(dt_seconds)
 	if self:transitioning() then
 		if not self:nearEnough() then
 			-- Calculate the fraction of the total duration that has passed
-			local t = (love.timer.getTime() - self.lerpStartTime) / 0.55
-			self.x = Util.smootherstep(self.src.x, self.dst.x, t)
-			self.y = Util.smootherstep(self.src.y, self.dst.y, t)
+			local t = (love.timer.getTime() - self.lerpStartTime) / LERP_SECONDS
+			self.x = Util.smoothstep(self.src.x, self.dst.x, t)
+			self.y = Util.smoothstep(self.src.y, self.dst.y, t)
 			-- local rate = 10.0	-- too low gives settling flicker
 			-- https://www.gamedeveloper.com/programming/improved-lerp-smoothing-
 			-- value = lerp(target, value, exp2(-rate*deltaTime))
@@ -260,19 +266,19 @@ function Card:update(dt_seconds)
 
 	if self:flipping() then
 		-- Calculate the fraction of the total duration that has passed
-		local t = (love.timer.getTime() - self.flypStartTime) / 0.275
-		if self.flypDirection < 0 then
-			self.flypWidth = Util.lerp(1.0, 0.0, t)
-			if self.flypWidth <= 0.0 then
+		local t = (love.timer.getTime() - self.flipStartTime) / FLIP_SECONDS
+		if self.flipDirection < 0 then
+			self.flipWidth = Util.lerp(1.0, 0.0, t)
+			if self.flipWidth <= 0.0 then
 				-- reverse direction, make card bigger
-				self.flypDirection = 1
-				self.flypStartTime = love.timer.getTime()
+				self.flipDirection = 1
+				self.flipStartTime = love.timer.getTime()
 			end
-		elseif self.flypDirection > 0 then
-			self.flypWidth = Util.lerp(0.0, 1.0, t)
-			if self.flypWidth >= 1.0 then
+		elseif self.flipDirection > 0 then
+			self.flipWidth = Util.lerp(0.0, 1.0, t)
+			if self.flipWidth >= 1.0 then
 				-- finished
-				self.flypDirection = 0
+				self.flipDirection = 0
 			end
 		end
 	end
@@ -280,6 +286,11 @@ function Card:update(dt_seconds)
 	if self:spinning() then
 		if self.spinDelaySeconds > 0 then
 			self.spinDelaySeconds = self.spinDelaySeconds - dt_seconds
+			if self.spinDelaySeconds < 0 then
+				-- while waiting to spin, cards can carry on lerping
+				-- but must stop when spinning starts
+				self:stopTransition()
+			end
 		else
 			self.x = self.x + self.directionX
 			self.y = self.y + self.directionY
@@ -357,7 +368,7 @@ function Card:draw()
 	love.graphics.setColor(1,1,1,1)
 
 	local img
-	if self.flypDirection < 0.0 then
+	if self.flipDirection < 0.0 then
 		if self.prone then
 			-- card is getting narrower, and it's going to show face down, but show face up
 			img = b.cardTextureLibrary[self.textureId]
@@ -373,21 +384,37 @@ function Card:draw()
 		end
 	end
 
-	local function drawCard()
-		-- if b.showMovable and self.movable > 0 then
-		-- 	if self.movable == 1 then
-		-- 		love.graphics.setColor(1,1,0.9,1)
-		-- 	elseif self.movable == 2 then
-		-- 		love.graphics.setColor(1,1,0.8,1)
-		-- 	elseif self.movable == 3 then
-		-- 		love.graphics.setColor(1,1,0.7,1)
-		-- 	elseif self.movable == 4 then
-		-- 		love.graphics.setColor(1,1,0.6,1)
-		-- 	end
-		-- end
-		-- love.graphics.draw(img, x, y)
+	if self:spinning() then
+		love.graphics.draw(img, x, y, self.degrees * math.pi / 180.0)
+	elseif self:flipping() then
+		local cw = b.cardWidth
+		local scw = cw / self.flipWidth
+		love.graphics.draw(img, x, y,
+			0,
+			self.flipWidth, 1.0,
+			(cw - scw) / 2, 0)
+	elseif self:transitioning() then
+		local xoffset, yoffset = 1, 1
+		love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
+		love.graphics.draw(img, x, y)
+	elseif self:dragging() then
+		local xoffset, yoffset = 2, 2
+		-- local xoffset = b.cardWidth / 66
+		-- local yoffset = b.cardHeight / 66
+		love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
+		-- this looks intuitively better than "lifting" the card with offset * 2
+		-- even though "lifting" it (moving it up/left towards the light source) would be more "correct"
+		x = x - xoffset / 2
+		y = y - yoffset / 2
+		-- love.graphics.setColor(1, 0.95, 1, 1)
+		love.graphics.draw(img, x, y)
 		-- love.graphics.setColor(1,1,1,1)
-
+	else
+--[[
+		if self:shaking() then
+			x = x + self.shakeOffset
+		end
+]]
 		love.graphics.draw(img, x, y)
 
 		if b.showMovable and self.movable > 0 then
@@ -399,44 +426,6 @@ function Card:draw()
 			love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 			love.graphics.setColor(1,1,1,1)
 		end
-	end
-
-	if self:spinning() then
-		if self.spinDelaySeconds > 0 then
-			love.graphics.draw(img, x, y)
-		else
-			love.graphics.draw(img, x, y, self.degrees * math.pi / 180.0, 1.25, 1.25)
-		end
-	elseif self:flipping() then
-		local cw = b.cardWidth
-		local scw = cw / self.flypWidth
-		love.graphics.draw(img, x, y,
-			0,
-			self.flypWidth, 1.0,
-			(cw - scw) / 2, 0)
-	elseif self:transitioning() then
-		local xoffset, yoffset = 1, 1
-		love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
-		drawCard()
-	elseif self:dragging() then
-		local xoffset, yoffset = 2, 2
-		-- local xoffset = b.cardWidth / 66
-		-- local yoffset = b.cardHeight / 66
-		love.graphics.draw(b.cardShadowTexture, x + xoffset, y + yoffset)
-		-- this looks intuitively better than "lifting" the card with offset * 2
-		-- even though "lifting" it (moving it up/left towards the light source) would be more "correct"
-		x = x - xoffset / 2
-		y = y - yoffset / 2
-		-- love.graphics.setColor(1, 0.95, 1, 1)
-		drawCard()
-		-- love.graphics.setColor(1,1,1,1)
-	else
---[[
-		if self:shaking() then
-			x = x + self.shakeOffset
-		end
-]]
-		drawCard()
 	end
 
 end

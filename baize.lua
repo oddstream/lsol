@@ -1118,7 +1118,11 @@ function Baize:mousePressed(x, y, button)
 
 				local card = self:findCardAt(x, y)
 				if card then
-					if card.spinDegrees == 0 then
+					if card:transitioning() then
+						-- confusing to move a moving card
+					elseif card:spinning() then
+						-- don't flip like we used to!
+					else
 						local tail = card.parent:makeTail(card)
 						for _, c in ipairs(tail) do
 							c:startDrag()

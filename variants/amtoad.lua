@@ -54,6 +54,13 @@ function AmToad:startGame()
 end
 
 function AmToad:afterMove()
+	-- Empty spaces are filled automatically from the reserve
+	-- added 2023-01-10
+	for _, pile in ipairs(_G.BAIZE.tableaux) do
+		if #pile.cards == 0 then
+			Util.moveCard(_G.BAIZE.reserves[1], pile)
+		end
+	end
 	if #_G.BAIZE.waste.cards == 0 and #_G.BAIZE.stock.cards > 0 then
 		Util.moveCard(_G.BAIZE.stock, _G.BAIZE.waste)
 	end
