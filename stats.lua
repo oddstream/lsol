@@ -193,7 +193,14 @@ end
 
 function Stats:reset(v)
 	v = statsName(v)
+	-- log.info('resetting stats for', v)
 	self[v] = nil
+	-- local strs = self:strings(v)
+	-- log.info(#strs)
+	-- for _, str in ipairs(strs) do
+	-- 	log.info(str)
+	-- end
+	self:save()
 end
 
 return Stats

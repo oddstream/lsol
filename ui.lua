@@ -29,8 +29,8 @@ local menuWidgets = {
 	{},
 	{text='Statistics...', icon='poll', baizeCmd='showStatsDrawer'},
 	{text='Settings...', icon='settings', baizeCmd='showSettingsDrawer'},
-	{text='Colors...', icon='palette', baizeCmd='showColorDrawer'},
-	{text='Card speed...', icon='speed', baizeCmd='showAniSpeedDrawer'},
+	-- {text='Colors...', icon='palette', baizeCmd='showColorDrawer'},
+	-- {text='Card speed...', icon='speed', baizeCmd='showAniSpeedDrawer'},
 	{},
 	{text='Wikipedia...', icon='wikipedia', baizeCmd='wikipedia'},
 	{text='About...', icon='info', baizeCmd='showAboutDrawer'},
@@ -62,10 +62,13 @@ function UI.new()
 	local o = {}
 	setmetatable(o, UI)
 
+	local wgt	-- temporary widget variable used temporaryly for readability
+
 	o.toasts = {} -- a queue of toasts; oldest to the left
 	o.toastFont = love.graphics.newFont(_G.UI_REGULAR_FONT, _G.UIFONTSIZE_SMALL)
 
-	local wgt
+	-- titlebar
+
 	o.titlebar = Titlebar.new({})
 		wgt = IconWidget.new({parent=o.titlebar, name='menu', icon='menu', align='left', baizeCmd='toggleMenuDrawer'})
 		table.insert(o.titlebar.widgets, wgt)
@@ -80,6 +83,8 @@ function UI.new()
 		wgt = IconWidget.new({parent=o.titlebar, name='hint', icon='lightbulb', align='right', baizeCmd='hint'})
 		table.insert(o.titlebar.widgets, wgt)
 
+	-- main menu drawer
+
 	o.menuDrawer = Drawer.new({width=300 * _G.UI_SCALE})
 	for _, winfo in ipairs(menuWidgets) do
 		winfo.parent = o.menuDrawer
@@ -90,6 +95,8 @@ function UI.new()
 		end
 	end
 
+	-- variant types drawer
+
 	o.typesDrawer = Drawer.new({width=300 * _G.UI_SCALE})
 	for k, _ in pairs(_G.VARIANT_TYPES) do
 		wgt = MenuItemWidget.new({parent=o.typesDrawer, text=k, baizeCmd='showVariantsDrawer', param=k})
@@ -97,11 +104,18 @@ function UI.new()
 	end
 	table.sort(o.typesDrawer.widgets, function(a, b) return a.text < b.text end)
 
+	-- all/subtypes variant drawer (dynamically filled)
+
 	o.variantsDrawer = Drawer.new({width=300 * _G.UI_SCALE})
+
+	-- stats drawer (dynamically filled)
 
 	o.statsDrawer = Drawer.new({width=400 * _G.UI_SCALE})
 
+	-- settings drawer
+
 	o.settingsDrawer = Drawer.new({width=300 * _G.UI_SCALE})
+
 	for _, winfo in ipairs(settingsWidgets) do
 		winfo.parent = o.settingsDrawer
 		if winfo.val then
@@ -110,14 +124,25 @@ function UI.new()
 			table.insert(o.settingsDrawer.widgets, Checkbox.new(winfo))
 		end
 	end
-	do
-		local rw = TextWidget.new({parent=o.settingsDrawer, text='[ Reset ]', baizeCmd='resetSettings'})
-		table.insert(o.settingsDrawer.widgets, rw)
-	end
+
+	wgt = MenuItemWidget.new({parent=o.settingsDrawer, icon='palette', text="Colors ...", baizeCmd='showColorDrawer'})
+	table.insert(o.settingsDrawer.widgets, wgt)
+
+	wgt = MenuItemWidget.new({parent=o.settingsDrawer, icon='speed', text="Card speed ...", baizeCmd='showAniSpeedDrawer'})
+	table.insert(o.settingsDrawer.widgets, wgt)
+
+	wgt = TextWidget.new({parent=o.settingsDrawer, text='[ Reset ]', baizeCmd='resetSettings'})
+	table.insert(o.settingsDrawer.widgets, wgt)
+
+	-- color types drawer  (dynamically filled)
 
 	o.colorTypesDrawer = Drawer.new({width=256 * _G.UI_SCALE})
 
+	-- color picker drawer (dynamically filled)
+
 	o.allColorsDrawer = Drawer.new({width=256 * _G.UI_SCALE})
+
+	-- card animation speed drawer
 
 	o.aniSpeedDrawer = Drawer.new({width=256 * _G.UI_SCALE})
 	for _, winfo in ipairs(aniSpeedWidgets) do
@@ -125,7 +150,11 @@ function UI.new()
 		table.insert(o.aniSpeedDrawer.widgets, Radio.new(winfo))
 	end
 
+	-- simple about... drawer
+
 	o.aboutDrawer = Drawer.new({width=360 * _G.UI_SCALE, font=o.toastFont})
+
+	-- status bar
 
 	o.statusbar = Statusbar.new({})
 		wgt = TextWidget.new({parent=o.statusbar, name='stock', text='', align='left'})
@@ -135,7 +164,11 @@ function UI.new()
 		wgt = TextWidget.new({parent=o.statusbar, name='progress', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
+	-- list of all containers
+
 	o.containers = {o.titlebar, o.menuDrawer, o.typesDrawer, o.variantsDrawer, o.statsDrawer, o.settingsDrawer, o.aniSpeedDrawer, o.colorTypesDrawer, o.allColorsDrawer, o.aboutDrawer, o.statusbar}
+
+	-- list of all drawers
 
 	o.drawers = {o.menuDrawer, o.typesDrawer, o.variantsDrawer, o.statsDrawer, o.settingsDrawer, o.aniSpeedDrawer, o.colorTypesDrawer, o.allColorsDrawer, o.aboutDrawer}
 
