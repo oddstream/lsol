@@ -511,6 +511,10 @@ function Baize:showColorDrawer()
 	self.ui:showColorDrawer()
 end
 
+function Baize:showAniSpeedDrawer()
+	self.ui:showAniSpeedDrawer()
+end
+
 function Baize:colorBackground()
 	self.ui:showColorPickerDrawer('baizeColor')
 end
@@ -614,14 +618,13 @@ function Baize:toggleCheckbox(var)
 end
 
 function Baize:toggleRadio(radio)
-	-- radio.var will be the button pressed (which should be toggled on)
-	-- radio.grp will be the radios in this group (which should be toggled off)
-	for _, s in ipairs(radio.grp) do
-		_G.SETTINGS[s] = false
-	end
-	_G.SETTINGS[radio.var] = true
+	-- a radio button has been pressed, and should be toggled ON
+	-- all other radio buttons with the same var should be toggled OFF
+	-- radio.var will be the _G.SETTINGS variable
+	-- which should be set to radio.val
+	-- the drawer will be closed, and repainted when reopened
+	_G.SETTINGS[radio.var] = radio.val
 	_G.saveSettings()
-	self:createCardTextures()
 end
 
 --[[

@@ -12,7 +12,7 @@ setmetatable(Radio, {__index = Widget})
 function Radio.new(o)
 	assert(o.text)
 	assert(o.var)
-	assert(o.grp)
+	assert(o.val)
 
 	local fname = 'assets/icons/radio_button_checked.png'
 	local imageData = love.image.newImageData(fname)
@@ -42,6 +42,16 @@ function Radio.new(o)
 	o.img = o.imgChecked
 
 	return setmetatable(o, Radio)
+end
+
+function Radio:setChecked(checked)
+	if checked then
+		self.checked = true
+		self.img = self.imgChecked
+	else
+		self.checked = false
+		self.img = self.imgUnchecked
+	end
 end
 
 function Radio:draw()

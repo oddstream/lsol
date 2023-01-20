@@ -469,7 +469,7 @@ end
 
 function Pile:drawStaticCards()
 	for _, c in ipairs(self.cards) do
-		if not (c:transitioning() or c:flipping() or c:dragging()) then
+		if c:static() then
 			c:draw()
 		end
 	end

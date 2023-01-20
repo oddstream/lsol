@@ -7,20 +7,23 @@ local Util = {}
 
 function Util.smoothstep(A, B, v)
 	-- see http://sol.gfxile.net/interpolation/
+	if v > 1.0 then v = 1.0 end
 	v = (v) * (v) * (3.0 - 2.0 * (v));
 	return (B * v) + (A * (1.0 - v));
 end
 
 function Util.smootherstep(A, B, v)
 	-- see http://sol.gfxile.net/interpolation/
+	if v > 1.0 then v = 1.0 end
 	v = (v) * (v) * (v) * ((v)*((v) * 6.0 - 15.0) + 10.0);
 	return (B * v) + (A * (1.0 - v));
 end
 
 function Util.lerp(start, finish, factor)
 	-- return start*(1-factor) + finish*factor
-	-- Precise method, which guarantees v = v1 when t = 1.
+	-- Precise method, which guarantees start = finish when factor = 1.
 	-- https://en.wikipedia.org/wiki/Linear_interpolation
+	if factor > 1.0 then factor = 1.0 end
 	return (1 - factor) * start + factor * finish;
 end
 

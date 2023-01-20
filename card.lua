@@ -28,9 +28,9 @@ local Card = {
 }
 Card.__index = Card
 
-local LERP_SECONDS = 0.5
-local FLIP_SECONDS = LERP_SECONDS / 3
-local SPIN_SECONDS = LERP_SECONDS * 2
+--local LERP_SECONDS = 0.5
+--local FLIP_SECONDS = LERP_SECONDS / 3
+--local SPIN_SECONDS = LERP_SECONDS * 2
 
 function Card:__tostring()
 	return self.textureId
@@ -128,6 +128,10 @@ function Card:flipping()
 	return self.flipDirection ~= 0.0
 end
 
+function Card:static()
+	return self.dst == nil or self.dragStart == nil or self.flipDirection == 0.0
+end
+
 function Card:transitioning()
 	return self.dst ~= nil
 end
@@ -208,7 +212,7 @@ function Card:startSpinning()
 	repeat
 		self.spinDegrees = math.random() - 0.5
 	until self.spinDegress ~= 0.0
-	self.spinDelaySeconds = SPIN_SECONDS
+	self.spinDelaySeconds = _G.SETTINGS['aniSpeed'] * 2
 end
 
 function Card:stopSpinning()
@@ -238,7 +242,7 @@ function Card:update(dt_seconds)
 	if self:transitioning() then
 		if not self:nearEnough() then
 			-- Calculate the fraction of the total duration that has passed
-			local t = (love.timer.getTime() - self.lerpStartTime) / LERP_SECONDS
+			local t = (love.timer.getTime() - self.lerpStartTime) / _G.SETTINGS['aniSpeed']
 			self.x = Util.smoothstep(self.src.x, self.dst.x, t)
 			self.y = Util.smoothstep(self.src.y, self.dst.y, t)
 			-- local rate = 10.0	-- too low gives settling flicker
@@ -266,7 +270,7 @@ function Card:update(dt_seconds)
 
 	if self:flipping() then
 		-- Calculate the fraction of the total duration that has passed
-		local t = (love.timer.getTime() - self.flipStartTime) / FLIP_SECONDS
+		local t = (love.timer.getTime() - self.flipStartTime) / (_G.SETTINGS['aniSpeed'] / 3)
 		if self.flipDirection < 0 then
 			self.flipWidth = Util.lerp(1.0, 0.0, t)
 			if self.flipWidth <= 0.0 then

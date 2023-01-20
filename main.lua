@@ -64,6 +64,7 @@ _G.LSOL_DEFAULT_SETTINGS = {
 	cardScrunching = true,
 	allowOrientation = true,	-- requires restart
 	gradientShading = true,
+	aniSpeed = 0.5,
 }
 
 _G.LSOL_VARIANTS = {

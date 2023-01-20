@@ -30,8 +30,9 @@ local menuWidgets = {
 	{text='Statistics...', icon='poll', baizeCmd='showStatsDrawer'},
 	{text='Settings...', icon='settings', baizeCmd='showSettingsDrawer'},
 	{text='Colors...', icon='palette', baizeCmd='showColorDrawer'},
-	{text='Wikipedia...', icon='wikipedia', baizeCmd='wikipedia'},
+	{text='Card speed...', icon='speed', baizeCmd='showAniSpeedDrawer'},
 	{},
+	{text='Wikipedia...', icon='wikipedia', baizeCmd='wikipedia'},
 	{text='About...', icon='info', baizeCmd='showAboutDrawer'},
 	{text='Save and quit', icon='close', baizeCmd='quit'},
 }
@@ -45,6 +46,12 @@ local settingsWidgets = {
 	{text='Safe collect', var='safeCollect'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
+}
+
+local aniSpeedWidgets = {
+	{text="Fast", var="aniSpeed", val=0.3},
+	{text="Normal", var="aniSpeed", val=0.5},
+	{text="Slow", var="aniSpeed", val=0.8},
 }
 
 if love.system.getOS() == 'Android' then
@@ -97,7 +104,7 @@ function UI.new()
 	o.settingsDrawer = Drawer.new({width=300 * _G.UI_SCALE})
 	for _, winfo in ipairs(settingsWidgets) do
 		winfo.parent = o.settingsDrawer
-		if winfo.grp then
+		if winfo.val then
 			table.insert(o.settingsDrawer.widgets, Radio.new(winfo))
 		else
 			table.insert(o.settingsDrawer.widgets, Checkbox.new(winfo))
@@ -112,6 +119,12 @@ function UI.new()
 
 	o.allColorsDrawer = Drawer.new({width=256 * _G.UI_SCALE})
 
+	o.aniSpeedDrawer = Drawer.new({width=256 * _G.UI_SCALE})
+	for _, winfo in ipairs(aniSpeedWidgets) do
+		winfo.parent = o.aniSpeedDrawer
+		table.insert(o.aniSpeedDrawer.widgets, Radio.new(winfo))
+	end
+
 	o.aboutDrawer = Drawer.new({width=360 * _G.UI_SCALE, font=o.toastFont})
 
 	o.statusbar = Statusbar.new({})
@@ -122,9 +135,9 @@ function UI.new()
 		wgt = TextWidget.new({parent=o.statusbar, name='progress', text='', align='right'})
 		table.insert(o.statusbar.widgets, wgt)
 
-	o.containers = {o.titlebar, o.menuDrawer, o.typesDrawer, o.variantsDrawer, o.statsDrawer, o.settingsDrawer, o.colorTypesDrawer, o.allColorsDrawer, o.aboutDrawer, o.statusbar}
+	o.containers = {o.titlebar, o.menuDrawer, o.typesDrawer, o.variantsDrawer, o.statsDrawer, o.settingsDrawer, o.aniSpeedDrawer, o.colorTypesDrawer, o.allColorsDrawer, o.aboutDrawer, o.statusbar}
 
-	o.drawers = {o.menuDrawer, o.typesDrawer, o.variantsDrawer, o.statsDrawer, o.settingsDrawer, o.colorTypesDrawer, o.allColorsDrawer, o.aboutDrawer}
+	o.drawers = {o.menuDrawer, o.typesDrawer, o.variantsDrawer, o.statsDrawer, o.settingsDrawer, o.aniSpeedDrawer, o.colorTypesDrawer, o.allColorsDrawer, o.aboutDrawer}
 
 	return o
 end
@@ -215,7 +228,6 @@ function UI:showStatsDrawer(strs)
 end
 
 function UI:showSettingsDrawer()
-	-- TODO go through widgets and determine if they are checked or unchecked
 	for _, wgt in ipairs(self.settingsDrawer.widgets) do
 		-- log.trace(wgt.var, 'is', _G.SETTINGS[wgt.var])
 		if wgt.var then
@@ -269,6 +281,15 @@ function UI:showColorDrawer()
 
 	self.colorTypesDrawer:layout()
 	self.colorTypesDrawer:show()
+end
+
+function UI:showAniSpeedDrawer()
+	-- determine which radio buttons should be checked
+	for _, wgt in ipairs(self.aniSpeedDrawer.widgets) do
+		wgt:setChecked(_G.SETTINGS[wgt.var] == wgt.val)
+	end
+	-- self.aniSpeedDrawer:layout()	-- TODO is this needed?
+	self.aniSpeedDrawer:show()
 end
 
 function UI:showColorPickerDrawer(setting)
