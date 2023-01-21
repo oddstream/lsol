@@ -108,6 +108,7 @@ function Stats:recordWonGame(v, moves)
 	end
 	s.sumMoves = s.sumMoves + moves
 
+	_G.BAIZE.ui:toast(string.format('Recording a completed game of %s', v), 'complete')
 	self:save()
 end
 

@@ -381,7 +381,6 @@ function Baize:updateUI()
 
 	-- TODO this doesn't belong here
 	if self.status == 'complete' then
-		self.ui:toast(_G.SETTINGS.variantName .. ' complete', 'complete')
 		self.ui:showFAB{icon='star', baizeCmd='newDeal'}
 		self:startSpinning()
 		self.stats:recordWonGame(_G.SETTINGS.variantName, #self.undoStack - 1)

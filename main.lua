@@ -8,18 +8,18 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '25'
-_G.LSOL_VERSION_DATE = '2023-01-07'
+_G.LSOL_VERSION = '26'
+_G.LSOL_VERSION_DATE = '2023-01-21'
 
 if not _G.table.contains then
-  function _G.table.contains(tab, val)
-    for index, value in ipairs(tab) do
-      if value == val then
-        return true, index
-      end
-    end
-    return false, 0
-  end
+	function _G.table.contains(tab, val)
+		for index, value in ipairs(tab) do
+			if value == val then
+				return true, index
+			end
+		end
+		return false, 0
+	end
 end
 
 if not _G.string.split then
@@ -174,14 +174,13 @@ _G.VARIANT_TYPES = {
 }
 
 local function createAllVariants()
-
 	local lst = {}
-	local kLongest = ''
+	-- local kLongest = ''
 	for k,_ in pairs(_G.LSOL_VARIANTS) do
 		table.insert(lst, k)
-		if #k > #kLongest then
-			kLongest = k
-		end
+		-- if #k > #kLongest then
+		-- 	kLongest = k
+		-- end
 	end
 	-- log.info('Longest variant name is ', kLongest)	-- Little Spider (Fanned)
 
@@ -193,41 +192,6 @@ local function createAllVariants()
 	-- 		print(k2, v2)
 	-- 	end
 	-- end
-end
-
-local function createFavoriteVariants(stats)
-
-	-- can only sort a table of keys with numeric indexes, not an associative array
-	local tab = {}
-	for k, _ in pairs(stats) do
-		if stats[k].won and stats[k].lost then
-			table.insert(tab, {vname=k, played=stats[k].won + stats[k].lost})
-		end
-	end
-
-	if #tab > 2 then
-		-- log.info('presort', #tab)
-		-- for i, v in ipairs(tab) do
-		-- 	log.info(i, v.vname, v.played)
-		-- end
-
-		-- compare function receives two arguments
-		-- and must return true if the first argument should come first in the sorted array
-		table.sort(tab, function(a,b) return a.played > b.played end)
-
-		-- log.info('postsort', #tab)
-		-- for i, v in ipairs(tab) do
-		-- 	log.info(i, v.vname, v.played)
-		-- end
-
-		local lst = {}
-		local num = math.min(7, #tab)
-		for i = 1, num do
-			table.insert(lst, tab[i].vname)
-		end
-		_G.VARIANT_TYPES['> Favorites'] = lst
-		-- beware - this short list will be alpha sorted before it's displayed
-	end
 end
 
 _G.LSOL_COLORS = {
@@ -728,8 +692,8 @@ There may be a small performance penalty as the output will be flushed after eac
 	-- end
 
 	_G.BAIZE.stats = Stats.new()
-	createAllVariants()
-	createFavoriteVariants(_G.BAIZE.stats)
+	createAllVariants()	-- create '> All'
+	_G.VARIANT_TYPES['> Favorites'] = {}
 	_G.BAIZE.ui = UI.new()
 
 	love.graphics.setBackgroundColor(Util.getColorFromSetting('baizeColor'))
@@ -788,8 +752,8 @@ There may be a small performance penalty as the output will be flushed after eac
 	print(love.filesystem.getAppdataDirectory())	-- /home/gilbert/.local/share/
 	print(love.filesystem.getSourceBaseDirectory())	-- /home/gilbert
 	print(love.filesystem.getUserDirectory())	-- /home/gilbert/
-	print(love.filesystem.getWorkingDirectory())	-- /home/gilbert/patience
-	print(love.filesystem.getSaveDirectory())	-- /home/gilbert/.local/share/love/patience
+	print(love.filesystem.getWorkingDirectory())	-- /home/gilbert/LÖVE Solitaire
+	print(love.filesystem.getSaveDirectory())	-- /home/gilbert/.local/share/love/LÖVE Solitaire
 ]]
 end
 

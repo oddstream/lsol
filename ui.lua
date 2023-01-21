@@ -51,7 +51,7 @@ local settingsWidgets = {
 local aniSpeedWidgets = {
 	{text="Fast", var="aniSpeed", val=0.3},
 	{text="Normal", var="aniSpeed", val=0.5},
-	{text="Slow", var="aniSpeed", val=0.8},
+	{text="Slow", var="aniSpeed", val=0.9},
 }
 
 if love.system.getOS() == 'Android' then
@@ -116,6 +116,12 @@ function UI.new()
 
 	o.settingsDrawer = Drawer.new({width=300 * _G.UI_SCALE})
 
+	wgt = MenuItemWidget.new({parent=o.settingsDrawer, icon='palette', text="Colors ...", baizeCmd='showColorDrawer'})
+	table.insert(o.settingsDrawer.widgets, wgt)
+
+	wgt = MenuItemWidget.new({parent=o.settingsDrawer, icon='speed', text="Card speed ...", baizeCmd='showAniSpeedDrawer'})
+	table.insert(o.settingsDrawer.widgets, wgt)
+
 	for _, winfo in ipairs(settingsWidgets) do
 		winfo.parent = o.settingsDrawer
 		if winfo.val then
@@ -124,12 +130,6 @@ function UI.new()
 			table.insert(o.settingsDrawer.widgets, Checkbox.new(winfo))
 		end
 	end
-
-	wgt = MenuItemWidget.new({parent=o.settingsDrawer, icon='palette', text="Colors ...", baizeCmd='showColorDrawer'})
-	table.insert(o.settingsDrawer.widgets, wgt)
-
-	wgt = MenuItemWidget.new({parent=o.settingsDrawer, icon='speed', text="Card speed ...", baizeCmd='showAniSpeedDrawer'})
-	table.insert(o.settingsDrawer.widgets, wgt)
 
 	wgt = TextWidget.new({parent=o.settingsDrawer, text='[ Reset ]', baizeCmd='resetSettings'})
 	table.insert(o.settingsDrawer.widgets, wgt)
@@ -359,13 +359,44 @@ function UI:showAboutDrawer(strs)
 end
 
 function UI:showVariantsDrawer(vtype)
+	-- content created dynamically
 	self.variantsDrawer.widgets = {}
 	if _G.VARIANT_TYPES[vtype] then
-		for _, v in ipairs(_G.VARIANT_TYPES[vtype]) do
-			local wgt = MenuItemWidget.new({parent=self.variantsDrawer, text=v, baizeCmd='changeVariant', param=v})
-			table.insert(self.variantsDrawer.widgets, wgt)
+		if vtype == '> Favorites' then
+			local stats = _G.BAIZE.stats
+			local tab = {}
+			-- make a list of all the variants we have played
+			for k, _ in pairs(stats) do
+				local vstats = stats[k]
+				if vstats and vstats.won and vstats.lost then
+					local played = vstats.won + vstats.lost
+					if played > 0 then
+						table.insert(tab, k)
+					end
+				end
+			end
+			-- sort the table by the number of times we have played
+			table.sort(tab, function(a,b)
+				local aplayed = stats[a].won + stats[a].lost
+				local bplayed = stats[b].won + stats[b].lost
+				return aplayed > bplayed
+			end)
+			-- new player?
+			if #tab == 0 then
+				tab = {'Freecell', 'Klondike', 'Spider', 'Yukon'}
+			end
+			-- create widgets
+			for _, v in ipairs(tab) do
+				local wgt = MenuItemWidget.new({parent=self.variantsDrawer, text=v, baizeCmd='changeVariant', param=v})
+				table.insert(self.variantsDrawer.widgets, wgt)
+			end
+		else
+			for _, v in ipairs(_G.VARIANT_TYPES[vtype]) do
+				local wgt = MenuItemWidget.new({parent=self.variantsDrawer, text=v, baizeCmd='changeVariant', param=v})
+				table.insert(self.variantsDrawer.widgets, wgt)
+			end
+			table.sort(self.variantsDrawer.widgets, function(a, b) return a.text < b.text end)
 		end
-		table.sort(self.variantsDrawer.widgets, function(a, b) return a.text < b.text end)
 		-- if _G.SETTINGS.debug then
 		-- 	for _, v in ipairs(self.variantsDrawer.widgets) do
 		-- 		print('♥ ' .. v.text)
