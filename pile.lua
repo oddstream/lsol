@@ -541,14 +541,12 @@ function Pile:draw()
 		return
 	end
 
+	local alpha = 0.2
+
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
 
-	if _G.SETTINGS.debug then
-		love.graphics.setColor(0, 0, 0, 1)
-	else
-		love.graphics.setColor(1, 1, 1, 0.1)
-	end
+	love.graphics.setColor(1, 1, 1, alpha)
 	love.graphics.setLineWidth(1)
 	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 
@@ -559,7 +557,7 @@ function Pile:draw()
 		else
 			scale = 1.0
 		end
-		love.graphics.setColor(1, 1, 1, 0.1)
+		love.graphics.setColor(1, 1, 1, alpha)
 		love.graphics.setFont(b.labelFont)
 		love.graphics.print(self.label,
 			x + b.cardWidth / 2,
@@ -574,7 +572,7 @@ function Pile:draw()
 	if _G.SETTINGS.debug then
 		local sb = self:screenBox()
 		if sb then
-			love.graphics.setColor(1,1,1,0.1)
+			love.graphics.setColor(1,1,1, alpha)
 			love.graphics.setLineWidth(1)
 			love.graphics.rectangle('line', sb.x, sb.y, sb.width, sb.height)
 		end

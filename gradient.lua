@@ -3,7 +3,9 @@
 
 love.gradient = {}
 
-love.gradient.types = {"linear", "radial", "angle", "rhombus", "square"}
+-- only use radial gradient
+-- love.gradient.types = {"linear", "radial", "angle", "rhombus", "square"}
+love.gradient.types = {"radial"}
 love.gradient.images = {}
 
 for _, v in ipairs(love.gradient.types) do
