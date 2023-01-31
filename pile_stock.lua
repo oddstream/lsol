@@ -132,13 +132,11 @@ function Stock:draw()
 
 	if highlight then
 		Util.setColorFromSetting('hintColor')
-		love.graphics.setLineWidth(3)
-		love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	else
 		love.graphics.setColor(1, 1, 1, 0.1)
-		love.graphics.setLineWidth(1)
-		love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 	end
+	love.graphics.setLineWidth(1)
+	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 
 	local icon
 	if b.recycles == 0 then
@@ -161,7 +159,6 @@ function Stock:draw()
 		end
 	end
 
-	love.graphics.setColor(1, 1, 1, 0.1)
 	love.graphics.draw(icon,
 		x, y,
 		0,	-- rotation

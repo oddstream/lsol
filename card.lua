@@ -422,6 +422,13 @@ function Card:draw()
 		love.graphics.draw(img, x, y)
 
 		if b.showMovable and self.movable > 0 then
+			local r,g,b,_ = Util.getColorFromSetting('hintColor')
+			local a = self.movable / 10	-- eg 1 will be 0.1, 6 with be 0.6, &c
+			love.graphics.setColor(r,g,b,a)
+			love.graphics.draw(img, x, y)
+		end
+--[[
+		if b.showMovable and self.movable > 0 then
 			-- BUG after mirror baize when complete "cannot undo a completed game"
 			-- self.movable will be nil
 
@@ -430,6 +437,7 @@ function Card:draw()
 			love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
 			love.graphics.setColor(1,1,1,1)
 		end
+]]
 	end
 
 end
