@@ -228,6 +228,10 @@ In any case, the baize can be dragged up or down to make all the cards visible.
 
 Some variants (eg Freecell or Forty Thieves) only allow you to move one card at a time. Moving several cards between piles requires you to move them, one at a time, via an empty pile or cell. Enabling power moves automates this, allowing multi-card moves between piles. The number of cards you can move is calculated from the number of empty piles and cells (if any).
 
+#### Auto collect
+
+Enabling this will cause cards to be moved to the Foundation piles after every move you make.
+
 #### Safe collect
 
 In games like Klondike that build tableau cards in alternating colors, you can sometimes get into trouble by moving cards to the foundations too soon. With this option turned on, the titlebar collect button will only move cards to the foundation piles when it is safe to do so.
