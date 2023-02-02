@@ -1005,6 +1005,12 @@ function Baize:afterUserMove()
 	self:updateUI()
 end
 
+function Baize:afterAfterUserMove()
+	if self.fmoves > 0 and _G.SETTINGS.autoCollect then
+		self:collect()
+	end
+end
+
 function Baize:findCardAt(x, y)
 	for j = #self.piles, 1, -1 do
 		local pile = self.piles[j]
@@ -1207,6 +1213,7 @@ function Baize:mouseTapped(x, y, button)
 				local newSnap = self:stateSnapshot()
 				if Util.baizeChanged(oldSnap, newSnap) then
 					self:afterUserMove()
+					self:afterAfterUserMove()
 				else
 					Util.play('blip')
 				end
@@ -1221,6 +1228,7 @@ function Baize:mouseTapped(x, y, button)
 			local newSnap = self:stateSnapshot()
 			if Util.baizeChanged(oldSnap, newSnap) then
 				self:afterUserMove()
+				self:afterAfterUserMove()
 			else
 				Util.play('blip')
 			end
@@ -1279,6 +1287,7 @@ function Baize:mouseReleased(x, y, button)
 								local newSnap = self:stateSnapshot()
 								if Util.baizeChanged(oldSnap, newSnap) then
 									self:afterUserMove()
+									self:afterAfterUserMove()
 								end
 							end
 						end
@@ -1431,6 +1440,7 @@ function Baize:collect()
 					Util.moveCard(pile, fp)
 					cardsMoved = cardsMoved + 1
 					self:afterUserMove()
+					self:afterAfterUserMove()
 				end
 			end
 		end

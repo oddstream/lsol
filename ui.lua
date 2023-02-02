@@ -43,6 +43,7 @@ local settingsWidgets = {
 	{text='Gradient shading', var='gradientShading'},
 	{text='Compress piles', var='cardScrunching'},
 	{text='Power moves', var='powerMoves'},
+	{text='Auto collect', var='autoCollect'},
 	{text='Safe collect', var='safeCollect'},
 	{text='Mirror baize', var='mirrorBaize'},
 	{text='Mute sounds', var='muteSounds'},
