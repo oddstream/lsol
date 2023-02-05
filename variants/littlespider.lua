@@ -27,12 +27,12 @@ function LittleSpider:buildPiles()
 		self.topTabY = 1
 		self.foundY = 3.5
 		self.bottomTabY = 6
-		self.fanFanType = 'FAN_DOWN'
+		self.tabFanType = 'FAN_DOWN'
 	else
 		self.topTabY = 1
 		self.foundY = 2
 		self.bottomTabY = 3
-		self.fanFanType = 'FAN_NONE'
+		self.tabFanType = 'FAN_NONE'
 	end
 	for x = 2.5, 5.5 do
 		Tableau.new({x=x, y=self.topTabY, fanType=self.tabFanType, moveType='MOVE_ONE'})
