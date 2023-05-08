@@ -8,8 +8,8 @@ local Stats = require 'stats'
 local UI = require 'ui'
 local Util = require 'util'
 
-_G.LSOL_VERSION = '27'
-_G.LSOL_VERSION_DATE = '2023-02-05'
+_G.LSOL_VERSION = '28'
+_G.LSOL_VERSION_DATE = '2023-05-08'
 
 if not _G.table.contains then
 	function _G.table.contains(tab, val)
@@ -856,22 +856,6 @@ function love.keyreleased(key)
 			end
 			_G.BAIZE:updateStatus()
 			_G.BAIZE:updateUI()
-
-			-- see Card measureTime
-		elseif key == 'q' then
-			local flipTimeTotal = 0
-			local lerpTimeTotal = 0
-			local flipCountTotal = 0
-			local lerpCountTotal = 0
-			for _, c in ipairs(_G.BAIZE.deck) do
-				flipTimeTotal = flipTimeTotal + c.flipTime
-				flipCountTotal = flipCountTotal + c.flipCount
-				lerpTimeTotal = lerpTimeTotal + c.lerpTime
-				lerpCountTotal = lerpCountTotal + c.lerpCount
-			end
-			log.info('flip total=', flipCountTotal, 'time=', flipTimeTotal, 'avg=', flipTimeTotal / flipCountTotal)
-			log.info('lerp total=', lerpCountTotal, 'time=', lerpTimeTotal, 'avg=', lerpTimeTotal / lerpCountTotal)
-
 		end
 	end
 end

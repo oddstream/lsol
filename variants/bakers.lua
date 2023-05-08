@@ -30,7 +30,7 @@ function BakersDozen:buildPiles()
 			f.label = 'A'
 		end
 		for x = 1, 13 do
-			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE'})
+			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE', nodraw=true})
 			t.label = 'X'
 		end
 	else
@@ -39,11 +39,11 @@ function BakersDozen:buildPiles()
 			f.label = 'A'
 		end
 		for x = 1, 7 do
-			local t = Tableau.new({x=x, y=1, fanType='FAN_DOWN', moveType='MOVE_ONE'})
+			local t = Tableau.new({x=x, y=1, fanType='FAN_DOWN', moveType='MOVE_ONE', nodraw=true})
 			t.label = 'X'
 		end
 		for x = 1, 6 do
-			local t = Tableau.new({x=x, y=4, fanType='FAN_DOWN', moveType='MOVE_ONE'})
+			local t = Tableau.new({x=x, y=4, fanType='FAN_DOWN', moveType='MOVE_ONE', nodraw=true})
 			t.label = 'X'
 		end
 		for i = 1, 6 do

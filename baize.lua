@@ -245,10 +245,10 @@ function Baize:countMoves()
 			if dst.category == 'Cell' then
 				card.movable = math.max(card.movable, 1)
 			elseif dst.category == 'Discard' then
-				card.movable = math.max(card.movable, 6)
+				card.movable = math.max(card.movable, 5)
 			elseif dst.category == 'Foundation' then
 				self.fmoves = self.fmoves + 1
-				card.movable = math.max(card.movable, 6)
+				card.movable = math.max(card.movable, 5)
 			elseif dst.category == 'Tableau' then
 				if #dst.cards == 0 then
 					if dst.label == '' then
@@ -1408,7 +1408,8 @@ function Baize:collect()
 		local lowest = 99
 		for _, f in ipairs(self.foundations) do
 			if #f.cards == 0 then
-				return true, 1
+				-- it's okay to collect aces and twos to start with
+				return true, 2
 			end
 			local card = f:peek()
 			if card.ord < lowest then
@@ -1433,7 +1434,7 @@ function Baize:collect()
 					end
 					local ok, safeOrd = doingSafeCollect()
 					if ok then
-						if card.ord ~= safeOrd then
+						if card.ord > safeOrd then
 							break	-- done with this foundation, try another
 						end
 					end

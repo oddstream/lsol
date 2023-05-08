@@ -16,7 +16,7 @@ setmetatable(Cruel, {__index = Variant})
 function Cruel.new(o)
 	o = o or {}
 	if o.subtype == 'Cruel' then
-		o.tabCompareFn = CC.UpOrDownSuit
+		o.tabCompareFn = CC.DownSuit
 		o.wikipedia = 'https://en.wikipedia.org/wiki/Cruel_(solitaire)'
 		o.moveType = 'MOVE_ONE'
 	elseif o.subtype == 'Perseverance' then
@@ -34,7 +34,7 @@ function Cruel:buildPiles()
 		pile.label = 'A'
 	end
 	for x = 1, 12 do
-		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType=self.moveType})
+		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType=self.moveType, nodraw=true})
 		t.label = 'X'
 	end
 end

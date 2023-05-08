@@ -348,23 +348,25 @@ Only one card at a time may be moved from a reserve, and cards can never be move
 
 * Get it working on iOS. But, I don't have a Macintosh and am reluctant to pay Apple the annual App Store fee, and jump through their hoops. If you want to do this, let me know and we'll collaborate.
 * I'd like it to have an inter-user high scores table, but the Google Play games services interface and setup is inpenetrable to me at the moment.
-* Give up and rewrite the whole thing - again - in [Defold](https://www.defold.com), or Godot, or Java, or Dart+Flutter, or Kotlin+Korge, or something else.
+* Give up and rewrite the whole thing - again - in [Defold](https://www.defold.com), or Godot, or Java, or Dart+Flutter, or Kotlin+Korge, or Zig+Mach, or something else.
 
 ## History
 
-I've now written a polymorphic solitaire engine six(?) times:
+I've now written a polymorphic solitaire engine seven times:
 
 First, there was a Javascript version that used SVG graphics and ran in web browsers. Game variants were configured using static lookup tables, which I thought was a good idea at the time.
 
-Second, there was a version in Lua, using the Solar2d game engine, that made it to the Google Play store. Game variants were configured using static lookup tables, which I still thought was a good idea.
+Second, there was a version in Lua, using the retained-mode Solar2d game engine, that made it to the Google Play store. Game variants were configured using static lookup tables, which I still thought was a good idea.
 
-Third, there was a version in Go, using the Ebiten game engine, with help from gg/fogleman. The design was internally a mess, and the cards didn't scale, so this was abandoned. Game variants were configured using static lookup tables, which was starting to become a source of clumsiness and code smells.
+Third, there was a version in Go, using the immediate-mode Ebiten game engine, with help from gg/fogleman. The design was internally a mess, and the cards didn't scale, so this was abandoned. Game variants were configured using static lookup tables, which was starting to become a source of clumsiness and code smells.
 
 Fourth, there is a version in C that uses the Raylib game engine and uses Lua to script the game variants. The design was good, but has problems with scaling cards.
 
-Fifth, there was a rewritten version in Go, using the Ebiten game engine, with help from gg/fogleman. The design is way better than the original attempt in Go, and allows the option for scripting games.
+Fifth, there was a rewritten version in Go, using the Ebiten game engine, with help from gg/fogleman. The design is way better than the original attempt in Go, and allows the potential for scripting games.
 
 Sixth, there is this version in Lua and LÖVE. The design is much better than the previous versions.
+
+Seventh, I rewrote the Go+Ebiten version, splitting the code into client (front end) and server (back end) packages. The idea of this was to allow me to write a general-purpose solver; there are solvers for individual variants, notably Klondike and Freecell, but not a general-purpose one. After creating four versions of the solver - which took too long to run and produced bizarre results - this work is currently stalled. However, I did manage to create a nice little 'robot' helper that plays for you, in a limited way. Also, this version of the engine finally allows variants to be scripted using Lua.
 
 ## Acknowledgements
 

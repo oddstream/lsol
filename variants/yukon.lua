@@ -38,7 +38,7 @@ function Yukon:buildPiles()
 			pile.label = 'A'
 		end
 		if self.cells then
-			for y = 5, 7 do
+			for y = 5, 7 do	-- TODO BUG this should be 5, 6
 				Cell.new{x=8.5, y=y}
 			end
 		end
