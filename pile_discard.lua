@@ -4,6 +4,9 @@ local Pile = require 'pile'
 local Util = require 'util'
 local CC = require 'cc'
 
+---@class (exact) Discard : Pile
+---@field __index Discard
+---@field new function
 local Discard = {}
 Discard.__index = Discard
 setmetatable(Discard, {__index = Pile})
@@ -24,6 +27,7 @@ function Discard:push(c)
 	c:flipDown()
 end
 
+---@return string|nil
 function Discard:acceptTailError(tail)
 	if #self.cards ~= 0 then
 		return 'Can only move cards to an empty Discard'
@@ -49,6 +53,7 @@ function Discard:tailTapped(tail)
 	-- do nothing
 end
 
+---@return integer
 function Discard:unsortedPairs()
 	-- you can only put a sorted sequence into a Discard, so this will always be zero
 	return 0

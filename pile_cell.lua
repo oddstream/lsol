@@ -3,6 +3,9 @@
 local Pile = require 'pile'
 local Util = require 'util'
 
+---@class (exact) Cell: Pile
+---@field __index Cell
+---@field new function
 local Cell = {}
 Cell.__index = Cell
 setmetatable(Cell, {__index = Pile})
@@ -17,6 +20,7 @@ function Cell.new(o)
 	return setmetatable(o, Cell)
 end
 
+---@return string|nil
 function Cell:acceptTailError(tail)
 	if #self.cards ~= 0 then
 		return 'A Cell can only contain one card'
@@ -35,6 +39,7 @@ end
 
 -- use Pile.collect
 
+---@return integer
 function Cell:unsortedPairs()
 	return 0
 end
@@ -53,6 +58,18 @@ function Cell:movableTails()
 		end
 	end
 	return tails
+end
+
+function Cell:movableTailsMay23()
+	-- same as Waste/Reserve:movableTails2
+	-- only look at the top card
+	if #self.cards > 0 then
+		local card = self:peek()
+		if not card.prone then
+			return {card}
+		end
+	end
+	return nil
 end
 
 return Cell

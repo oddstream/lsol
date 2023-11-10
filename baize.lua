@@ -12,29 +12,41 @@ require 'cardfactory'
 
 -- local UI = require 'ui'
 
+---@class (exact) Baize
+---@field status string
+---@field stroke table
+---@field script table
+---@field piles table
+---@field cells table
+---@field discards table
+---@field foundations table
+---@field reserves table
+---@field stock Pile
+---@field tableaux table
+---@field waste Pile
+---@field cardHeight number
+---@field cardWidth number
+---@field undoStack table
+---@field deck table []Card
+---@field dragStart table {x, y}
+---@field dragOffset table {x, y}
+---@field ui table
+---@field stats table
+---@field moves integer
+---@field fmoves integer
+---@field recycles integer
+---@field bookmark integer
+---@field showMovable boolean
+---@field percent number
+---@field backgroundCanvas table
+---@field cardTextureLibrary table
+---@field cardBackTexture table
+---@field cardShadowTexture table
+---@field cardRadius number
+---@field labelFont love.Font
+---@field new function
+---@field __index Baize
 local Baize = {
-	-- script
-	-- piles
-
-	-- cells
-	-- discards
-	-- foundations
-	-- reserves
-	-- stock
-	-- tableaux
-	-- waste
-
-	-- cardWidth
-	-- cardHeight
-	-- cardTextureLibrary (built when cards change size)
-	-- cardBackTexture (built when cards change size)
-	-- cardShadowTexture (built when cards change size)
-
-	-- dragOffset
-
-	-- undoStack
-	-- recycles
-	-- bookmark
 }
 Baize.__index = Baize
 
@@ -62,12 +74,26 @@ function Baize:getSavable()
 end
 
 function Baize:isSavable(obj)
+
+	local function isSavablePile(svp)
+		if type(svp) == 'table' then
+			-- label might be nil
+			if type(svp.category) == 'string' then
+				if type(svp.cards) == 'table' then
+					return true
+				end
+			end
+		end
+		log.error('not a saved pile')
+		return false
+	end
+
 	if type(obj) == 'table' then
 		if type(obj.recycles) == 'number' then
 			if type(obj.bookmark) == 'number' then
 				if type(obj.piles) == 'table' then
 					if #obj.piles > 0 then
-						if Pile.isSavable(obj.piles[1]) then
+						if isSavablePile(obj.piles[1]) then
 							return true
 						end
 					end
@@ -183,6 +209,118 @@ function Baize:findAllMovableTails()
 	return tails
 end
 
+function Baize:findAllMovableTailsMay23()
+	local tails = {}	-- array of tails, ie array of array of Card
+	for _, pile in ipairs(self.piles) do
+		local ptails = pile:movableTailsMay23()
+		if ptails ~= nil and #ptails > 0 then
+			for _, pt in ipairs(ptails) do
+				table.insert(tails, pt)
+			end
+		end
+	end
+	return tails
+end
+
+function Baize:findTargetsForAllMovableTailsMay23(tails)
+
+	local targets	-- forward declaration
+
+	local function pointlessMove(src, dst, tail)
+		if src == dst then
+			return true
+		end
+		if #dst.cards == 0 and #src.cards == #tail and src.label == dst.label and src.category == dst.category then
+			return true
+		end
+		-- filter out case of, for example, moving a single card from
+		-- tableau to any of four different empty cells; just record one
+		if #dst.cards == 0 and #tail == 1 then
+			if dst.category == "Tableau" or dst.category == "Foundation" or dst.category == "Cell" then
+				local contains = false
+				for _, tt in ipairs(targets) do
+					if tt.dst.category == dst.category then
+						contains = true
+						break
+					end
+				end
+				if contains then
+					return true
+				end
+			end
+		end
+		return false
+	end
+
+	for _, tail in ipairs(tails) do
+		-- record all the tap targets, then just save the weightiest to the head card
+		targets = {}	-- {dst, weight}
+		local headCard = tails[1]
+		local src = headCard.parent
+		for _, dst in ipairs(self.pilesToCheckMay23) do
+			if dst ~= src then
+				if dst:acceptTailError(tail) == nil then
+					-- moving an full tail from one pile to another empty pile of the same type is pointless
+					if not pointlessMove(src, dst, tail) then
+						local weight = 1	-- default
+						if dst.category == "Cell" then
+							weight = 1
+						elseif dst.category == "Discard" or dst.category == "Foundation" then
+							weight = 5
+						elseif dst.category == "Tableau" then
+							if #dst.cards == 0 then
+								if dst.label == nil or dst.label == "" then
+									weight = 1
+								else
+									weight = 2
+								end
+							elseif dst.peek().suit == headCard.suit then
+								weight = 4
+							else
+								weight = 2
+								local cPrev = src:prev(headCard)
+								if cPrev == nil then
+									-- moving this card would create an open pile
+									weight = 3
+								else
+									if cPrev.prone then
+										-- moving this card would turn up a card
+										weight = 3
+									else
+										-- TODO if this card is conformant with prev card, downgrade to 1
+										-- needs all piles to have .appendCmp2
+									end
+								end
+							end
+						end
+						table.insert(targets, {dst=dst, weight=weight})
+					end
+				end
+			end
+		end
+		if #targets > 0 then
+			if #targets > 1 then
+				table.sort(targets, function(a,b) return a.weight > b.weight end)
+			end
+			headCard.tapTargetDst = targets[1].dst
+			headCard.tapTargetWeight = targets[1].weight
+		end
+	end
+end
+
+function Baize:findTapTargetsMay23()
+	for _, pile in ipairs(self.piles) do
+		for _, card in ipairs(pile.cards) do
+			card.tapTargetDst = nil
+			card.tapTargetWeight = 0
+		end
+	end
+	local tails = self:findAllMovableTailsMay23()
+	self:findTargetsForAllMovableTailsMay23(tails)
+	self:countMoves()
+end
+
+-- countMoves, called by updateStatus, sets .moves and .fmoves
 function Baize:countMoves()
 
 	--[[
@@ -197,7 +335,7 @@ function Baize:countMoves()
 	3 - move to match suit (Spider &c)
 	4 - move to discard/foundation
 	]]
-
+--[[
 	local function isWeakMove(src, card)
 		local idx = src:indexOf(card)
 		if idx > 1 then
@@ -208,7 +346,7 @@ function Baize:countMoves()
 		end
 		return false
 	end
-
+]]
 	-- remind me, why calc fmoves? so we know when to enable collect button
 
 	self.moves, self.fmoves = 0, 0
@@ -602,6 +740,7 @@ function Baize:toggleCheckbox(var)
 			self:undoPush()
 			self:resetPiles()
 			self.script:buildPiles()
+			self:setupPilesToCheckMay23()
 			if _G.SETTINGS.mirrorBaize then
 				self:mirrorSlots()
 			end
@@ -654,6 +793,31 @@ local function resignGameAreYouSure()
 	return true
 end
 
+function Baize:setupPilesToCheckMay23()
+	self.pilesToCheckMay23 = {}
+	-- for _, piles in ipairs({self.foundations, self.tableaux, self.cells, self.discards}) do
+	-- 	for _, pile in ipairs(piles) do
+	-- 		table.insert(self.pilesToCheckMay23, pile)
+	-- 	end
+	-- end
+	for _, c in ipairs(self.cells) do
+		table.insert(self.pilesToCheckMay23, c)
+	end
+	for _, d in ipairs(self.discards) do
+		table.insert(self.pilesToCheckMay23, d)
+	end
+	for _, f in ipairs(self.foundations) do
+		table.insert(self.pilesToCheckMay23, f)
+	end
+	for _, t in ipairs(self.tableaux) do
+		table.insert(self.pilesToCheckMay23, t)
+	end
+	if self.waste ~= nil then
+		table.insert(self.pilesToCheckMay23, self.waste)
+	end
+	-- log.info(#self.pilesToCheckMay23, "piles to check")
+end
+
 function Baize:changeVariant(vname)
 	-- log.trace('changing variant from', _G.SETTINGS.variantName, 'to', vname)
 	if vname == _G.SETTINGS.variantName then
@@ -675,6 +839,7 @@ function Baize:changeVariant(vname)
 		self.script = newScript
 		self:resetPiles()
 		self.script:buildPiles()
+		self:setupPilesToCheckMay23()
 		if _G.SETTINGS.mirrorBaize then
 			self:mirrorSlots()
 		end
@@ -870,7 +1035,7 @@ function Baize:buildPileBoxesAndRefan()
 end
 
 function Baize:layout()
-	local oldCardWidth, oldCardHeight = self.cardWidth, self.cardheight
+	local oldCardWidth, oldCardHeight = self.cardWidth, self.cardHeight
 
 	local maxSlotX = 0
 	for _, pile in ipairs(self.piles) do
@@ -929,7 +1094,7 @@ function Baize:layout()
 
 	self.cardRadius = self.cardWidth / 10 -- _G.SETTINGS.cardRoundness
 
-	if self.cardWidth ~= oldCardWidth or self.oldCardHeight ~= oldCardHeight then
+	if self.cardWidth ~= oldCardWidth or self.cardHeight ~= oldCardHeight then
 		self.labelFont = love.graphics.newFont(_G.ORD_FONT, self.cardWidth * 0.7)
 		self:createCardTextures()
 		-- _G.consoleLog(string.format('card %d %d', self.cardWidth, self.cardHeight))

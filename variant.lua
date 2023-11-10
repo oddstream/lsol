@@ -3,6 +3,8 @@ local log = require 'log'
 
 local Util = require 'util'
 
+---@class Variant
+---@field Wikipedia string
 local Variant = {}
 Variant.__index = Variant
 

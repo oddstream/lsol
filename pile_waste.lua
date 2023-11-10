@@ -3,6 +3,9 @@
 local Pile = require 'pile'
 local Util = require 'util'
 
+---@class (exact) Waste : Pile
+---@field __index Waste
+---@field new function
 local Waste = {}
 Waste.__index = Waste
 setmetatable(Waste, {__index = Pile})
@@ -19,12 +22,14 @@ end
 
 -- vtable functions
 
+---@return string|nil
 function Waste:acceptTailError(tail)
 	if #tail > 1 then
 		return 'Can only move a single card to Waste'
 	end
 	if tail[1].parent.category ~= 'Stock' then
 		return 'Waste can only accept cards from the Stock'
+		-- TODO not true for all variants
 	end
 	-- card may be prone if being dragged from Stock;
 	-- that's ok because Stock:pop() will flip it
@@ -35,6 +40,7 @@ end
 
 -- use Pile.collect
 
+---@return integer
 function Waste:unsortedPairs()
 	-- they're all unsorted, even if they aren't
 	if #self.cards == 0 then
@@ -44,6 +50,8 @@ function Waste:unsortedPairs()
 end
 
 function Waste:movableTails()
+	-- same as Cell/Reserve:movableTails
+	-- only look at the top card
 	local tails = {}
 	if #self.cards > 0 then
 		local card = self:peek()
@@ -58,5 +66,16 @@ function Waste:movableTails()
 	return tails
 end
 
+function Waste:movableTailsMay23()
+	-- same as Cell/Reserve:movableTails2
+	-- only look at the top card
+	if #self.cards > 0 then
+		local card = self:peek()
+		if not card.prone then	-- all Waste cards should be face up
+			return {card}
+		end
+	end
+	return nil
+end
 
 return Waste

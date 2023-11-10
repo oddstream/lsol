@@ -4,6 +4,9 @@ local Pile = require 'pile'
 
 local Util = require 'util'
 
+---@class (exact) Tableau : Pile
+---@field __index Tableau
+---@field new function
 local Tableau = {}
 Tableau.__index = Tableau
 setmetatable(Tableau, {__index = Pile})
@@ -39,6 +42,7 @@ local function powerMoves(pileTarget)
 	return n
 end
 
+---@return string|nil
 function Tableau:acceptTailError(tail)
 	for _, c in ipairs(tail) do
 		if c.prone then
@@ -74,6 +78,7 @@ end
 
 -- use Pile.collect
 
+---@return integer
 function Tableau:unsortedPairs()
 	return Util.unsortedPairs(self.cards, _G.BAIZE.script.tabCompareFn)
 end
@@ -90,6 +95,23 @@ function Tableau:movableTails()
 						for _, home in ipairs(homes) do
 							table.insert(tails, {tail=tail, dst=home.dst})
 						end
+					end
+				end
+			end
+		end
+	end
+	return tails
+end
+
+function Tableau:movableTailsMay23()
+	local tails = {}
+	if #self.cards > 0 then
+		for _, card in ipairs(self.cards) do
+			if not card.prone then
+				local tail = self:makeTail(card)
+				if not self:moveTailError(tail) then
+					if not _G.BAIZE.script:moveTailError(tail) then
+						table.insert(tails, tail)
 					end
 				end
 			end

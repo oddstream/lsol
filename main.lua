@@ -704,42 +704,42 @@ There may be a small performance penalty as the output will be flushed after eac
 	_G.BAIZE:loadUndoStack()
 	if _G.BAIZE.undoStack then
 		_G.BAIZE.script = _G.BAIZE:loadScript(_G.SETTINGS.variantName)
-		if _G.BAIZE.script then
-			_G.BAIZE:resetPiles()
-			_G.BAIZE.script:buildPiles()
-			if _G.SETTINGS.mirrorBaize then
-				_G.BAIZE:mirrorSlots()
-			end
-			_G.BAIZE:layout()
-			-- don't reset
-			-- don't startGame
-			_G.BAIZE.ui:toast('Resuming a saved game of ' .. _G.SETTINGS.variantName, 'load')
-			_G.BAIZE:undo()	-- pop extra state written when saved, will updateUI
-		else
+		if not _G.BAIZE.script then
 			os.exit()
 		end
+		_G.BAIZE:resetPiles()
+		_G.BAIZE.script:buildPiles()
+		_G.BAIZE:setupPilesToCheckMay23()
+		if _G.SETTINGS.mirrorBaize then
+			_G.BAIZE:mirrorSlots()
+		end
+		_G.BAIZE:layout()
+		-- don't reset
+		-- don't startGame
+		_G.BAIZE.ui:toast('Resuming a saved game of ' .. _G.SETTINGS.variantName, 'load')
+		_G.BAIZE:undo()	-- pop extra state written when saved, will updateUI
 	else
 		_G.BAIZE.script = _G.BAIZE:loadScript(_G.SETTINGS.variantName)
 		if not _G.BAIZE.script then
 			_G.SETTINGS.variantName = 'Klondike'	-- TODO save settings
 			_G.BAIZE.script = _G.BAIZE:loadScript(_G.SETTINGS.variantName)
-		end
-		if _G.BAIZE.script then
-			_G.BAIZE:resetPiles()
-			_G.BAIZE.script:buildPiles()
-			if _G.SETTINGS.mirrorBaize then
-				_G.BAIZE:mirrorSlots()
+			if not _G.BAIZE.script then
+				os.exit()
 			end
-			_G.BAIZE:layout()
-			_G.BAIZE:resetState()
-			_G.BAIZE.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
-			_G.BAIZE.script:startGame()
-			_G.BAIZE:undoPush()
-			_G.BAIZE:updateStatus()
-			_G.BAIZE:updateUI()
-		else
-			os.exit()
 		end
+		_G.BAIZE:resetPiles()
+		_G.BAIZE.script:buildPiles()
+		_G.BAIZE:setupPilesToCheckMay23()
+		if _G.SETTINGS.mirrorBaize then
+			_G.BAIZE:mirrorSlots()
+		end
+		_G.BAIZE:layout()
+		_G.BAIZE:resetState()
+		_G.BAIZE.ui:toast('Starting a new game of ' .. _G.SETTINGS.variantName, 'deal')
+		_G.BAIZE.script:startGame()
+		_G.BAIZE:undoPush()
+		_G.BAIZE:updateStatus()
+		_G.BAIZE:updateUI()
 	end
 
 	if _G.SETTINGS.lastVersion == 0 then

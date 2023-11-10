@@ -2,6 +2,9 @@
 
 local Pile = require 'pile'
 
+---@class (exact) Foundation : Pile
+---@field __index Foundation
+---@field new function
 local Foundation = {}
 Foundation.__index = Foundation
 setmetatable(Foundation, {__index = Pile})
@@ -18,6 +21,7 @@ end
 
 -- vtable functions
 
+---@return string | nil
 function Foundation:acceptTailError(tail)
 	if #tail > 1 then
 		return 'Cannot move more than one card to a Foundation'
@@ -34,6 +38,7 @@ function Foundation:tailTapped(tail)
 	-- do nothing
 end
 
+---@return integer
 function Foundation:unsortedPairs()
 	return 0
 end

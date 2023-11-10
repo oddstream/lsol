@@ -4,6 +4,13 @@ local Card = require 'card'
 local Pile = require 'pile'
 local Util = require 'util'
 
+---@class (exact) Stock : Pile
+---@field packs number
+---@field ordFilter table
+---@field suitFilter table
+---@field faceUpStock boolean
+---@field __index Stock
+---@field new function
 local Stock = {}
 Stock.__index = Stock   -- Stock's own __index looks in Stock for methods
 setmetatable(Stock, {__index = Pile}) -- failing that, Stock's metatable then looks in base class for methods
@@ -20,6 +27,7 @@ function Stock.new(o)
 	setmetatable(o, Stock)
 
 	local startingProneFlag
+	---@cast o Stock
 	if o.faceUpStock then
 		-- used by Fly/Frog because they don't have a Waste
 		startingProneFlag = false
@@ -55,17 +63,6 @@ function Stock.new(o)
 	return o
 end
 
-function Stock:shuffle()
-	-- https://en.wikipedia.org/wiki/Shuffling
-	-- used to run this 6 times, but, honestly, I can't tell the difference between 6 and 1
-	for i = #self.cards, 2, -1 do
-		local j = math.random(i)
-		if i ~= j then
-			self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
-		end
-	end
-end
-
 --- push a card onto the stock pile
 -- override the base Pile.push because Stock cards are (usually) all prone
 -- @param c Card
@@ -93,6 +90,7 @@ end
 
 -- vtable functions
 
+---@return string | nil
 function Stock:acceptTailError(tail)
 	return 'Cannot move cards to the Stock'
 end
@@ -101,6 +99,7 @@ function Stock:tailTapped(tail)
 	-- do nothing, handled by script, which had first dibs
 end
 
+---@return integer
 function Stock:unsortedPairs()
 	-- they're all unsorted, even if they aren't
 	if #self.cards == 0 then

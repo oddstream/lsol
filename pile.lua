@@ -1,16 +1,33 @@
 -- pile
 -- virtual base class for Stock, Waste, Foundation, Tableau, Reserve, Cell, Discard
 
-local log = require 'log'
-
 local Card = require 'card'
 local Util = require 'util'
+local log = require 'log'
 
+---@class (exact) Pile
+---@field __index Pile
+---@field prepare function
+---@field cards table
+---@field x number
+---@field y number
+---@field pos1 table {x, y}
+---@field pos2 table {x, y}
+---@field category string
+---@field fanType string
+---@field faceFanFactor number
+---@field moveType string
+---@field label string
+---@field nodraw boolean
+---@field slot table {x, y}
+---@field box table {x, y, width, height}
 local Pile = {}
 Pile.__index = Pile
 
 local backFanFactor = 0.1
 
+---@param o Pile
+---@return Pile
 function Pile.prepare(o)
 	-- nb this doesn't create a new Pile object; rather, it decorates/prepares an existing one
 	-- important to preserve any members that are in o
@@ -30,25 +47,23 @@ function Pile.prepare(o)
 	return setmetatable(o, Pile)
 end
 
+function Pile:shuffle()
+	-- https://en.wikipedia.org/wiki/Shuffling
+	-- used to run this 6 times, but, honestly, I can't tell the difference between 6 and 1
+	for i = #self.cards, 2, -1 do
+		local j = math.random(i)
+		if i ~= j then
+			self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
+		end
+	end
+end
+
 function Pile:getSavable()
 	local cards = {}
 	for _, c in ipairs(self.cards) do
 		table.insert(cards, c:getSavable())
 	end
 	return {category=self.category, label=self.label, cards=cards}
-end
-
-function Pile.isSavable(obj)
-	if type(obj) == 'table' then
-		-- label might be nil
-		if type(obj.category) == 'string' then
-			if type(obj.cards) == 'table' then
-				return true
-			end
-		end
-	end
-	log.error('not a saved pile')
-	return false
 end
 
 function Pile:offScreen()
@@ -300,6 +315,17 @@ function Pile:push(c)
 	-- c:setBaizePos(x, y)
 end
 
+function Pile:prev(cNext)
+	local cPrev = nil
+	for _, c in ipairs(self.cards) do
+		if c == cNext then
+			return cPrev
+		end
+		cPrev = cNext
+	end
+	return cPrev
+end
+
 function Pile:buryCards(ord)
 	local tmp = {}
 	for _, c in ipairs(self.cards) do
@@ -406,6 +432,11 @@ function Pile:movableTails()
 	return {}
 end
 
+function Pile:movableTailsMay23()
+	-- default for Discard, Foundation: return nothing
+	return nil
+end
+
 function Pile:updateFromSaved(saved)
 
 	self.cards = {}
@@ -428,7 +459,8 @@ end
 
 -- vtable functions
 
-function Pile.acceptTailError(c)
+---@return string | nil
+function Pile:acceptTailError(tail)
 	log.warn('base acceptTailError should not be called')
 	return nil
 end
@@ -455,6 +487,7 @@ function Pile:tailTapped(tail)
 	end
 end
 
+---@return integer
 function Pile:unsortedPairs()
 	log.warn('base unsortedPairs should not be called')
 end

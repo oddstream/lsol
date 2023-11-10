@@ -4,27 +4,29 @@
 
 local Util = require 'util'
 
+---@class Card
+---@field pack number
+---@field suit string '♣','♦','♥','♠'
+---@field ord number 1 ... 13
+---@field textureId string
+---@field x number
+---@field y number
+---@field prone boolean
+---@field parent Pile
+---@field flipDirection number -1, 0, +1
+---@field flipWidth number
+---@field flipStartTime number
+---@field degrees number
+---@field spin number
+---@field spinDegrees number
+---@field spinDelaySeconds number
+---@field src table {x, y}
+---@field dst table {x, y}
+---@field dragStart table {x, y}
+---@field movable number
+---@field tapTargetDst Pile
+---@field tapTargetWeight number 0 ... 4
 local Card = {
-	-- pack
-	-- ord 1 .. 13
-	-- suit C, D, H, S
-	-- textureId
-
-	-- prone
-	-- parent
-
-	-- x
-	-- y
-	-- src {x, y}
-	-- dst {x, y}
-	-- dragStart {x,y}
-
-	-- flipDirection
-	-- flipWidth
-	-- flipStartTime
-
-	-- directionX, directionY
-	-- degrees, spin
 }
 Card.__index = Card
 
@@ -58,10 +60,12 @@ function Card.new(o)
 	-- remember that flipping happens in two steps
 	-- so three times faster would do, but four times faster seems snappier
 	o.flipWidth = 1.0	-- lerps from 1.0 to 0.0 (then from 0.0 to 1.0)
-	o.flipDirection = 0	-- -1 narrower, 0 statis, +1 wider
+	o.flipDirection = 0	-- -1 narrower, 0 static, +1 wider
 
-	o.spinDegrees = 0
+	o.spinDegrees = 0.0
 	o.spinDelaySeconds = 0.0
+
+	o.tapTargetWeight = 0
 
 	return setmetatable(o, Card)
 end
@@ -211,7 +215,7 @@ function Card:startSpinning()
 	self.degrees = 0.0
 	repeat
 		self.spinDegrees = math.random() - 0.5
-	until self.spinDegress ~= 0.0
+	until self.spinDegrees ~= 0.0
 	self.spinDelaySeconds = _G.SETTINGS['aniSpeed'] * 2
 end
 
@@ -422,15 +426,15 @@ function Card:draw()
 		love.graphics.draw(img, x, y)
 
 		if b.showMovable and self.movable > 0 then
-			local r,g,b,_ = Util.getColorFromSetting('hintColor')
-			local a = self.movable / 10	-- eg 1 will be 0.1, 6 with be 0.6, &c
-			love.graphics.setColor(r,g,b,a)
+			local red,green,blue,_ = Util.getColorFromSetting('hintColor')
+			local alpha = self.movable / 10	-- eg 1 will be 0.1, 6 with be 0.6, &c
+			love.graphics.setColor(red,green,blue,alpha)
 			love.graphics.draw(img, x, y)
 		end
 --[[
 		if b.showMovable and self.movable > 0 then
 			-- BUG after mirror baize when complete "cannot undo a completed game"
-			-- self.movable will be nil
+			-- self.movable will be 0
 
 			Util.setColorFromSetting('hintColor')
 			love.graphics.setLineWidth(self.movable)

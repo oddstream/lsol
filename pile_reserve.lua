@@ -3,6 +3,9 @@
 local Pile = require 'pile'
 local Util = require 'util'
 
+---@class (exact) Reserve : Pile
+---@field __index Reserve
+---@field new function
 local Reserve = {}
 Reserve.__index = Reserve
 setmetatable(Reserve, {__index = Pile})
@@ -21,7 +24,8 @@ end
 
 -- vtable functions
 
-function Reserve:acceptTailError(c)
+---@return string|nil
+function Reserve:acceptTailError(tail)
 	return 'Cannot move a card to a Reserve'
 end
 
@@ -29,6 +33,7 @@ end
 
 -- use Pile.collect
 
+---@return integer
 function Reserve:unsortedPairs()
 	-- they're all unsorted, even if they aren't
 	if #self.cards == 0 then
@@ -51,6 +56,18 @@ function Reserve:movableTails()
 		end
 	end
 	return tails
+end
+
+function Reserve:movableTailsMay23()
+	-- same as Cell/Waste:movableTails2
+	-- only look at the top card
+	if #self.cards > 0 then
+		local card = self:peek()
+		if not card.prone then
+			return {card}
+		end
+	end
+	return nil
 end
 
 return Reserve
