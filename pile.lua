@@ -8,7 +8,7 @@ local log = require 'log'
 ---@class (exact) Pile
 ---@field __index Pile
 ---@field prepare function
----@field cards table
+---@field cards Card[]
 ---@field x number
 ---@field y number
 ---@field pos1 table {x, y}
@@ -21,6 +21,7 @@ local log = require 'log'
 ---@field nodraw boolean
 ---@field slot table {x, y}
 ---@field box table {x, y, width, height}
+---@field boundaryPile Pile
 local Pile = {}
 Pile.__index = Pile
 
@@ -411,6 +412,8 @@ function Pile:moveTailError(tail)
 	return nil
 end
 
+---@param c Card
+---@return Card[]|nil
 function Pile:makeTail(c)
 	for i=1, #self.cards do
 		-- find the first card
@@ -426,15 +429,12 @@ function Pile:makeTail(c)
 	return nil
 end
 
+---default for pile-class:movableTails(), by default, do nothing
+---@return table
 function Pile:movableTails()
 	-- {dst=<pile>, tail=<tail>}
 	-- by default (for discard, foundation), return nothing
 	return {}
-end
-
-function Pile:movableTailsMay23()
-	-- default for Discard, Foundation: return nothing
-	return nil
 end
 
 function Pile:updateFromSaved(saved)
@@ -490,6 +490,7 @@ end
 ---@return integer
 function Pile:unsortedPairs()
 	log.warn('base unsortedPairs should not be called')
+	return 0
 end
 
 -- game engine functions

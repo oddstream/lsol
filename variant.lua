@@ -1,4 +1,5 @@
--- variant
+-- variant, base class for all variants, implements fallback behaviour
+
 local log = require 'log'
 
 local Util = require 'util'
@@ -31,16 +32,19 @@ function Variant:moveTailError(tail)
 	return nil
 end
 
+---@return string|nil
 function Variant:tailAppendError(dst, tail)
 	log.error('base function should not be called')
 	return nil
 end
 
+---@return integer
 function Variant:unsortedPairs(pile)
 	log.error('base function should not be called')
 	return 0
 end
 
+---@return number
 function Variant:percentComplete()
 	-- default percentComplete behaviour
 	-- variants (eg Accordian) can override this
@@ -55,6 +59,7 @@ function Variant:percentComplete()
 	return 100 - Util.mapValue(unsorted, 0, pairs, 0, 100)
 end
 
+---@return boolean
 function Variant:complete()
 	-- trigger the default behaviour
 	-- variants (eg Accordian) can override this

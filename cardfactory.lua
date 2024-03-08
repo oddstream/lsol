@@ -257,15 +257,15 @@ function _G.cardTextureFactory(width, height, radius)
 		love.graphics.rectangle('fill', 0, 0, width, height, radius, radius)
 		if _G.SETTINGS.cardOutline then
 			love.graphics.setLineWidth(1)
-			if _G.SETTINGS.debug then
-				love.graphics.setColor(1, 0, 0, 1)		-- set color to red to see why width, height are - 2
-			else
+			-- if _G.SETTINGS.debug then
+			-- 	love.graphics.setColor(1, 0, 0, 1)		-- set color to red to see why width, height are - 2
+			-- else
 				if _G.SETTINGS.gradientShading then
 					love.graphics.setColor(0, 0, 0, 0.05)	-- cartoon outlines are black, so why not
 				else
 					love.graphics.setColor(0, 0, 0, 0.1)	-- cartoon outlines are black, so why not
 				end
-			end
+			-- end
 			love.graphics.rectangle('line', 1, 1, width - 2, height - 2, radius, radius)
 		end
 	end

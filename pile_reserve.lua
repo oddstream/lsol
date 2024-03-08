@@ -58,16 +58,4 @@ function Reserve:movableTails()
 	return tails
 end
 
-function Reserve:movableTailsMay23()
-	-- same as Cell/Waste:movableTails2
-	-- only look at the top card
-	if #self.cards > 0 then
-		local card = self:peek()
-		if not card.prone then
-			return {card}
-		end
-	end
-	return nil
-end
-
 return Reserve

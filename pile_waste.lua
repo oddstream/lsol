@@ -66,16 +66,4 @@ function Waste:movableTails()
 	return tails
 end
 
-function Waste:movableTailsMay23()
-	-- same as Cell/Reserve:movableTails2
-	-- only look at the top card
-	if #self.cards > 0 then
-		local card = self:peek()
-		if not card.prone then	-- all Waste cards should be face up
-			return {card}
-		end
-	end
-	return nil
-end
-
 return Waste

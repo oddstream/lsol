@@ -3,6 +3,7 @@
 
 local json = require 'json'
 local log = require 'log'
+local Util = require 'util'
 
 local Stats = {}
 Stats.__index = Stats
@@ -70,6 +71,8 @@ function Stats:findVariant(v)
 			bestMoves = 0,
 			worstMoves = 0,
 			sumMoves = 0,
+			bestSeconds = 0,
+			worstSeconds = 0,
 		}
 	end
 	return self[v]
@@ -83,7 +86,11 @@ local function statsName(v)
 	return v
 end
 
-function Stats:recordWonGame(v, moves)
+---record a won game in the statistics
+---@param v string
+---@param moves number
+---@param seconds number
+function Stats:recordWonGame(v, moves, seconds)
 	v = statsName(v)
 	local s = self:findVariant(v)
 
@@ -107,6 +114,19 @@ function Stats:recordWonGame(v, moves)
 		s.worstMoves = moves
 	end
 	s.sumMoves = s.sumMoves + moves
+
+	if s.bestSeconds == nil then
+		s.bestSeconds = 0
+	end
+	if seconds < s.bestSeconds or s.bestSeconds == 0 then
+		s.bestSeconds = seconds
+	end
+	if s.worstSeconds == nil then
+		s.worstSeconds = 0
+	end
+	if seconds > s.worstSeconds then
+		s.worstSeconds = seconds
+	end
 
 	_G.BAIZE.ui:toast(string.format('Recording a completed game of %s', v), 'complete')
 	self:save()
@@ -174,9 +194,16 @@ function Stats:strings(v)
 			table.insert(strs, string.format('Best percent: %d', s.bestPercent))
 		else
 			-- won at least one game
-			table.insert(strs, string.format('Best number of moves: %d', s.bestMoves))
-			table.insert(strs, string.format('Worst number of moves: %d', s.worstMoves))
-			table.insert(strs, string.format('Average number of moves: %d', s.sumMoves / s.won))
+			table.insert(strs, string.format('Best moves: %d', s.bestMoves))
+			table.insert(strs, string.format('Worst moves: %d', s.worstMoves))
+			table.insert(strs, string.format('Average moves: %d', s.sumMoves / s.won))
+
+			if s.bestSeconds ~= nil and s.bestSeconds ~= 0 then
+				table.insert(strs, string.format('Best time: %s', Util.formatSeconds(s.bestSeconds)))
+			end
+			if s.worstSeconds ~= nil and s.worstSeconds ~= 0 then
+				table.insert(strs, string.format('Worst time: %s', Util.formatSeconds(s.worstSeconds)))
+			end
 		end
 
 		if s.currStreak ~= 0 then

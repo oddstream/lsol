@@ -400,4 +400,20 @@ end
 -- 	return 0
 -- end
 
+---format seconds for status bar and statistics
+---@param s number
+---@return string
+function Util.formatSeconds(s)
+	if s == 0 then
+		return '0s'
+	end
+	local min = s / 60
+	local sec = s % 60
+	if min < 1 then
+		return string.format('%ds', sec)
+	else
+		return string.format('%dm %ds', min, sec)
+	end
+end
+
 return Util

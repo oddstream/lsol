@@ -103,21 +103,4 @@ function Tableau:movableTails()
 	return tails
 end
 
-function Tableau:movableTailsMay23()
-	local tails = {}
-	if #self.cards > 0 then
-		for _, card in ipairs(self.cards) do
-			if not card.prone then
-				local tail = self:makeTail(card)
-				if not self:moveTailError(tail) then
-					if not _G.BAIZE.script:moveTailError(tail) then
-						table.insert(tails, tail)
-					end
-				end
-			end
-		end
-	end
-	return tails
-end
-
 return Tableau

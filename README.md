@@ -199,8 +199,11 @@ Most other solitaire implementations just have foundation piles that fulfill thi
 
 ### What about a timer?
 
-Nope, there isn't one of those. Too stressful.
-Solitaire is also called *patience*; it's hard to feel patient when you're pressured by a clock.
+The timer doesn't start until you make a first move, and (should) pause when the app is minimized or is in the background.
+The elasped time for the current game is reported in the center of the status bar (next to the number of moves made)
+and doesn't update until after you've moved (i.e. it doesn't update every second - that seems a bit stressful).
+As the timer was not added until version 29, the app can't report average time taken in the statistics,
+because there were games completed without being timed.
 
 ### What's with the settings?
 
@@ -263,7 +266,7 @@ It's possible that a deal will start with no movable cards, just like it might i
 * For Forty Thieves-style games, the *other* priority is to minimize the number of cards in the waste pile.
 * For puzzle-type games (like Baker's Dozen, Freecell, Penguin, Simple Simon), take your time and think ahead.
 * For games with reshuffles (like Usk, Cruel and Perseverance) you need to anticipate the effects of the reshuffle.
-* Focus on sorting the cards in the tableaux, rather than moving cards to the foundations. Only move cards to the foundations when you *have* to.
+* Focus on sorting the cards in the tableaux, rather than moving cards to the foundations. Only move cards to the foundations when you *need* to.
 * Use undo and bookmark, a lot. Undo isn't cheating; it's experimenting and learning.
 
 ## Terminology and conventions
@@ -276,7 +279,7 @@ It's possible that a deal will start with no movable cards, just like it might i
 
 * Suits are listed in alphabetic order: Club, Diamond, Heart, Spade
 
-* Cards changing between face down and face up is called FLIPPING.
+* Cards changing between face down and face up is called FLIPPING
 
 * The user never moves or flips a face down card, only the dealer can
 
@@ -286,9 +289,9 @@ It's possible that a deal will start with no movable cards, just like it might i
 
 * Stock only has face down cards
 
-* A game is RELAXED when some constraint (usually, which card you can place in an empty tableau) has been removed.
+* A game is RELAXED when some constraint (usually, which card you can place in an empty tableau) has been removed
 
-* A game is EASY when the deal has been 'fixed', usually by moving Aces to the foundations, or shuffling Kings or Aces in the tableaux.
+* A game is EASY when the deal has been 'fixed', usually by moving Aces to the foundations, or shuffling Kings or Aces in the tableaux
 
 ![Screenshot](https://github.com/oddstream/gosol/blob/7152668f4b5053a1d438981e9d4564624616da6a/screenshots/Klondike.png)
 
@@ -354,7 +357,8 @@ I've now written a polymorphic solitaire engine seven times:
 
 First, there was a Javascript version that used SVG graphics and ran in web browsers. Game variants were configured using static lookup tables, which I thought was a good idea at the time.
 
-Second, there was a version in Lua, using the retained-mode Solar2d game engine, that made it to the Google Play store. Game variants were configured using static lookup tables, which I still thought was a good idea.
+Second, there was a version in Lua, using the retained-mode Solar2d game engine, that made it to the Google Play store. Game variants were configured using static lookup tables, which I still thought was a good idea. Card movement was glitchy on
+slower hardware.
 
 Third, there was a version in Go, using the immediate-mode Ebiten game engine, with help from gg/fogleman. The design was internally a mess, and the cards didn't scale, so this was abandoned. Game variants were configured using static lookup tables, which was starting to become a source of clumsiness and code smells.
 
@@ -364,7 +368,7 @@ Fifth, there was a rewritten version in Go, using the Ebiten game engine, with h
 
 Sixth, there is this version in Lua and LÖVE. The design is much better than the previous versions.
 
-Seventh, I rewrote the Go+Ebiten version, splitting the code into client (front end) and server (back end) packages. The idea of this was to allow me to write a general-purpose solver; there are solvers for individual variants, notably Klondike and Freecell, but not a general-purpose one. After creating four versions of the solver - which took too long to run and produced bizarre results - this work is currently stalled. However, I did manage to create a nice little 'robot' helper that plays for you, in a limited way. Also, this version of the engine finally allows variants to be scripted using Lua.
+Seventh, I rewrote the Go+Ebiten version, splitting the code into client (front end) and server (back end) packages. The idea of this was to allow me to write a general-purpose solver; there are solvers for individual variants, notably Klondike and Freecell, but not a general-purpose one. After creating four versions of the solver - which took too long to run and produced bizarre results - this work is currently stalled. This version of the engine finally allows variants to be scripted using Lua. Internally, the code is quite complex, so I mostly use it as a sandbox for ideas.
 
 ## Acknowledgements
 

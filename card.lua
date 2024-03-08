@@ -4,7 +4,7 @@
 
 local Util = require 'util'
 
----@class Card
+---@class (exact) Card
 ---@field pack number
 ---@field suit string '♣','♦','♥','♠'
 ---@field ord number 1 ... 13
@@ -13,6 +13,9 @@ local Util = require 'util'
 ---@field y number
 ---@field prone boolean
 ---@field parent Pile
+---@field lerpStartTime number
+---@field directionX integer
+---@field directionY integer
 ---@field flipDirection number -1, 0, +1
 ---@field flipWidth number
 ---@field flipStartTime number
@@ -23,9 +26,10 @@ local Util = require 'util'
 ---@field src table {x, y}
 ---@field dst table {x, y}
 ---@field dragStart table {x, y}
----@field movable number
+---@field movable integer 0 ... 5
 ---@field tapTargetDst Pile
----@field tapTargetWeight number 0 ... 4
+---@field __index Card
+---@field new function
 local Card = {
 }
 Card.__index = Card
@@ -64,8 +68,6 @@ function Card.new(o)
 
 	o.spinDegrees = 0.0
 	o.spinDelaySeconds = 0.0
-
-	o.tapTargetWeight = 0
 
 	return setmetatable(o, Card)
 end

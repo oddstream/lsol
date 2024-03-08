@@ -1,4 +1,10 @@
 {
+	"editor.fontFamily": "Liberation Mono",
+	// "editor.fontFamily": "Roboto Mono",
+	// "editor.fontFamily": "JetBrains Mono",
+	// "editor.fontFamily": "CommitMono",
+	// "editor.fontFamily": "Intel One Mono",
+	// "editor.fontFamily": "Comic Shanns",
 	// "editor.fontFamily": "DejaVu Sans Mono",
 	// "editor.fontFamily": "Fira Code",
 	// "editor.fontFamily": "Fira Code Retina",
@@ -6,7 +12,6 @@
 	// "editor.fontFamily": "Ubuntu Mono",
 	// "editor.fontFamily": "Droid Sans Mono",
 	// "editor.fontFamily": "Inconsolata",
-	"editor.fontFamily": "JetBrains Mono",
 	// "editor.fontFamily": "Go Mono",
 	"Lua.runtime.version": "LuaJIT",
 	"Lua.workspace.library": [
