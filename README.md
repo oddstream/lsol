@@ -4,7 +4,7 @@ Towards a polymorphic solitaire engine in [Lua](https://lua.org/)+[LÖVE](https:
 
 ![Screenshot](https://github.com/oddstream/gosol/blob/7152668f4b5053a1d438981e9d4564624616da6a/screenshots/Simple%20Simon.png)
 
-Play it by downloading/installing the LÖVE runtime and typing 'love lsol.love'. It's tested on Linux, Windows and [Android via the Google Play Store](https://play.google.com/store/apps/details?id=com.oddstream.lovesolitaire).
+Play it by downloading/installing the LÖVE runtime and the lsol.love file from this repo, then running 'love lsol.love'. It's tested on Linux, Windows and [Android via the Google Play Store](https://play.google.com/store/apps/details?id=com.oddstream.lovesolitaire).
 
 ## Variants
 
