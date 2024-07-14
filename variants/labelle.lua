@@ -18,7 +18,7 @@ function LaBelleLucie.new(o)
 	o.wikipedia = 'https://en.wikipedia.org/wiki/La_Belle_Lucie'
 	o.tabCompareFn = CC.DownSuit
 	o.moveType = 'MOVE_TOP_ONLY'
-	o.merciUsed = false
+	o.merciUsed = false	-- TODO will not survive undo
 	return setmetatable(o, LaBelleLucie)
 end
 
@@ -81,7 +81,8 @@ function LaBelleLucie:afterMove()
 	assert(self.merciAllowed~=nil)
 	assert(self.merciUsed~=nil)
 
-	if self.merciAllowed and (not self.merciUsed) and (_G.BAIZE.recycles == 0) then
+	if self.merciAllowed and (not self.merciUsed) and (_G.BAIZE.status == 'stuck') then
+	-- if self.merciAllowed and (not self.merciUsed) and (_G.BAIZE.recycles == 0) then
 		_G.BAIZE.ui:toast('Merci move can be used')
 	end
 end
@@ -145,7 +146,7 @@ function LaBelleLucie:pileTapped(pile)
 	if _G.BAIZE.recycles == 0 then
 		_G.BAIZE.ui:toast('No more reshuffles')
 	elseif _G.BAIZE.recycles == 1 then
-		_G.BAIZE.ui:toast('One more reshuffle')
+		_G.BAIZE.ui:toast('Tap a card to lift it when stuck')
 	end
 end
 
@@ -166,7 +167,8 @@ function LaBelleLucie:cardSelected(card)
 	if self.merciUsed then
 		return false
 	end
-	if _G.BAIZE.recycles > 0 then
+	-- if _G.BAIZE.recycles > 0 then
+	if _G.BAIZE.status ~= 'stuck' then
 		return false
 	end
 
@@ -186,12 +188,14 @@ function LaBelleLucie:cardSelected(card)
 	table.insert(pile.cards, card)
 
 	-- refan the pile
-	local tmp = {}
-	while #pile.cards > 0 do
-		table.insert(tmp, table.remove(pile.cards))
-	end
-	while #tmp > 0 do
-		pile:push(table.remove(tmp))
+	do
+		local tmp = {}
+		while #pile.cards > 0 do
+			table.insert(tmp, table.remove(pile.cards))
+		end
+		while #tmp > 0 do
+			pile:push(table.remove(tmp))
+		end
 	end
 
 	self.merciUsed = true
