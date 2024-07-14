@@ -492,7 +492,7 @@ function UI:toast(message, soundName)
 
 	table.insert(self.toasts, 1, t)
 
-	if soundName then
+	if soundName ~= nil then
 		Util.play(soundName)
 	end
 end

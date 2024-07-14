@@ -173,23 +173,27 @@ function LaBelleLucie:cardSelected(card)
 	local pile = card.parent
 	-- can't move the top card to the top of this pile
 	if card == pile:peek() then
-		Util.play('blip')
 		return false
 	end
 
+	-- move card to the top of the pile
 	for i, c in ipairs(pile.cards) do
 		if c == card then
-			pile.cards[i], pile.cards[#pile.cards] = pile.cards[#pile.cards], pile.cards[i]
+			table.remove(pile.cards, i)
 			break
 		end
 	end
+	table.insert(pile.cards, card)
+
+	-- refan the pile
 	local tmp = {}
 	while #pile.cards > 0 do
-		table.insert(tmp, pile:pop())
+		table.insert(tmp, table.remove(pile.cards))
 	end
 	while #tmp > 0 do
 		pile:push(table.remove(tmp))
 	end
+
 	self.merciUsed = true
 	_G.BAIZE.ui:toast('Merci!')
 	_G.BAIZE:afterUserMove()
