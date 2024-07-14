@@ -8,7 +8,7 @@ Play it by downloading/installing the LÖVE runtime and typing 'love lsol.love'.
 
 ## Variants
 
-It currently knows how to play 75 variants:
+It currently knows how to play around 100 variants, including:
 
 ♥ Accordian
 ♥ Agnes Bernauer
@@ -50,6 +50,7 @@ It currently knows how to play 75 variants:
 ♥ Josephine
 ♥ Klondike
 ♥ Klondike (Turn Three)
+♥ La Belle Lucie
 ♥ Limited
 ♥ Little Spider
 ♥ Lucas
@@ -75,7 +76,10 @@ It currently knows how to play 75 variants:
 ♥ Spiderette One Suit
 ♥ Spiderette Two Suits
 ♥ Storehouse Canfield
+♥ The Fan
 ♥ Thoughtful
+♥ Three Shuffles and a Draw
+♥ Trefoil
 ♥ Tri Peaks
 ♥ Tri Peaks Open
 ♥ Ukrainian
@@ -86,7 +90,7 @@ It currently knows how to play 75 variants:
 ♥ Yukon Cells
 ♥ Yukon Relaxed
 
-Variants are added when the whim takes me, or when some aspect of the engine needs testing/extending, or when someone asks.
+Variants are added when the whim takes me, or when some aspect of the engine needs testing/extending, or when someone makes a case for something interesting.
 
 Some variants have been tried and discarded as being a bit silly, or just too hard:
 
