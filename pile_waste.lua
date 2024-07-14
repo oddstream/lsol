@@ -13,7 +13,7 @@ setmetatable(Waste, {__index = Pile})
 function Waste.new(o)
 	o.category = 'Waste'
 	o.fanType = o.fanType or 'FAN_RIGHT3'
-	o.moveType = o.moveType or 'MOVE_ONE'
+	o.moveType = o.moveType or 'MOVE_TOP_ONLY'
 	o = Pile.prepare(o)
 	table.insert(_G.BAIZE.piles, o)
 	_G.BAIZE.waste = o

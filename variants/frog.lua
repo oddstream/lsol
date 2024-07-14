@@ -28,7 +28,7 @@ function Frog:buildPiles()
 		f.label = 'A'
 	end
 	for x = 4, 8 do
-		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE'})
+		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY'})
 	end
 	self.reserve = Reserve.new({x=1, y=2, fanType='FAN_DOWN'})
 end

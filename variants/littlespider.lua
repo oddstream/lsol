@@ -35,7 +35,7 @@ function LittleSpider:buildPiles()
 		self.tabFanType = 'FAN_NONE'
 	end
 	for x = 2.5, 5.5 do
-		Tableau.new({x=x, y=self.topTabY, fanType=self.tabFanType, moveType='MOVE_ONE'})
+		Tableau.new({x=x, y=self.topTabY, fanType=self.tabFanType, moveType='MOVE_TOP_ONLY'})
 	end
 	for x = 2.5, 3.5 do
 		local f = Foundation.new({x=x, y=self.foundY})
@@ -46,7 +46,7 @@ function LittleSpider:buildPiles()
 		f.label = 'K'
 	end
 	for x = 2.5, 5.5 do
-		Tableau.new({x=x, y=self.bottomTabY, fanType=self.tabFanType, moveType='MOVE_ONE'})
+		Tableau.new({x=x, y=self.bottomTabY, fanType=self.tabFanType, moveType='MOVE_TOP_ONLY'})
 	end
 
 	for i = 1, 4 do

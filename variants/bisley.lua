@@ -41,7 +41,7 @@ function Bisley:buildPiles()
 	-- assert(#self.downFoundations==4)
 
 	for x = 1, 13 do
-		local pile = Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ONE', nodraw=true})
+		local pile = Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY', nodraw=true})
 		if not self.debug then
 			pile.label = 'X'
 		end

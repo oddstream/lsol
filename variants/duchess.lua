@@ -47,7 +47,7 @@ function Duchess:buildPiles()
 	end
 
 	for x = 3, 6 do
-		Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+		Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 	end
 end
 

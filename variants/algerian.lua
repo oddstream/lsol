@@ -32,7 +32,7 @@ function Algerian:buildPiles()
 		f.label = 'K'
 	end
 	for x = 1, 8 do
-		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE'})
+		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY'})
 	end
 	for x = 1, 6 do
 		Reserve.new({x=x, y=4, fanType='FAN_DOWN'})

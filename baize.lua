@@ -5,6 +5,7 @@ local log = require 'log'
 
 require 'gradient'	-- comment out to not use gradient
 
+local Pile = require 'pile'
 local Settings = require 'settings'
 local Util = require 'util'
 
@@ -800,6 +801,9 @@ function Baize:buildPileBoxesAndRefan()
 	the box will start at the x,y position of the pile, and be the same width as a card
 	the bottom of the box will either be the bottom of the baize,
 	or the top of another pile that is directly below this pile
+
+	NB pile.cards will be an empty table when called; it would be nice to check if
+	boundary pile was empty, but this isn't the place
 ]]
 	if _G.SETTINGS.cardScrunching then
 		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
@@ -810,7 +814,7 @@ function Baize:buildPileBoxesAndRefan()
 					y = pile.y,
 					width = self.cardWidth,
 				}
-				if pile.boundaryPile then
+				if pile.boundaryPile --[[and #pile.boundaryPile.cards > 0]] then
 					pile.box.height = pile.boundaryPile.y - pile.y
 				else
 					pile.box.height = -1	-- signal to use Baize height
@@ -821,7 +825,7 @@ function Baize:buildPileBoxesAndRefan()
 					y = pile.y,
 					height = self.cardHeight
 				}
-				if pile.boundaryPile then
+				if pile.boundaryPile  --[[and #pile.boundaryPile.cards > 0]] then
 					pile.box.width = pile.boundaryPile.x - pile.x
 				else
 					pile.box.width = -1	-- signal to use Baize width
@@ -840,7 +844,7 @@ function Baize:buildPileBoxesAndRefan()
 		-- version of the above that only honors boundaryPile, not baize
 		for _, pile in ipairs(self.piles) do	-- run another loop because x,y will have been set
 			pile.faceFanFactor = Util.maxFanFactor()
-			if pile.boundaryPile then
+			if pile.boundaryPile --[[and #pile.boundaryPile.cards > 0]] then
 				if pile.fanType == 'FAN_DOWN' then
 					pile.box = {
 						x = pile.x,
@@ -911,7 +915,11 @@ function Baize:layout()
 
 	local slotWidth, slotHeight
 	if landscape then
-		slotWidth = safew / (maxSlotX + 3) -- +3 gives a 1.5 card width gap either side
+		-- 2.8 gives equal margin left/right
+		-- and debug vertical line appears in middle of Freecell tableaux
+		-- why 2.8? currently a mystery
+		-- cardRatioLandscape is 1.39 but 1.39*2=2.78 does not center tableaux
+		slotWidth = safew / (maxSlotX + 2.8)
 		slotHeight = slotWidth * _G.SETTINGS.cardRatioLandscape
 	else
 		slotWidth = safew / (maxSlotX + 1) -- +1 gives a 0.5 card width gap either side
@@ -1139,7 +1147,6 @@ function Baize:mousePressed(x, y, button)
 					elseif card:spinning() then
 						-- don't flip like we used to!
 					else
-						---@type Card[]|nil
 						local tail = card.parent:makeTail(card)
 						for _, c in ipairs(tail) do
 							c:startDrag()
@@ -1205,26 +1212,32 @@ function Baize:mouseTapped(x, y, button)
 	elseif self.stroke.objectType == 'container' then
 		-- do nothing when tapping on a container
 	elseif self.stroke.objectType == 'tail' then
-		-- offer tailTapped to the script first
-		-- the script can then call Pile.tailTapped if it likes
 		local tail = self.stroke.object
 		for _, c in ipairs(tail) do c:cancelDrag() end
-		local err = tail[1].parent:moveTailError(tail)
-		if err then
-			self.ui:toast(err, 'blip')
-		else
-			err = self.script:moveTailError(tail)
+
+		-- offer cardSelected to the script first
+		-- the default Pile.cardSelected returns false
+		-- if cardSelected returns true, then the script handled this; do no more
+		if not self.script:cardSelected(tail[1]) then
+			-- offer tailTapped to the script first
+			-- the script can then call Pile.tailTapped if it likes
+			local err = tail[1].parent:moveTailError(tail)
 			if err then
 				self.ui:toast(err, 'blip')
 			else
-				local oldSnap = self:stateSnapshot()
-				self.script:tailTapped(tail)
-				local newSnap = self:stateSnapshot()
-				if Util.baizeChanged(oldSnap, newSnap) then
-					self:afterUserMove()
-					self:afterAfterUserMove()
+				err = self.script:moveTailError(tail)
+				if err then
+					self.ui:toast(err, 'blip')
 				else
-					Util.play('blip')
+					local oldSnap = self:stateSnapshot()
+					self.script:tailTapped(tail)
+					local newSnap = self:stateSnapshot()
+					if Util.baizeChanged(oldSnap, newSnap) then
+						self:afterUserMove()
+						self:afterAfterUserMove()
+					else
+						Util.play('blip')
+					end
 				end
 			end
 		end
@@ -1536,6 +1549,90 @@ end
 ---@param url string
 function Baize:openURL(url)
 	love.system.openURL(url)
+end
+
+--- https://fc-solve.shlomifish.org/docs/distro/README.html
+--- https://fc-solve.shlomifish.org/docs/distro/USAGE.html
+function Baize:solver()
+	local gflag = self.script:fcSolver()
+	if gflag == '' then
+		self.ui:toast('No solver for ' .. _G.SETTINGS.variantName, 'blip')
+		return
+	end
+	local str = ''
+	if #self.cells > 0 then
+		str = str .. 'FC: '
+		for _, cell in ipairs(self.cells) do
+			local c = cell:peek()
+			if c ~= nil then
+				str = str .. c:fcsolverString(false) .. ' '
+			else
+				str = str .. '- '
+			end
+		end
+		str = str .. '\n'
+	end
+	if #self.foundations > 0 then
+		str = str .. 'Founds: '
+		for _, found in ipairs(self.foundations) do
+			local c = found:peek()
+			if c ~= nil then
+				str = str .. c:fcsolverString(true) .. ' '
+			end
+		end
+		str = str .. '\n'
+	end
+	for _, tab in ipairs(self.tableaux) do
+		for i = 1, #tab.cards do
+			local c = tab.cards[i]
+			str = str .. c:fcsolverString(false) .. ' '
+		end
+		str = str .. '\n'
+	end
+	-- love.filesystem.getSaveDirectory( )
+	-- /home/gilbert/.local/share/love/LÖVE Solitaire/board.txt
+	local success, message = love.filesystem.write('board.txt', str, #str)
+	if not success then
+		log.error(message)
+		return
+	end
+	local solverExecutable = '/usr/bin/fc-solve'
+	-- -m display moves
+	-- -sam display state and moves
+	-- -o output filename
+	-- -p parseable output
+	-- -t display 10 as T
+	-- -sel show exceeded limits
+	-- -opt optimize for minimum moves
+	-- -g variant
+	local infile = 'board.txt'
+	local fullInfile = '"' .. love.filesystem.getSaveDirectory() .. '/' .. infile .. '"'
+	local outfile = 'solution.txt'
+	local fullOutfile = '"' .. love.filesystem.getSaveDirectory() .. '/' .. outfile .. '"'
+
+	success = os.execute(solverExecutable .. ' -g ' .. gflag .. ' -t -m -sel -opt -o ' .. fullOutfile .. ' ' .. fullInfile)
+	if not success then
+		self.ui:toast('Could not run solver', 'fail')
+		log.error(solverExecutable .. ' in '  .. fullInfile .. ' out ' .. fullOutfile)
+		return
+	end
+	-- solverFlags
+	-- os.execute(solverExecutable .. ' ' .. solverFlags .. ' ')
+	-- /usr/bin/fc-solve -p -t -sam -sel "/home/gilbert/.local/share/love/LÖVE Solitaire/solver.txt"
+
+	--[[
+		Move <number|a> <card|cards> from <stack|freecell> to <the foundations|freecell <number>|stack <number>>
+	]]
+	for line in love.filesystem.lines(outfile) do
+		if line:find('Move', 1, true) then
+			self.ui:toast(line, 'uitap')
+			break
+		end
+		if line:find('I could not solve', 1, true) then
+			self.ui:toast(line, 'fail')
+			break
+		end
+	end
 end
 
 function Baize:quit()

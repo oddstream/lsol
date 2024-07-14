@@ -50,7 +50,7 @@ function Freecell:buildPiles()
 			f.label = 'A'
 		end
 		for x = 1, 10 do
-			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY_PLUS'})
 			if self.relaxed == false then
 				t.label = 'K'
 			end
@@ -65,7 +65,7 @@ function Freecell:buildPiles()
 			f.label = 'A'
 		end
 		for x = 1, 11 do
-			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY_PLUS'})
 			if self.relaxed == false then
 				t.label = 'K'
 			end
@@ -82,7 +82,7 @@ function Freecell:buildPiles()
 			end
 		end
 		for x = 1, 8 do
-			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY_PLUS'})
 			if self.relaxed == false then
 				t.label = 'K'
 			end
@@ -213,5 +213,15 @@ end
 -- 	local pile = card.parent
 -- 	pile:tailTapped(tail)
 -- end
+
+function Freecell:fcSolver()
+	if self.bakers then
+		return 'bakers_game'
+	elseif not (self.chinese or self.selective) then
+		return 'freecell'
+	else
+		return ''
+	end
+end
 
 return Freecell

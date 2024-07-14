@@ -36,7 +36,7 @@ function MissMilligan:buildPiles()
 
 	self.tableaux = {}
 	for x = 3, 10 do
-		local tab = Tableau.new{x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+		local tab = Tableau.new{x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 		if not self.giant then
 			tab.label = 'K'
 		end
@@ -44,7 +44,7 @@ function MissMilligan:buildPiles()
 	end
 
 	if not self.giant then
-		self.weaving = Tableau.new{x=1, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+		self.weaving = Tableau.new{x=1, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 	end
 end
 

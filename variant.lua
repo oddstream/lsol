@@ -75,4 +75,18 @@ function Variant:tailTapped(tail)
 	tail[1].parent:tailTapped(tail)
 end
 
+---default behaviour for cardSelected;
+---return false means 'script did nothing'
+---return true means 'script handled this COMPLETELY'
+---@param card Card
+---@return boolean
+function Variant:cardSelected(card)
+	return false
+end
+
+---return command line name for fc-solver, see https://fc-solve.shlomifish.org/docs/distro/USAGE.html
+function Variant:fcSolver()
+	return ''
+end
+
 return Variant

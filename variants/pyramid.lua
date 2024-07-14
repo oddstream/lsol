@@ -38,14 +38,14 @@ function Pyramid:buildPiles()
 
 	for y = 1, 4, 0.5 do
 		for x = 1, nx do
-			Tableau.new({x=xfirst+x, y=y, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
+			Tableau.new({x=xfirst+x, y=y, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY', nodraw=true})
 		end
 		nx = nx + 1
 		xfirst = xfirst - 0.5
 	end
 
 	self.stock = Stock.new({x=3, y=6})
-	self.waste = Waste.new({x=4, y=6, fanType='FAN_NONE', moveType='MOVE_ONE'})
+	self.waste = Waste.new({x=4, y=6, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY'})
 	self.foundation = Foundation.new({x=5, y=6, fanType='FAN_NONE'})
 	self.tableaux = _G.BAIZE.tableaux
 end

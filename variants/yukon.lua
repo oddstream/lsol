@@ -43,7 +43,7 @@ function Yukon:buildPiles()
 			end
 		end
 		for x = 1, 7 do
-			local pile = Tableau.new{x=x, y=1, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+			local pile = Tableau.new{x=x, y=1, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 			if not self.relaxed then
 				pile.label = 'K'
 			end
@@ -58,14 +58,14 @@ function Yukon:buildPiles()
 				Cell.new{x=x, y=2}
 			end
 			for x = 1, 7 do
-				local pile = Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+				local pile = Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 				if not self.relaxed then
 					pile.label = 'K'
 				end
 			end
 		else
 			for x = 1, 7 do
-				local pile = Tableau.new{x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+				local pile = Tableau.new{x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 				if not self.relaxed then
 					pile.label = 'K'
 				end

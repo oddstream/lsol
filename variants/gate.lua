@@ -41,8 +41,8 @@ function Gate:buildPiles()
 	for x  = 2.5, 5.5 do
 		-- could work out boundaryPile by examining piles after buildPiles() is called
 		-- but setting them explicitly is more predictable
-		local tupper = Tableau.new({x=x, y=2.5, fanType='FAN_DOWN', moveType='MOVE_ANY'})
-		local tlower = Tableau.new({x=x, y=5.5, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		local tupper = Tableau.new({x=x, y=2.5, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
+		local tlower = Tableau.new({x=x, y=5.5, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 		tupper.boundaryPile = tlower
 	end
 end

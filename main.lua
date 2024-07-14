@@ -8,8 +8,8 @@ local UI = require 'ui'
 local Util = require 'util'
 local Settings = require 'settings'
 
-_G.LSOL_VERSION = '29'
-_G.LSOL_VERSION_DATE = '2024-03-08'
+_G.LSOL_VERSION = '30'
+_G.LSOL_VERSION_DATE = '2024-07-11'
 
 if not _G.table.contains then
 	function _G.table.contains(tab, val)
@@ -123,6 +123,10 @@ _G.LSOL_VARIANTS = {
 	['Usk'] = {file='usk.lua', cc=2, relaxed=false},
 	['Usk Relaxed'] = {file='usk.lua', cc=2, relaxed=true},
 	['Somerset'] = {file='somerset.lua', cc=2, relaxed=true},
+	Trefoil = {file='trefoil.lua', cc=4},
+	['La Belle Lucie'] = {file='labelle.lua', cc=4, merciAllowed=false},
+	['The Fan'] = {file='thefan.lua', cc=4},
+	['Three Shuffles and a Draw'] = {file='labelle.lua', cc=4, merciAllowed=true},
 }
 
 _G.VARIANT_TYPES = {
@@ -130,6 +134,7 @@ _G.VARIANT_TYPES = {
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider','Penguin','Frog','Fly'},
 	['> Canfields'] = {'American Toad','Canfield','Duchess','Gate','Rainbow Canfield','Storehouse Canfield'},
 	['> Easier'] = {'Accordian','American Toad','American Westcliff','Blockade','Classic Westcliff','Gate','Lucas','Martha','Mount Olympus','Spider One Suit','Red and Black','Tri Peaks','Tri Peaks Open','Wasp','Usk Relaxed','Easy Freecell'},
+	['> Fan'] = {'La Belle Lucie', 'The Fan', 'Three Shuffles and a Draw', 'Trefoil'},
 	['> Forty Thieves'] = {'Forty Thieves','Josephine','Limited','Lucas','Forty and Eight','Busy Aces','Red and Black'},
 	['> Freecells'] = {'Blind Freecell','Easy Freecell','Selective Freecell','Chinese Freecell','Double Freecell', 'Eight Off','Eight Off Relaxed','Freecell','Baker\'s Game','Baker\'s Game Relaxed','Sea Haven Towers'},
 	['> Klondikes'] = {'Athena','Gargantua','Triple Klondike','Klondike','Klondike (Turn Three)','Easthaven', 'Classic Westcliff','American Westcliff','Agnes Bernauer','Thoughtful','Whitehead'},
@@ -750,6 +755,8 @@ function love.keyreleased(key)
 			end
 			_G.BAIZE:updateStatus()
 			_G.BAIZE:updateUI()
+		elseif key == 'f1' then
+			_G.BAIZE:solver()
 		end
 	end
 end

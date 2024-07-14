@@ -34,7 +34,7 @@ function Penguin:buildPiles()
 			Foundation.new{x=8.5, y=y}
 		end
 		for x = 1, 7 do
-			Tableau.new{x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+			Tableau.new{x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 		end
 	else
 		-- the flipper, seven cells
@@ -45,7 +45,7 @@ function Penguin:buildPiles()
 			Foundation.new{x=x, y=1}
 		end
 		for x = 1, 7 do
-			Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+			Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 		end
 	end
 end

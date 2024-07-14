@@ -28,17 +28,25 @@ Pile.__index = Pile
 local backFanFactor = 0.1
 
 ---@param o Pile
+---@return nil
+function Pile.assertPile(o)
+	assert(o~=nil)
+	assert(type(o)=='table')
+	assert(type(o.x)=='number')
+	assert(type(o.y)=='number')
+	assert(type(o.category=='string'))
+	assert(type(o.fanType=='string'))
+	assert(type(o.moveType=='string'))
+	assert(type(o.cards=='table'))
+end
+
+---@param o Pile
 ---@return Pile
 function Pile.prepare(o)
 	-- nb this doesn't create a new Pile object; rather, it decorates/prepares an existing one
 	-- important to preserve any members that are in o
 	if _G.SETTINGS.debug then
-		assert(type(o)=='table')
-		assert(type(o.x)=='number')
-		assert(type(o.y)=='number')
-		assert(type(o.category=='string'))
-		assert(type(o.fanType=='string'))
-		assert(type(o.moveType=='string'))
+		Pile.assertPile(o)
 	end
 	-- x, y in o are moved to Pile.slot.x,y
 	o.slot = {x = o.x, y = o.y}
@@ -396,17 +404,17 @@ function Pile:moveTailError(tail)
 		end
 	end
 ]]
-	-- don't test for MOVE_ANY or MOVE_ONE_PLUS
-	-- don't know destination, so we allow MOVE_ONE_PLUS as MOVE_ANY at the moment
+	-- don't test for MOVE_TAIL or MOVE_TOP_ONLY_PLUS
+	-- don't know destination, so we allow MOVE_TOP_ONLY_PLUS as MOVE_TAIL at the moment
 	if self.moveType == 'MOVE_NONE' then
-		return 'Cannot move a card from that pile'
-	elseif self.moveType == 'MOVE_ONE' then
+		return 'Cannot move any card from that pile'
+	elseif self.moveType == 'MOVE_TOP_ONLY' then
 		if #tail > 1 then
-			return 'Can only move one card from that pile'
+			return 'Can only move the top card from that pile'
 		end
-	elseif self.moveType == 'MOVE_ONE_OR_ALL' then
+	elseif self.moveType == 'MOVE_TOP_OR_ALL' then
 		if not (#tail == 1 or #tail == #self.cards) then
-			return 'Only move one card, or the whole pile'
+			return 'Only move the top card, or the whole pile'
 		end
 	end
 	return nil
@@ -602,7 +610,7 @@ function Pile:draw()
 			b.labelFont:getWidth(self.label) / 2,
 			b.labelFont:getHeight() / 2)
 	end
-
+--[[
 	if _G.SETTINGS.debug then
 		local sb = self:screenBox()
 		if sb then
@@ -614,7 +622,7 @@ function Pile:draw()
 		local px, py, pw, ph = self:fannedBaizeRect()	-- should be fannedScreenRect
 		love.graphics.rectangle('line', px, py, pw, ph)
 	end
-
+]]
 
 end
 

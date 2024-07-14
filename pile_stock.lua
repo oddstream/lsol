@@ -21,7 +21,7 @@ function Stock.new(o)
 	o.suitFilter = o.suitFilter or {'♣','♦','♥','♠'}
 	o.packs = o.packs or 1
 	o.fanType = 'FAN_NONE'
-	o.moveType = 'MOVE_ONE'
+	o.moveType = 'MOVE_TOP_ONLY'
 
 	o = Pile.prepare(o)
 	setmetatable(o, Stock)

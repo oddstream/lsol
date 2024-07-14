@@ -39,7 +39,7 @@ function Usk:buildPiles()
 		pile.label = 'A'
 	end
 	for _, layout in ipairs(self.layouts) do
-		local tab = Tableau.new({x=layout.x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		local tab = Tableau.new({x=layout.x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 		if not self.relaxed then
 			tab.label = 'K'
 		end

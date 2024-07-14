@@ -13,7 +13,7 @@ setmetatable(Reserve, {__index = Pile})
 function Reserve.new(o)
 	o.category = 'Reserve'
 	o.fanType = o.fanType or 'FAN_DOWN'
-	o.moveType = 'MOVE_ONE'
+	o.moveType = 'MOVE_TOP_ONLY'
 	-- don't draw graphics if pile is redundant when all cards have left it
 	o.nodraw = true
 	o = Pile.prepare(o)

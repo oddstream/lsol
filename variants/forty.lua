@@ -41,9 +41,9 @@ function Forty:buildPiles()
 	local firstTab = firstFound + 8 - self.tabs
 	for x = 1, self.tabs do
 		if self.josephine then
-			Tableau.new{x=firstTab + x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+			Tableau.new{x=firstTab + x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 		else
-			Tableau.new{x=firstTab + x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'}
+			Tableau.new{x=firstTab + x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY_PLUS'}
 		end
 	end
 end

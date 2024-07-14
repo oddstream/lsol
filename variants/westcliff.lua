@@ -29,7 +29,7 @@ function West:buildPiles()
 			pile.label = 'A'
 		end
 		for x = 1, 7 do
-			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 			-- no label
 		end
 	elseif self.american then
@@ -39,7 +39,7 @@ function West:buildPiles()
 			pile.label = 'A'
 		end
 		for x = 1, 10 do
-			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 			-- no label
 		end
 	elseif self.easthaven then
@@ -49,7 +49,7 @@ function West:buildPiles()
 			pile.label = 'A'
 		end
 		for x = 1, 7 do
-			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 			pile.label = 'K'
 		end
 	end

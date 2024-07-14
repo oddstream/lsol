@@ -35,7 +35,7 @@ function Canfield:buildPiles()
 	for x = 4, 7 do
 		Foundation.new({x=x, y=1})
 		-- Cards on the tableau are also moved one unit, provided that the entire column has to be moved.
-		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_OR_ALL'})
+		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_OR_ALL'})
 	end
 end
 

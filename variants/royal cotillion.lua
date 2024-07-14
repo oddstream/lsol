@@ -29,7 +29,7 @@ function RoyalCotillion:buildPiles()
 
 	self.ladies = {}
 	for x = 1, 4 do
-		local r = Tableau.new({x=x, y=1, fanType='FAN_DOWN', moveType='MOVE_ONE'})
+		local r = Tableau.new({x=x, y=1, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY'})
 		table.insert(self.ladies, r)
 	end
 

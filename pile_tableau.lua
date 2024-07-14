@@ -14,7 +14,7 @@ setmetatable(Tableau, {__index = Pile})
 function Tableau.new(o)
 	o.category = 'Tableau'
 	o.fanType = o.fanType or 'FAN_DOWN'
-	o.moveType = o.moveType or 'MOVE_ANY'
+	o.moveType = o.moveType or 'MOVE_TAIL'
 	o = Pile.prepare(o)
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.tableaux, o)
@@ -49,7 +49,7 @@ function Tableau:acceptTailError(tail)
 			return 'Cannot add a face down card to a Tableau'
 		end
 	end
-	if self.moveType == 'MOVE_ONE_PLUS' then
+	if self.moveType == 'MOVE_TOP_ONLY_PLUS' then
 		if _G.SETTINGS.powerMoves then
 			local moves = powerMoves(self)
 			if #tail > moves then
@@ -64,7 +64,7 @@ function Tableau:acceptTailError(tail)
 				return 'Cannot add more than one card'
 			end
 		end
-	elseif self.moveType == 'MOVE_ONE' then
+	elseif self.moveType == 'MOVE_TOP_ONLY' then
 		if #tail > 1 then
 			return 'Cannot add more than one card'
 		end

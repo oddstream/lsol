@@ -31,14 +31,14 @@ function Agnes:buildPiles()
 	end
 	if self.bernauer then
 		for x = 1, 7 do
-			Reserve.new({x=x, y=2, fanType='FAN_NONE', moveType='MOVE_ANY'})
+			Reserve.new({x=x, y=2, fanType='FAN_NONE', moveType='MOVE_TAIL'})
 		end
 		for x = 1, 7 do
-			Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 		end
 	elseif self.sorel then
 		for x = 1, 7 do
-			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 		end
 	end
 end

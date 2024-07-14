@@ -25,7 +25,7 @@ function Thirteens:buildPiles()
 	Stock.new({x=1, y=1, nodraw=true})
 	Foundation.new({x=10, y=1})
 	for x = 1, 10 do
-		Tableau.new({x=x, y=2, fanType='FAN_NONE', moveType='MOVE_ONE'})
+		Tableau.new({x=x, y=2, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY'})
 	end
 end
 

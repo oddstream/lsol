@@ -42,6 +42,18 @@ function Card:__tostring()
 	return self.textureId
 end
 
+---@param found boolean
+---@return string in fc-solver format eg TC 9S 6D 9C QD 8S TD
+function Card:fcsolverString(found)
+	local ords = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"}
+	local suits = {['♣']='C',['♦']='D',['♥']='H',['♠']='S'}
+	if found then
+		return suits[self.suit] .. '-' .. ords[self.ord]
+	else
+		return ords[self.ord] .. suits[self.suit]
+	end
+end
+
 function Card.new(o)
 	-- assert(type(o)=='table')
 	-- assert(type(o.pack)=='number')

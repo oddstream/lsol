@@ -37,7 +37,7 @@ function Alhambra:buildPiles()
 
 	Stock.new({x=3.75, y=4, packs=2})
 	-- waste pile implemented as a tableau because cards may be built onto it from tabs
-	Tableau.new({x=4.75, y=4, fanType='FAN_RIGHT3', moveType='MOVE_ONE'})
+	Tableau.new({x=4.75, y=4, fanType='FAN_RIGHT3', moveType='MOVE_TOP_ONLY'})
 end
 
 function Alhambra:startGame()

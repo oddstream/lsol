@@ -28,7 +28,7 @@ function RedAndBlack:buildPiles()
 	Waste.new{x=2, y=1, fanType='FAN_RIGHT3'}
 	for x = 1, 8 do
 		Foundation.new{x=x, y=2}
-		Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ANY'}
+		Tableau.new{x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_TAIL'}
 	end
 end
 

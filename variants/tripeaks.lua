@@ -32,19 +32,19 @@ end
 function TriPeaks:buildPiles()
 
 	for _, x in ipairs({2.5, 5.5, 8.5}) do
-		Reserve.new({x=x, y=1.5, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
+		Reserve.new({x=x, y=1.5, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY', nodraw=true})
 	end
 
 	for _, x in ipairs({2, 3, 5, 6, 8, 9}) do
-		Reserve.new({x=x, y=2, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
+		Reserve.new({x=x, y=2, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY', nodraw=true})
 	end
 
 	for x = 1.5, 9.5 do
-		Reserve.new({x=x, y=2.5, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
+		Reserve.new({x=x, y=2.5, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY', nodraw=true})
 	end
 
 	for x = 1, 10 do
-		Reserve.new({x=x, y=3, fanType='FAN_NONE', moveType='MOVE_ONE', nodraw=true})
+		Reserve.new({x=x, y=3, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY', nodraw=true})
 	end
 
 	self.stock = Stock.new({x=5, y=4.5, nodraw=true})

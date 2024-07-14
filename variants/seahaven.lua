@@ -33,7 +33,7 @@ function SeaHaven:buildPiles()
 		f.label = 'A'
 	end
 	for x = 1, 10 do
-		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY_PLUS'})
 		t.label = 'K'
 	end
 end

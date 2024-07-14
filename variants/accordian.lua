@@ -25,7 +25,7 @@ function Accordian:buildPiles()
 
 	for y = 1, 4 do
 		for x = 1, 13 do
-			Tableau.new({x=x, y=y, fanType='FAN_NONE', moveType='MOVE_ONE'})
+			Tableau.new({x=x, y=y, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY'})
 		end
 	end
 

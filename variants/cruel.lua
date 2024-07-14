@@ -18,11 +18,11 @@ function Cruel.new(o)
 	if o.subtype == 'Cruel' then
 		o.tabCompareFn = CC.DownSuit
 		o.wikipedia = 'https://en.wikipedia.org/wiki/Cruel_(solitaire)'
-		o.moveType = 'MOVE_ONE'
+		o.moveType = 'MOVE_TOP_ONLY'
 	elseif o.subtype == 'Perseverance' then
 		o.tabCompareFn = CC.DownSuit
 		o.wikipedia = 'https://en.wikipedia.org/wiki/Perseverance_(solitaire)'
-		o.moveType = 'MOVE_ANY'
+		o.moveType = 'MOVE_TAIL'
 	end
 	return setmetatable(o, Cruel)
 end
@@ -64,7 +64,7 @@ function Cruel:afterMove()
 end
 
 function Cruel:moveTailError(tail)
-	-- not reached by Cruel because Tableau moveType == 'MOVE_ONE'
+	-- not reached by Cruel because Tableau moveType == 'MOVE_TOP_ONLY'
 	local pile = tail[1].parent
 	if pile.category == 'Tableau' then
 		local cpairs = Util.makeCardPairs(tail)

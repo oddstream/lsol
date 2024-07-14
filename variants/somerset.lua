@@ -39,7 +39,7 @@ function Somerset:buildPiles()
 		pile.label = 'A'
 	end
 	for _, layout in ipairs(self.layouts) do
-		local tab = Tableau.new({x=layout.x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+		local tab = Tableau.new({x=layout.x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY_PLUS'})
 		if not self.relaxed then
 			tab.label = 'K'
 		end

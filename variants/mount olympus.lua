@@ -35,7 +35,7 @@ function MountOlympus:buildPiles()
 	local ypos = {4.33,4,3.66,3.33,3,3.33,3.66,4,4.33}
 	local i = 1
 	for x = 2, 10 do
-		Tableau.new({x=x, y=ypos[i], fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		Tableau.new({x=x, y=ypos[i], fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 		i = i + 1
 	end
 end

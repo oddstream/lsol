@@ -28,7 +28,7 @@ function AmToad:buildPiles()
 	Reserve.new({x=4, y=1, fanType='FAN_RIGHT'})
 	for x = 1, 8 do
 		Foundation.new({x=x, y=2})
-		Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ONE_OR_ALL'})
+		Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_TOP_OR_ALL'})
 	end
 end
 

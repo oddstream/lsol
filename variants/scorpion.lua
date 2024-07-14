@@ -27,7 +27,7 @@ function Scorpion:buildPiles()
 		Discard.new({x=x, y=1})
 	end
 	for x = 1, 7 do
-		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 		if not self.relaxed then
 			t.label = 'K'
 		end

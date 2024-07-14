@@ -28,7 +28,7 @@ function SimpleSimon:buildPiles()
 		Discard.new({x=x, y=1})
 	end
 	for x = 1, 10 do
-		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+		Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 	end
 end
 
@@ -117,5 +117,9 @@ end
 -- 	local pile = card.parent
 -- 	pile:tailTapped(tail)
 -- end
+
+function SimpleSimon:fcSolver()
+	return 'simple_simon'
+end
 
 return SimpleSimon

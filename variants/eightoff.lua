@@ -30,7 +30,7 @@ function EightOff:buildPiles()
 			Cell.new({x=x, y=1})
 		end
 		for x = 1, 8 do
-			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			local t = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY_PLUS'})
 			if not self.relaxed then
 				t.label = 'K'
 			end
@@ -44,7 +44,7 @@ function EightOff:buildPiles()
 			Cell.new({x=x, y=2})
 		end
 		for x = 1, 8 do
-			local t = Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+			local t = Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY_PLUS'})
 			if not self.relaxed then
 				t.label = 'K'
 			end
@@ -120,5 +120,9 @@ end
 -- 	local pile = card.parent
 -- 	pile:tailTapped(tail)
 -- end
+
+function EightOff:fcSolver()
+	return 'eight_off'
+end
 
 return EightOff

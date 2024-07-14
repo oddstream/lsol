@@ -28,7 +28,7 @@ function Castle:buildPiles()
 			pile.label = 'A'
 		end
 		for x = 1, 8 do
-			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ONE'})
+			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY'})
 		end
 	else
 		for y = 1, 4 do
@@ -36,8 +36,8 @@ function Castle:buildPiles()
 			pile.label = 'A'
 		end
 		for y = 1, 4 do
-			Tableau.new({x=3, y=y, fanType='FAN_LEFT', moveType='MOVE_ONE'})
-			Tableau.new({x=5, y=y, fanType='FAN_RIGHT', moveType='MOVE_ONE'})
+			Tableau.new({x=3, y=y, fanType='FAN_LEFT', moveType='MOVE_TOP_ONLY'})
+			Tableau.new({x=5, y=y, fanType='FAN_RIGHT', moveType='MOVE_TOP_ONLY'})
 		end
 	end
 end
@@ -87,5 +87,9 @@ end
 -- 	local pile = card.parent
 -- 	pile:tailTapped(tail)
 -- end
+
+function Castle:fcSolver()
+	return 'beleaguered_castle'
+end
 
 return Castle

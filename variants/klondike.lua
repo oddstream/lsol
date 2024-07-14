@@ -44,7 +44,7 @@ function Klondike:buildPiles()
 			pile.label = 'A'
 		end
 		for x = 1, 7 do
-			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 			pile.label = 'K'
 		end
 	elseif self.gargantua then
@@ -53,7 +53,7 @@ function Klondike:buildPiles()
 			pile.label = 'A'
 		end
 		for x = 3, 11 do
-			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 			pile.label = 'K'
 		end
 	elseif self.triple then
@@ -62,7 +62,7 @@ function Klondike:buildPiles()
 			pile.label = 'A'
 		end
 		for x = 5, 15 do
-			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 			pile.label = 'K'
 		end
 	else
@@ -71,7 +71,7 @@ function Klondike:buildPiles()
 			pile.label = 'A'
 		end
 		for x = 1, 7 do
-			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			local pile = Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 			if not self.whitehead then pile.label = 'K' end
 		end
 	end

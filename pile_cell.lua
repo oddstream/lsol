@@ -13,7 +13,7 @@ setmetatable(Cell, {__index = Pile})
 function Cell.new(o)
 	o.category = 'Cell'
 	o.fanType = 'FAN_NONE'
-	o.moveType = 'MOVE_ONE'
+	o.moveType = 'MOVE_TOP_ONLY'
 	o = Pile.prepare(o)
 	table.insert(_G.BAIZE.piles, o)
 	table.insert(_G.BAIZE.cells, o)

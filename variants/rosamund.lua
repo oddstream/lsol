@@ -45,9 +45,9 @@ function Rosamund:buildPiles()
 	self.foundation = Foundation.new({x=1, y=5})
 
 	self.rubbish = {}
-	self.rubbish[1] = Tableau.new({x=1,y=7, fanType='FAN_NONE', moveType='MOVE_ONE'})	-- rubbish heap
-	self.rubbish[2] = Tableau.new({x=2,y=7, fanType='FAN_NONE', moveType='MOVE_ONE'})	-- rubbish heap
-	self.rubbish[3] = Tableau.new({x=3,y=7, fanType='FAN_NONE', moveType='MOVE_ONE'})	-- rubbish heap
+	self.rubbish[1] = Tableau.new({x=1,y=7, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY'})	-- rubbish heap
+	self.rubbish[2] = Tableau.new({x=2,y=7, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY'})	-- rubbish heap
+	self.rubbish[3] = Tableau.new({x=3,y=7, fanType='FAN_NONE', moveType='MOVE_TOP_ONLY'})	-- rubbish heap
 end
 
 function Rosamund:startGame()

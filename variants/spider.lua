@@ -30,14 +30,14 @@ function Spider:buildPiles()
 			Discard.new({x=x, y=1})
 		end
 		for x = 1, 7 do
-			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 		end
 	else
 		for x = 3, 10 do
 			Discard.new({x=x, y=1})
 		end
 		for x = 1, 10 do
-			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_ANY'})
+			Tableau.new({x=x, y=2, fanType='FAN_DOWN', moveType='MOVE_TAIL'})
 		end
 	end
 end

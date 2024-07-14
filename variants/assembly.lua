@@ -29,7 +29,7 @@ function Assembly:buildPiles()
 		f.label = 'A'
 	end
 	for x = 1, 4 do
-		Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_ONE_PLUS'})
+		Tableau.new({x=x, y=3, fanType='FAN_DOWN', moveType='MOVE_TOP_ONLY_PLUS'})
 	end
 end
 
