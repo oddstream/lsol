@@ -81,8 +81,8 @@ function LaBelleLucie:afterMove()
 	assert(self.merciAllowed~=nil)
 	assert(self.merciUsed~=nil)
 
-	if self.merciAllowed and (not self.merciUsed) and (_G.BAIZE.status == 'stuck') then
-	-- if self.merciAllowed and (not self.merciUsed) and (_G.BAIZE.recycles == 0) then
+	-- if self.merciAllowed and (not self.merciUsed) and (_G.BAIZE.status == 'stuck') then
+	if self.merciAllowed and (not self.merciUsed) and (_G.BAIZE.recycles == 0) then
 		_G.BAIZE.ui:toast('Merci move can be used')
 	end
 end
@@ -167,8 +167,8 @@ function LaBelleLucie:cardSelected(card)
 	if self.merciUsed then
 		return false
 	end
-	-- if _G.BAIZE.recycles > 0 then
-	if _G.BAIZE.status ~= 'stuck' then
+	-- if _G.BAIZE.status ~= 'stuck' then
+	if _G.BAIZE.recycles > 0 then
 		return false
 	end
 

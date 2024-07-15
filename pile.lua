@@ -583,7 +583,7 @@ function Pile:draw()
 		return
 	end
 
-	local alpha = 0.2
+	local alpha = 0.5
 
 	local b = _G.BAIZE
 	local x, y = self:screenPos()
