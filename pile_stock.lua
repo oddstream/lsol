@@ -132,7 +132,7 @@ function Stock:draw()
 	if highlight then
 		Util.setColorFromSetting('hintColor')
 	else
-		love.graphics.setColor(1, 1, 1, 0.1)
+		love.graphics.setColor(1, 1, 1, 0.5)
 	end
 	love.graphics.setLineWidth(1)
 	love.graphics.rectangle('line', x, y, b.cardWidth, b.cardHeight, b.cardRadius, b.cardRadius)
