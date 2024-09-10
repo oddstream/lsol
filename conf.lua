@@ -5,7 +5,7 @@ function love.conf(t)
 	t.identity = 'LÖVE Solitaire' -- name of the save directory
 	-- t.window.width = 1024
 	-- t.window.height = 1024
-	t.window.title = 'LÕVE Solitaire'
+	t.window.title = 'LÖVE Solitaire'
 
 	-- The highdpi window flag must be enabled to use the full pixel density of a Retina screen on Mac OS X and iOS.
 	-- The flag currently does nothing on Windows and Linux, and on Android it is effectively always enabled.
