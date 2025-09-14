@@ -8,8 +8,8 @@ local UI = require 'ui'
 local Util = require 'util'
 local Settings = require 'settings'
 
-_G.LSOL_VERSION = '30'
-_G.LSOL_VERSION_DATE = '2024-07-11'
+_G.LSOL_VERSION = '31'
+_G.LSOL_VERSION_DATE = '2025-09-14'
 
 if not _G.table.contains then
 	function _G.table.contains(tab, val)
@@ -43,7 +43,7 @@ _G.LSOL_VARIANTS = {
 	Alhambra = {file='alhambra.lua', cc=2},
 	['American Toad'] = {file='amtoad.lua', cc=4},
 	Athena = {file='klondike.lua', athena=true, cc=2},
-	Assembly = {file='assembly.lua', cc=1},
+	Assembly = {file='assembly.lua', cc=1, packs=4, suitFilter={'♠'}},
 	Australian = {file='australian.lua', cc=4},
 	['Baker\'s Dozen'] = {file='bakers.lua', cc=1},
 	['Baker\'s Dozen (Wide)'] = {file='bakers.lua', wide=true, cc=1, statsName='Baker\'s Dozen'},

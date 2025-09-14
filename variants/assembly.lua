@@ -22,7 +22,7 @@ function Assembly.new(o)
 end
 
 function Assembly:buildPiles()
-	Stock.new({x=1, y=1})
+	Stock.new({x=1, y=1, packs=self.packs, suitFilter=self.suitFilter})
 	Waste.new({x=2, y=1, fanType='FAN_RIGHT3'})
 	for x = 1, 4 do
 		local f = Foundation.new({x=x, y=2})

@@ -145,8 +145,8 @@ function LaBelleLucie:pileTapped(pile)
 	_G.BAIZE:setRecycles(_G.BAIZE.recycles - 1)
 	if _G.BAIZE.recycles == 0 then
 		_G.BAIZE.ui:toast('No more reshuffles')
-	elseif _G.BAIZE.recycles == 1 then
-		_G.BAIZE.ui:toast('Tap a card to lift it when stuck')
+	elseif _G.BAIZE.recycles == 1 then	-- bug fix for version 31
+		_G.BAIZE.ui:toast('One more reshuffle')
 	end
 end
 
