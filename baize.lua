@@ -566,7 +566,6 @@ function Baize:showAboutDrawer()
 		string.format('Version %d %s', _G.LSOL_VERSION, _G.LSOL_VERSION_DATE),
 		'',
 		'https://github.com/oddstream/lsol#readme',
-		'https://oddstream.games',
 		'https://love2d.org',
 		'',
 		'This program comes with no warranty',
@@ -1553,6 +1552,7 @@ end
 
 --- https://fc-solve.shlomifish.org/docs/distro/README.html
 --- https://fc-solve.shlomifish.org/docs/distro/USAGE.html
+--- https://github.com/shlomif/fc-solve
 function Baize:solver()
 	local gflag = self.script:fcSolver()
 	if gflag == '' then
@@ -1610,7 +1610,7 @@ function Baize:solver()
 	local outfile = 'solution.txt'
 	local fullOutfile = '"' .. love.filesystem.getSaveDirectory() .. '/' .. outfile .. '"'
 
-	success = os.execute(solverExecutable .. ' -g ' .. gflag .. ' -t -m -sel -opt -o ' .. fullOutfile .. ' ' .. fullInfile)
+	local success = os.execute(solverExecutable .. ' -g ' .. gflag .. ' -t -m -sel -opt -o ' .. fullOutfile .. ' ' .. fullInfile)
 	if not success then
 		self.ui:toast('Could not run solver', 'fail')
 		log.error(solverExecutable .. ' in '  .. fullInfile .. ' out ' .. fullOutfile)
@@ -1688,6 +1688,7 @@ function Baize:draw()
 
 	_G.drawConsoleLogMessages()
 
+	--[[
 	if _G.SETTINGS.debug then
 		love.graphics.setColor(0,1,0)
 		love.graphics.print(string.format('%s fps=%d sc=%d ww=%d, wh=%d sx=%d sy=%d sw=%d sh=%d',
@@ -1701,6 +1702,7 @@ function Baize:draw()
 		local x = _G.UI_SAFEX + (_G.UI_SAFEW / 2)
 		love.graphics.line(x, _G.UI_SAFEY, x, _G.UI_SAFEY + _G.UI_SAFEH)
 	end
+	]]
 	-- love.graphics.setFont(self.suitFont)
 	-- love.graphics.print(string.format('#undoStack %d', #_G.BAIZE.undoStack, 10, 10))
 end
