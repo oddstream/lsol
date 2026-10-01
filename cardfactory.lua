@@ -85,6 +85,8 @@ local pipInfo = {
 	--[[ 13 ]] {},
 }
 
+---@param suit string
+---@return table (of three rgb numbers)
 local function getSuitColor(suit)
 	-- returns {r, g, b} table that can be passed to love.graphics.setColor
 	-- after unpacking and passing through getColorFromBytes
@@ -154,6 +156,14 @@ local function createAltFace(ordFont, width, height, radius, ord, suit)
 end
 ]]
 
+---@param cardFaceTexture love.Canvas
+---@param ordFont love.Font
+---@param suitFont love.Font
+---@param width number
+---@param height number
+---@param ord number
+---@param suit string
+---@return love.Canvas
 local function createSimpleFace(cardFaceTexture, ordFont, suitFont, width, height, ord, suit)
 	-- could/should be a function within factory
 	local canvas = love.graphics.newCanvas(width, height)
@@ -177,6 +187,16 @@ local function createSimpleFace(cardFaceTexture, ordFont, suitFont, width, heigh
 	return canvas
 end
 
+---@param cardFaceTexture love.Canvas
+---@param ordFont love.Font
+---@param suitFont love.Font
+---@param suitFontSmall love.Font
+---@param suitFontLarge love.Font
+---@param width number
+---@param height number
+---@param ord number
+---@param suit string
+---@return love.Canvas
 local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontSmall, suitFontLarge, width, height, ord, suit)
 	-- could/should be a function within factory
 
@@ -242,6 +262,12 @@ local function createRegularFace(cardFaceTexture, ordFont, suitFont, suitFontSma
 	return canvas
 end
 
+---@param width number
+---@param height number
+---@param radius number
+---@return love.Canvas[] table of canvases, indexed by an ord+suit key
+---@return love.Canvas canvas card back, same for all cards
+---@return love.Canvas canvas card shadow, same for all cards
 function _G.cardTextureFactory(width, height, radius)
 	-- assert(width and width ~= 0)
 	-- assert(height and height ~= 0)

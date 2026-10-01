@@ -9,14 +9,14 @@ local Pile = require 'pile'
 local Settings = require 'settings'
 local Util = require 'util'
 
-require 'cardfactory'
+require 'cardfactory'	-- we call _G.cardTextureFactory()
 
 -- local UI = require 'ui'
 
 ---@class (exact) Baize
 ---@field seconds number
 ---@field status "virgin"|"complete"|"afoot"|"stuck"
----@field stroke table
+---@field stroke table {init {x, y}, object, objectType}
 ---@field script table
 ---@field piles Pile[]
 ---@field cells Cell[]
@@ -28,7 +28,7 @@ require 'cardfactory'
 ---@field waste Pile
 ---@field cardHeight number
 ---@field cardWidth number
----@field undoStack table
+---@field undoStack table | nil
 ---@field deck table []Card
 ---@field dragStart table {x, y}
 ---@field dragOffset table {x, y}
@@ -52,6 +52,7 @@ local Baize = {
 }
 Baize.__index = Baize
 
+---@return Baize
 function Baize.new()
 	local o = {}
 	o.dragOffset = {x=0, y=0}
@@ -59,7 +60,7 @@ function Baize.new()
 	o.undoStack = {}
 	o.recycles = 32767
 	o.bookmark = 0
-	o.status = 'virgin'	-- afoot, stuck, collect, complete
+	o.status = 'virgin'
 	o.percent = 0
 	o.showMovable = false
 	o.moves = 0
@@ -127,6 +128,7 @@ function Baize:loadScript(vname)
 	end
 	local fname = 'variants/' .. vinfo.file
 
+	---@type table | nil
 	local info = love.filesystem.getInfo('variants', 'directory')
 	if not info then
 		log.error('no variants directory')
@@ -444,7 +446,11 @@ end
 local savedUndoStackFname = 'undoStack.bitser'
 
 function Baize:loadUndoStack()
-	local ok, undoStack
+	--@type boolean
+	local ok
+	---@type any | nil
+	local undoStack		-- should be @type table but pcall returns any
+
 	local info = love.filesystem.getInfo(savedUndoStackFname)
 	if type(info) == 'table' and type(info.type) == 'string' and info.type == 'file' then
 		ok, undoStack = pcall(bitser.loadLoveFile, savedUndoStackFname)
@@ -581,6 +587,7 @@ function Baize:resetStats()
 	end
 end
 
+---@param var string
 function Baize:toggleCheckbox(var)
 	-- log.info('toggle', var)
 
@@ -619,6 +626,8 @@ function Baize:toggleCheckbox(var)
 	end
 end
 
+--- not called directly
+---@param radio table
 function Baize:toggleRadio(radio)
 	-- a radio button has been pressed, and should be toggled ON
 	-- all other radio buttons with the same var should be toggled OFF
@@ -651,6 +660,7 @@ function Baize:getPermission(text)
 end
 ]]
 
+---@return boolean
 local function resignGameAreYouSure()
 	-- local pressedButton = love.window.showMessageBox('Are you sure?', 'The current game will count as a loss. Continue?', {'Yes', 'No', escapebutton = 2}, 'warning')
 	-- return pressedButton == 1
@@ -1022,6 +1032,8 @@ function Baize:afterAfterUserMove()
 	end
 end
 
+---@param x number
+---@param y number
 ---@return Card|nil
 function Baize:findCardAt(x, y)
 	for j = #self.piles, 1, -1 do
@@ -1036,6 +1048,8 @@ function Baize:findCardAt(x, y)
 	return nil
 end
 
+---@param x number
+---@param y number
 ---@return Pile|nil
 function Baize:findPileAt(x, y)
 	for _, pile in ipairs(self.piles) do
@@ -1046,6 +1060,7 @@ function Baize:findPileAt(x, y)
 	return nil
 end
 
+---@param p1 Pile
 ---@return Pile|nil
 function Baize:isPileOverlapped(p1)
 	local ax, ay, aw, ah = p1:baizeRect()
@@ -1061,6 +1076,7 @@ function Baize:isPileOverlapped(p1)
 	return nil
 end
 
+---@param card Card
 ---@return Pile|nil
 function Baize:largestIntersection(card)
 	-- largest intersection can be source pile,
@@ -1084,6 +1100,8 @@ function Baize:startDrag()
 	self.dragStart.y = self.dragOffset.y
 end
 
+---@param dx number
+---@param dy number
 function Baize:dragBy(dx, dy)
 --[[
 	self.dragOffset.x = self.dragStart.x + dx
@@ -1103,6 +1121,9 @@ function Baize:stopDrag()
 	end
 end
 
+---@param x number
+---@param y number
+---@param button number
 function Baize:mousePressed(x, y, button)
 	if self.stroke then
 		log.warn('mousePressed', button, 'already a stroke')
@@ -1147,13 +1168,14 @@ function Baize:mousePressed(x, y, button)
 						-- don't flip like we used to!
 					else
 						local tail = card.parent:makeTail(card)
-						for _, c in ipairs(tail) do
-							c:startDrag()
+						if tail then
+							for _, c in ipairs(tail) do
+								c:startDrag()
+							end
+							love.mouse.setVisible(false)
+							self.stroke.object = tail
+							self.stroke.objectType = 'tail'
 						end
-						love.mouse.setVisible(false)
-						self.stroke.object = tail
-						self.stroke.objectType = 'tail'
-						-- print(tostring(card), 'tail len', #tail)
 					end
 				else
 					local pile = self:findPileAt(x, y)
@@ -1171,6 +1193,10 @@ function Baize:mousePressed(x, y, button)
 	end
 end
 
+---@param x number
+---@param y number
+---@param dx number
+---@param dy number
 function Baize:mouseMoved(x, y, dx, dy)
 	-- dx, dy The amount moved along the x- and y-axis since the last time love.mousemoved was called.
 	if not self.stroke then
@@ -1195,6 +1221,9 @@ function Baize:mouseMoved(x, y, dx, dy)
 	end
 end
 
+---@param x number
+---@param y number
+---@param button number
 function Baize:mouseTapped(x, y, button)
 	if self.stroke.objectType == 'widget' then
 		self.ui:hideDrawers()
@@ -1259,6 +1288,9 @@ function Baize:mouseTapped(x, y, button)
 	end
 end
 
+---@param x number
+---@param y number
+---@param button number
 function Baize:mouseReleased(x, y, button)
 	if not self.stroke then
 		return

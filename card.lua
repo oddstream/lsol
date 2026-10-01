@@ -6,9 +6,10 @@ local Util = require 'util'
 
 ---@class (exact) Card
 ---@field pack number
----@field suit string '♣','♦','♥','♠'
----@field ord number 1 ... 13
----@field textureId string
+---@field suit '♣'|'♦'|'♥'|'♠'
+---@field ord number 1 ... 
+---@field twoColor 'red'|'black'
+---@field textureId string created by string.format('%02u%s', ord, suit)
 ---@field x number
 ---@field y number
 ---@field prone boolean
@@ -30,6 +31,39 @@ local Util = require 'util'
 ---@field tapTargetDst Pile
 ---@field __index Card
 ---@field new function
+---@field getSavable function
+---@field setBaizePos function
+---@field screenPos function
+---@field baizeRect function
+---@field baizeStaticRect function
+---@field screenRect function
+---@field flipUp function
+---@field flipDown function
+---@field flip function
+---@field flipping function
+---@field static function
+---@field transitioning function
+---@field nearEnough function
+---@field stopTransition function
+---@field transitionTo function
+---@field dragging function
+---@field startDrag function
+---@field dragBy function
+---@field cancelDrag function
+---@field stopDrag function
+---@field wasdDragged function
+---@field startSpinning function
+---@field stopSpinning function
+---@field spinning function
+---@field update function
+---@field draw function
+
+---@class (exact) SavedCard
+---@field pack number
+---@field suit '♣'|'♦'|'♥'|'♠'
+---@field ord number 1 ... 
+---@field prone boolean
+
 local Card = {
 }
 Card.__index = Card
@@ -54,6 +88,8 @@ function Card:fcsolverString(found)
 	end
 end
 
+---@param o table a table object, containing pack, ord, suit, that will be fleshed out to become a Card object
+---@return Card
 function Card.new(o)
 	-- assert(type(o)=='table')
 	-- assert(type(o.pack)=='number')
@@ -84,24 +120,38 @@ function Card.new(o)
 	return setmetatable(o, Card)
 end
 
+---return a subset of a Card object, suitable for saving on undo stack
+---@return table just pack, ord, suit, prone in a table
 function Card:getSavable()
 	return {pack=self.pack, ord=self.ord, suit=self.suit, prone=self.prone}
 end
 
+---@param x number
+---@param y number
 function Card:setBaizePos(x, y)
 	self.x = x
 	self.y = y
 	self:stopTransition()
 end
 
+---@return number
+---@return number
 function Card:screenPos()
 	return self.x + _G.BAIZE.dragOffset.x, self.y + _G.BAIZE.dragOffset.y
 end
 
+---@return number
+---@return number
+---@return number
+---@return number
 function Card:baizeRect()
 	return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
+---@return number
+---@return number
+---@return number
+---@return number
 function Card:baizeStaticRect()
 	if self:dragging() then
 		return self.dragStart.x, self.dragStart.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
@@ -110,6 +160,10 @@ function Card:baizeStaticRect()
 	end
 end
 
+---@return number
+---@return number
+---@return number
+---@return number
 function Card:screenRect()
 	return self.x  + _G.BAIZE.dragOffset.x, self.y  + _G.BAIZE.dragOffset.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
@@ -142,18 +196,22 @@ function Card:flip()
 	end
 end
 
+---@return boolean
 function Card:flipping()
 	return self.flipDirection ~= 0.0
 end
 
+---@return boolean
 function Card:static()
 	return self.dst == nil or self.dragStart == nil or self.flipDirection == 0.0
 end
 
+---@return boolean
 function Card:transitioning()
 	return self.dst ~= nil
 end
 
+---@return boolean
 function Card:nearEnough()
 	return math.abs(self.x - self.dst.x) < 1.0 and math.abs(self.y - self.dst.y) < 1.0
 	-- return self.x == self.dst.x and self.y == self.dst.y
@@ -164,6 +222,8 @@ function Card:stopTransition()
 	self.dst = nil
 end
 
+---@param x number
+---@param y number
 function Card:transitionTo(x, y)
 
 	if self:spinning() then
@@ -188,6 +248,7 @@ function Card:transitionTo(x, y)
 	self.lerpStartTime = love.timer.getTime()
 end
 
+---@return boolean
 function Card:dragging()
 	return self.dragStart ~= nil
 end
@@ -201,6 +262,8 @@ function Card:startDrag()
 	end
 end
 
+---@param dx number
+---@param dy number
 function Card:dragBy(dx, dy)
 	self:setBaizePos(self.dragStart.x + dx, self.dragStart.y + dy)
 end
@@ -214,6 +277,7 @@ function Card:stopDrag()
 	self.dragStart = nil
 end
 
+---@return boolean
 function Card:wasDragged()
 	if self.dragStart then
 		if self.dragStart.x ~= self.x or self.dragStart.y ~= self.y then
@@ -238,6 +302,7 @@ function Card:stopSpinning()
 	self.spinDegrees = 0.0
 end
 
+---@return boolean
 function Card:spinning()
 	return self.spinDegrees ~= 0
 end
@@ -255,6 +320,7 @@ function Card:shaking()
 end
 ]]
 
+---@param dt_seconds number
 function Card:update(dt_seconds)
 
 	if self:transitioning() then

@@ -386,6 +386,9 @@ function Util.maxFanFactor()
 	end
 end
 
+---@param ord number
+---@param suit string
+---@return string
 function Util.cardTextureId(ord, suit)
 	return string.format('%02u%s', ord, suit)
 end

@@ -8,7 +8,9 @@ local UI = require 'ui'
 local Util = require 'util'
 local Settings = require 'settings'
 
+---@type string
 _G.LSOL_VERSION = '31'
+---@type string
 _G.LSOL_VERSION_DATE = '2025-09-14'
 
 if not _G.table.contains then
@@ -35,6 +37,7 @@ if not _G.string.split then
 	end
 end
 
+---@type table
 _G.LSOL_VARIANTS = {
 	Accordian = {file='accordian.lua', cc=4},
 	['Agnes Bernauer'] = {file='agnes.lua', cc=2, bernauer=true},
@@ -129,6 +132,7 @@ _G.LSOL_VARIANTS = {
 	['Three Shuffles and a Draw'] = {file='labelle.lua', cc=4, merciAllowed=true},
 }
 
+---@type table
 _G.VARIANT_TYPES = {
 	-- '> All' and maybe '> Favorites' will automatically be added
 	['> Animals'] = {'Scorpion','Wasp','Spider One Suit','Spider Two Suits','Spider','Little Spider','Penguin','Frog','Fly'},
@@ -167,6 +171,7 @@ local function createAllVariants()
 	-- end
 end
 
+---@type table
 _G.LSOL_COLORS = {
 	-- Basic colors (complete)
 	White = {255,255,255},
@@ -361,12 +366,16 @@ _G.LSOL_COLORS = {
 	https://fonts.google.com/
 ]]
 
--- _G.ORD_FONT = 'assets/fonts/RobotoCondensed-Regular.ttf'
+---@type string
 _G.ORD_FONT = 'assets/fonts/Acme-Regular.ttf'
+---@type string
 _G.SUIT_FONT = 'assets/fonts/DejaVuSans.ttf'
+---@type string
 _G.UI_MEDIUM_FONT = 'assets/fonts/Roboto-Medium.ttf'
+---@type string
 _G.UI_REGULAR_FONT = 'assets/fonts/Roboto-Regular.ttf'
 
+---@type table
 _G.LSOL_SOUNDS = {
 	deal = love.audio.newSource('assets/sounds/cardFan1.wav', 'static'),
 	load = love.audio.newSource('assets/sounds/cardFan2.wav', 'static'),
@@ -383,14 +392,21 @@ _G.LSOL_SOUNDS = {
 	fail = love.audio.newSource('assets/sounds/237422__plasterbrain__hover-1.ogg', 'static'),
 }
 
+---@type string[]
 _G.ORD2STRING = {'A','2','3','4','5','6','7','8','9','10','J','Q','K'}
 
+---@type table
 _G.consoleLogMessages = {}
 
+---display a message, debug only
+---@param msg string
+---@return nil
 function _G.consoleLog(msg)
 	table.insert(_G.consoleLogMessages, 1, msg)
 end
 
+---render stored debug messages to the screen, debug only
+---@return nil
 function _G.drawConsoleLogMessages()
 	love.graphics.setColor(1,1,1,1)
 	local y = (_G.UI_SAFEY + _G.UI_SAFEH) - _G.STATUSBARHEIGHT
@@ -403,6 +419,7 @@ function _G.drawConsoleLogMessages()
 	end
 end
 
+---@return love.ImageData
 local function createWindowIcon()
 	local size = 32	-- small size let the OS fuzz it up
 	local heart = '♥'
@@ -422,17 +439,18 @@ local function createWindowIcon()
 	return canvas:newImageData()
 end
 
+---@param args table
 function love.load(args)
 --[[
-Lua (and some engines based on it, like LÖVE) has output buffered by default,
-so if you only print a small number of bytes,
-you may see the results only after the script is completed.
+	Lua (and some engines based on it, like LÖVE) has output buffered by default,
+	so if you only print a small number of bytes,
+	you may see the results only after the script is completed.
 
-If you want to see the print output immediately,
-add io.stdout:setvbuf("no") to your script,
-which will turn the buffering off.
+	If you want to see the print output immediately,
+	add io.stdout:setvbuf("no") to your script,
+	which will turn the buffering off.
 
-There may be a small performance penalty as the output will be flushed after each print.
+	There may be a small performance penalty as the output will be flushed after each print.
 ]]
 
 -- required for ZeroBrane
@@ -482,12 +500,6 @@ There may be a small performance penalty as the output will be flushed after eac
 
 	-- _G.consoleLog(string.format('DPIScale %f, UI_SCALE %f', DPIScale, _G.UI_SCALE))
 
-	-- https://love2d.org/forums/viewtopic.php?f=3&t=84348&p=215242&hilit=rounded+rectangle#p215242
-	local limits = love.graphics.getSystemLimits( )
-	-- log.info(limits.canvasmsaa)	-- 16
-	-- log.info(limits.texturesize)	-- 16384
-	-- log.info(limits.multicanvas)	-- 8
-
 	_G.SETTINGS = Settings.load()
 
 	if args then
@@ -500,10 +512,10 @@ There may be a small performance penalty as the output will be flushed after eac
 					log.info('setting', set, 'to', val)
 					_G.SETTINGS[set] = val
 				else
-					log.error('unknown setting', set)
+					log.error('unknown command line setting', set)
 				end
 			else
-				log.warn('ignoring', v)
+				log.warn('ignoring command line entry', v)
 			end
 		end
 	end
@@ -518,11 +530,18 @@ There may be a small performance penalty as the output will be flushed after eac
 	end
 ]]
 
+	-- https://love2d.org/forums/viewtopic.php?f=3&t=84348&p=215242&hilit=rounded+rectangle#p215242
+	local limits = love.graphics.getSystemLimits( )
+	-- log.info(limits.canvasmsaa)	-- 16		maximum number of antialiasing samples
+	-- log.info(limits.texturesize)	-- 16384	maximum width or height supported for Images and Canvases
+	-- log.info(limits.multicanvas)	-- 8		maximum number of simultaneously active canvases
+
 	-- trying to use antialiasing to get rid of jagged rounded rectangles
 	-- https://love2d.org/forums/viewtopic.php?f=3&t=84348&p=215242&hilit=rounded+rectangle&sid=6ce64568192cd62b80b22ec79b4fdcda
 
-	do
+	do	-- scope for local s
 		local s = _G.SETTINGS
+
 		if love.system.getOS() == 'Android' then
 			-- w, h seem to be ignored when resizable=true, window is sized by Android
 			-- set w, h when resizable=false to get correct orientation
@@ -532,7 +551,6 @@ There may be a small performance penalty as the output will be flushed after eac
 		else
 			love.window.setIcon(createWindowIcon())
 
-			-- log.info('limits.canvasmsaa', limits.canvasmsaa)	-- 16 on BLACKBOX
 			local opts = {resizable=true, minwidth=640, minheight=480, msaa=limits.canvasmsaa}
 			if s.windowWidth and s.windowHeight then
 				love.window.setMode(s.windowWidth, s.windowHeight, opts)
@@ -563,7 +581,6 @@ There may be a small performance penalty as the output will be flushed after eac
 	-- 	love.window.toPixels(_G.UI_SAFEY),
 	-- 	love.window.toPixels(_G.UI_SAFEW),
 	-- 	love.window.toPixels(_G.UI_SAFEH)
-	-- ))
 	-- implies safe area returns scaled values (which we want to work in), window size reported in pixels
 
 	-- preload the recycle icons
@@ -588,10 +605,6 @@ There may be a small performance penalty as the output will be flushed after eac
 	end
 
 	_G.BAIZE = Baize.new()
-
-	-- love.handlers['permissionButton'] = function(text)
-	-- 	log.trace('event handler', text)
-	-- end
 
 	_G.BAIZE.stats = Stats.new()
 	createAllVariants()	-- create '> All'
@@ -647,16 +660,16 @@ There may be a small performance penalty as the output will be flushed after eac
 		_G.BAIZE.ui:toast(string.format('%s version updated from %d to %d', love.filesystem.getIdentity(), _G.SETTINGS.lastVersion, _G.LSOL_VERSION))
 	end
 
-	-- _G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
 	--[[
 	print(love.filesystem.getAppdataDirectory())	-- /home/gilbert/.local/share/
 	print(love.filesystem.getSourceBaseDirectory())	-- /home/gilbert
 	print(love.filesystem.getUserDirectory())	-- /home/gilbert/
 	print(love.filesystem.getWorkingDirectory())	-- /home/gilbert/LÖVE Solitaire
 	print(love.filesystem.getSaveDirectory())	-- /home/gilbert/.local/share/love/LÖVE Solitaire
-]]
+	]]
 end
 
+---@param dt_seconds number
 function love.update(dt_seconds)
 	_G.BAIZE:update(dt_seconds)
 end
@@ -665,6 +678,8 @@ function love.draw()
 	_G.BAIZE:draw()
 end
 
+---@param w number
+---@param h number
 function love.resize(w, h)
 	-- _G.consoleLog(string.format('resize %d %d', w, h))
 	-- w, h = love.window.getMode()
@@ -675,6 +690,7 @@ function love.resize(w, h)
 	_G.BAIZE:layout()
 end
 
+---@param key string
 function love.keyreleased(key)
 	-- log.info(key)
 	if key == 'u' then
@@ -761,18 +777,30 @@ function love.keyreleased(key)
 	end
 end
 
+---@param x number
+---@param y number
+---@param button number
 function love.mousepressed(x, y, button, istouch, presses)
 	_G.BAIZE:mousePressed(x, y, button)
 end
 
+---@param x number
+---@param y number
+---@param dx number
+---@param dy number
 function love.mousemoved(x, y, dx, dy, istouch)
 	_G.BAIZE:mouseMoved(x, y, dx, dy)
 end
 
+---@param x number
+---@param y number
+---@param button number
 function love.mousereleased(x, y, button, istouch, presses)
 	_G.BAIZE:mouseReleased(x, y, button)
 end
 
+---@param x number
+---@param y number
 function love.wheelmoved(x, y)
 	local drw = _G.BAIZE.ui:findOpenDrawer()
 	if drw then
@@ -792,13 +820,11 @@ function love.displayrotated(index, orientation)
 	-- Due to a bug in LOVE 11.3, the orientation value is boolean true instead. A workaround is as follows:
 	-- orientation = love.window.getDisplayOrientation(index)
 
-	-- _G.consoleLog(string.format('displayrotated %d %s', index, orientation))
-
 	_G.BAIZE.backgroundCanvas = nil	-- will be recreated by Baize:draw()
 	_G.BAIZE:layout()
 
 	-- if _G.SETTINGS.debug then
-	-- 	_G.BAIZE.ui:toast('displayrotated ' .. tostring(orientation))
+	--	_G.consoleLog(string.format('displayrotated %d %s', index, orientation))
 	-- 	_G.BAIZE.ui:toast(string.format('safe x=%d y=%d w=%d h=%d', love.window.getSafeArea()))
 	-- end
 end

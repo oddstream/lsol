@@ -7,7 +7,6 @@ local log = require 'log'
 
 ---@class (exact) Pile
 ---@field __index Pile
----@field prepare function
 ---@field cards Card[]
 ---@field x number
 ---@field y number
@@ -22,11 +21,50 @@ local log = require 'log'
 ---@field slot table {x, y}
 ---@field box table {x, y, width, height}
 ---@field boundaryPile Pile
+---@field assertPile function
+---@field prepare function
+---@field shuffle function
+---@field getSavable function
+---@field offScreen function
+---@field setBaizePos function
+---@field screenPos function
+---@field baizeRect function
+---@field screenRect function
+---@field fannedBaizeRect function
+---@field posAfter function
+---@field refan function
+---@field baizeBox function
+---@field screenBox function
+---@field calcFaceFanFactor function
+---@field peek function
+---@field pop function
+---@field push function
+---@field prev function
+---@field buryCards function
+---@field disinterOneCard function
+---@field disinterOneCardByOrd function
+---@field flipUpExposedCard function
+---@field indexOf function
+---@field moveTailError function
+---@field makeTail function
+---@field movableTails function
+---@field updateFromSaved function
+---@field acceptTailError function
+---@field tailTapped function
+---@field unsortedPairs function
+---@field update function
+---@field drawStaticCards function
+---@field drawTransitioningCards function
+---@field drawFlippingCards function
+---@field drawDraggingCards function
+---@field draw function
+
 local Pile = {}
 Pile.__index = Pile
 
 local backFanFactor = 0.1
 
+---debug only
 ---@param o Pile
 ---@return nil
 function Pile.assertPile(o)
@@ -40,11 +78,11 @@ function Pile.assertPile(o)
 	assert(type(o.cards=='table'))
 end
 
+---this doesn't create a new Pile object; rather, it decorates/prepares an existing Pile subset
+---important to preserve any members that are in o
 ---@param o Pile
 ---@return Pile
 function Pile.prepare(o)
-	-- nb this doesn't create a new Pile object; rather, it decorates/prepares an existing one
-	-- important to preserve any members that are in o
 	if _G.SETTINGS.debug then
 		Pile.assertPile(o)
 	end
@@ -67,6 +105,8 @@ function Pile:shuffle()
 	end
 end
 
+---return a subset of a Pile object, suitable for saving on undo stack
+---@return table
 function Pile:getSavable()
 	local cards = {}
 	for _, c in ipairs(self.cards) do
@@ -75,10 +115,13 @@ function Pile:getSavable()
 	return {category=self.category, label=self.label, cards=cards}
 end
 
+---@return boolean
 function Pile:offScreen()
 	return self.slot.x < 0 or self.slot.y < 0
 end
 
+---@param x number
+---@param y number
 function Pile:setBaizePos(x, y)
 	self.x, self.y = x, y
 	if self.fanType == 'FAN_DOWN3' then
@@ -96,18 +139,32 @@ function Pile:setBaizePos(x, y)
 	end
 end
 
+---@return number
+---@return number
 function Pile:screenPos()
 	return self.x + _G.BAIZE.dragOffset.x, self.y + _G.BAIZE.dragOffset.y
 end
 
+---@return number
+---@return number
+---@return number
+---@return number
 function Pile:baizeRect()
 	return self.x, self.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
+---@return number
+---@return number
+---@return number
+---@return number
 function Pile:screenRect()
 	return self.x + _G.BAIZE.dragOffset.x, self.y + _G.BAIZE.dragOffset.y, _G.BAIZE.cardWidth, _G.BAIZE.cardHeight
 end
 
+---@return number
+---@return number
+---@return number
+---@return number
 function Pile:fannedBaizeRect()
 	local px, py, pw, ph = self:baizeRect()
 	if #self.cards > 1 and self.fanType ~= 'FAN_NONE' then
@@ -127,6 +184,9 @@ function Pile:fannedBaizeRect()
 	return px, py, pw, ph
 end
 
+---@param c Card
+---@return number
+---@return number
 function Pile:posAfter(c)
 	if (c == nil) or (#self.cards == 0) then
 		return self.x, self.y
@@ -182,6 +242,7 @@ function Pile:posAfter(c)
 	return x, y
 end
 
+---@param fn function|nil
 function Pile:refan(fn)
 	fn = fn or Card.transitionTo
 	if #self.cards == 0 then
@@ -240,6 +301,8 @@ function Pile:refan(fn)
 ]]
 end
 
+--- return a table containing x, y, width height
+---@return table
 function Pile:baizeBox()
 	local box
 	if self.box then
@@ -258,6 +321,8 @@ function Pile:baizeBox()
 	return box
 end
 
+--- return a table containing x, y, width height
+---@return table
 function Pile:screenBox()
 	local box = self:baizeBox()
 	if box then
@@ -299,10 +364,12 @@ function Pile:calcFaceFanFactor()
 	self.faceFanFactor = ff
 end
 
+---@return Card
 function Pile:peek()
 	return self.cards[#self.cards]
 end
 
+---@return Card
 function Pile:pop()
 	local c = table.remove(self.cards)
 	if c then
@@ -315,6 +382,7 @@ function Pile:pop()
 	return c
 end
 
+---@param c Card
 function Pile:push(c)
 	local x, y = self:posAfter(self:peek())
 	table.insert(self.cards, c)
@@ -324,6 +392,8 @@ function Pile:push(c)
 	-- c:setBaizePos(x, y)
 end
 
+---@param cNext Card
+---@return Card | nil
 function Pile:prev(cNext)
 	local cPrev = nil
 	for _, c in ipairs(self.cards) do
@@ -335,6 +405,7 @@ function Pile:prev(cNext)
 	return cPrev
 end
 
+---@param ord number
 function Pile:buryCards(ord)
 	local tmp = {}
 	for _, c in ipairs(self.cards) do
@@ -353,6 +424,9 @@ function Pile:buryCards(ord)
 	end
 end
 
+---@param ord number
+---@param suit '♣'|'♦'|'♥'|'♠'
+---@return Card|nil
 function Pile:disinterOneCard(ord, suit)
 	-- just move card to top of card stack, ready for popping
 	for i, c in ipairs(self.cards) do
@@ -364,6 +438,8 @@ function Pile:disinterOneCard(ord, suit)
 	return nil
 end
 
+---@param ord number
+---@return Card|nil
 function Pile:disinterOneCardByOrd(ord)
 	-- just move card to top of card stack, ready for popping
 	for i, c in ipairs(self.cards) do
@@ -384,6 +460,8 @@ function Pile:flipUpExposedCard()
 	end
 end
 
+---@param card Card
+---@return integer
 function Pile:indexOf(card)
 	for i, c in ipairs(self.cards) do
 		if c == card then
@@ -393,6 +471,8 @@ function Pile:indexOf(card)
 	return 0
 end
 
+---@param tail Card[]
+---@return string|nil
 function Pile:moveTailError(tail)
 	-- check that this type of pile is okay moving this tail from it
 --[[
@@ -445,6 +525,7 @@ function Pile:movableTails()
 	return {}
 end
 
+---@param saved table
 function Pile:updateFromSaved(saved)
 
 	self.cards = {}
@@ -473,6 +554,7 @@ function Pile:acceptTailError(tail)
 	return nil
 end
 
+---@param tail Card[]
 function Pile:tailTapped(tail)
 	-- assert(tail)
 	-- assert(#tail>0)
@@ -503,6 +585,7 @@ end
 
 -- game engine functions
 
+---@param dt_seconds number
 function Pile:update(dt_seconds)
 	for _, c in ipairs(self.cards) do
 		c:update(dt_seconds)
