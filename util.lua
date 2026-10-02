@@ -5,6 +5,10 @@ local log = require 'log'
 
 local Util = {}
 
+---@param A number
+---@param B number
+---@param v number
+---@return number
 function Util.smoothstep(A, B, v)
 	-- see http://sol.gfxile.net/interpolation/
 	if v > 1.0 then v = 1.0 end
@@ -12,6 +16,10 @@ function Util.smoothstep(A, B, v)
 	return (B * v) + (A * (1.0 - v));
 end
 
+---@param A number
+---@param B number
+---@param v number
+---@return number
 function Util.smootherstep(A, B, v)
 	-- see http://sol.gfxile.net/interpolation/
 	if v > 1.0 then v = 1.0 end
@@ -19,6 +27,10 @@ function Util.smootherstep(A, B, v)
 	return (B * v) + (A * (1.0 - v));
 end
 
+---@param start number
+---@param finish number
+---@param factor number
+---@return number
 function Util.lerp(start, finish, factor)
 	-- return start*(1-factor) + finish*factor
 	-- Precise method, which guarantees start = finish when factor = 1.
@@ -27,39 +39,66 @@ function Util.lerp(start, finish, factor)
 	return (1 - factor) * start + factor * finish;
 end
 
---[[
-	The opposite of lerp. Instead of a range and a factor, we give a range and a value to find out the factor.
-]]
+---The opposite of lerp. Instead of a range and a factor, we give a range and a value to find out the factor.
+---@param start number
+---@param finish number
+---@param value number
+---@return number
 function Util.normalize(start, finish, value)
 	return (value - start) / (finish - start)
 end
 
---[[
-	converts a value from the scale [fromMin, fromMax] to a value from the scale[toMin, toMax].
-	It’s just the normalize and lerp functions working together.
-]]
+---Converts a value from the scale [fromMin, fromMax] to a value from the scale[toMin, toMax]. It’s just the normalize and lerp functions working together.
+---@param value number
+---@param fromMin number
+---@param fromMax number
+---@param toMin number
+---@param toMax number
+---@return number
 function Util.mapValue(value, fromMin, fromMax, toMin, toMax)
 	return Util.lerp(toMin, toMax, Util.normalize(fromMin, fromMax, value))
 end
 
+---@param value any
+---@param min number
+---@param max number
+---@return number
 function Util.clamp(value, min, max)
 	return math.min(math.max(value, min), max)
 end
 
--- overlapArea returns the intersection area of two rectangles
+---returns the intersection area of two rectangles
+---@param x number
+---@param y number
+---@param w number
+---@param h number
+---@param X number
+---@param Y number
+---@param W number
+---@param H number
+---@return number
 function Util.overlapArea(x, y, w, h, X, Y, W, H)
 	local ox = math.max(0, math.min(x + w, X + W) - math.max(x, X));
 	local oy = math.max(0, math.min(y + h, Y + H) - math.max(y, Y));
 	return ox * oy;
 end
 
--- distance finds the length of the hypotenuse between two points
+---finds the length of the hypotenuse between two points
+---@param x number
+---@param y number
+---@param X number
+---@param Y number
+---@return number
 function Util.distance(x, y , X, Y)
 	local first = math.pow(X - x, 2)
 	local second = math.pow(Y - y, 2)
 	return math.sqrt(first + second)
 end
 
+---@param a number
+---@param b number
+---@param d number
+---@return boolean
 function Util.nearEnough(a, b, d)
 	return math.abs(a-b) < d
 end
@@ -79,6 +118,13 @@ function Util.rectContains(X, Y, W, H, x, y, w, h)
 end
 ]]
 
+---@param x number
+---@param y number
+---@param rx number
+---@param ry number
+---@param rw number
+---@param rh number
+---@return boolean
 function Util.inRect(x, y, rx, ry, rw, rh)
 	return x >= rx and y >= ry and x < (rx + rw) and y < (ry + rh)
 end
@@ -90,6 +136,11 @@ end
 
 	TODO LÖVE uses LuaJIT, which includes bit library
 ]]
+
+---compares two baize snapshots, these being arrays of the length of each pile
+---@param old integer[]
+---@param new integer[]
+---@return boolean
 function Util.baizeChanged(old, new)
 	if (not old) or (not new) then
 		log.trace('nil passed to baizeChanged')
@@ -97,8 +148,9 @@ function Util.baizeChanged(old, new)
 	end
 	-- assert(type(old)=='table')
 	-- assert(type(new)=='table')
+	-- assert(#old==#new)
 	if #old ~= #new then
-		return true	-- shouldn't ever happen
+		return true	-- shouldn't ever happen; we don't change number of piles mid-game
 	end
 	for i = 1, #old do
 		if old[i] ~= new[i] then return true end
@@ -106,6 +158,10 @@ function Util.baizeChanged(old, new)
 	return false
 end
 
+---@param s string
+---@return number
+---@return number
+---@return number
 function Util.getColorFromSetting(s)
 	local setting = _G.SETTINGS[s]
 	if not setting then
@@ -120,10 +176,16 @@ function Util.getColorFromSetting(s)
 	return love.math.colorFromBytes(unpack(col))
 end
 
+---@param s string
+---@return nil
 function Util.setColorFromSetting(s)
 	love.graphics.setColor(Util.getColorFromSetting(s))
 end
 
+---@param nam string
+---@return number
+---@return number
+---@return number
 function Util.getColorFromName(nam)
 	local col = _G.LSOL_COLORS[nam]
 	if not col then
@@ -133,10 +195,17 @@ function Util.getColorFromName(nam)
 	return love.math.colorFromBytes(unpack(col))
 end
 
+---@param nam string
+---@return nil
 function Util.setColorFromName(nam)
 	return love.graphics.setColor(Util.getColorFromName(nam))
 end
 
+---@param settingName string
+---@param default string
+---@param amount number|nil
+---@return number[]
+---@return number[]
 function Util.getGradientColors(settingName, default, amount)
 	amount = amount or 0.1
 	local color = _G.SETTINGS[settingName] or default
@@ -148,6 +217,8 @@ function Util.getGradientColors(settingName, default, amount)
 	return frontColor, backColor
 end
 
+---@param backgroundColor string
+---@return string
 function Util.getForegroundColor(backgroundColor)
 	if not backgroundColor then
 		log.error('Unknown color', backgroundColor)
@@ -169,6 +240,8 @@ function Util.getForegroundColor(backgroundColor)
 	return foreColor
 end
 
+---@param tail Card[]
+---@return table
 function Util.makeCardPairs(tail)
 	if #tail < 2 then
 		return {}
@@ -183,6 +256,9 @@ function Util.makeCardPairs(tail)
 	return cpairs
 end
 
+---@param src Pile
+---@param dst Pile
+---@return Card
 function Util.moveCard(src, dst)
 	local c = src:pop()
 	if c then
@@ -197,6 +273,10 @@ function Util.moveCard(src, dst)
 	return c
 end
 
+---@param src Pile
+---@param dst Pile
+---@param ord integer
+---@return Card|nil
 function Util.moveCardByOrd(src, dst, ord)
 	local c = src:disinterOneCardByOrd(ord)
 	if c then
@@ -207,6 +287,11 @@ function Util.moveCardByOrd(src, dst, ord)
 	return nil
 end
 
+---@param src Pile
+---@param dst Pile
+---@param ord integer
+---@param suit '♣'|'♦'|'♥'|'♠'
+---@return Card|nil
 function Util.moveCardByOrdAndSuit(src, dst, ord, suit)
 	local c = src:disinterOneCard(ord, suit)
 	if c then
@@ -237,6 +322,9 @@ function Util.moveCards(src, idx, dst)
 end
 ]]
 
+---@param card Card
+---@param dst Pile
+---@return nil
 function Util.moveCards2(card, dst)
 	local tmp = {}
 	local src = card.parent
@@ -259,6 +347,8 @@ function Util.moveCards2(card, dst)
 	src:flipUpExposedCard()
 end
 
+---@param tail Card[]
+---@return table
 function Util.findHomesForTail(tail)
 
 	local homes = {}	-- {dst=<pile>, weight=<number>}
@@ -331,6 +421,9 @@ function Util.findHomesForTail(tail)
 	return homes
 end
 
+---@param tail Card[]
+---@param fn function
+---@return integer
 function Util.unsortedPairs(tail, fn)
 	if #tail < 2 then
 		return 0
@@ -350,6 +443,7 @@ function Util.unsortedPairs(tail, fn)
 	return unsorted
 end
 
+---@param name string
 function Util.play(name)
 	if _G.SETTINGS.muteSounds then
 		return
@@ -363,6 +457,7 @@ function Util.play(name)
 	end
 end
 
+---@return string
 function Util.orientation()
 	local _, _, safew, safeh = love.window.getSafeArea()
 	if safew > safeh then
@@ -374,10 +469,12 @@ function Util.orientation()
 	end
 end
 
+---@return number
 function Util.minFanFactor()
 	return 0.16666
 end
 
+---@return number
 function Util.maxFanFactor()
 	if _G.SETTINGS.simpleCards then
 		return 0.35

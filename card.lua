@@ -30,6 +30,7 @@ local Util = require 'util'
 ---@field movable integer 0 ... 5
 ---@field tapTargetDst Pile
 ---@field __index Card
+---@field fcsolverString function
 ---@field new function
 ---@field getSavable function
 ---@field setBaizePos function

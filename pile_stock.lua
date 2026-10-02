@@ -5,9 +5,9 @@ local Pile = require 'pile'
 local Util = require 'util'
 
 ---@class (exact) Stock : Pile
----@field packs number
----@field ordFilter table
----@field suitFilter table
+---@field ordFilter table|nil
+---@field suitFilter table|nil
+---@field packs integer
 ---@field faceUpStock boolean
 ---@field __index Stock
 ---@field new function
@@ -69,7 +69,7 @@ end
 -- @return nil
 function Stock:push(c)
 	Pile.push(self, c)
-	-- Stock cards are always prone, unless overriden
+	-- Stock cards are always prone, unless overriden (eg by Frog variant)
 	if self.faceUpStock then
 		c:flipUp()
 	else

@@ -397,7 +397,7 @@ function _G.cardTextureFactory(width, height, radius)
 
 	local cardFaceTextures = {}
 	for _, ord in ipairs{1,2,3,4,5,6,7,8,9,10,11,12,13} do
-		for _, suit in ipairs{'♣','♦','♥','♠'} do
+		for _, suit in ipairs{'♣','♦','♥','♠'} do	-- club diamond heart spade; alpha order
 			local key = Util.cardTextureId(ord, suit)
 			if _G.SETTINGS.simpleCards then
 				cardFaceTextures[key] = createSimpleFace(cardFaceTexture, ordFont, suitFont, width, height, ord, suit)

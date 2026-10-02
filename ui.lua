@@ -285,7 +285,7 @@ function UI:showColorDrawer()
 	local wgt = {text='Background', backColor=_G.SETTINGS['baizeColor'], textColor=textColor, baizeCmd='colorBackground', parent=self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 
-	textColor=Util.getForegroundColor(_G.SETTINGS['cardFaceColor'])
+	textColor = Util.getForegroundColor(_G.SETTINGS['cardFaceColor'])
 	wgt = {text='Card face', backColor=_G.SETTINGS['cardFaceColor'], textColor=textColor, baizeCmd='colorCardFace', parent=self.colorTypesDrawer}
 	table.insert(self.colorTypesDrawer.widgets, MenuItemWidget.new(wgt))
 

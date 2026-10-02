@@ -1007,6 +1007,7 @@ function Baize:mirrorSlots()
 	end
 end
 
+---@return integer[]
 function Baize:stateSnapshot()
 	local t = {}
 	for _, pile in ipairs(self.piles) do
@@ -1024,6 +1025,18 @@ function Baize:afterUserMove()
 	self:undoPush()
 	self:updateStatus()
 	self:updateUI()
+
+--[[
+	do
+		local pre = collectgarbage("count")
+		-- run the garbage collector here to prevent stuttering and anomalies in card animation 
+		collectgarbage("collect")
+		local post = collectgarbage("count")
+		log.trace(pre-post, 'collected', post, 'in use')
+		-- log.trace(collectgarbage("count")) -- reports around 1500 - 2500 Kbytes, depending on variant
+		-- and increases as the game is played, and drops when a new gane is started
+	end
+]]
 end
 
 function Baize:afterAfterUserMove()
