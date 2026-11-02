@@ -19,7 +19,18 @@ local Util = require 'util'
 local UI = {}
 UI.__index = UI
 
-local menuWidgets = {
+---@class Widget
+---@field text? string
+---@field icon? string
+---@field baizeCmd? string
+---@field name? string (used to differentiate updateable widgets)
+---@field enabled? boolean
+---@field var? string
+---@field val? number
+---@field parent? Widget[]
+
+---@type Widget[]
+ local menuWidgets = {
 	{text='New deal', icon='star', baizeCmd='newDeal'},
 	{text='Restart deal', icon='restore', name='restartdeal', enabled=false, baizeCmd='restartDeal'},
 	{text='Find game...', icon='search', baizeCmd='showVariantTypesDrawer'},
@@ -37,6 +48,7 @@ local menuWidgets = {
 	{text='Save and quit', icon='close', baizeCmd='quit'},
 }
 
+---@type Widget[]
 local settingsWidgets = {
 	{text='Simple cards', var='simpleCards'},
 	{text='Colorful cards', var='autoColorCards'},
@@ -49,6 +61,7 @@ local settingsWidgets = {
 	{text='Mute sounds', var='muteSounds'},
 }
 
+---@type Widget[]
 local aniSpeedWidgets = {
 	{text="Fast", var="aniSpeed", val=0.3},
 	{text="Normal", var="aniSpeed", val=0.5},
@@ -63,6 +76,7 @@ function UI.new()
 	local o = {}
 	setmetatable(o, UI)
 
+	---@type Widget
 	local wgt	-- temporary widget variable used temporaryly for readability
 
 	o.toasts = {} -- a queue of toasts; oldest to the left

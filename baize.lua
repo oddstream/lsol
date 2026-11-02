@@ -168,6 +168,8 @@ function Baize:resetPiles()
 	self.stock = nil
 	self.tableaux = {}
 	self.waste = nil
+
+	collectgarbage("collect")
 end
 
 function Baize:resetState()
@@ -1116,15 +1118,10 @@ end
 ---@param dx number
 ---@param dy number
 function Baize:dragBy(dx, dy)
---[[
-	self.dragOffset.x = self.dragStart.x + dx
-	if self.dragOffset.x > 0 then
-		self.dragOffset.x = 0	-- DragOffset should only ever be 0 or -ve
-	end
-]]
+	-- ignore dx, because we only drag the baize up/down, not left/right
 	self.dragOffset.y = self.dragStart.y + dy
 	if self.dragOffset.y > 0 then
-		self.dragOffset.y = 0	-- DragOffset should only ever be 0 or -ve
+		self.dragOffset.y = 0	-- dragOffset should only ever be 0 or -ve
 	end
 end
 
@@ -1222,6 +1219,7 @@ function Baize:mouseMoved(x, y, dx, dy)
 			c:dragBy(dx2, dy2)
 		end
 	elseif self.stroke.objectType == 'widget' then
+		-- TODO we don't drag FABs, so why is this here
 		local wgt = self.stroke.object
 		if wgt.parent then	-- FAB does not have a parent
 			wgt.parent:dragBy(dx2, dy2)

@@ -2,3 +2,4 @@
 *.txt
 *.keystore
 *.xcf
+*.unused

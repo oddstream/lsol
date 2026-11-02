@@ -90,8 +90,10 @@ end
 ---@param Y number
 ---@return number
 function Util.distance(x, y , X, Y)
-	local first = math.pow(X - x, 2)
-	local second = math.pow(Y - y, 2)
+	-- local first = math.pow(X - x, 2)     math.pow deprecated
+	-- local second = math.pow(Y - y, 2)    math.pow deprecated
+	local first = X - x ^ 2
+	local second = Y - y ^ 2
 	return math.sqrt(first + second)
 end
 
